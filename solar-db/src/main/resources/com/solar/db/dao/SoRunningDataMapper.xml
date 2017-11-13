@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solar.db.dao.SoRunningDataMapper">
+	<resultMap id="BaseResultMap" type="com.solar.entity.SoRunningData">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="real_time" jdbcType="BIGINT" property="realTime" />
+		<result column="warnning_code" jdbcType="INTEGER" property="warnningCode" />
+		<result column="ip_addr" jdbcType="VARCHAR" property="ipAddr" />
+		<result column="charging_voltage" jdbcType="FLOAT" property="chargingVoltage" />
+		<result column="charging_current" jdbcType="INTEGER" property="chargingCurrent" />
+		<result column="dc_charging_voltage" jdbcType="FLOAT"
+			property="dcChargingVoltage" />
+		<result column="dc_charging_current" jdbcType="FLOAT"
+			property="dcChargingCurrent" />
+		<result column="battery_voltage" jdbcType="FLOAT" property="batteryVoltage" />
+		<result column="battery_charging_current" jdbcType="FLOAT"
+			property="batteryChargingCurrent" />
+		<result column="rt_ntc_temperature" jdbcType="FLOAT" property="rtNTCTemperature" />
+		<result column="load_current_1" jdbcType="FLOAT" property="loadCurrent1" />
+		<result column="load_current_2" jdbcType="FLOAT" property="loadCurrent2" />
+		<result column="load_current_3" jdbcType="FLOAT" property="loadCurrent3" />
+		<result column="load_current_4" jdbcType="FLOAT" property="loadCurrent4" />
+		<result column="gps_info" jdbcType="VARCHAR" property="gpsInfo" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+	</resultMap>
+
+	<sql id="Columns">
+		id, 
+		real_time,
+		warnning_code,
+		ip_addr,
+		charging_voltage,
+		charging_current,
+		dc_charging_voltage,
+		dc_charging_current,
+		battery_voltage,
+		battery_charging_current,
+		rt_ntc_temperature,
+		load_current_1,
+		load_current_2,
+		load_current_3,
+		load_current_4,
+		gps_info,
+		create_time
+	</sql>
+
+
+	<select id="selectById" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+			<include refid="Columns" />
+		from so_running_data
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+
+	<insert id="insert" parameterType="com.solar.entity.SoRunningData"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO so_running_data
+		 (
+			 real_time,
+			 warnning_code,
+			 ip_addr,
+			 charging_voltage,
+			 charging_current,
+			 dc_charging_voltage,
+			 dc_charging_current,
+			 battery_voltage,
+			 battery_charging_current,
+			 rt_ntc_temperature,
+			 load_current_1,
+			 load_current_2,
+			 load_current_3,
+			 load_current_4,
+			 gps_info
+		 ) 
+		 VALUES 
+		 (
+			 #{realTime},
+			 #{warnningCode},
+			 #{ipAddr},
+			 #{chargingVoltage},
+			 #{chargingCurrent},
+			 #{dcChargingVoltage},
+			 #{dcChargingCurrent},
+			 #{batteryVoltage},
+			 #{batteryChargingCurrent},
+			 #{rtNTCTemperature},
+			 #{loadCurrent1}, 
+			 #{loadCurrent2}, 
+			 #{loadCurrent3}, 
+			 #{loadCurrent4},
+			 #{gpsInfo}
+		 )
+	</insert>
+
+	<select id="selectMaxId" resultType="Long">
+		select COALESCE(MAX(id),0) from so_running_data
+	</select>
+</mapper>
