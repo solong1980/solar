@@ -1,9 +1,12 @@
 package com.solar.command.message;
 
+import java.io.IOException;
+
 import org.apache.mina.core.buffer.IoBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.solar.common.context.ConnectAPI;
 import com.solar.server.mina.net.codec.MsgProtocol;
 
 /**
@@ -20,7 +23,8 @@ public class ServerResponse implements ResponseMsg {
 	protected MsgBodyWrap output = MsgBodyWrap.newInstance4Out();
 	private int msgCode;
 	private int status;
-	private int FIX_LENGTH = MsgProtocol.flagSize + MsgProtocol.lengthSize + MsgProtocol.msgCodeSize  + 4;
+	private int FIX_LENGTH = MsgProtocol.flagSize + MsgProtocol.lengthSize + MsgProtocol.msgCodeSize + 4;
+
 	/** 必须调用此方法设置消息号 */
 	public ServerResponse(int status, int msgCode) {
 		setMsgCode(msgCode);
@@ -59,5 +63,28 @@ public class ServerResponse implements ResponseMsg {
 			output = null;
 		}
 		output = null;
+	}
+
+	/**
+	 * 构造一个通用的响应
+	 * 
+	 * @param status
+	 *            状态 0 正常 1异常
+	 * @param rmd
+	 *            响应指令
+	 * @param json
+	 *            对象json字符串
+	 * @return
+	 */
+	public static ServerResponse build(int status, int rmd, String json) {
+		ServerResponse serverResponse = new ServerResponse(status, rmd);
+		try {
+			serverResponse.output.writeUTF(json);
+		} catch (IOException e) {
+			logger.error("output write RESPONSE:" + rmd + " fail", e);
+		} finally {
+			serverResponse.output.close();
+		}
+		return serverResponse;
 	}
 }

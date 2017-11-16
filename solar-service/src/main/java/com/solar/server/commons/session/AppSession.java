@@ -3,6 +3,7 @@ package com.solar.server.commons.session;
 import java.io.Closeable;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.UUID;
 
 import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.AttributeKey;
@@ -35,7 +36,7 @@ public class AppSession implements Closeable {
 
 	public AppSession(IoSession session) {
 		SocketAddress socketaddress = session.getRemoteAddress();
-    	InetSocketAddress s = (InetSocketAddress) socketaddress;
+		InetSocketAddress s = (InetSocketAddress) socketaddress;
 		// 存当前用户相关的服务器地址
 		address = s.getAddress().getHostAddress();
 		this.session = session;

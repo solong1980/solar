@@ -42,16 +42,22 @@ public class InternalFrameModule extends FunctionModule {
 		createInteralFrameWorkPanel();
 	}
 
+	//工作面板
 	private void createInteralFrameWorkPanel() {
 		JInternalFrame workInternalFrame = createInternalFrame(WORKING_FRAME_LAYER, 1, 1);
 		int workFrameWidth = PREFERRED_WIDTH - PALETTE_X - PALETTE_WIDTH;
 		int workFrameHeight = PREFERRED_HEIGHT - TASKCOL_HEIGHT - HEADER_HEIGHT;
 		workInternalFrame.setBounds(PALETTE_X + PALETTE_WIDTH + 1, PALETTE_Y, workFrameWidth, workFrameHeight);
-
+		
+		//tab panel
 		AdaWorkingPanel tabbedWorkingPanel = new AdaWorkingPanel();
 		workInternalFrame.setContentPane(tabbedWorkingPanel);
 	}
-
+	
+	/**
+	 * 本地设置面板
+	 * @return
+	 */
 	public JInternalFrame createInternalFramePalette() {
 		JInternalFrame palette = new JInternalFrame(getString("运行菜单"));
 		palette.putClientProperty("JInternalFrame.isPalette", Boolean.TRUE);

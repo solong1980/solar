@@ -3,14 +3,13 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.solar</groupId>
 	<artifactId>solar-service</artifactId>
-	<packaging>war</packaging>
 	<version>1.0.0</version>
 	<name>Solar Control Server</name>
 	<url>http://www.solar.net</url>
 
 	<properties>
 		<project.build.sourceEncoding>utf-8</project.build.sourceEncoding>
-		<jdk.version>1.7</jdk.version>
+		<jdk.version>1.8</jdk.version>
 		<junit.version>4.12</junit.version>
 		<servlet.version>3.1.0</servlet.version>
 		<log4j2.version>2.8.2</log4j2.version>
@@ -99,7 +98,7 @@
 	</dependencies>
 
 	<build>
-		<finalName>SolarServer</finalName>
+		<finalName>solar-service</finalName>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -162,4 +161,5 @@
 		</repository>
 	</repositories>
 
+	<packaging>war</packaging>
 </project>
