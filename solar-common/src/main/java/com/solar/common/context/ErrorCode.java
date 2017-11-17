@@ -3,7 +3,7 @@ package com.solar.common.context;
 public class ErrorCode {
 
 	public static String Error_000002 = "此帐号还没有登录";
-	public static String Error_000005 = "房間是空的";
+	public static String Error_000005 = "当前用户没有设备接入";
 	public static String Error_000006 = "你不是这个房间的";
 	public static String Error_000007 = "牌数组里没有这张牌";
 	public static String Error_000008 = "牌数组里已经有4张牌";

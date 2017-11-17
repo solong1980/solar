@@ -19,21 +19,35 @@ import com.solar.entity.SoDataServerInfo;
 import com.solar.entity.SoWorkingMode;
 
 public class HostClient extends MinaClient {
-	private Thread recThread = null;
+
+	private Thread recThread = new Thread(new Runnable() {
+		@Override
+		public void run() {
+			while (running) {
+				System.out.println("host client wait for msg");
+				long t = System.currentTimeMillis();
+				try {
+					recive();
+				} catch (IOException e) {
+					running = false;
+				}
+				System.out.println("host client get msg " + (System.currentTimeMillis() - t));
+			}
+		}
+	});
+
+	// 数据服务器网路配置
 	private NetConf dataServerNetConf = null;
+	// 工作模式配置
 	private SoWorkingMode workingMode = null;
+	// 响应中介
 	private ObservableMedia observableMedia = null;
+
+	// 消息接受循环标志
+	private volatile boolean running = false;
 
 	public HostClient(NetConf netConf) {
 		super(netConf);
-		recThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while (true) {
-					recive();
-				}
-			}
-		});
 	}
 
 	public HostClient(ObservableMedia om, NetConf netConf) {
@@ -42,17 +56,20 @@ public class HostClient extends MinaClient {
 			throw new RuntimeException("连接后台失败");
 		}
 		this.observableMedia = om;
-		recThread = new Thread(new Runnable() {
-			@Override
-			public void run() {
-				while (true) {
-					System.out.println("host client wait for msg");
-					long t = System.currentTimeMillis();
-					recive();
-					System.out.println("host client get msg " + (System.currentTimeMillis() - t));
-				}
-			}
-		});
+	}
+
+	/**
+	 * 启动接受线程
+	 */
+	public void start() {
+		running = true;
+		this.recThread.start();
+	}
+
+	public void stop() {
+		running = false;
+		this.recThread.interrupt();
+		close();
 	}
 
 	public SoWorkingMode getWorkingMode() {
@@ -71,10 +88,6 @@ public class HostClient extends MinaClient {
 		this.dataServerNetConf = dataServerNetConf;
 	}
 
-	public void start() {
-		this.recThread.start();
-	}
-
 	public void send(int command, String jsonData) {
 		try {
 			ClientSendRequest clientSendRequest = new ClientSendRequest(command);
@@ -83,6 +96,8 @@ public class HostClient extends MinaClient {
 		} catch (Exception e) {
 			System.err.println("客户端异常:" + e.getMessage());
 			sleep();
+			if (!running)
+				return;
 			// 关闭重连
 			if (e instanceof SocketException || e instanceof ConnectException) {
 				initSocket();
@@ -91,7 +106,7 @@ public class HostClient extends MinaClient {
 		}
 	}
 
-	public void serverCallBack(DataInputStream input) {
+	public void serverCallBack(DataInputStream input) throws IOException {
 		try {
 			input.readByte();
 			int len = input.readInt();
@@ -128,6 +143,10 @@ public class HostClient extends MinaClient {
 				sleep();
 			}
 		} catch (IOException e) {
+			if (e instanceof SocketException) {
+				// 套接字连接异常
+				throw e;
+			}
 			e.printStackTrace();
 		}
 	}
@@ -187,7 +206,7 @@ public class HostClient extends MinaClient {
 	}
 
 	@Override
-	public void recive() {
+	public void recive() throws IOException {
 		serverCallBack(input);
 	}
 

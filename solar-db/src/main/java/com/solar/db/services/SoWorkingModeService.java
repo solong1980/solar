@@ -39,7 +39,7 @@ public class SoWorkingModeService {
 		// 插入后需要更新缓存
 		Integer result = workingModeDao.insert(workingMode);
 		if (result > 0)
-			solarCache.updateWorkingMode();
+			solarCache.updateWorkingMode(1L);
 		return result;
 	}
 

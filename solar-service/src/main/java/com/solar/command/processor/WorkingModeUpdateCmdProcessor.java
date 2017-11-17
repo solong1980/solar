@@ -1,20 +1,24 @@
 package com.solar.command.processor;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.solar.cache.SolarCache;
 import com.solar.command.message.request.ClientRequest;
+import com.solar.command.message.response.ErrorResponse;
 import com.solar.command.message.response.FailureResponse;
 import com.solar.command.message.response.GetWorkingModeResponse;
 import com.solar.command.message.response.SuccessResponse;
+import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.Consts;
+import com.solar.common.context.ErrorCode;
 import com.solar.common.util.JsonUtilTool;
-import com.solar.controller.common.INotAuthProcessor;
 import com.solar.controller.common.MsgProcessor;
 import com.solar.db.services.SoWorkingModeService;
+import com.solar.entity.SoAccount;
 import com.solar.entity.SoWorkingMode;
 import com.solar.server.commons.session.AppSession;
 import com.solar.server.commons.session.AppSessionManager;
@@ -24,7 +28,7 @@ import com.solar.server.commons.session.AppSessionManager;
  * @author long lianghua
  *
  */
-public class WorkingModeUpdateCmdProcessor extends MsgProcessor implements INotAuthProcessor {
+public class WorkingModeUpdateCmdProcessor extends MsgProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(WorkingModeUpdateCmdProcessor.class);
 
 	private SoWorkingModeService workingModeService;
@@ -41,24 +45,30 @@ public class WorkingModeUpdateCmdProcessor extends MsgProcessor implements INotA
 		if (logger.isDebugEnabled()) {
 			logger.debug("Data update : {}", json);
 		}
+		SoAccount account = appSession.getEnti(SoAccount.class);
 		SoWorkingMode workingMode = JsonUtilTool.fromJson(json, SoWorkingMode.class);
 		Integer result = workingModeService.insertWorkingMode(workingMode);
 		if (result > 0) {
-			solarCache.updateWorkingMode();
-			workingMode = solarCache.getWorkingMode();
+			Long custId = account.getCustId();
+			solarCache.updateWorkingMode(custId);
+			workingMode = solarCache.getWorkingMode(custId);
 			if (workingMode == null) {
 				appSession.sendMsg(FailureResponse.failure(Consts.FAILURE));
 			} else {
 				// notify all other host
-				List<AppSession> allSession = AppSessionManager.getInstance().getAllSession();
-				for (AppSession otherSession : allSession) {
-					//排出自己
-					if (otherSession.equals(appSession))
-						continue;
-					otherSession.sendMsg(new GetWorkingModeResponse(0, json));
+				try {
+					List<AppSession> custSession = AppSessionManager.getInstance().getCustDevsSession(custId);
+					for (AppSession otherSession : custSession) {
+						// 排出自己
+						if (otherSession.equals(appSession))
+							continue;
+						otherSession.sendMsg(new GetWorkingModeResponse(0, json));
+					}
+					appSession.sendMsg(SuccessResponse.success(Consts.SUCCESS));
+				} catch (ExecutionException e) {
+					appSession.sendMsg(ErrorResponse.build(1, ConnectAPI.ERROR_RESPONSE, ErrorCode.Error_000005));
 				}
 			}
-			appSession.sendMsg(SuccessResponse.success(Consts.SUCCESS));
 		} else {
 			appSession.sendMsg(FailureResponse.failure(Consts.FAILURE));
 		}

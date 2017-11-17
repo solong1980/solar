@@ -99,7 +99,7 @@ public abstract class MinaClient {
 		return this.available;
 	}
 
-	public abstract void recive();
+	public abstract void recive() throws IOException;
 
 	public boolean countinueTry() {
 		tryCount = tryCount - 1;

@@ -5,12 +5,15 @@ import com.solar.common.context.RoleType;
 @SuppressWarnings("serial")
 public class SoAccount extends SoAbt {
 	private Long id;
-	private String devId;
+	private Long custId;
 	private String account;
 	private String password;
-	private String email;
+	private Integer role;
 	private String createTime;
+
 	private RoleType roleType = RoleType.UNKNOW;
+	private String devId; // 非数据库字段,在设备连接的时候,传入设备号登陆,并返回对应的配置信息,对应的角色为device
+	private String email;
 
 	public Long getId() {
 		return id;
@@ -18,6 +21,14 @@ public class SoAccount extends SoAbt {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Long getCustId() {
+		return custId;
+	}
+
+	public void setCustId(Long custId) {
+		this.custId = custId;
 	}
 
 	public String getDevId() {
@@ -58,6 +69,14 @@ public class SoAccount extends SoAbt {
 
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
+	}
+
+	public Integer getRole() {
+		return role;
+	}
+
+	public void setRole(Integer role) {
+		this.role = role;
 	}
 
 	public RoleType getRoleType() {

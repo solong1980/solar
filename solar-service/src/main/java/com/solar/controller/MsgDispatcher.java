@@ -8,8 +8,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.solar.command.message.request.ClientRequest;
+import com.solar.command.message.response.ErrorResponse;
 import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.Consts;
+import com.solar.common.context.ErrorCode;
 import com.solar.controller.common.INotAuthProcessor;
 import com.solar.controller.common.MsgProcessor;
 import com.solar.controller.common.MsgProcessorRegister;
@@ -67,8 +69,13 @@ public class MsgDispatcher {
 			// 未找到对应的processor
 			getMsgProcessor(ConnectAPI.ZERO_RESPONSE).handle(appSession, request);
 			return;
-		}else if (appSession.isLogin() || processor instanceof INotAuthProcessor) {
+		} else if (appSession.isLogin() || processor instanceof INotAuthProcessor) {
 			processor.handle(appSession, request);
+		} else {
+			if (!appSession.isLogin()) {
+				appSession.sendMsg(ErrorResponse.build(1, ConnectAPI.ERROR_RESPONSE, ErrorCode.Error_000002));
+				return;
+			}
 		}
 	}
 

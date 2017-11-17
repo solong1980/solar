@@ -35,19 +35,27 @@ public class LoginCmdProcessor extends MsgProcessor implements INotAuthProcessor
 			logger.debug("login : {}", json);
 		}
 		SoAccount account = JsonUtilTool.fromJson(json, SoAccount.class);
+
+		String acc = account.getAccount();
 		String passwd = account.getPassword();
-		SoAccount dbAccount = accountService.select(account);
-		// @SuppressWarnings("deprecation")
-		// String md = Hashing.md5().newHasher().putString(passwd,
-		// Charsets.UTF_8).hash().toString();
+		SoAccount dbAccount = accountService.selectByAccount(acc);
+
+		@SuppressWarnings("deprecation")
+		String md = Hashing.md5().newHasher().putString(passwd, Charsets.UTF_8).hash().toString();
 
 		if (null == dbAccount) {
 			account.setMsg("帐号不存在");
 			appSession.sendMsg(new AccountResponse(JsonUtilTool.toJson(account)));
-		} else if (dbAccount.getPassword().equals(passwd)) {
+		} else if (dbAccount.getPassword().equals(md)) {
 			dbAccount.setMsg("登陆成功");
-			dbAccount.setRoleType(RoleType.OPERATOR);
+
+			Integer role = dbAccount.getRole();
+			RoleType roleType = RoleType.roleType(role);
+			dbAccount.setRoleType(roleType);
+
 			dbAccount.setPassword(null);
+			appSession.setEnti(dbAccount);
+			appSession.setLogin(true);
 			appSession.sendMsg(new AccountResponse(JsonUtilTool.toJson(dbAccount)));
 		} else {
 			account.setMsg("密码错误");

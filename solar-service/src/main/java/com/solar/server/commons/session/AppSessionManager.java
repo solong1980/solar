@@ -6,14 +6,20 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.solar.command.message.response.ErrorResponse;
 import com.solar.common.context.ErrorCode;
+import com.solar.entity.SoAccount;
 
 public class AppSessionManager {
 
 	public Map<String, AppSession> sessionMap = new ConcurrentHashMap<String, AppSession>();
+	private Cache<Long, List<AppSession>> custDevSessionCache;
 
 	public static int topOnlineAccountCount = 0;
 
@@ -26,7 +32,7 @@ public class AppSessionManager {
 	}
 
 	private AppSessionManager() {
-
+		custDevSessionCache = CacheBuilder.newBuilder().initialCapacity(1000).build();
 	}
 
 	/**
@@ -90,7 +96,7 @@ public class AppSessionManager {
 	public List<AppSession> getAllSession() {
 		List<AppSession> result = null;
 		if (getVauleSize() > 0) {
-			result = new ArrayList<AppSession>();
+			result = new ArrayList<AppSession>(getVauleSize());
 			Collection<AppSession> connection = sessionMap.values();
 			Iterator<AppSession> iterator = connection.iterator();
 			while (iterator.hasNext()) {
@@ -98,6 +104,35 @@ public class AppSessionManager {
 			}
 		}
 		return result;
+	}
+
+	/**
+	 * 从缓存获取客户设备session
+	 * 
+	 * @param custId
+	 * @return
+	 * @throws ExecutionException
+	 */
+	public List<AppSession> getCustDevsSession(Long custId) throws ExecutionException {
+		List<AppSession> custDevSessions = custDevSessionCache.get(custId, new Callable<List<AppSession>>() {
+			@Override
+			public List<AppSession> call() throws Exception {
+				List<AppSession> result = null;
+				if (getVauleSize() > 0) {
+					result = new ArrayList<AppSession>(50);
+					Collection<AppSession> connection = sessionMap.values();
+					Iterator<AppSession> iterator = connection.iterator();
+					while (iterator.hasNext()) {
+						AppSession next = iterator.next();
+						SoAccount enti = next.getEnti(SoAccount.class);
+						if (custId.equals(enti.getCustId()))
+							result.add(next);
+					}
+				}
+				return result;
+			}
+		});
+		return custDevSessions;
 	}
 
 	/**

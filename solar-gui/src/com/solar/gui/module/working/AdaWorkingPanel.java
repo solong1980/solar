@@ -66,8 +66,9 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		loginPanel.add(accountLabel, gbc);
 		gbc.gridy++;
 		loginPanel.add(passwdLabel, gbc);
-
-		JTextField accountField = new JTextField("");
+		
+		//admin,operator,cust_1,cust_2
+		JTextField accountField = new JTextField("admin");
 		JTextField passwordField = new JPasswordField("123456", 10);
 
 		gbc.gridx++;

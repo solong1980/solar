@@ -3,7 +3,6 @@ package com.solar.server.commons.session;
 import java.io.Closeable;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
-import java.util.UUID;
 
 import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.AttributeKey;
@@ -27,13 +26,9 @@ public class AppSession implements Closeable {
 	 * 记录心跳时间， 间隔，到达一定时间就表示前端断线了
 	 */
 	private int time = 0;
-
-	private Object role;
-
+	private Object enti;
 	private boolean isLogin = false;
-
 	private static final AttributeKey KEY_PLAYER_SESSION = new AttributeKey(AppSession.class, "player.session");
-
 	public AppSession(IoSession session) {
 		SocketAddress socketaddress = session.getRemoteAddress();
 		InetSocketAddress s = (InetSocketAddress) socketaddress;
@@ -97,20 +92,20 @@ public class AppSession implements Closeable {
 	}
 
 	/**
-	 * 保存角色信息
+	 * 保存会话鉴权信息
 	 * 
 	 * @param obj
 	 */
-	public void setRole(Object obj) {
-		this.role = obj;
+	public void setEnti(Object obj) {
+		this.enti = obj;
 	}
 
 	/**
-	 * 得到角色信息
+	 * 得到会话鉴权信息
 	 */
 	@SuppressWarnings("unchecked")
-	public <T> T getRole(Class<T> t) {
-		return (T) this.role;
+	public <T> T getEnti(Class<T> t) {
+		return (T) this.enti;
 	}
 
 	/**

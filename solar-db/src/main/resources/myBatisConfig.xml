@@ -3,46 +3,51 @@
         PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
-    <properties resource="db.properties"/>
-    <settings>
-        <!-- Globally enables or disables any caches configured in any mapper under this configuration -->
-        <setting name="cacheEnabled" value="true"/>
-        <!-- Sets the number of seconds the driver will wait for a response from the database -->
-        <setting name="defaultStatementTimeout" value="3000"/>
-        <!-- Enables automatic mapping from classic database column names A_COLUMN to camel case classic Java property names aColumn -->
-        <setting name="mapUnderscoreToCamelCase" value="true"/>
-        <!-- Allows JDBC support for generated keys. A compatible driver is required.
-        This setting forces generated keys to be used if set to true,
-         as some drivers deny compatibility but still work -->
-        <setting name="useGeneratedKeys" value="true"/>
-    </settings>
+	<properties resource="db.properties" />
+	<settings>
+		<!-- Globally enables or disables any caches configured in any mapper under 
+			this configuration -->
+		<setting name="cacheEnabled" value="true" />
+		<!-- Sets the number of seconds the driver will wait for a response from 
+			the database -->
+		<setting name="defaultStatementTimeout" value="3000" />
+		<!-- Enables automatic mapping from classic database column names A_COLUMN 
+			to camel case classic Java property names aColumn -->
+		<setting name="mapUnderscoreToCamelCase" value="true" />
+		<!-- Allows JDBC support for generated keys. A compatible driver is required. 
+			This setting forces generated keys to be used if set to true, as some drivers 
+			deny compatibility but still work -->
+		<setting name="useGeneratedKeys" value="true" />
+	</settings>
 
-    <!-- 对事务的管理和连接池的配置 -->
-    <environments default="development">
-        <environment id="development">
-            <transactionManager type="JDBC" />
-            <dataSource type="com.solar.db.common.MyBatisDruidDataSource">
-                <property name="driver" value="${driver}" />
-                <property name="url" value="${url}" />
-                <property name="username" value="${username}" />
-                <property name="password" value="${password}" />
-                
-                <property name="initialSize" value="${initialSize}" />
-                <property name="minIdle" value="${minIdle}" />
-                <property name="maxActive" value="${maxActive}" />
-                <!-- <property name="poolMaximumActiveConnections" value="10" />
-                <property name="poolMaximumIdleConnections" value="1" />
-                <property name="poolMaximumCheckoutTime" value="20000" />
-                <property name="poolTimeToWait" value="20000" />
-                <property name="poolPingQuery" value="select 1" />
-                <property name="poolPingEnabled" value="true" />
-                <property name="poolPingConnectionsNotUsedFor" value="0" /> -->
-            </dataSource>
-        </environment>
-    </environments>
-    <!-- Continue going here -->
-    <mappers>
-        <mapper resource="com/solar/db/dao/SoRunningDataMapper.xml"/>
-        <mapper resource="com/solar/db/dao/SoWorkingModeMapper.xml"/>
-    </mappers>
+	<!-- 对事务的管理和连接池的配置 -->
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="com.solar.db.common.MyBatisDruidDataSource">
+				<property name="driver" value="${driver}" />
+				<property name="url" value="${url}" />
+				<property name="username" value="${username}" />
+				<property name="password" value="${password}" />
+
+				<property name="initialSize" value="${initialSize}" />
+				<property name="minIdle" value="${minIdle}" />
+				<property name="maxActive" value="${maxActive}" />
+				<!-- <property name="poolMaximumActiveConnections" value="10" /> <property 
+					name="poolMaximumIdleConnections" value="1" /> <property name="poolMaximumCheckoutTime" 
+					value="20000" /> <property name="poolTimeToWait" value="20000" /> <property 
+					name="poolPingQuery" value="select 1" /> <property name="poolPingEnabled" 
+					value="true" /> <property name="poolPingConnectionsNotUsedFor" value="0" 
+					/> -->
+			</dataSource>
+		</environment>
+	</environments>
+	<!-- Continue going here -->
+	<mappers>
+		<mapper resource="com/solar/db/dao/SoAccountMapper.xml" />
+		<mapper resource="com/solar/db/dao/SoCustomerMapper.xml" />
+		<mapper resource="com/solar/db/dao/SoDevicesMapper.xml" />
+		<mapper resource="com/solar/db/dao/SoRunningDataMapper.xml" />
+		<mapper resource="com/solar/db/dao/SoWorkingModeMapper.xml" />
+	</mappers>
 </configuration>

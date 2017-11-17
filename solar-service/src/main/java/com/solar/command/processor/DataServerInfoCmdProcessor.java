@@ -35,7 +35,6 @@ public class DataServerInfoCmdProcessor extends MsgProcessor implements INotAuth
 		SoDataServerInfo dataServerInfo = JsonUtilTool.fromJson(json, SoDataServerInfo.class);
 		dataServerInfo.setServerIP("123.56.76.77");
 		dataServerInfo.setPort(10122);
-		solarCache.updateWorkingMode();
 		appSession.sendMsg(
 				ServerResponse.build(0, ConnectAPI.DATA_SERVER_QUERY_RESPONSE, JsonUtilTool.toJson(dataServerInfo)));
 	}

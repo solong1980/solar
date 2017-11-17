@@ -1,5 +1,6 @@
 package com.solar.client;
 
+import java.io.IOException;
 import java.util.Observable;
 
 import com.solar.client.net.NetConf;
@@ -41,15 +42,22 @@ public class ObservableMedia extends Observable {
 		hostClient = new HostClient(this, NetConf.buildHostConf());
 		// Get data server info
 		if (hostClient.getDataServerNetConf() == null) {
-			
+
 			SoDataServerInfo dataServerInfo = new SoDataServerInfo();
 			dataServerInfo.setDevId("000000");
-			
-			hostClient.getDataServerInfo(dataServerInfo);
-			hostClient.recive();
-		}
 
+			hostClient.getDataServerInfo(dataServerInfo);
+			try {
+				hostClient.recive();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 		hostClient.start();
+	}
+
+	public void close() {
+		hostClient.stop();
 	}
 
 	public void sendData() {
