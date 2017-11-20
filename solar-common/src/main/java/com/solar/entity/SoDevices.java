@@ -3,10 +3,12 @@ package com.solar.entity;
 import java.util.Date;
 
 @SuppressWarnings("serial")
-public class SoDevices extends SoAbt {
+public class SoDevices extends SoAbtAuth {
+	public static final int ACCESS_SUCCESS = 0;
+	public static final int ACCESS_FAILURE = 1;
+
 	private Long id;
 	private String devNo;
-	private Long custId;
 	private String gpsInfo;
 	private String ipAddr;
 	private String dataServerIp;
@@ -27,14 +29,6 @@ public class SoDevices extends SoAbt {
 
 	public void setDevNo(String devNo) {
 		this.devNo = devNo;
-	}
-
-	public Long getCustId() {
-		return custId;
-	}
-
-	public void setCustId(Long custId) {
-		this.custId = custId;
 	}
 
 	public String getGpsInfo() {

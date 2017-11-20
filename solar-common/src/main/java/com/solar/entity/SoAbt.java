@@ -11,7 +11,7 @@ import java.io.Serializable;
 @SuppressWarnings("serial")
 public abstract class SoAbt implements Serializable {
 	// 业务响应码
-	private int retCode;
+	private int retCode = 0;
 	// 提示信息
 	private String msg;
 

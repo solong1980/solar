@@ -14,6 +14,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JDesktopPane;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -22,6 +24,10 @@ import com.solar.gui.module.working.AdaWorkingPanel;
 @SuppressWarnings("serial")
 public class InternalFrameModule extends FunctionModule {
 	int windowCount = 0;
+
+	private JMenuBar menuBar = null;
+	private JMenu fileMenu = null;
+
 	JDesktopPane desktop = null;
 
 	public Integer PALETTE_LAYER = new Integer(3);
@@ -42,20 +48,24 @@ public class InternalFrameModule extends FunctionModule {
 		createInteralFrameWorkPanel();
 	}
 
-	//工作面板
+	// 工作面板
 	private void createInteralFrameWorkPanel() {
 		JInternalFrame workInternalFrame = createInternalFrame(WORKING_FRAME_LAYER, 1, 1);
 		int workFrameWidth = PREFERRED_WIDTH - PALETTE_X - PALETTE_WIDTH;
 		int workFrameHeight = PREFERRED_HEIGHT - TASKCOL_HEIGHT - HEADER_HEIGHT;
 		workInternalFrame.setBounds(PALETTE_X + PALETTE_WIDTH + 1, PALETTE_Y, workFrameWidth, workFrameHeight);
-		
-		//tab panel
-		AdaWorkingPanel tabbedWorkingPanel = new AdaWorkingPanel();
+
+		// tab panel
+		AdaWorkingPanel tabbedWorkingPanel = new AdaWorkingPanel(this);
+		menuBar = tabbedWorkingPanel.createMenus();
+		workInternalFrame.setJMenuBar(menuBar);
+
 		workInternalFrame.setContentPane(tabbedWorkingPanel);
 	}
-	
+
 	/**
 	 * 本地设置面板
+	 * 
 	 * @return
 	 */
 	public JInternalFrame createInternalFramePalette() {

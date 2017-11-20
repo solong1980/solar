@@ -22,7 +22,8 @@ public class ConnectAPI {
 	public static int APP_UPGRADE_COMMAND = 0x000006;
 	// 查询数据服务器地址
 	public static int DATA_SERVER_QUERY_COMMAND = 0x000007;
-
+	// 设备接入
+	public static int DEVICE_ACCESS_COMMAND = 0x000008;
 	// 控制终端指令
 	public static int CTRL_COMMAND = 0x999999;
 
@@ -39,7 +40,7 @@ public class ConnectAPI {
 	public static final int GET_WORKING_MODE_RESPONSE = 0x100003;
 	public static final int APP_UPGRADE_RESPONSE = 0x100004;
 	public static final int LOGIN_RESPONSE = 0x100005;
-
+	public static final int DEVICES_ACCESS_RESPONSE = 0x100005;
 	// 查询数据服务器地址
 	public static final int DATA_SERVER_QUERY_RESPONSE = 0x100006;
 	// 警告信息响应

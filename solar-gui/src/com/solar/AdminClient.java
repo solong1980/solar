@@ -3,8 +3,6 @@ package com.solar;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
-import java.awt.GraphicsConfiguration;
-import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -17,6 +15,7 @@ import com.solar.client.ObservableMedia;
 import com.solar.entity.SoAccount;
 
 public class AdminClient extends JFrame {
+	private static final long serialVersionUID = 1L;
 	ObservableMedia media;
 
 	public AdminClient() {
@@ -46,7 +45,7 @@ public class AdminClient extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (media == null) {
 					try {
-						media = new ObservableMedia();
+						media = ObservableMedia.getInstance();
 					} catch (Exception ee) {
 						ee.printStackTrace();
 						JOptionPane.showMessageDialog(AdminClient.this, "连接失败");

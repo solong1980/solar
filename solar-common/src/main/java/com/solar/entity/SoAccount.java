@@ -1,19 +1,16 @@
 package com.solar.entity;
 
-import com.solar.common.context.RoleType;
-
 @SuppressWarnings("serial")
-public class SoAccount extends SoAbt {
+public class SoAccount extends SoAbtAuth {
+
+	public static final int LOGIN_SUCCESS = 0;
+	public static final int LOGIN_FAILURE = 1;
+
 	private Long id;
-	private Long custId;
 	private String account;
 	private String password;
-	private Integer role;
-	private String createTime;
 
-	private RoleType roleType = RoleType.UNKNOW;
-	private String devId; // 非数据库字段,在设备连接的时候,传入设备号登陆,并返回对应的配置信息,对应的角色为device
-	private String email;
+	private String createTime;
 
 	public Long getId() {
 		return id;
@@ -21,22 +18,6 @@ public class SoAccount extends SoAbt {
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getCustId() {
-		return custId;
-	}
-
-	public void setCustId(Long custId) {
-		this.custId = custId;
-	}
-
-	public String getDevId() {
-		return devId;
-	}
-
-	public void setDevId(String devId) {
-		this.devId = devId;
 	}
 
 	public String getAccount() {
@@ -55,36 +36,12 @@ public class SoAccount extends SoAbt {
 		this.password = password;
 	}
 
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
 	public String getCreateTime() {
 		return createTime;
 	}
 
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
-	}
-
-	public Integer getRole() {
-		return role;
-	}
-
-	public void setRole(Integer role) {
-		this.role = role;
-	}
-
-	public RoleType getRoleType() {
-		return roleType;
-	}
-
-	public void setRoleType(RoleType roleType) {
-		this.roleType = roleType;
 	}
 
 }

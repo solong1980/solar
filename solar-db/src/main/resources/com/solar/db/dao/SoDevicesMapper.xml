@@ -37,7 +37,7 @@
 		select
 		<include refid="Columns" />
 		from so_devices
-		where cust_id = #{custId,jdbcType=VARCHAR}
+		where cust_id = #{custId,jdbcType=LONG}
 	</select>
 
 	<select id="allDevs" resultMap="BaseResultMap">
@@ -45,4 +45,13 @@
 		<include refid="Columns" />
 		from so_devices
 	</select>
+
+	<select id="selectByDevNo" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Columns" />
+		from so_devices
+		where dev_no = #{devNo,jdbcType=VARCHAR}
+	</select>
+
 </mapper>

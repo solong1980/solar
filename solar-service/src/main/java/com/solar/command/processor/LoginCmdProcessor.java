@@ -7,7 +7,7 @@ import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
 import com.solar.command.message.request.ClientRequest;
 import com.solar.command.message.response.AccountResponse;
-import com.solar.common.context.RoleType;
+import com.solar.common.context.ErrorCode;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.INotAuthProcessor;
 import com.solar.controller.common.MsgProcessor;
@@ -44,23 +44,19 @@ public class LoginCmdProcessor extends MsgProcessor implements INotAuthProcessor
 		String md = Hashing.md5().newHasher().putString(passwd, Charsets.UTF_8).hash().toString();
 
 		if (null == dbAccount) {
-			account.setMsg("帐号不存在");
+			account.setMsg(ErrorCode.Error_000003);
+			account.setRetCode(SoAccount.LOGIN_FAILURE);
 			appSession.sendMsg(new AccountResponse(JsonUtilTool.toJson(account)));
 		} else if (dbAccount.getPassword().equals(md)) {
 			dbAccount.setMsg("登陆成功");
-
-			Integer role = dbAccount.getRole();
-			RoleType roleType = RoleType.roleType(role);
-			dbAccount.setRoleType(roleType);
-
 			dbAccount.setPassword(null);
 			appSession.setEnti(dbAccount);
 			appSession.setLogin(true);
 			appSession.sendMsg(new AccountResponse(JsonUtilTool.toJson(dbAccount)));
 		} else {
-			account.setMsg("密码错误");
+			account.setMsg(ErrorCode.Error_000004);
+			account.setRetCode(SoAccount.LOGIN_FAILURE);
 			appSession.sendMsg(new AccountResponse(JsonUtilTool.toJson(account)));
 		}
-
 	}
 }

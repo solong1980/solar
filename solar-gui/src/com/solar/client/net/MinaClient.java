@@ -18,7 +18,7 @@ public abstract class MinaClient {
 	protected DataOutputStream out = null;
 
 	private volatile boolean available = false;
-	protected int tryCount = 5;
+	protected int tryCount = 1;
 
 	public void sleep() {
 		try {
@@ -66,7 +66,6 @@ public abstract class MinaClient {
 				close();
 			}
 		}));
-
 	}
 
 	public void close() {

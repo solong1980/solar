@@ -6,6 +6,7 @@ import java.util.Observable;
 import com.solar.client.net.NetConf;
 import com.solar.entity.SoAccount;
 import com.solar.entity.SoDataServerInfo;
+import com.solar.entity.SoDevices;
 
 public class ObservableMedia extends Observable {
 	HostClient hostClient = null;
@@ -36,7 +37,15 @@ public class ObservableMedia extends Observable {
 		System.out.println(System.currentTimeMillis() - t);
 	}
 
-	public ObservableMedia() {
+	private static class Inner {
+		public static ObservableMedia observableMedia = new ObservableMedia();
+	}
+
+	public static ObservableMedia getInstance() {
+		return Inner.observableMedia;
+	}
+
+	private ObservableMedia() {
 		super();
 		// host connect
 		hostClient = new HostClient(this, NetConf.buildHostConf());
@@ -67,8 +76,18 @@ public class ObservableMedia extends Observable {
 		dataClient.dataUpload();
 	}
 
+	public void deviceAccess(SoDevices devices) {
+		hostClient.deviceAccess(devices);
+		setChanged();
+	}
+
 	public void login(SoAccount account) {
 		hostClient.login(account);
+		setChanged();
+	}
+
+	public void getRunningMode() {
+		hostClient.runningMode();
 		setChanged();
 	}
 

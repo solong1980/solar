@@ -3,6 +3,7 @@ package com.solar.controller.common;
 import com.solar.command.processor.AppUpgradeCmdProcessor;
 import com.solar.command.processor.DataServerInfoCmdProcessor;
 import com.solar.command.processor.DataUploadCmdProcessor;
+import com.solar.command.processor.DeviceAccessCmdProcessor;
 import com.solar.command.processor.GetWorkingModeCmdProcessor;
 import com.solar.command.processor.LoginCmdProcessor;
 import com.solar.command.processor.OpenAppMsgProcessor;
@@ -17,6 +18,7 @@ public enum MsgProcessorRegister {
 	DATA_SERVER_INFO_COMMAND(ConnectAPI.DATA_SERVER_QUERY_COMMAND, new DataServerInfoCmdProcessor()),
 
 	LOGIN_COMMAND(ConnectAPI.LOGIN_COMMAND, new LoginCmdProcessor()),
+	DEVICE_ACCESS_COMMAND(ConnectAPI.DEVICE_ACCESS_COMMAND, new DeviceAccessCmdProcessor()),
 
 	// 内部使用，服务端通知客户端断开
 	EMPYTCOMMAND(ConnectAPI.ZERO_RESPONSE, new OpenAppMsgProcessor());

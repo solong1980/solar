@@ -5,11 +5,18 @@ import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
+import java.awt.MenuBar;
+import java.awt.MenuItem;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -21,7 +28,9 @@ import javax.swing.border.SoftBevelBorder;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 import javax.swing.plaf.metal.OceanTheme;
 
-public class FunctionModule extends JPanel {
+import com.solar.gui.module.working.BasePanel;
+
+public class FunctionModule extends BasePanel {
 	private static final long serialVersionUID = 1L;
 
 	protected int SCREEN_WIDTH = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
@@ -134,6 +143,17 @@ public class FunctionModule extends JPanel {
 				| UnsupportedLookAndFeelException e) {
 			e.printStackTrace();
 		}
+
+		JMenuBar menuBar = new JMenuBar();
+		JMenu fileMenu = (JMenu) menuBar.add(new JMenu("File"));
+		JMenuItem mi = (JMenuItem) fileMenu.add(new JMenuItem("Exit"));
+		mi.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.exit(0);
+			}
+		});
+		frame.setJMenuBar(menuBar);
 
 		// MetalLookAndFeel.setCurrentTheme(new AquaTheme());
 		// MetalLookAndFeel.setCurrentTheme(new CharcoalTheme());

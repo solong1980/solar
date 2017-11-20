@@ -16,6 +16,7 @@ import com.solar.client.net.NetConf;
 import com.solar.common.context.ConnectAPI;
 import com.solar.entity.SoAccount;
 import com.solar.entity.SoDataServerInfo;
+import com.solar.entity.SoDevices;
 import com.solar.entity.SoWorkingMode;
 
 public class HostClient extends MinaClient {
@@ -212,6 +213,7 @@ public class HostClient extends MinaClient {
 
 	public void workingModeUpdate() {
 		SoWorkingMode workingMode = new SoWorkingMode();
+		
 		workingMode.setContinuous(false);
 		workingMode.setCreateBy(10000L);
 		workingMode.setEmergency(false);
@@ -228,9 +230,18 @@ public class HostClient extends MinaClient {
 		send(ConnectAPI.LOGIN_COMMAND, json);
 	}
 
+	public void deviceAccess(SoDevices devices) {
+		String json = JsonUtilTool.toJson(devices);
+		send(ConnectAPI.DEVICE_ACCESS_COMMAND, json);
+	}
+
 	public void getDataServerInfo(SoDataServerInfo dataServerInfo) {
 		String json = JsonUtilTool.toJson(dataServerInfo);
 		send(ConnectAPI.DATA_SERVER_QUERY_COMMAND, json);
+	}
+
+	public void runningMode() {
+		send(ConnectAPI.GET_WORKING_MODE_COMMAND, "");
 	}
 
 }

@@ -42,7 +42,6 @@
 		<guava.version>20.0</guava.version>
 	</properties>
 
-	<!-- °¢ÀïÔÆmaven²Ö¿â -->
 	<repositories>
 		<repository>
 			<id>public</id>
@@ -55,6 +54,6 @@
 	</repositories>
 
 	<dependencies>
-		
+
 	</dependencies>
 </project>

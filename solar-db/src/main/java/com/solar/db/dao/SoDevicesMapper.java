@@ -12,4 +12,6 @@ public interface SoDevicesMapper {
 
 	List<SoDevices> allDevs();
 
+	SoDevices selectByDevNo(String devNo);
+
 }

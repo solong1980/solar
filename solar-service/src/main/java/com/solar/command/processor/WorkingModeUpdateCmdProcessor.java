@@ -18,6 +18,7 @@ import com.solar.common.context.ErrorCode;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.MsgProcessor;
 import com.solar.db.services.SoWorkingModeService;
+import com.solar.entity.SoAbtAuth;
 import com.solar.entity.SoAccount;
 import com.solar.entity.SoWorkingMode;
 import com.solar.server.commons.session.AppSession;
@@ -45,11 +46,11 @@ public class WorkingModeUpdateCmdProcessor extends MsgProcessor {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Data update : {}", json);
 		}
-		SoAccount account = appSession.getEnti(SoAccount.class);
+		SoAbtAuth abtAuth = appSession.getEnti(SoAbtAuth.class);
 		SoWorkingMode workingMode = JsonUtilTool.fromJson(json, SoWorkingMode.class);
 		Integer result = workingModeService.insertWorkingMode(workingMode);
 		if (result > 0) {
-			Long custId = account.getCustId();
+			Long custId = abtAuth.getCustId();
 			solarCache.updateWorkingMode(custId);
 			workingMode = solarCache.getWorkingMode(custId);
 			if (workingMode == null) {
@@ -58,6 +59,7 @@ public class WorkingModeUpdateCmdProcessor extends MsgProcessor {
 				// notify all other host
 				try {
 					List<AppSession> custSession = AppSessionManager.getInstance().getCustDevsSession(custId);
+					json = JsonUtilTool.toJson(workingMode);
 					for (AppSession otherSession : custSession) {
 						// 排出自己
 						if (otherSession.equals(appSession))

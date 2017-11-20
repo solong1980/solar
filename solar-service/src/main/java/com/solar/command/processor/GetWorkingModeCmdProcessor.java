@@ -7,6 +7,7 @@ import com.solar.command.message.response.GetWorkingModeResponse;
 import com.solar.common.context.Consts;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.MsgProcessor;
+import com.solar.entity.SoAbtAuth;
 import com.solar.entity.SoAccount;
 import com.solar.entity.SoWorkingMode;
 import com.solar.server.commons.session.AppSession;
@@ -21,8 +22,8 @@ public class GetWorkingModeCmdProcessor extends MsgProcessor {
 
 	@Override
 	public void process(AppSession appSession, ClientRequest request) throws Exception {
-		SoAccount account = appSession.getEnti(SoAccount.class);
-		Long custId = account.getCustId();
+		SoAbtAuth abtAuth = appSession.getEnti(SoAbtAuth.class);
+		Long custId = abtAuth.getCustId();
 		SoWorkingMode workingMode = solarCache.getWorkingMode(custId);
 		if (workingMode == null) {
 			appSession.sendMsg(FailureResponse.failure(Consts.FAILURE));

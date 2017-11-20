@@ -13,6 +13,10 @@ public class BasePanel extends JPanel {
 		super(layout);
 	}
 
+	public BasePanel() {
+		super();
+	}
+
 	protected String getBoldRedHTML(String s) {
 		return "<html><b><font size=\"4\" color=\"red\">" + s + "</font></b></html>";
 	}

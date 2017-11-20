@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 
-import com.solar.cache.SolarCache;
 import com.solar.db.dao.SoDevicesMapper;
 import com.solar.db.dao.impl.SoDevicesDao;
 import com.solar.entity.SoDevices;
@@ -17,7 +16,6 @@ import com.solar.entity.SoDevices;
 public class SoDevicesService {
 	private static SoDevicesService devicesService = new SoDevicesService();
 	private SoDevicesMapper deviceDao;
-	private SolarCache solarCache;
 
 	public SoDevicesService() {
 		super();
@@ -33,6 +31,10 @@ public class SoDevicesService {
 
 	public SoDevices selectById(Long id) {
 		return deviceDao.selectById(id);
+	}
+
+	public SoDevices selectByDevNo(String devId) {
+		return deviceDao.selectByDevNo(devId);
 	}
 
 	public List<SoDevices> selectCustDevs(Long custId) {
