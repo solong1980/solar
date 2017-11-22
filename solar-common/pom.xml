@@ -4,7 +4,7 @@
 	<groupId>com.solar</groupId>
 	<artifactId>solar-common</artifactId>
 	<version>1.0.0</version>
-	<name>Solar Control Server</name>
+	<name>Solar Common</name>
 	<url>http://www.solar.net</url>
 
 	<properties>

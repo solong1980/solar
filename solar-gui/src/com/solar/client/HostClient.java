@@ -248,7 +248,7 @@ public class HostClient extends MinaClient {
 
 	public void queryAppVersion(SoAppVersion appVersion) {
 		String json = JsonUtilTool.toJson(appVersion);
-		send(ConnectAPI.APK_VERSION_QUERY_COMMAND, "");
+		send(ConnectAPI.APK_VERSION_QUERY_COMMAND, json);
 	}
 
 }

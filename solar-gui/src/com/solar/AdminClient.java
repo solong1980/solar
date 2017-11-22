@@ -20,7 +20,7 @@ public class AdminClient extends JFrame {
 
 	public AdminClient() {
 		super();
-		setPreferredSize(new Dimension(300, 80));
+		setPreferredSize(new Dimension(300, 300));
 		setTitle("AdminClient");
 		pack();
 		JPanel jPanel = new JPanel();
@@ -62,10 +62,11 @@ public class AdminClient extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				SoAccount soAccount = new SoAccount();
 				soAccount.setAccount("admin");
-				soAccount.setPassword("123d56");
+				soAccount.setPassword("123456");
 				media.login(soAccount);
 			}
 		});
+		
 		upConfigButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
