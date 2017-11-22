@@ -15,6 +15,7 @@ import com.solar.client.net.MinaClient;
 import com.solar.client.net.NetConf;
 import com.solar.common.context.ConnectAPI;
 import com.solar.entity.SoAccount;
+import com.solar.entity.SoAppVersion;
 import com.solar.entity.SoDataServerInfo;
 import com.solar.entity.SoDevices;
 import com.solar.entity.SoWorkingMode;
@@ -213,7 +214,7 @@ public class HostClient extends MinaClient {
 
 	public void workingModeUpdate() {
 		SoWorkingMode workingMode = new SoWorkingMode();
-		
+
 		workingMode.setContinuous(false);
 		workingMode.setCreateBy(10000L);
 		workingMode.setEmergency(false);
@@ -227,6 +228,7 @@ public class HostClient extends MinaClient {
 
 	public void login(SoAccount account) {
 		String json = JsonUtilTool.toJson(account);
+		System.out.println(json);
 		send(ConnectAPI.LOGIN_COMMAND, json);
 	}
 
@@ -242,6 +244,11 @@ public class HostClient extends MinaClient {
 
 	public void runningMode() {
 		send(ConnectAPI.GET_WORKING_MODE_COMMAND, "");
+	}
+
+	public void queryAppVersion(SoAppVersion appVersion) {
+		String json = JsonUtilTool.toJson(appVersion);
+		send(ConnectAPI.APK_VERSION_QUERY_COMMAND, "");
 	}
 
 }

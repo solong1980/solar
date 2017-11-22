@@ -45,7 +45,7 @@ public class LoginCmdProcessor extends MsgProcessor implements INotAuthProcessor
 
 		if (null == dbAccount) {
 			account.setMsg(ErrorCode.Error_000003);
-			account.setRetCode(SoAccount.LOGIN_FAILURE);
+			account.setRetCode(SoAccount.FAILURE);
 			appSession.sendMsg(new AccountResponse(JsonUtilTool.toJson(account)));
 		} else if (dbAccount.getPassword().equals(md)) {
 			dbAccount.setMsg("登陆成功");
@@ -55,7 +55,7 @@ public class LoginCmdProcessor extends MsgProcessor implements INotAuthProcessor
 			appSession.sendMsg(new AccountResponse(JsonUtilTool.toJson(dbAccount)));
 		} else {
 			account.setMsg(ErrorCode.Error_000004);
-			account.setRetCode(SoAccount.LOGIN_FAILURE);
+			account.setRetCode(SoAccount.FAILURE);
 			appSession.sendMsg(new AccountResponse(JsonUtilTool.toJson(account)));
 		}
 	}

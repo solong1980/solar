@@ -18,12 +18,20 @@ public class ConnectAPI {
 	public static int GET_WORKING_MODE_COMMAND = 0x000004;
 	// 警告通知指令
 	public static int WARNNING_COMMAND = 0x000005;
+
 	// 升级指令
 	public static int APP_UPGRADE_COMMAND = 0x000006;
+
 	// 查询数据服务器地址
 	public static int DATA_SERVER_QUERY_COMMAND = 0x000007;
 	// 设备接入
 	public static int DEVICE_ACCESS_COMMAND = 0x000008;
+
+	// apk版本查询
+	public static int APK_VERSION_QUERY_COMMAND = 0x000009;
+
+	// 11开始
+
 	// 控制终端指令
 	public static int CTRL_COMMAND = 0x999999;
 
@@ -43,6 +51,8 @@ public class ConnectAPI {
 	public static final int DEVICES_ACCESS_RESPONSE = 0x100005;
 	// 查询数据服务器地址
 	public static final int DATA_SERVER_QUERY_RESPONSE = 0x100006;
+
+	public static final int APP_VERSION_QUERY_RESPONSE = 0x100009;
 	// 警告信息响应
 	public static final int WARNNING_RESPONSE = 0x100004;
 

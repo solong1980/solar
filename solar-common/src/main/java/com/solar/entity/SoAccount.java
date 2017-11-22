@@ -3,9 +3,6 @@ package com.solar.entity;
 @SuppressWarnings("serial")
 public class SoAccount extends SoAbtAuth {
 
-	public static final int LOGIN_SUCCESS = 0;
-	public static final int LOGIN_FAILURE = 1;
-
 	private Long id;
 	private String account;
 	private String password;

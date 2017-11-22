@@ -19,6 +19,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.SpinnerDateModel;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
@@ -37,29 +38,20 @@ public class RunningDataPanel extends BasePanel {
 		JPanel formPanel = new JPanel();
 		formPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		formPanel.setBorder(new TitledBorder("查询"));
-		JLabel timeRangeLabel = new JLabel("时间");
 
+		JLabel timeRangeLabel = new JLabel("时间");
 		JDatePicker startDatePicker = new JDatePicker();
 		JDatePicker endDatePicker = new JDatePicker();
-		JLabel nameLabel = new JLabel("姓名");
-		JTextField timeTextField = new JTextField("", 20);
+		JSpinner year = timeSpinner();
 
-		// 获得时间日期模型
-		SpinnerDateModel model = new SpinnerDateModel();
-		// 获得JSPinner对象
-		JSpinner year = new JSpinner(model);
-		year.setValue(new Date());
-		// 设置时间格式
-		JSpinner.DateEditor editor = new JSpinner.DateEditor(year, "yyyy-MM-dd HH:mm:ss");
-		year.setEditor(editor);
-		year.setBounds(34, 67, 219, 22);
+		JLabel custLabel = new JLabel("姓名");
+		JTextField custTextField = new JTextField("", 25);
 
-		JTextField nameTextField = new JTextField("", 25);
 		JCheckBox isValidCb = new JCheckBox("失效", false);
 		JButton queryButton = new JButton("查询");
 		queryButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent ae) {
-
+				
 			}
 		});
 
@@ -70,21 +62,20 @@ public class RunningDataPanel extends BasePanel {
 			}
 		});
 
-		JPanel buttons = new JPanel();
-		buttons.add(isValidCb);
-		buttons.add(queryButton);
-		buttons.add(printButton);
-
 		formPanel.add(timeRangeLabel);
 		formPanel.add(year);
 		formPanel.add(startDatePicker);
-
 		formPanel.add(endDatePicker);
 
-		formPanel.add(timeTextField);
-		formPanel.add(nameLabel);
-		formPanel.add(nameTextField);
-		formPanel.add(buttons);
+		formPanel.add(custLabel);
+		formPanel.add(custTextField);
+
+		JPanel buttonPanel = new JPanel();
+		buttonPanel.add(isValidCb);
+		buttonPanel.add(queryButton);
+		buttonPanel.add(printButton);
+		formPanel.add(buttonPanel);
+
 		add(formPanel, BorderLayout.NORTH);
 
 		// table
@@ -102,6 +93,19 @@ public class RunningDataPanel extends BasePanel {
 		pagionationPanel.add(comp);
 		pagionationPanel.add(comp2);
 		add(pagionationPanel, BorderLayout.SOUTH);
+	}
+
+	private JSpinner timeSpinner() {
+		// 获得时间日期模型
+		SpinnerDateModel model = new SpinnerDateModel();
+		// 获得JSPinner对象
+		JSpinner year = new JSpinner(model);
+		year.setValue(new Date());
+		// 设置时间格式
+		JSpinner.DateEditor editor = new JSpinner.DateEditor(year, "yyyy-MM-dd HH:mm:ss");
+		year.setEditor(editor);
+		year.setBounds(34, 67, 219, 22);
+		return year;
 	}
 
 	final int INITIAL_ROWHEIGHT = 33;
@@ -126,6 +130,8 @@ public class RunningDataPanel extends BasePanel {
 
 		// Create the table
 		tableView = new JTable(dataModel);
+		tableView.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+
 		TableRowSorter<TableModel> sorter = new TableRowSorter<>(dataModel);
 		tableView.setRowSorter(sorter);
 		tableView.setRowHeight(INITIAL_ROWHEIGHT);
@@ -133,6 +139,12 @@ public class RunningDataPanel extends BasePanel {
 		TableColumn column = tableView.getColumn("操作");
 		column.setCellRenderer(new ButtonGroupRenderer());
 		column.setCellEditor(new ButtonGroupEditor(new JCheckBox("")));
+
+		DefaultTableColumnModel cmodel = (DefaultTableColumnModel) tableView.getColumnModel();
+		for (int index = 0; index < cmodel.getColumnCount(); index++) {
+			column = cmodel.getColumn(index);
+			column.setPreferredWidth(100);
+		}
 
 		JScrollPane scrollpane = new JScrollPane(tableView);
 		return scrollpane;

@@ -3,6 +3,7 @@ package com.solar.gui.module.working;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -25,7 +26,7 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 @SuppressWarnings("serial")
-public class UserManagerPanel extends JPanel {
+public class UserManagerPanel extends BasePanel {
 	public UserManagerPanel() {
 		super();
 		setLayout(new BorderLayout());
@@ -116,10 +117,10 @@ class ButtonGroupRenderer extends JPanel implements TableCellRenderer {
 
 	public ButtonGroupRenderer() {
 		setOpaque(true);
-		delBtn = new JButton();
-		forbBtn = new JButton();
-		delBtn.setOpaque(true);
-		forbBtn.setOpaque(true);
+		delBtn = BasePanel.createTableButton("");
+		forbBtn = BasePanel.createTableButton("");
+
+		// delBtn.setPreferredSize(new Dimension(60, 25));
 		add(delBtn);
 		add(forbBtn);
 	}
@@ -155,8 +156,9 @@ class ButtonGroupEditor extends DefaultCellEditor {
 	public ButtonGroupEditor(JCheckBox checkBox) {
 		super(checkBox);
 		jPanel = new JPanel();
-		delBtn = new JButton();
-		forbBtn = new JButton();
+
+		delBtn = BasePanel.createTableButton("");
+		forbBtn = BasePanel.createTableButton("");
 		delBtn.setOpaque(true);
 		forbBtn.setOpaque(true);
 
@@ -220,6 +222,7 @@ class UserTableCellRenderer extends DefaultCellEditor implements TableCellRender
 		jPanel = new JPanel();
 		jPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
 		jButton = new JButton("启用");
+		jButton.setBounds(new Rectangle(0, 0, 30, 30));
 		jButton2 = new JButton("禁用");
 		jPanel.add(jButton);
 		jPanel.add(jButton2);

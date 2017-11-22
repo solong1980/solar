@@ -28,12 +28,15 @@ public class AdminClient extends JFrame {
 		JButton connectButton = new JButton("连接服务器");
 
 		JButton loginButton = new JButton("登陆");
-		JButton upConfigbutton = new JButton("更新配置");
+		JButton upConfigButton = new JButton("更新配置");
+
+		JButton appVersionButton = new JButton("版本信息");
 		JButton closeButton = new JButton("关闭");
 
 		jPanel.add(connectButton);
 		jPanel.add(loginButton);
-		jPanel.add(upConfigbutton);
+		jPanel.add(upConfigButton);
+		jPanel.add(appVersionButton);
 		jPanel.add(closeButton);
 
 		getContentPane().add(jPanel);
@@ -59,14 +62,21 @@ public class AdminClient extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				SoAccount soAccount = new SoAccount();
 				soAccount.setAccount("admin");
-				soAccount.setPassword("123456");
+				soAccount.setPassword("123d56");
 				media.login(soAccount);
 			}
 		});
-		upConfigbutton.addActionListener(new ActionListener() {
+		upConfigButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				media.sendUpdateConfig();
+			}
+		});
+
+		appVersionButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				media.queryAppVersion(10);
 			}
 		});
 
@@ -76,6 +86,7 @@ public class AdminClient extends JFrame {
 				media.close();
 			}
 		});
+
 	}
 
 	public static void main(String[] args) {

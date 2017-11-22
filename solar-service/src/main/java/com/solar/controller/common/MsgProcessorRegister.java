@@ -1,6 +1,7 @@
 package com.solar.controller.common;
 
 import com.solar.command.processor.AppUpgradeCmdProcessor;
+import com.solar.command.processor.AppVersionCmdProcessor;
 import com.solar.command.processor.DataServerInfoCmdProcessor;
 import com.solar.command.processor.DataUploadCmdProcessor;
 import com.solar.command.processor.DeviceAccessCmdProcessor;
@@ -12,12 +13,19 @@ import com.solar.common.context.ConnectAPI;
 
 public enum MsgProcessorRegister {
 	DATA_UPLOAD(ConnectAPI.DATA_UPLOAD_COMMAND, new DataUploadCmdProcessor()),
+
 	WORKING_MODE_UPDATE(ConnectAPI.WORKING_MODE_UPDATE_COMMAND, new WorkingModeUpdateCmdProcessor()),
+
 	GET_WORKING_MODE(ConnectAPI.GET_WORKING_MODE_COMMAND, new GetWorkingModeCmdProcessor()),
+
 	APP_UPGRADE_COMMAND(ConnectAPI.APP_UPGRADE_COMMAND, new AppUpgradeCmdProcessor()),
+
 	DATA_SERVER_INFO_COMMAND(ConnectAPI.DATA_SERVER_QUERY_COMMAND, new DataServerInfoCmdProcessor()),
 
+	APK_VERSION_QUERY_COMMAND(ConnectAPI.APK_VERSION_QUERY_COMMAND, new AppVersionCmdProcessor()),
+
 	LOGIN_COMMAND(ConnectAPI.LOGIN_COMMAND, new LoginCmdProcessor()),
+
 	DEVICE_ACCESS_COMMAND(ConnectAPI.DEVICE_ACCESS_COMMAND, new DeviceAccessCmdProcessor()),
 
 	// 内部使用，服务端通知客户端断开

@@ -5,6 +5,7 @@ import java.util.Observable;
 
 import com.solar.client.net.NetConf;
 import com.solar.entity.SoAccount;
+import com.solar.entity.SoAppVersion;
 import com.solar.entity.SoDataServerInfo;
 import com.solar.entity.SoDevices;
 
@@ -103,6 +104,13 @@ public class ObservableMedia extends Observable {
 
 	public void getConfig() {
 		hostClient.send(12, "");
+		setChanged();
+	}
+
+	public void queryAppVersion(int type) {
+		SoAppVersion appVersion = new SoAppVersion();
+		appVersion.setType(type);
+		hostClient.queryAppVersion(appVersion);
 		setChanged();
 	}
 }

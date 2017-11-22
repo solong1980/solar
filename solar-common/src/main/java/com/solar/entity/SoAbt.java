@@ -10,8 +10,11 @@ import java.io.Serializable;
  */
 @SuppressWarnings("serial")
 public abstract class SoAbt implements Serializable {
+	public static final int SUCCESS = 0;
+	public static final int FAILURE = 1;
+
 	// 业务响应码
-	private int retCode = 0;
+	private int retCode = SUCCESS;
 	// 提示信息
 	private String msg;
 
