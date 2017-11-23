@@ -41,4 +41,18 @@ public class SoAppVersionDao implements SoAppVersionMapper {
 		}
 	}
 
+	@Override
+	public void addNewVersion(SoAppVersion appVersion) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoAppVersionMapper mapper = sqlSession.getMapper(SoAppVersionMapper.class);
+			mapper.addNewVersion(appVersion);
+			sqlSession.commit();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
 }

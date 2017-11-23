@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.solar.db.dao.SoAppVersionMapper">
-	<resultMap id="BaseResultMap" type="com.solar.entity.SoAccount">
+	<resultMap id="BaseResultMap" type="com.solar.entity.SoAppVersion">
 		<id column="id" jdbcType="BIGINT" property="id" />
 		<result column="type" jdbcType="INTEGER" property="type" />
 		<result column="ver_no" jdbcType="VARCHAR" property="verNo" />
@@ -21,6 +21,30 @@
 		create_time
 	</sql>
 
+	<insert id="addNewVersion" parameterType="com.solar.entity.SoAppVersion"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO so_app_version
+		 (
+			ver_no,
+			type,
+			info,
+			path,
+			file_name
+		 )
+		 VALUES
+		 (
+			 (
+				SELECT verNo
+				FROM (
+				SELECT IFNULL(MAX(ver_no),0)+1 AS verNo
+				FROM so_app_version) AS t
+			 ),
+			 #{type},
+			 #{info},
+			 #{path},
+			 #{fileName}
+		 )
+	</insert>
 
 	<select id="selectById" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
@@ -32,7 +56,7 @@
 
 	<select id="selectLastVersion" parameterType="java.lang.Integer"
 		resultMap="BaseResultMap">
-		select * 
+		select
 		<include refid="Columns" />
 		from so_app_version where 
 		id = (select max(id) from so_app_version where type = #{type,jdbcType=INTEGER})

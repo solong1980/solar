@@ -32,4 +32,8 @@ public class SoAppVersionService {
 	public SoAppVersion selectLastAppVersion(int type) {
 		return appVersionDao.selectLastVersion(type);
 	}
+
+	public void addNewVersion(SoAppVersion appVersion) {
+		appVersionDao.addNewVersion(appVersion);
+	}
 }

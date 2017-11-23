@@ -1,0 +1,55 @@
+.wraper {
+}
+
+.btn-wraper {
+	text-align: center;
+}
+
+.btn-wraper input {
+	margin: 0 10px;
+}
+.wraper {
+     -webkit-border-radius: 0 !important;
+     -moz-border-radius: 0 !important;
+     border-radius: 0 !important;
+}
+#file-list{
+	width: 500px;
+}
+#file-list li {
+	margin-bottom: 10px;
+}
+
+.file-name {
+	line-height: 30px;
+}
+
+.progress {
+	margin: 0 auto 0 5px;
+	display:inline-block;
+	height: 4px;
+	font-size: 0;
+	line-height: 4px;
+	background: orange;
+	width: 0;
+}
+
+.progress-text {
+	margin: 0 auto 0 5px;
+	display:inline-block;
+	height: 24px;
+	font-size: 12px;
+	line-height: 28px;
+	background: orange;
+	width: 40px;
+}
+
+#drag-area {
+	border: 1px solid #ccc;
+	height: 80px;
+	line-height: 80px;
+	text-align: center;
+	color: #aaa;
+	width: 100%;
+	margin: 10px auto;
+}

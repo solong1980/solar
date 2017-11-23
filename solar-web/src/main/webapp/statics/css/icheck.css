@@ -1,0 +1,14 @@
+.typearea .checkbox,.typearea .radio{display: inline-block;*display: inline;*zoom:1;height: 24px; line-height: 24px; margin-right: 20px;}
+.typearea .checkbox ins,.typearea .radio ins{display: inline-block;*display: inline;*zoom:1; width: 23px; height: 22px; vertical-align: middle; background: url(http://www.bootcss.com/p/icheck/skins/square/blue.png) no-repeat; margin-right: 8px; -webkit-transition:all 0.1s linear; -moz-transition:all 0.1s linear; -o-transition:all 0.1s linear; -ms-transition:all 0.1s linear; transition:all 0.1s linear;vertical-align: middle;}
+.typearea .checkbox ins{background-position: 0px 0px; }
+.typearea .radio ins{background-position: -120px 0px; }
+.typearea .checkbox .hover{background-position: -24px 0px; }
+.typearea .checkbox .checked{background-position: -48px 0px; }
+.typearea .checkbox .enable{background-position: -96px 0px;}
+.typearea .checkbox .disabled{background-position: -72px 0px;}
+.typearea .radio .hover{background-position: -144px 0px;}
+.typearea .radio .checked{background-position: -168px 0px;}
+.typearea .radio .enable{background-position: -214px 0px;}
+.typearea .radio .disabled{background-position: -191px 0px;}
+.typearea .checkbox span,.radio span{display: inline-block;*display: inline;*zoom:1;vertical-align: middle; }
+.typearea {width: 550px; margin: auto auto;}

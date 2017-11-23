@@ -8,4 +8,6 @@ public interface SoAppVersionMapper {
 
 	SoAppVersion selectLastVersion(int type);
 
+	void addNewVersion(SoAppVersion appVersion);
+
 }

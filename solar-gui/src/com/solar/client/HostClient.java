@@ -10,6 +10,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Date;
 
+import com.solar.client.http.HttpClientDownloadFile;
 import com.solar.client.msg.ClientSendRequest;
 import com.solar.client.net.MinaClient;
 import com.solar.client.net.NetConf;
@@ -128,6 +129,14 @@ public class HostClient extends MinaClient {
 				break;
 			case ConnectAPI.GET_WORKING_MODE_RESPONSE:
 				workingMode = JsonUtilTool.fromJson(ret, SoWorkingMode.class);
+				break;
+			case ConnectAPI.APP_VERSION_QUERY_RESPONSE:
+				SoAppVersion appVersion = JsonUtilTool.fromJson(ret, SoAppVersion.class);
+				if (appVersion.getRetCode() == 0) {
+					Long id = appVersion.getId();
+					HttpClientDownloadFile clientDownloadFile = new HttpClientDownloadFile();
+					clientDownloadFile.upfile(id);
+				}
 				break;
 			default:
 				SoRet soRet = new SoRet();

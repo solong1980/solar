@@ -12,6 +12,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import com.solar.client.ObservableMedia;
+import com.solar.common.context.AppType;
 import com.solar.entity.SoAccount;
 
 public class AdminClient extends JFrame {
@@ -62,7 +63,7 @@ public class AdminClient extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				SoAccount soAccount = new SoAccount();
 				soAccount.setAccount("admin");
-				soAccount.setPassword("123456");
+				soAccount.setPassword("1233456");
 				media.login(soAccount);
 			}
 		});
@@ -77,7 +78,7 @@ public class AdminClient extends JFrame {
 		appVersionButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				media.queryAppVersion(10);
+				media.queryAppVersion(AppType.APK.type());
 			}
 		});
 
