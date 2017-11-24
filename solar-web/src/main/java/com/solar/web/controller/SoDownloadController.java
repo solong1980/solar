@@ -35,7 +35,6 @@ public class SoDownloadController {
 	 * 
 	 * @throws IOException
 	 */
-	@SuppressWarnings("deprecation")
 	@RequestMapping("/file/download/{id}")
 	public void download(@PathVariable("id") Long id, HttpServletRequest request, HttpServletResponse response)
 			throws IOException {

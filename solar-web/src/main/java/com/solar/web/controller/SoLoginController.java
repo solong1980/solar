@@ -9,11 +9,10 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.LockedAccountException;
-import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +31,9 @@ import com.solar.web.util.ShiroUtils;
  */
 @Controller
 public class SoLoginController {
+
+	private static final Logger logger = LoggerFactory.getLogger(SoLoginController.class);
+
 	@Autowired
 	private Producer producer;
 
@@ -62,7 +64,7 @@ public class SoLoginController {
 		// if(!captcha.equalsIgnoreCase(kaptcha)){
 		// return R.error("验证码不正确");
 		// }
-
+		logger.info("login from " + username);
 		try {
 			Subject subject = ShiroUtils.getSubject();
 			// sha256加密
@@ -72,16 +74,14 @@ public class SoLoginController {
 
 			UsernamePasswordToken token = new UsernamePasswordToken(username, password);
 			subject.login(token);
-		} catch (UnknownAccountException e) {
-			return R.error(e.getMessage());
-		} catch (IncorrectCredentialsException e) {
-			return R.error(e.getMessage());
-		} catch (LockedAccountException e) {
-			return R.error(e.getMessage());
 		} catch (AuthenticationException e) {
+			e.printStackTrace();
 			return R.error("账户验证失败");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return R.error(e.getMessage());
 		}
-
+		logger.info("login ok");
 		return R.ok();
 	}
 

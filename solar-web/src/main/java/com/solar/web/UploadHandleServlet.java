@@ -23,20 +23,27 @@ import com.solar.entity.SoAppVersion;
 @SuppressWarnings("serial")
 public class UploadHandleServlet extends HttpServlet {
 	private static final Logger logger = LoggerFactory.getLogger(UploadHandleServlet.class);
+	// 0 没问题，1 有问题
+	private static final int SUCC = 0;
+	private static final int ERROR = 1;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// 得到上传文件的保存目录，将上传的文件存放于WEB-INF目录下，不允许外界直接访问，保证上传文件的安全
-		String savePath = this.getServletContext().getRealPath("/WEB-INF/upload");
+		String usrHome = System.getProperty("user.home");
+
+		String savePath = this.getServletContext().getInitParameter("BASE_FILE_STORE_DIRECTORY");
+		savePath = usrHome + savePath + File.separator + "upgradefiles";
+
 		File file = new File(savePath);
 		// 判断上传文件的保存目录是否存在
 		if (!file.exists() && !file.isDirectory()) {
 			logger.info(savePath + " 目录不存在，需要创建");
 			// 创建目录
-			file.mkdir();
+			file.mkdirs();
 		}
 		// 消息提示
 		String message = "";
-		int success = 0;// 0 没问题，1 有问题
+		int success = SUCC;
 		SoAppVersion appVersion = new SoAppVersion();
 
 		try {
@@ -70,7 +77,7 @@ public class UploadHandleServlet extends HttpServlet {
 							message = "版本信息 不能为空!";
 						if (name.equals("type"))
 							message = "包类型 不能为空!";
-						success = 1;
+						success = ERROR;
 						break;
 					}
 					logger.info(name + "=" + value);
@@ -91,8 +98,12 @@ public class UploadHandleServlet extends HttpServlet {
 						// 注意：不同的浏览器提交的文件名是不一样的，有些浏览器提交上来的文件名是带有路径的，如：
 						// c:\a\b\1.txt，而有些只是单纯的文件名，如：1.txt
 						// 处理获取到的上传文件的文件名的路径部分，只保留文件名部分
-						filename = filename.substring(filename.lastIndexOf("\\") + 1);
-						String filePath = savePath + "\\" + filename;
+						if (filename.indexOf(File.separator) > 0) {
+							filename = filename.substring(filename.lastIndexOf(File.separator) + 1);
+						} else
+							filename = filename.substring(filename.lastIndexOf("\\") + 1);
+
+						String filePath = savePath + File.separator + filename;
 
 						appVersion.setFileName(filename);
 						appVersion.setPath(filePath);
@@ -108,9 +119,6 @@ public class UploadHandleServlet extends HttpServlet {
 						int len = 0;
 						// 循环将输入流读入到缓冲区当中，(len=in.read(buffer))>0就表示in里面还有数据
 						while ((len = in.read(buffer)) > 0) {
-							// 使用FileOutputStream输出流将缓冲区的数据写入到指定的目录(savePath +
-							// "\\"
-							// + filename)当中
 							out.write(buffer, 0, len);
 						}
 
@@ -128,16 +136,16 @@ public class UploadHandleServlet extends HttpServlet {
 				}
 			}
 		} catch (Exception e) {
-			success = 1;
+			success = ERROR;
 			message = "文件上传失败！";
 			e.printStackTrace();
 		}
 		if (message.isEmpty()) {
-			success = 1;
+			success = ERROR;
 			message = "请选择文件!";
 		}
 
-		if (success == 0) {
+		if (success == SUCC) {
 			// 保存新的版本
 			SoAppVersionService.getInstance().addNewVersion(appVersion);
 		}

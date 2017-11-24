@@ -15,7 +15,7 @@
 	
 	<context-param>
 		<param-name>BASE_FILE_STORE_DIRECTORY</param-name>
-		<param-value>/wedeal/filestore/</param-value>
+		<param-value>/application</param-value>
 	</context-param>
 	
 	<!-- classpath*:*-*.xml -->
