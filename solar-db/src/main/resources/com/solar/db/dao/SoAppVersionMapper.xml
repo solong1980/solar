@@ -33,12 +33,7 @@
 		 )
 		 VALUES
 		 (
-			 (
-				SELECT verNo
-				FROM (
-				SELECT IFNULL(MAX(ver_no),0)+1 AS verNo
-				FROM so_app_version) AS t
-			 ),
+			 #{verNo},
 			 #{type},
 			 #{info},
 			 #{path},

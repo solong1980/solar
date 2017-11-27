@@ -77,16 +77,29 @@ public class UploadHandleServlet extends HttpServlet {
 							message = "版本信息 不能为空!";
 						if (name.equals("type"))
 							message = "包类型 不能为空!";
+						if (name.equals("verNo"))
+							message = "版本号不能为空!";
+
 						success = ERROR;
 						break;
 					}
+
 					logger.info(name + "=" + value);
 
 					if (name.equals("info"))
 						appVersion.setInfo(value);
 					if (name.equals("type"))
 						appVersion.setType(Integer.parseInt(value));
-
+					if (name.equals("verNo")) {
+						try {
+							Integer verNo = Integer.parseInt(value);
+							appVersion.setVerNo(verNo);
+						} catch (Throwable t) {
+							message = "版本号必须为整数!";
+							success = ERROR;
+							break;
+						}
+					}
 				} else {
 					try {
 						String filename = item.getName();
@@ -146,8 +159,14 @@ public class UploadHandleServlet extends HttpServlet {
 		}
 
 		if (success == SUCC) {
-			// 保存新的版本
-			SoAppVersionService.getInstance().addNewVersion(appVersion);
+			try {
+				// 保存新的版本
+				SoAppVersionService.getInstance().addNewVersion(appVersion);
+			} catch (Exception e) {
+				e.printStackTrace();
+				success = ERROR;
+				message = "数据库操作异常,提交失败!";
+			}
 		}
 
 		request.setAttribute("success", success);

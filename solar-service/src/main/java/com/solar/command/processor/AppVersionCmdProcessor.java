@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 
 import com.solar.command.message.request.ClientRequest;
 import com.solar.command.message.response.AppVersionResponse;
-import com.solar.common.context.Consts;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.INotAuthProcessor;
 import com.solar.controller.common.MsgProcessor;
@@ -44,6 +43,10 @@ public class AppVersionCmdProcessor extends MsgProcessor implements INotAuthProc
 		if (lastAppVersion == null) {
 			lastAppVersion = new SoAppVersion();
 			lastAppVersion.setRetCode(SoAbt.FAILURE);
+		} else {
+			lastAppVersion.setFileName("");
+			lastAppVersion.setPath("");
+			lastAppVersion.setInfo("");
 		}
 		AppVersionResponse appVersionResponse = new AppVersionResponse(JsonUtilTool.toJson(lastAppVersion));
 		appSession.sendMsg(appVersionResponse);

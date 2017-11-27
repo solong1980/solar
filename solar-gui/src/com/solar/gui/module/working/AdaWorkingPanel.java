@@ -63,7 +63,9 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 				try {
 					observableMedia = ObservableMedia.getInstance();
 					observableMedia.addObserver(AdaWorkingPanel.this);
-				} catch (Exception e2) {
+				} catch (Throwable e2) {
+					ObservableMedia.class.getClassLoader().clearAssertionStatus();
+					System.out.println();
 					JOptionPane.showMessageDialog(parent, "连接失败", "错误", JOptionPane.ERROR_MESSAGE);
 				}
 				break;
