@@ -46,8 +46,7 @@ public class ObservableMedia extends Observable {
 		return Inner.observableMedia;
 	}
 
-	private ObservableMedia() {
-		super();
+	public void connect() {
 		// host connect
 		hostClient = new HostClient(this, NetConf.buildHostConf());
 		// Get data server info
@@ -64,6 +63,10 @@ public class ObservableMedia extends Observable {
 			}
 		}
 		hostClient.start();
+	}
+
+	private ObservableMedia() {
+		super();
 	}
 
 	public void close() {

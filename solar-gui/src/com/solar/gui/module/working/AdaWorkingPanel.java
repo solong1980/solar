@@ -46,7 +46,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 	private JMenuBar menuBar = null;
 	private JMenu fileMenu = null;
 
-	ObservableMedia observableMedia = null;
+	ObservableMedia observableMedia = ObservableMedia.getInstance();
 
 	class AdaAction extends AbstractAction {
 		private int operate;
@@ -61,11 +61,9 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 			switch (operate) {
 			case 1:
 				try {
-					observableMedia = ObservableMedia.getInstance();
+					observableMedia.connect();
 					observableMedia.addObserver(AdaWorkingPanel.this);
 				} catch (Throwable e2) {
-					ObservableMedia.class.getClassLoader().clearAssertionStatus();
-					System.out.println();
 					JOptionPane.showMessageDialog(parent, "连接失败", "错误", JOptionPane.ERROR_MESSAGE);
 				}
 				break;
