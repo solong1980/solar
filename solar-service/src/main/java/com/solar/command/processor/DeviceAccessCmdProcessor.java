@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import com.solar.command.message.request.ClientRequest;
 import com.solar.command.message.response.DeviceAccessResponse;
+import com.solar.common.annotation.ProcessCMD;
+import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.Consts;
 import com.solar.common.context.ErrorCode;
 import com.solar.common.util.JsonUtilTool;
@@ -19,6 +21,7 @@ import com.solar.server.commons.session.AppSession;
  * @author long lianghua
  *
  */
+@ProcessCMD(API_CODE = ConnectAPI.DEVICE_ACCESS_COMMAND)
 public class DeviceAccessCmdProcessor extends MsgProcessor implements INotAuthProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(DeviceAccessCmdProcessor.class);
 	private SoDevicesService devicesService;

@@ -1,6 +1,8 @@
 package com.solar.controller;
 
+import java.net.MalformedURLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.mina.core.session.IoSession;
@@ -9,6 +11,8 @@ import org.slf4j.LoggerFactory;
 
 import com.solar.command.message.request.ClientRequest;
 import com.solar.command.message.response.ErrorResponse;
+import com.solar.common.annotation.ProcessCMD;
+import com.solar.common.bean.BeanContextAdv;
 import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.Consts;
 import com.solar.common.context.ErrorCode;
@@ -33,6 +37,24 @@ public class MsgDispatcher {
 			processorsMap.put(register.getMsgCode(), register.getMsgProcessor());
 		}
 		logger.info("初始化 消息处理器成功。。。");
+	}
+
+	/**
+	 * 稍描processor类并注入
+	 */
+	@SuppressWarnings("unused")
+	private void processInject() {
+		BeanContextAdv adv = new BeanContextAdv();
+		try {
+			List<MsgProcessor> ts = adv.scan("com.solar.command.processor");
+			for (MsgProcessor msgProcessor : ts) {
+				ProcessCMD annotation = msgProcessor.getClass().getAnnotation(ProcessCMD.class);
+				int apiCode = annotation.API_CODE();
+				processorsMap.put(apiCode, msgProcessor);
+			}
+		} catch (MalformedURLException e) {
+			logger.error("scan process class error", e);
+		}
 	}
 
 	/**

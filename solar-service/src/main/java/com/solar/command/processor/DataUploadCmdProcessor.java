@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 
 import com.solar.command.message.request.ClientRequest;
 import com.solar.command.message.response.SuccessResponse;
+import com.solar.common.annotation.ProcessCMD;
+import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.Consts;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.INotAuthProcessor;
@@ -18,6 +20,7 @@ import com.solar.server.commons.session.AppSession;
  * @author long lianghua
  *
  */
+@ProcessCMD(API_CODE = ConnectAPI.DATA_UPLOAD_COMMAND)
 public class DataUploadCmdProcessor extends MsgProcessor implements INotAuthProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(DataUploadCmdProcessor.class);
 

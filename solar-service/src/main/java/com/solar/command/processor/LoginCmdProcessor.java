@@ -7,6 +7,8 @@ import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
 import com.solar.command.message.request.ClientRequest;
 import com.solar.command.message.response.AccountResponse;
+import com.solar.common.annotation.ProcessCMD;
+import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.ErrorCode;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.INotAuthProcessor;
@@ -20,6 +22,7 @@ import com.solar.server.commons.session.AppSession;
  * @author long lianghua
  *
  */
+@ProcessCMD(API_CODE = ConnectAPI.LOGIN_COMMAND)
 public class LoginCmdProcessor extends MsgProcessor implements INotAuthProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(LoginCmdProcessor.class);
 	private SoAccountService accountService;

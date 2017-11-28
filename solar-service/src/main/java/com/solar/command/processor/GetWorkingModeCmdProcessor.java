@@ -4,14 +4,16 @@ import com.solar.cache.SolarCache;
 import com.solar.command.message.request.ClientRequest;
 import com.solar.command.message.response.FailureResponse;
 import com.solar.command.message.response.GetWorkingModeResponse;
+import com.solar.common.annotation.ProcessCMD;
+import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.Consts;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.MsgProcessor;
 import com.solar.entity.SoAbtAuth;
-import com.solar.entity.SoAccount;
 import com.solar.entity.SoWorkingMode;
 import com.solar.server.commons.session.AppSession;
 
+@ProcessCMD(API_CODE = ConnectAPI.GET_WORKING_MODE_COMMAND)
 public class GetWorkingModeCmdProcessor extends MsgProcessor {
 	private SolarCache solarCache;
 

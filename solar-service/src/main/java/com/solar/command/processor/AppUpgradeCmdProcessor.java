@@ -2,9 +2,6 @@ package com.solar.command.processor;
 
 import java.io.File;
 
-import org.apache.mina.core.future.IoFuture;
-import org.apache.mina.core.future.IoFutureListener;
-import org.apache.mina.core.future.WriteFuture;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +9,8 @@ import com.google.common.io.ByteSource;
 import com.google.common.io.Files;
 import com.solar.command.message.request.ClientRequest;
 import com.solar.command.message.response.AppUpgradeFileResponse;
+import com.solar.common.annotation.ProcessCMD;
+import com.solar.common.context.ConnectAPI;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.INotAuthProcessor;
 import com.solar.controller.common.MsgProcessor;
@@ -23,9 +22,11 @@ import com.solar.server.commons.session.AppSession;
  * @author long lianghua
  *
  */
+@ProcessCMD(API_CODE = ConnectAPI.APP_UPGRADE_COMMAND)
 public class AppUpgradeCmdProcessor extends MsgProcessor implements INotAuthProcessor {
-	private static final String APP_UPGRADE_COMMAND = ":app upgrade command";
 	private static final Logger logger = LoggerFactory.getLogger(AppUpgradeCmdProcessor.class);
+
+	private static final String APP_UPGRADE_COMMAND = ":app upgrade command";
 
 	public AppUpgradeCmdProcessor() {
 	}
@@ -46,13 +47,6 @@ public class AppUpgradeCmdProcessor extends MsgProcessor implements INotAuthProc
 		byte[] read = asByteSource.read();
 		// 写 入响应
 		AppUpgradeFileResponse apkDataResponse = new AppUpgradeFileResponse(0, json, read);
-		WriteFuture sendMsg = appSession.sendMsg(apkDataResponse);
-		sendMsg.addListener(new IoFutureListener<IoFuture>() {
-
-			@Override
-			public void operationComplete(IoFuture future) {
-				System.out.println();
-			}
-		});
+		appSession.sendMsg(apkDataResponse);
 	}
 }

@@ -12,6 +12,7 @@ import com.solar.command.message.response.ErrorResponse;
 import com.solar.command.message.response.FailureResponse;
 import com.solar.command.message.response.GetWorkingModeResponse;
 import com.solar.command.message.response.SuccessResponse;
+import com.solar.common.annotation.ProcessCMD;
 import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.Consts;
 import com.solar.common.context.ErrorCode;
@@ -19,7 +20,6 @@ import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.MsgProcessor;
 import com.solar.db.services.SoWorkingModeService;
 import com.solar.entity.SoAbtAuth;
-import com.solar.entity.SoAccount;
 import com.solar.entity.SoWorkingMode;
 import com.solar.server.commons.session.AppSession;
 import com.solar.server.commons.session.AppSessionManager;
@@ -29,6 +29,7 @@ import com.solar.server.commons.session.AppSessionManager;
  * @author long lianghua
  *
  */
+@ProcessCMD(API_CODE = ConnectAPI.WORKING_MODE_UPDATE_COMMAND)
 public class WorkingModeUpdateCmdProcessor extends MsgProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(WorkingModeUpdateCmdProcessor.class);
 
