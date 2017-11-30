@@ -1,5 +1,6 @@
 package com.solar.gui.module.working;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.LayoutManager;
@@ -12,11 +13,13 @@ import java.net.URL;
 
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.SwingConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 @SuppressWarnings("serial")
@@ -66,8 +69,15 @@ public class BasePanel extends JPanel {
 		return btn;
 	}
 
-	public JScrollPane createTree() {
-		DefaultMutableTreeNode top = new DefaultMutableTreeNode(getBoldHTML("项目列表"));
+	public JPanel createTree() {
+		DefaultMutableTreeNode[] tops = new DefaultMutableTreeNode[2];
+
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+		tops[0] = new DefaultMutableTreeNode(getBoldHTML("太阳能污水处理系统"));
+		tops[1] = new DefaultMutableTreeNode(getBoldHTML("智能运维系统"));
+		root.add(tops[0]);
+		root.add(tops[1]);
+
 		DefaultMutableTreeNode catagory = null;
 		DefaultMutableTreeNode artist = null;
 		DefaultMutableTreeNode record = null;
@@ -88,17 +98,17 @@ public class BasePanel extends JPanel {
 				char linetype = line.charAt(0);
 				switch (linetype) {
 				case 'C':
-					catagory = new DefaultMutableTreeNode(line.substring(2));
-					top.add(catagory);
+					catagory = new DefaultMutableTreeNode("湖北");
+					tops[0].add(catagory);
 					break;
 				case 'A':
 					if (catagory != null) {
-						catagory.add(artist = new DefaultMutableTreeNode(line.substring(2)));
+						catagory.add(artist = new DefaultMutableTreeNode("湖南"));
 					}
 					break;
 				case 'R':
 					if (artist != null) {
-						artist.add(record = new DefaultMutableTreeNode(line.substring(2)));
+						artist.add(record = new DefaultMutableTreeNode("江西"));
 					}
 					break;
 				case 'S':
@@ -114,14 +124,18 @@ public class BasePanel extends JPanel {
 		} catch (IOException e) {
 		}
 
-		tree = new JTree(top) {
+		tree = new JTree(root) {
 			public Insets getInsets() {
 				return new Insets(5, 5, 5, 5);
 			}
 		};
+		tree.setRootVisible(false);
+		tree.setEditable(false);
 
-		tree.setEditable(true);
-
-		return new JScrollPane(tree);
+		JPanel jp = new JPanel();
+		jp.setLayout(new BorderLayout());
+		jp.add(new JLabel("项目列表", SwingConstants.CENTER), BorderLayout.NORTH);
+		jp.add(new JScrollPane(tree), BorderLayout.CENTER);
+		return jp;
 	}
 }

@@ -13,7 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import com.solar.client.ObservableMedia;
@@ -101,7 +100,7 @@ public class WorkerInfoPanel extends BasePanel {
 
 	public WorkerInfoPanel() {
 		super();
-		JScrollPane projectPanel = createTree();
+		JPanel projectPanel = createTree();
 		setLayout(new BorderLayout());
 		add(createToolBar(), BorderLayout.PAGE_START);
 		add(projectPanel, BorderLayout.WEST);

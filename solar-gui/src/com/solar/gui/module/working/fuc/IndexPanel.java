@@ -39,16 +39,16 @@ public class IndexPanel extends BasePanel {
 		dashPanel.setLayout(new BorderLayout());
 
 		JPanel northPanel = new JPanel();
-		northPanel.setLayout(new GridBagLayout());
+		northPanel.setLayout(new BorderLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.weightx = 0.0;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets = new Insets(1, 1, 1, 1);
-		northPanel.add(createGPSPanel(), gbc);
+		northPanel.add(createGPSPanel(), BorderLayout.WEST);
 		gbc.gridx++;
-		northPanel.add(createStatePanel(), gbc);
+		northPanel.add(createStatePanel(), BorderLayout.CENTER);
 
 		dashPanel.add(northPanel, BorderLayout.NORTH);
 		dashPanel.add(createInfoPanel(), BorderLayout.CENTER);
@@ -231,7 +231,7 @@ public class IndexPanel extends BasePanel {
 
 	public IndexPanel() {
 		super(new BorderLayout(5, 5));
-		JScrollPane projectPanel = createTree();
+		JPanel projectPanel = createTree();
 		JPanel dashPanel = createDashpanel();
 		add(projectPanel, BorderLayout.WEST);
 		dashPanel.setBorder(BorderFactory.createLineBorder(Color.RED));
