@@ -14,6 +14,7 @@ import java.util.Observer;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
+import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -30,9 +31,15 @@ import javax.swing.JTextField;
 import com.solar.client.JsonUtilTool;
 import com.solar.client.ObservableMedia;
 import com.solar.client.SoRet;
+import com.solar.common.context.ActionType;
 import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.RoleType;
 import com.solar.entity.SoAccount;
+import com.solar.gui.component.MultiComboBox;
+import com.solar.gui.module.working.fuc.IndexPanel;
+import com.solar.gui.module.working.fuc.ProjectDataPanel;
+import com.solar.gui.module.working.fuc.RunningReportPanel;
+import com.solar.gui.module.working.fuc.WorkerInfoPanel;
 
 @SuppressWarnings("serial")
 public class AdaWorkingPanel extends BasePanel implements ActionListener, Observer {
@@ -48,18 +55,20 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 
 	ObservableMedia observableMedia = ObservableMedia.getInstance();
 
+	private SoAccount account;
+
 	class AdaAction extends AbstractAction {
-		private int operate;
+		private ActionType operate;
 		private JComponent parent;
 
-		protected AdaAction(int operate, JComponent parent) {
+		protected AdaAction(ActionType operate, JComponent parent) {
 			super("AdaAction");
 			this.operate = operate;
 		}
 
 		public void actionPerformed(ActionEvent e) {
 			switch (operate) {
-			case 1:
+			case CONNECT:
 				try {
 					observableMedia.connect();
 					observableMedia.addObserver(AdaWorkingPanel.this);
@@ -67,14 +76,17 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 					JOptionPane.showMessageDialog(parent, "连接失败", "错误", JOptionPane.ERROR_MESSAGE);
 				}
 				break;
-			case 2:
+			case REGIEST:
+				registGUI();
+				break;
+			case LOGIN:
 				loginGUI();
 				break;
-			case 3:
+			case LOGOUT:
 				if (observableMedia != null)
 					observableMedia.close();
 				break;
-			case 4:
+			case EXIT:
 				if (observableMedia != null)
 					observableMedia.close();
 				System.exit(0);
@@ -85,22 +97,14 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		}
 	}
 
-	public JMenuItem createMenuItem(JMenu menu, String label, Action action) {
-		JMenuItem mi = (JMenuItem) menu.add(new JMenuItem(label));
-		mi.addActionListener(action);
-		if (action == null) {
-			mi.setEnabled(false);
-		}
-		return mi;
-	}
-
 	public JMenuBar createMenus() {
 		JMenuBar menuBar = new JMenuBar();
 		fileMenu = (JMenu) menuBar.add(new JMenu("开始"));
-		createMenuItem(fileMenu, "Connect", new AdaAction(1, this));
-		createMenuItem(fileMenu, "Login", new AdaAction(2, this));
-		createMenuItem(fileMenu, "Logout", new AdaAction(3, this));
-		createMenuItem(fileMenu, "Exit", new AdaAction(4, this));
+		createMenuItem(fileMenu, "连接", new AdaAction(ActionType.CONNECT, this));
+		createMenuItem(fileMenu, "注册", new AdaAction(ActionType.REGIEST, this));
+		createMenuItem(fileMenu, "登陆", new AdaAction(ActionType.LOGIN, this));
+		createMenuItem(fileMenu, "登出", new AdaAction(ActionType.LOGOUT, this));
+		createMenuItem(fileMenu, "退出", new AdaAction(ActionType.EXIT, this));
 		return menuBar;
 	}
 
@@ -108,9 +112,105 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		new AdaWorkingPanel(null);
 	}
 
+	private void registGUI() {
+		/*
+		 * 邮箱地址 用于找回用户信息 用户类型 （下拉复选框） 环保部门工作人员 系统运维人员 项目地址1 （下拉复选框）
+		 * 省市（地区）区（县市）街道（镇） 项目地址2 （下拉复选框） 省市（地区）区（县市）街道（镇） 项目地址3 （下拉复选框）
+		 * 省市（地区）区（县市）街道（镇） 环保局地址 （下拉复选框） 省市（地区）区（县市）街道（镇）
+		 */
+		JLabel nameLabel = new JLabel(getBoldHTML("用户姓名"));
+		JLabel phoneLabel = new JLabel(getBoldHTML("手机号码"));
+		JLabel emailLabel = new JLabel(getBoldHTML("邮箱地址"));
+		JLabel userTypeLabel = new JLabel(getBoldHTML("用户类型"));
+		JLabel projectAddr1Label = new JLabel(getBoldHTML("项目地址1"));
+		JLabel projectAddr2Label = new JLabel(getBoldHTML("项目地址2"));
+		JLabel projectAddr3Label = new JLabel(getBoldHTML("项目地址3"));
+		JLabel envAddrLabel = new JLabel(getBoldHTML("环保局地址"));
+
+		JComponent regiestPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		regiestPanel.add(nameLabel, gbc);
+		gbc.gridy++;
+		regiestPanel.add(phoneLabel, gbc);
+		gbc.gridy++;
+		regiestPanel.add(emailLabel, gbc);
+		gbc.gridy++;
+		regiestPanel.add(userTypeLabel, gbc);
+		gbc.gridy++;
+		regiestPanel.add(projectAddr1Label, gbc);
+		gbc.gridy++;
+		regiestPanel.add(projectAddr2Label, gbc);
+		gbc.gridy++;
+		regiestPanel.add(projectAddr3Label, gbc);
+		gbc.gridy++;
+		regiestPanel.add(envAddrLabel, gbc);
+
+		// admin,operator,cust_1,cust_2
+		JTextField nameField = new JTextField("");
+		JTextField phoneField = new JTextField("", 30);
+		JTextField emailField = new JTextField("");
+		JTextField userTypeField = new JTextField("", 10);
+
+		MultiComboBox projectAddr1Field = MultiComboBox.build();
+		MultiComboBox projectAddr2Field = MultiComboBox.build();
+		MultiComboBox projectAddr3Field = MultiComboBox.build();
+		MultiComboBox envAddrField = MultiComboBox.build();
+
+		gbc.gridx++;
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		regiestPanel.add(nameField, gbc);
+		gbc.gridy++;
+		regiestPanel.add(phoneField, gbc);
+		gbc.gridy++;
+		regiestPanel.add(emailField, gbc);
+		gbc.gridy++;
+		regiestPanel.add(userTypeField, gbc);
+		gbc.gridy++;
+		regiestPanel.add(projectAddr1Field, gbc);
+		gbc.gridy++;
+		regiestPanel.add(projectAddr2Field, gbc);
+		gbc.gridy++;
+		regiestPanel.add(projectAddr3Field, gbc);
+		gbc.gridy++;
+		regiestPanel.add(envAddrField, gbc);
+
+		JComponent[] message = new JComponent[4];
+		message[0] = regiestPanel;
+		String[] options = { "注册", "重置" };
+		int result = JOptionPane.showOptionDialog(this, message, "注册", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
+		switch (result) {
+		case 0: // yes
+			Thread td = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						
+					} catch (Exception e) {
+						JOptionPane.showMessageDialog(AdaWorkingPanel.this, "连接后台失败");
+					}
+				}
+			});
+			td.start();
+			break;
+		case 1: // no
+			break;
+		default:
+			break;
+		}
+	}
+
 	public void loginGUI() {
 		JLabel accountLabel = new JLabel(getBoldHTML("帐号"));
 		JLabel passwdLabel = new JLabel(getBoldHTML("密码"));
+		JLabel savePwdLabel = new JLabel(getBoldHTML(""));
 
 		JComponent loginPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -123,10 +223,13 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		loginPanel.add(accountLabel, gbc);
 		gbc.gridy++;
 		loginPanel.add(passwdLabel, gbc);
+		gbc.gridy++;
+		loginPanel.add(savePwdLabel, gbc);
 
 		// admin,operator,cust_1,cust_2
 		JTextField accountField = new JTextField("admin");
 		JTextField passwordField = new JPasswordField("123456", 10);
+		JCheckBox savePwdCheckBox = new JCheckBox("记录密码");
 
 		gbc.gridx++;
 		gbc.gridy = 0;
@@ -134,6 +237,8 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		loginPanel.add(accountField, gbc);
 		gbc.gridy++;
 		loginPanel.add(passwordField, gbc);
+		gbc.gridy++;
+		loginPanel.add(savePwdCheckBox, gbc);
 
 		JComponent[] message = new JComponent[4];
 		message[0] = loginPanel;
@@ -148,9 +253,10 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 					try {
 						String acc = accountField.getText();
 						String passwd = passwordField.getText();
-						SoAccount account = new SoAccount();
+						account = new SoAccount();
 						account.setAccount(acc);
 						account.setPassword(passwd);
+						account.setSavePwd(savePwdCheckBox.isSelected());
 						observableMedia.login(account);
 					} catch (Exception e) {
 						JOptionPane.showMessageDialog(AdaWorkingPanel.this, "连接后台失败");
@@ -168,14 +274,15 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 	}
 
 	public void singleFrame() {
-
 		JFrame frame = new JFrame("");
 		menuBar = createMenus();
 		frame.setJMenuBar(menuBar);
 
 		frame.getContentPane().setLayout(new BorderLayout());
 		frame.getContentPane().add(this, BorderLayout.CENTER);
-		this.setPreferredSize(new Dimension(800, 600));
+		//this.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
+		frame.setMinimumSize(new Dimension(800,600));
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
@@ -184,7 +291,11 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 
 	public AdaWorkingPanel(JComponent parent) {
 		super(new BorderLayout());
+		if (parent == null)
+			singleFrame();
+	}
 
+	private void addTabLayoutCtrlPanel() {
 		JPanel tabControls = new JPanel();
 		tabControls.add(new JLabel("Tab位置"));
 		top = (JRadioButton) tabControls.add(new JRadioButton("顶部"));
@@ -205,9 +316,6 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		bottom.addActionListener(this);
 		left.addActionListener(this);
 		right.addActionListener(this);
-
-		if (parent == null)
-			singleFrame();
 	}
 
 	public void actionPerformed(ActionEvent e) {
@@ -234,6 +342,11 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 					SoAccount account = JsonUtilTool.fromJson(ret.getRet(), SoAccount.class);
 					JOptionPane.showMessageDialog(this, account.getMsg());
 					RoleType roleType = RoleType.roleType(account.getRole());
+
+					Boolean savePwd = AdaWorkingPanel.this.account.getSavePwd();
+					if (savePwd) {
+						//
+					}
 					EventQueue.invokeLater(new Runnable() {
 						@Override
 						public void run() {
@@ -243,6 +356,19 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 
 							String tabName = "";
 
+							tabName = " 首页";
+							IndexPanel indexPanel = new IndexPanel();
+							tabbedpane.add(tabName, indexPanel);
+							
+							ProjectDataPanel projectDataPanel = new ProjectDataPanel();
+							tabbedpane.add("项目信息", projectDataPanel);
+							
+							WorkerInfoPanel workerInfoPanel = new WorkerInfoPanel();
+							tabbedpane.add("维护人员信息", workerInfoPanel);
+							
+							RunningReportPanel reportPanel = new RunningReportPanel();
+							tabbedpane.add("运行信息查询", reportPanel);
+							
 							RunningDataPanel runningDataPanel;
 							WorkingModeManagerPanel workingModeManagerPanel;
 							// create tab
