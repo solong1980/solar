@@ -20,7 +20,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 
 @SuppressWarnings("serial")
-public class MultiPopup extends JPopupMenu {
+public class MultiComboBoxPopup extends JPopupMenu {
 	private List<ActionListener> listeners = new ArrayList<ActionListener>();
 	// private Object[] values;
 	private Object[] defaultValues;
@@ -39,7 +39,7 @@ public class MultiPopup extends JPopupMenu {
 	public static final String COMMIT_EVENT = "commit";
 	public static final String CANCEL_EVENT = "cancel";
 
-	public MultiPopup(Map<Long, Object> valueMap, Object[] defaultValue) {
+	public MultiComboBoxPopup(Map<Long, Object> valueMap, Object[] defaultValue) {
 		super();
 		this.valueMap = valueMap;
 		defaultValues = defaultValue;

@@ -30,24 +30,28 @@ import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicArrowButton;
 
 @SuppressWarnings("serial")
-public class MultiComboBox extends JPanel {
-	private Map<Long, Object> values;
+public class MultiTree extends JPanel {
+
+	private Map<String, Object> values;
+
 	public Object[] defaultValues;
-	public List<Long> selectedKeys;
+
+	public List<String> selectedKeys;
+
 	private List<ActionListener> listeners = new ArrayList<ActionListener>();
 
-	private MultiComboBoxPopup popup;
+	private MultiTreePopup popup;
 	private JTextField editor;
 
 	protected JButton arrowButton;
 	private String valueSperator;
 	private static final String DEFAULT_VALUE_SPERATOR = ",";
 
-	public MultiComboBox(Map<Long, Object> value, Object[] defaultValue) {
+	public MultiTree(Map<String, Object> value, Object[] defaultValue) {
 		this(value, defaultValue, DEFAULT_VALUE_SPERATOR);
 	}
 
-	public MultiComboBox(Map<Long, Object> value, Object[] defaultValue, String valueSperator) {
+	public MultiTree(Map<String, Object> value, Object[] defaultValue, String valueSperator) {
 		this.values = value;
 		defaultValues = defaultValue;
 		this.valueSperator = valueSperator;
@@ -57,8 +61,8 @@ public class MultiComboBox extends JPanel {
 	private void initComponent() { // 暂时使用该布局,后续自己写个布局
 		this.setLayout(new FlowLayout());
 		// this.setBackground(Color.LIGHT_GRAY);
-		popup = new MultiComboBoxPopup(values, defaultValues);
-		popup.addActionListener(new CheckboxPopupAction());
+		popup = new MultiTreePopup(values, defaultValues);
+		popup.addActionListener(new PopupAction());
 		editor = new JTextField();
 		editor.setBackground(Color.WHITE);
 		editor.setEditable(false);
@@ -92,10 +96,10 @@ public class MultiComboBox extends JPanel {
 		}
 	}
 
-	private class CheckboxPopupAction implements ActionListener {
+	private class PopupAction implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			if (e.getActionCommand().equals(MultiComboBoxPopup.CANCEL_EVENT)) {
-			} else if (e.getActionCommand().equals(MultiComboBoxPopup.COMMIT_EVENT)) {
+			if (e.getActionCommand().equals(MultiTreePopup.CANCEL_EVENT)) {
+			} else if (e.getActionCommand().equals(MultiTreePopup.COMMIT_EVENT)) {
 				defaultValues = popup.getSelectedValues();
 				selectedKeys = popup.getSelectedKeys();
 				setText(); // 把事件继续传递出去
@@ -192,85 +196,39 @@ public class MultiComboBox extends JPanel {
 		}
 	}
 
-	public void addMultCombox(JComponent component, Map<Long, Object> values, Object[] defaultValues) {
-		MultiComboBox mulit = new MultiComboBox(values, defaultValues);
+	public void addMultCombox(JComponent component, Map<String, Object> values, Object[] defaultValues) {
+		MultiTree mulit = new MultiTree(values, defaultValues);
 		component.add(mulit);
 	}
 
-	public List<Long> getSelectedKeys() {
+	public List<String> getSelectedKeys() {
 		return selectedKeys;
 	}
 
-	public static MultiComboBox build() {
-		Map<Long, Object> values = new HashMap<Long, Object>() {
+	public static MultiTree build() {
+		Map<String, Object> values = new HashMap<String, Object>() {
 			{
-				put(-1L, "全选");
-				put(0L, "Al-Jazeera");
-				put(1L, "BBC News");
-				put(2L, "Daily Mail");
-				put(3L, "Fox News");
-				put(4L, "New York Daily News");
-				put(5L, "New York Times");
-				put(6L, "the Guardian");
-				put(7L, "Wall Street Journal");
-				put(10L, "Al-Jazeera");
-				put(11L, "BBC News");
-				put(12L, "Daily Mail");
-				put(13L, "Fox News");
-				put(14L, "New York Daily News");
-				put(15L, "New York Times");
-				put(16L, "the Guardian");
-				put(17L, "Wall Street Journal");
-				put(20L, "Al-Jazeera");
-				put(21L, "BBC News");
-				put(22L, "Daily Mail");
-				put(23L, "Fox News");
-				put(24L, "New York Daily News");
-				put(25L, "New York Times");
-				put(26L, "the Guardian");
-				put(27L, "Wall Street Journal");
-				put(30L, "Al-Jazeera");
-				put(31L, "BBC News");
-				put(32L, "Daily Mail");
-				put(33L, "Fox News");
-				put(34L, "New York Daily News");
-				put(35L, "New York Times");
-				put(36L, "the Guardian");
-				put(37L, "Wall Street Journal");
-				put(40L, "Al-Jazeera");
-				put(41L, "BBC News");
-				put(42L, "Daily Mail");
-				put(43L, "Fox News");
-				put(44L, "New York Daily News");
-				put(45L, "New York Times");
-				put(46L, "the Guardian");
-				put(47L, "Wall Street Journal");
+				put("110000", "北京市");
+				put("120000", "天津市");
 			}
 		};
 
 		Object[] defaultValue = new String[] {};
-		MultiComboBox mulit = new MultiComboBox(values, defaultValue);
+		MultiTree mulit = new MultiTree(values, defaultValue);
 		return mulit;
 	}
 
 	public static void main(String[] args) {
 		JLabel label3 = new JLabel("Media Outlets:");
-		Map<Long, Object> values = new HashMap<Long, Object>() {
+		Map<String, Object> values = new HashMap<String, Object>() {
 			{
-				put(-1L, "全选");
-				put(0L, "Al-Jazeera");
-				put(1L, "BBC News");
-				put(2L, "Daily Mail");
-				put(3L, "Fox News");
-				put(4L, "New York Daily News");
-				put(5L, "New York Times");
-				put(6L, "the Guardian");
-				put(7L, "Wall Street Journal");
+				put("110000", "北京市");
+				put("120000", "天津市");
 			}
 		};
 
 		Object[] defaultValue = new String[] {};
-		MultiComboBox mulit = new MultiComboBox(values, defaultValue);
+		MultiTree mulit = new MultiTree(values, defaultValue);
 		JFrame frame = new JFrame("CheckBoxTreeDemo");
 		frame.setBounds(200, 200, 400, 400);
 		frame.getContentPane().add(label3);

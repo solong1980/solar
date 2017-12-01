@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 import com.solar.client.ObservableMedia;
 import com.solar.common.context.ActionType;
 import com.solar.gui.component.MultiComboBox;
+import com.solar.gui.component.MultiTree;
 import com.solar.gui.module.working.BasePanel;
 
 @SuppressWarnings("serial")
@@ -63,7 +64,8 @@ public class ProjectDataPanel extends BasePanel {
 
 		// admin,operator,cust_1,cust_2
 		JTextField nameField = new JTextField("");
-		MultiComboBox addrField = MultiComboBox.build();
+		MultiTree addrField = MultiTree.build();
+		
 		MultiComboBox equipmentField = MultiComboBox.build();
 		MultiComboBox capabilityField = MultiComboBox.build();
 		MultiComboBox emissionStandardsField = MultiComboBox.build();

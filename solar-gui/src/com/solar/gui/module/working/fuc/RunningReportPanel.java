@@ -8,14 +8,21 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import com.solar.gui.module.working.BasePanel;
+import com.solar.gui.module.working.chart.RealTimeChart;
+import com.solar.gui.module.working.chart.RunningLineChart;
 
 @SuppressWarnings("serial")
 public class RunningReportPanel extends BasePanel {
 
 	public JTabbedPane createReportPanel() {
 		JTabbedPane jTabbedPane = new JTabbedPane();
-		jTabbedPane.add("太阳能发电量", new JPanel());
-		jTabbedPane.add("电池剩余电量", new JPanel());
+		JPanel sumPowerPanel = RunningLineChart.createDemoPanel();
+		jTabbedPane.add("太阳能发电量", sumPowerPanel);
+		
+		RealTimeChart elecPanel = new RealTimeChart("电力剩余", "时间", "数值");
+		jTabbedPane.add("电池剩余电量",elecPanel);
+		(new Thread(elecPanel)).start();
+		
 		jTabbedPane.add("风机消耗电能", new JPanel());
 		jTabbedPane.add("水泵消耗电能", new JPanel());
 		jTabbedPane.add("电池温度", new JPanel());
