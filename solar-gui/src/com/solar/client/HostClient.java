@@ -19,6 +19,7 @@ import com.solar.entity.SoAccount;
 import com.solar.entity.SoAppVersion;
 import com.solar.entity.SoDataServerInfo;
 import com.solar.entity.SoDevices;
+import com.solar.entity.SoProject;
 import com.solar.entity.SoWorkingMode;
 
 public class HostClient extends MinaClient {
@@ -258,6 +259,12 @@ public class HostClient extends MinaClient {
 	public void queryAppVersion(SoAppVersion appVersion) {
 		String json = JsonUtilTool.toJson(appVersion);
 		send(ConnectAPI.APK_VERSION_QUERY_COMMAND, json);
+	}
+
+	public void saveProject(SoProject soProject) {
+		String json = JsonUtilTool.toJson(soProject);
+		System.out.println(json);
+		send(ConnectAPI.PROJECT_ADD_COMMAND, json);
 	}
 
 }

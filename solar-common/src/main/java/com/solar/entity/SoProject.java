@@ -1,6 +1,7 @@
 package com.solar.entity;
 
 import java.util.Date;
+import java.util.List;
 
 @SuppressWarnings("serial")
 public class SoProject extends SoAbtAuth {
@@ -18,7 +19,7 @@ public class SoProject extends SoAbtAuth {
 	public static final int PROJ_CAP_100 = 100;
 
 	// 设备种配置(10.风机 20.水泵 30.控制器 40.太阳能板 50.电池)
-	// 排放标准 10.一级 A,  20.一级 B
+	// 排放标准 10.一级 A, 20.一级 B
 	public static final int ES_A = 10;
 	public static final int ES_B = 20;
 
@@ -26,9 +27,9 @@ public class SoProject extends SoAbtAuth {
 	private String projectName;
 	private int type;
 	private int capability;
-	private int devConfiure;
+	private List<SoDevConfig> devConfiures;
 	private int emissionStandards;
-	private int locationId;
+	private String locationId;
 	private String street;
 	private String workerName;
 	private String workerPhone;
@@ -66,12 +67,12 @@ public class SoProject extends SoAbtAuth {
 		this.capability = capability;
 	}
 
-	public int getDevConfiure() {
-		return devConfiure;
+	public List<SoDevConfig> getDevConfiures() {
+		return devConfiures;
 	}
 
-	public void setDevConfiure(int devConfiure) {
-		this.devConfiure = devConfiure;
+	public void setDevConfiures(List<SoDevConfig> devConfiures) {
+		this.devConfiures = devConfiures;
 	}
 
 	public int getEmissionStandards() {
@@ -82,11 +83,11 @@ public class SoProject extends SoAbtAuth {
 		this.emissionStandards = emissionStandards;
 	}
 
-	public int getLocationId() {
+	public String getLocationId() {
 		return locationId;
 	}
 
-	public void setLocationId(int locationId) {
+	public void setLocationId(String locationId) {
 		this.locationId = locationId;
 	}
 

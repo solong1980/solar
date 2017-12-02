@@ -12,7 +12,6 @@ import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -20,7 +19,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
@@ -362,6 +360,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 							
 							ProjectDataPanel projectDataPanel = new ProjectDataPanel();
 							tabbedpane.add("项目信息", projectDataPanel);
+							observableMedia.addObserver(projectDataPanel);
 							
 							WorkerInfoPanel workerInfoPanel = new WorkerInfoPanel();
 							tabbedpane.add("维护人员信息", workerInfoPanel);
@@ -410,12 +409,6 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 				}
 				break;
 			default:
-				EventQueue.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						JOptionPane.showConfirmDialog(AdaWorkingPanel.this, "消息返回");
-					}
-				});
 				break;
 			}
 		}

@@ -35,6 +35,10 @@ public class ConnectAPI {
 	public static final int ADDR_CITIES_QUERY_COMMAND = 0x000012;
 	public static final int ADDR_AREAS_QUERY_COMMAND = 0x000013;
 
+	public static final int PROJECT_ADD_COMMAND = 0x000014;
+	public static final int PROJECT_UPDATE_COMMAND = 0x000015;
+	public static final int PROJECT_DELETE_COMMAND = 0x000016;
+
 	// 控制终端指令
 	public static final int CTRL_COMMAND = 0x999999;
 
@@ -62,5 +66,9 @@ public class ConnectAPI {
 	public static final int ADDR_PROVINCES_QUERY_RESPONSE = 0x100011;
 	public static final int ADDR_CITIES_QUERY_RESPONSE = 0x100012;
 	public static final int ADDR_AREAS_QUERY_RESPONSE = 0x100013;
+
+	public static final int PROJECT_ADD_RESPONSE = 0x100014;
+	public static final int PROJECT_UPDATE_RESPONSE = 0x100015;
+	public static final int PROJECT_DELETE_RESPONSE = 0x100016;
 
 }

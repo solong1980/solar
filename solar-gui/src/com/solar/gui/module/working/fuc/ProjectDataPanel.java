@@ -1,11 +1,13 @@
 package com.solar.gui.module.working.fuc;
 
 import java.awt.BorderLayout;
+import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.util.List;
+import java.util.Observer;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -14,11 +16,17 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.solar.client.JsonUtilTool;
 import com.solar.client.ObservableMedia;
+import com.solar.client.SoRet;
 import com.solar.common.context.ActionType;
+import com.solar.common.context.ConnectAPI;
+import com.solar.common.context.Consts;
+import com.solar.entity.SoAbt;
 import com.solar.entity.SoDevConfig;
 import com.solar.entity.SoProject;
 import com.solar.gui.component.AddressTreeField;
@@ -27,7 +35,7 @@ import com.solar.gui.component.model.TreeAddr;
 import com.solar.gui.module.working.BasePanel;
 
 @SuppressWarnings("serial")
-public class ProjectDataPanel extends BasePanel {
+public class ProjectDataPanel extends BasePanel implements Observer {
 
 	private SoProject soProject;
 	private JTextField nameField;
@@ -210,19 +218,64 @@ public class ProjectDataPanel extends BasePanel {
 				soProject = new SoProject();
 				break;
 			case PROJECT_NEW_SUBMIT:
+				String name = nameField.getText();
+				int typeIndex = projectTypeField.getSelectedIndex();
+				int projectType = Consts.PROJECT_TYPE[typeIndex];
+
 				List<TreeAddr> selectedAddress = addressField.getSelectedKeys();
 				if (selectedAddress == null || selectedAddress.isEmpty()) {
 
 				}
-				List<SoDevConfig> devConfigs = equipmentField.getSelectedKeys();
+				TreeAddr treeAddr = selectedAddress.get(0);
+				String locationId = treeAddr.getKey();
+				String street = streetField.getText();
+				int emissionStandardIdx = emissionStandardsField.getSelectedIndex();
+				int emissionStandard = Consts.EMISSION_STANDARDS[emissionStandardIdx];
 
-				streetField.setText("");
-				emissionStandardsField.setSelectedItem(null);
-				capabilityField.setSelectedItem(null);
-				equipmentField.cleanSelected();
-				workerNameField.setText("");
-				workerContactField.setText("");
+				int capabilityIdx = capabilityField.getSelectedIndex();
+				int cap = Consts.CAPS[capabilityIdx];
+
+				List<SoDevConfig> devConfigs = equipmentField.getSelectedKeys();
+				String workerName = workerNameField.getText();
+				String workerPhone = workerContactField.getText();
+
 				soProject = new SoProject();
+				soProject.setProjectName(name);
+				soProject.setType(projectType);
+				soProject.setLocationId(locationId);
+				soProject.setStreet(street);
+				soProject.setEmissionStandards(emissionStandard);
+				soProject.setCapability(cap);
+				soProject.setDevConfiures(devConfigs);
+				soProject.setWorkerName(workerName);
+				soProject.setWorkerName(workerPhone);
+				instance.saveProject(soProject);
+				break;
+			default:
+				break;
+			}
+		}
+	}
+
+	@Override
+	public void update(java.util.Observable o, Object arg) {
+		if (arg instanceof SoRet) {
+			SoRet ret = (SoRet) arg;
+			int code = ret.getCode();
+			int status = ret.getStatus();
+			if (status == 0) {
+				SoAbt soAbt = JsonUtilTool.fromJson(ret.getRet(), SoAbt.class);
+				EventQueue.invokeLater(new Runnable() {
+					@Override
+					public void run() {
+						JOptionPane.showMessageDialog(ProjectDataPanel.this, soAbt.getMsg());
+					}
+				});
+			} else {
+				JOptionPane.showMessageDialog(this, ret.getRet());
+			}
+			switch (code) {
+			case ConnectAPI.PROJECT_ADD_RESPONSE:
 				break;
 			default:
 				break;

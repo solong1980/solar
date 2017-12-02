@@ -8,6 +8,7 @@ import com.solar.entity.SoAccount;
 import com.solar.entity.SoAppVersion;
 import com.solar.entity.SoDataServerInfo;
 import com.solar.entity.SoDevices;
+import com.solar.entity.SoProject;
 
 public class ObservableMedia extends Observable {
 	HostClient hostClient = null;
@@ -114,6 +115,11 @@ public class ObservableMedia extends Observable {
 		SoAppVersion appVersion = new SoAppVersion();
 		appVersion.setType(type);
 		hostClient.queryAppVersion(appVersion);
+		setChanged();
+	}
+
+	public void saveProject(SoProject soProject) {
+		hostClient.saveProject(soProject);
 		setChanged();
 	}
 }
