@@ -17,4 +17,9 @@ public class Consts {
 		AREA,
 		STREET;
 	}
+
+	public static enum DevInfoType {
+		DEV_TYPE,
+		DEV_CONFIG,
+	}
 }

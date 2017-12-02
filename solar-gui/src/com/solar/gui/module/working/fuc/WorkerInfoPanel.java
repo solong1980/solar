@@ -110,24 +110,24 @@ public class WorkerInfoPanel extends BasePanel {
 	public JMenuBar createToolBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu editorMenu = (JMenu) menuBar.add(new JMenu("项目管理 &"));
-		createMenuItem(editorMenu, "新增", new EditorAction(ActionType.PROJECT_NEW, this));
-		createMenuItem(editorMenu, "修改", new EditorAction(ActionType.PROJECT_UPDATE, this));
-		createMenuItem(editorMenu, "删除", new EditorAction(ActionType.PROJECT_DELETE, this));
+		createMenuItem(editorMenu, "新增", new WorkerAction(ActionType.PROJECT_NEW, this));
+		createMenuItem(editorMenu, "修改", new WorkerAction(ActionType.PROJECT_UPDATE, this));
+		createMenuItem(editorMenu, "删除", new WorkerAction(ActionType.PROJECT_DELETE, this));
 		return menuBar;
 	}
-}
 
-class WorkerAction extends AbstractAction {
-	private static final long serialVersionUID = -6048630218852730717L;
-	private ActionType operate;
-	private JComponent parent;
+	class WorkerAction extends AbstractAction {
+		private static final long serialVersionUID = -6048630218852730717L;
+		private ActionType operate;
+		private JComponent parent;
 
-	protected WorkerAction(ActionType operate, JComponent parent) {
-		super("AdaAction");
-		this.operate = operate;
-	}
+		protected WorkerAction(ActionType operate, JComponent parent) {
+			super("AdaAction");
+			this.operate = operate;
+		}
 
-	public void actionPerformed(ActionEvent e) {
-		ObservableMedia instance = ObservableMedia.getInstance();
+		public void actionPerformed(ActionEvent e) {
+			ObservableMedia instance = ObservableMedia.getInstance();
+		}
 	}
 }

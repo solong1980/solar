@@ -5,9 +5,11 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -17,20 +19,40 @@ import javax.swing.JTextField;
 
 import com.solar.client.ObservableMedia;
 import com.solar.common.context.ActionType;
-import com.solar.gui.component.MultiComboBox;
-import com.solar.gui.component.MultiTree;
+import com.solar.entity.SoDevConfig;
+import com.solar.entity.SoProject;
+import com.solar.gui.component.AddressTreeField;
+import com.solar.gui.component.DeviceTreeField;
+import com.solar.gui.component.model.TreeAddr;
 import com.solar.gui.module.working.BasePanel;
 
 @SuppressWarnings("serial")
 public class ProjectDataPanel extends BasePanel {
 
+	private SoProject soProject;
+	private JTextField nameField;
+	private JComboBox<String> projectTypeField;
+	private AddressTreeField addressField;
+	private JTextField streetField;
+	private JComboBox<String> emissionStandardsField;
+	private DeviceTreeField equipmentField;
+	private JComboBox<String> capabilityField;
+
+	private JTextField workerNameField;
+	private JTextField workerContactField;
+
 	public JPanel createEditor() {
 		//
 		JLabel titleLable = new JLabel(getBoldHTML("项目信息更改"), JLabel.CENTER);
 		JLabel nameLabel = new JLabel(getBoldHTML("项目名称"));
+
+		JLabel projectTypeLabel = new JLabel(getBoldHTML("项目类别"));
+
 		JLabel addrLabel = new JLabel(getBoldHTML("项目地址"));
-		JLabel equipmentLabel = new JLabel(getBoldHTML("设备列表"));
+		JLabel streetLabel = new JLabel(getBoldHTML("街道"));
+
 		JLabel capabilityLabel = new JLabel(getBoldHTML("设计处理量"));
+		JLabel equipmentLabel = new JLabel(getBoldHTML("设备列表"));
 		JLabel emissionStandardsLabel = new JLabel(getBoldHTML("排放标准"));
 		JLabel workerNameLabel = new JLabel(getBoldHTML("运维人员姓名"));
 		JLabel workerContactLabel = new JLabel(getBoldHTML("运维人员联系方式"));
@@ -50,11 +72,15 @@ public class ProjectDataPanel extends BasePanel {
 		gbc.gridy++;
 		editorPanel.add(nameLabel, gbc);
 		gbc.gridy++;
+		editorPanel.add(projectTypeLabel, gbc);
+		gbc.gridy++;
 		editorPanel.add(addrLabel, gbc);
 		gbc.gridy++;
-		editorPanel.add(equipmentLabel, gbc);
+		editorPanel.add(streetLabel, gbc);
 		gbc.gridy++;
 		editorPanel.add(capabilityLabel, gbc);
+		gbc.gridy++;
+		editorPanel.add(equipmentLabel, gbc);
 		gbc.gridy++;
 		editorPanel.add(emissionStandardsLabel, gbc);
 		gbc.gridy++;
@@ -62,26 +88,51 @@ public class ProjectDataPanel extends BasePanel {
 		gbc.gridy++;
 		editorPanel.add(workerContactLabel, gbc);
 
-		// admin,operator,cust_1,cust_2
-		JTextField nameField = new JTextField("");
-		MultiTree addrField = MultiTree.build();
-		
-		MultiComboBox equipmentField = MultiComboBox.build();
-		MultiComboBox capabilityField = MultiComboBox.build();
-		MultiComboBox emissionStandardsField = MultiComboBox.build();
-		JTextField workerNameField = new JTextField("", 30);
-		JTextField workerContactField = new JTextField("", 30);
+		nameField = new JTextField("");
+		// 设计处理量
+		projectTypeField = new JComboBox<>();
+		String[] projectTypes = new String[] { "太阳能污水处理系统", "智能运维系统" };
+		for (int i = 0; i < projectTypes.length; i++) {
+			projectTypeField.addItem(projectTypes[i]);
+		}
+
+		addressField = AddressTreeField.build();
+		streetField = new JTextField();
+		// 设计处理量
+		capabilityField = new JComboBox<>();
+		String[] cabs = new String[] { "5D/T", "10D/T", "20D/T", "30D/T", "50D/T", "80D/T", "100D/T" };
+		for (int i = 0; i < cabs.length; i++) {
+			capabilityField.addItem(cabs[i]);
+		}
+
+		equipmentField = DeviceTreeField.build();
+
+		// 排放标准
+		String[] emises = new String[] { "一级A", "一级B" };
+		// MultiComboBox emissionStandardsField = MultiComboBox.build();
+		emissionStandardsField = new JComboBox<>();
+		for (int i = 0; i < emises.length; i++) {
+			emissionStandardsField.addItem(emises[i]);
+		}
+
+		workerNameField = new JTextField("", 30);
+		workerContactField = new JTextField("", 30);
 
 		gbc.gridx++;
 		gbc.gridy = 1;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		editorPanel.add(nameField, gbc);
 		gbc.gridy++;
-		editorPanel.add(addrField, gbc);
+		editorPanel.add(projectTypeField, gbc);
+
 		gbc.gridy++;
-		editorPanel.add(equipmentField, gbc);
+		editorPanel.add(addressField, gbc);
+		gbc.gridy++;
+		editorPanel.add(streetField, gbc);
 		gbc.gridy++;
 		editorPanel.add(capabilityField, gbc);
+		gbc.gridy++;
+		editorPanel.add(equipmentField, gbc);
 		gbc.gridy++;
 		editorPanel.add(emissionStandardsField, gbc);
 		gbc.gridy++;
@@ -91,7 +142,7 @@ public class ProjectDataPanel extends BasePanel {
 
 		gbc.gridx++;
 		int tmp = gbc.gridy;
-		gbc.gridy = 2;
+		gbc.gridy = 3;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		editorPanel.add(new JButton("地图"), gbc);
 
@@ -101,7 +152,9 @@ public class ProjectDataPanel extends BasePanel {
 		gpc.insets = new Insets(1, 15, 1, 15);
 		gpc.gridy = 0;
 		gpc.gridx = 0;
-		jPanel.add(new JButton("提交"), gpc);
+		JButton submitBtn = new JButton("提交");
+		submitBtn.addActionListener(new EditorAction(ActionType.PROJECT_NEW_SUBMIT, this));
+		jPanel.add(submitBtn, gpc);
 		gpc.gridx = 1;
 		jPanel.add(new JButton("取消"), gpc);
 
@@ -130,19 +183,50 @@ public class ProjectDataPanel extends BasePanel {
 		createMenuItem(editorMenu, "删除", new EditorAction(ActionType.PROJECT_DELETE, this));
 		return menuBar;
 	}
-}
 
-class EditorAction extends AbstractAction {
-	private static final long serialVersionUID = -6048630218852730717L;
-	private ActionType operate;
-	private JComponent parent;
+	class EditorAction extends AbstractAction {
+		private static final long serialVersionUID = -6048630218852730717L;
+		private ActionType operate;
+		private JComponent parent;
 
-	protected EditorAction(ActionType operate, JComponent parent) {
-		super("AdaAction");
-		this.operate = operate;
-	}
+		protected EditorAction(ActionType operate, JComponent parent) {
+			super("AdaAction");
+			this.operate = operate;
+		}
 
-	public void actionPerformed(ActionEvent e) {
-		ObservableMedia instance = ObservableMedia.getInstance();
+		public void actionPerformed(ActionEvent e) {
+			ObservableMedia instance = ObservableMedia.getInstance();
+			switch (operate) {
+			case PROJECT_NEW:
+				nameField.setText("");
+				projectTypeField.setSelectedItem(null);
+				addressField.cleanSelected();
+				streetField.setText("");
+				emissionStandardsField.setSelectedItem(null);
+				capabilityField.setSelectedItem(null);
+				equipmentField.cleanSelected();
+				workerNameField.setText("");
+				workerContactField.setText("");
+				soProject = new SoProject();
+				break;
+			case PROJECT_NEW_SUBMIT:
+				List<TreeAddr> selectedAddress = addressField.getSelectedKeys();
+				if (selectedAddress == null || selectedAddress.isEmpty()) {
+
+				}
+				List<SoDevConfig> devConfigs = equipmentField.getSelectedKeys();
+
+				streetField.setText("");
+				emissionStandardsField.setSelectedItem(null);
+				capabilityField.setSelectedItem(null);
+				equipmentField.cleanSelected();
+				workerNameField.setText("");
+				workerContactField.setText("");
+				soProject = new SoProject();
+				break;
+			default:
+				break;
+			}
+		}
 	}
 }

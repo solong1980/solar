@@ -9,22 +9,19 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
-import javax.swing.LookAndFeel;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import com.solar.client.DataClient;
@@ -33,15 +30,15 @@ import com.solar.common.context.Consts.AddrType;
 import com.solar.entity.SoAreas;
 import com.solar.entity.SoCities;
 import com.solar.entity.SoProvinces;
+import com.solar.gui.component.model.TreeAddr;
 
 @SuppressWarnings("serial")
-public class MultiTreePopup extends JPopupMenu {
+public class AddressTreePopup extends JPopupMenu {
 	private List<ActionListener> listeners = new ArrayList<ActionListener>();
-	// private Object[] values;
-	private Object[] defaultValues;
 
-	private List<String> selectedKeys = new ArrayList<String>();
+	private List<TreeAddr> selectedKeys = new ArrayList<TreeAddr>(1);
 
+	private List<DefaultMutableTreeNode> selectedNodes = new ArrayList<DefaultMutableTreeNode>(1);
 	private DataClient dataClient = new DataClient(NetConf.buildHostConf());
 
 	private JButton commitButton;
@@ -49,9 +46,8 @@ public class MultiTreePopup extends JPopupMenu {
 	public static final String COMMIT_EVENT = "commit";
 	public static final String CANCEL_EVENT = "cancel";
 
-	public MultiTreePopup(Map<String, Object> valueMap, Object[] defaultValue) {
+	public AddressTreePopup(Map<String, Object> valueMap, Object[] defaultValue) {
 		super();
-		defaultValues = defaultValue;
 		initComponent();
 	}
 
@@ -65,12 +61,17 @@ public class MultiTreePopup extends JPopupMenu {
 			listeners.remove(listener);
 	}
 
+	public void cleanSelected() {
+		selectedNodes.clear();
+		selectedKeys.clear();
+	}
+
 	public JPanel createTree() {
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
 		List<SoProvinces> provinces = dataClient.getProvinces();
 		for (SoProvinces soProvinces : provinces) {
 			DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(
-					new TreeO(AddrType.PROVINCE, soProvinces.getProvinceid(), soProvinces.getProvince()));
+					new TreeAddr(AddrType.PROVINCE, soProvinces.getProvinceid(), soProvinces.getProvince()));
 			root.add(node1);
 		}
 
@@ -85,13 +86,12 @@ public class MultiTreePopup extends JPopupMenu {
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
-				Object source = e.getSource();
 				TreePath path = e.getPath();
 				DefaultMutableTreeNode lastNode = (DefaultMutableTreeNode) path.getLastPathComponent();
 				if (lastNode.getChildCount() > 0) {
 					return;
 				}
-				TreeO userObject = (TreeO) lastNode.getUserObject();
+				TreeAddr userObject = (TreeAddr) lastNode.getUserObject();
 				AddrType addrType = userObject.getAddrType();
 				switch (addrType) {
 				case PROVINCE:
@@ -99,7 +99,7 @@ public class MultiTreePopup extends JPopupMenu {
 					List<SoCities> citiesIn = dataClient.getCitiesIn(key);
 					for (SoCities soCities : citiesIn) {
 						lastNode.add(new DefaultMutableTreeNode(
-								new TreeO(AddrType.CITY, soCities.getCityid(), soCities.getCity())));
+								new TreeAddr(AddrType.CITY, soCities.getCityid(), soCities.getCity())));
 					}
 					break;
 				case CITY:
@@ -107,8 +107,12 @@ public class MultiTreePopup extends JPopupMenu {
 					List<SoAreas> areasIn = dataClient.getAreasIn(key);
 					for (SoAreas areas : areasIn) {
 						lastNode.add(new DefaultMutableTreeNode(
-								new TreeO(AddrType.AREA, areas.getAreaid(), areas.getArea(), true)));
+								new TreeAddr(AddrType.AREA, areas.getAreaid(), areas.getArea(), true)));
 					}
+					break;
+				case AREA:
+					selectedNodes.clear();
+					selectedNodes.add(lastNode);
 					break;
 				default:
 					break;
@@ -116,11 +120,10 @@ public class MultiTreePopup extends JPopupMenu {
 				System.out.println(paramString());
 			}
 		});
-
 		JPanel jp = new JPanel();
 		jp.setLayout(new BorderLayout());
-		jp.add(new JLabel("项目列表", SwingConstants.CENTER), BorderLayout.NORTH);
-		jp.add(new JScrollPane(tree), BorderLayout.CENTER);
+		jp.add(new JLabel("项目地址", SwingConstants.CENTER), BorderLayout.NORTH);
+		jp.add(tree, BorderLayout.CENTER);
 		return jp;
 	}
 
@@ -154,15 +157,6 @@ public class MultiTreePopup extends JPopupMenu {
 		this.add(buttonPane, BorderLayout.SOUTH);
 	}
 
-	private boolean selected(Object v) {
-		for (Object dv : defaultValues) {
-			if (dv.equals(v)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	protected void fireActionPerformed(ActionEvent e) {
 		for (ActionListener l : listeners) {
 			l.actionPerformed(e);
@@ -172,15 +166,31 @@ public class MultiTreePopup extends JPopupMenu {
 	public Object[] getSelectedValues() {
 		List<Object> selectedValues = new ArrayList<Object>();
 		selectedKeys.clear();
+
+		for (DefaultMutableTreeNode mutableTreeNode : selectedNodes) {
+			TreeAddr sn = (TreeAddr) mutableTreeNode.getUserObject();
+			selectedKeys.add(sn);
+
+			StringBuilder sb = new StringBuilder();
+			TreeNode[] path = mutableTreeNode.getPath();
+			for (TreeNode treeNode : path) {
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeNode;
+				if (node.getUserObject().toString().equals("root"))
+					continue;
+				TreeAddr treeAddr = (TreeAddr) node.getUserObject();
+				sb.append(treeAddr.getValue()).append("->");
+			}
+			System.out.println(sb);
+			selectedValues.add(sb);
+		}
 		return selectedValues.toArray(new Object[selectedValues.size()]);
 	}
 
-	public List<String> getSelectedKeys() {
+	public List<TreeAddr> getSelectedKeys() {
 		return selectedKeys;
 	}
 
 	public void setDefaultValue(Object[] defaultValue) {
-		defaultValues = defaultValue;
 	}
 
 	public void commit() {
@@ -198,53 +208,9 @@ public class MultiTreePopup extends JPopupMenu {
 		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
 				boolean leaf, int row, boolean hasFocus) {
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-			TreeO userObject = (TreeO) node.getUserObject();
+			TreeAddr userObject = (TreeAddr) node.getUserObject();
 			leaf = leaf && userObject.isArea();
 			return super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
-		}
-
-	}
-
-	class TreeO {
-		private String key;
-		private Object value;
-		private boolean isArea = false;
-		private AddrType addrType;
-
-		public TreeO(AddrType addrType, String key, Object object, boolean isArea) {
-			super();
-			this.addrType = addrType;
-			this.key = key;
-			this.value = object;
-			this.isArea = isArea;
-		}
-
-		public AddrType getAddrType() {
-			return addrType;
-		}
-
-		public TreeO(AddrType addrType, String key, Object object) {
-			super();
-			this.addrType = addrType;
-			this.key = key;
-			this.value = object;
-		}
-
-		public boolean isArea() {
-			return isArea;
-		}
-
-		public void setArea(boolean isArea) {
-			this.isArea = isArea;
-		}
-
-		public String getKey() {
-			return this.key;
-		}
-
-		@Override
-		public String toString() {
-			return this.value.toString();
 		}
 
 	}

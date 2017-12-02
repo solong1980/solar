@@ -10,6 +10,7 @@ public enum ActionType {
 	EXIT,
 
 	PROJECT_NEW,
+	PROJECT_NEW_SUBMIT,
 	PROJECT_UPDATE,
 	PROJECT_DELETE;
 }

@@ -22,51 +22,54 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicArrowButton;
 
+import com.solar.gui.component.model.TreeAddr;
+
 @SuppressWarnings("serial")
-public class MultiTree extends JPanel {
+public class AddressTreeField extends JPanel {
 
 	private Map<String, Object> values;
 
 	public Object[] defaultValues;
 
-	public List<String> selectedKeys;
+	public List<TreeAddr> selectedKeys;
 
 	private List<ActionListener> listeners = new ArrayList<ActionListener>();
 
-	private MultiTreePopup popup;
+	private AddressTreePopup popup;
 	private JTextField editor;
 
 	protected JButton arrowButton;
 	private String valueSperator;
 	private static final String DEFAULT_VALUE_SPERATOR = ",";
 
-	public MultiTree(Map<String, Object> value, Object[] defaultValue) {
+	public AddressTreeField(Map<String, Object> value, Object[] defaultValue) {
 		this(value, defaultValue, DEFAULT_VALUE_SPERATOR);
 	}
 
-	public MultiTree(Map<String, Object> value, Object[] defaultValue, String valueSperator) {
+	public AddressTreeField(Map<String, Object> value, Object[] defaultValue, String valueSperator) {
 		this.values = value;
 		defaultValues = defaultValue;
 		this.valueSperator = valueSperator;
 		initComponent();
 	}
 
+	public void cleanSelected() {
+		editor.setText("");
+		popup.cleanSelected();
+	}
+
 	private void initComponent() { // 暂时使用该布局,后续自己写个布局
 		this.setLayout(new FlowLayout());
-		// this.setBackground(Color.LIGHT_GRAY);
-		popup = new MultiTreePopup(values, defaultValues);
+		popup = new AddressTreePopup(values, defaultValues);
 		popup.addActionListener(new PopupAction());
-		editor = new JTextField();
+		editor = new JTextField("", 35);
 		editor.setBackground(Color.WHITE);
 		editor.setEditable(false);
-		editor.setPreferredSize(new Dimension(350, 20)); //
 		editor.setBorder(BorderFactory.createLineBorder(Color.BLUE));
 		editor.addMouseListener(new EditorHandler());
 		arrowButton = createArrowButton();
@@ -98,8 +101,8 @@ public class MultiTree extends JPanel {
 
 	private class PopupAction implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
-			if (e.getActionCommand().equals(MultiTreePopup.CANCEL_EVENT)) {
-			} else if (e.getActionCommand().equals(MultiTreePopup.COMMIT_EVENT)) {
+			if (e.getActionCommand().equals(AddressTreePopup.CANCEL_EVENT)) {
+			} else if (e.getActionCommand().equals(AddressTreePopup.COMMIT_EVENT)) {
 				defaultValues = popup.getSelectedValues();
 				selectedKeys = popup.getSelectedKeys();
 				setText(); // 把事件继续传递出去
@@ -160,8 +163,33 @@ public class MultiTree extends JPanel {
 	}
 
 	public void paintComponent(Graphics g) {
-		g.setColor(Color.LIGHT_GRAY);
-		g.fillRect(0, 0, getWidth(), getHeight());
+		super.paintComponent(g);
+		// g.setColor(Color.LIGHT_GRAY);
+		// g.fillRect(0, 0, getWidth(), getHeight());
+	}
+
+	@Override
+	public Dimension getPreferredSize() {
+		Dimension dCheck = arrowButton.getPreferredSize();
+		Dimension dLabel = editor.getPreferredSize();
+		return new Dimension(dCheck.width + dLabel.width,
+				dCheck.height < dLabel.height ? dLabel.height : dCheck.height);
+	}
+
+	@Override
+	public void doLayout() {
+		Dimension dCheck = editor.getPreferredSize();
+		Dimension dLabel = arrowButton.getPreferredSize();
+		int yCheck = 0;
+		int yLabel = 0;
+		if (dCheck.height < dLabel.height)
+			yCheck = (dLabel.height - dCheck.height) / 2;
+		else
+			yLabel = (dCheck.height - dLabel.height) / 2;
+		editor.setLocation(0, yCheck);
+		editor.setBounds(0, yCheck, dCheck.width, dCheck.height);
+		arrowButton.setLocation(dCheck.width, yLabel);
+		arrowButton.setBounds(dCheck.width, yLabel, dLabel.width, dLabel.height);
 	}
 
 	protected JButton createArrowButton() {
@@ -197,43 +225,21 @@ public class MultiTree extends JPanel {
 	}
 
 	public void addMultCombox(JComponent component, Map<String, Object> values, Object[] defaultValues) {
-		MultiTree mulit = new MultiTree(values, defaultValues);
+		AddressTreeField mulit = new AddressTreeField(values, defaultValues);
 		component.add(mulit);
 	}
 
-	public List<String> getSelectedKeys() {
+	public List<TreeAddr> getSelectedKeys() {
 		return selectedKeys;
 	}
 
-	public static MultiTree build() {
+	public static AddressTreeField build() {
 		Map<String, Object> values = new HashMap<String, Object>() {
-			{
-				put("110000", "北京市");
-				put("120000", "天津市");
-			}
 		};
 
 		Object[] defaultValue = new String[] {};
-		MultiTree mulit = new MultiTree(values, defaultValue);
+		AddressTreeField mulit = new AddressTreeField(values, defaultValue);
 		return mulit;
 	}
 
-	public static void main(String[] args) {
-		JLabel label3 = new JLabel("Media Outlets:");
-		Map<String, Object> values = new HashMap<String, Object>() {
-			{
-				put("110000", "北京市");
-				put("120000", "天津市");
-			}
-		};
-
-		Object[] defaultValue = new String[] {};
-		MultiTree mulit = new MultiTree(values, defaultValue);
-		JFrame frame = new JFrame("CheckBoxTreeDemo");
-		frame.setBounds(200, 200, 400, 400);
-		frame.getContentPane().add(label3);
-		frame.getContentPane().add(mulit);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setVisible(true);
-	}
 }
