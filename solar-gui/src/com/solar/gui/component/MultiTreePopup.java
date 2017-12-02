@@ -27,6 +27,13 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 
+import com.solar.client.DataClient;
+import com.solar.client.net.NetConf;
+import com.solar.common.context.Consts.AddrType;
+import com.solar.entity.SoAreas;
+import com.solar.entity.SoCities;
+import com.solar.entity.SoProvinces;
+
 @SuppressWarnings("serial")
 public class MultiTreePopup extends JPopupMenu {
 	private List<ActionListener> listeners = new ArrayList<ActionListener>();
@@ -35,8 +42,7 @@ public class MultiTreePopup extends JPopupMenu {
 
 	private List<String> selectedKeys = new ArrayList<String>();
 
-	// key content map
-	private Map<String, Object> valueMap = null;
+	private DataClient dataClient = new DataClient(NetConf.buildHostConf());
 
 	private JButton commitButton;
 	private JButton cancelButton;
@@ -45,7 +51,6 @@ public class MultiTreePopup extends JPopupMenu {
 
 	public MultiTreePopup(Map<String, Object> valueMap, Object[] defaultValue) {
 		super();
-		this.valueMap = valueMap;
 		defaultValues = defaultValue;
 		initComponent();
 	}
@@ -62,16 +67,10 @@ public class MultiTreePopup extends JPopupMenu {
 
 	public JPanel createTree() {
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
-		for (Map.Entry<String, Object> object : valueMap.entrySet()) {
-			DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(new TreeO(object.getKey(), object.getValue()));
-			for (int i = 0; i < 2; i++) {
-				DefaultMutableTreeNode node2 = new DefaultMutableTreeNode(
-						new TreeO(object.getKey(), object.getValue()));
-				for (int j = 0; j < 2; j++) {
-					node2.add(new DefaultMutableTreeNode(new TreeO("1" + j, "马" + j, true)));
-				}
-				node1.add(node2);
-			}
+		List<SoProvinces> provinces = dataClient.getProvinces();
+		for (SoProvinces soProvinces : provinces) {
+			DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(
+					new TreeO(AddrType.PROVINCE, soProvinces.getProvinceid(), soProvinces.getProvince()));
 			root.add(node1);
 		}
 
@@ -89,9 +88,31 @@ public class MultiTreePopup extends JPopupMenu {
 				Object source = e.getSource();
 				TreePath path = e.getPath();
 				DefaultMutableTreeNode lastNode = (DefaultMutableTreeNode) path.getLastPathComponent();
-				
-				lastNode.add(new DefaultMutableTreeNode(new TreeO("121", "家家")));
-				
+				if (lastNode.getChildCount() > 0) {
+					return;
+				}
+				TreeO userObject = (TreeO) lastNode.getUserObject();
+				AddrType addrType = userObject.getAddrType();
+				switch (addrType) {
+				case PROVINCE:
+					String key = userObject.getKey();
+					List<SoCities> citiesIn = dataClient.getCitiesIn(key);
+					for (SoCities soCities : citiesIn) {
+						lastNode.add(new DefaultMutableTreeNode(
+								new TreeO(AddrType.CITY, soCities.getCityid(), soCities.getCity())));
+					}
+					break;
+				case CITY:
+					key = userObject.getKey();
+					List<SoAreas> areasIn = dataClient.getAreasIn(key);
+					for (SoAreas areas : areasIn) {
+						lastNode.add(new DefaultMutableTreeNode(
+								new TreeO(AddrType.AREA, areas.getAreaid(), areas.getArea(), true)));
+					}
+					break;
+				default:
+					break;
+				}
 				System.out.println(paramString());
 			}
 		});
@@ -188,16 +209,23 @@ public class MultiTreePopup extends JPopupMenu {
 		private String key;
 		private Object value;
 		private boolean isArea = false;
+		private AddrType addrType;
 
-		public TreeO(String key, Object object, boolean isArea) {
+		public TreeO(AddrType addrType, String key, Object object, boolean isArea) {
 			super();
+			this.addrType = addrType;
 			this.key = key;
 			this.value = object;
 			this.isArea = isArea;
 		}
 
-		public TreeO(String key, Object object) {
+		public AddrType getAddrType() {
+			return addrType;
+		}
+
+		public TreeO(AddrType addrType, String key, Object object) {
 			super();
+			this.addrType = addrType;
 			this.key = key;
 			this.value = object;
 		}
