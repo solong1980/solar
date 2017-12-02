@@ -50,5 +50,9 @@
 		<mapper resource="com/solar/db/dao/SoRunningDataMapper.xml" />
 		<mapper resource="com/solar/db/dao/SoWorkingModeMapper.xml" />
 		<mapper resource="com/solar/db/dao/SoAppVersionMapper.xml" />
+		
+		<mapper resource="com/solar/db/dao/SoProvincesMapper.xml" />
+		<mapper resource="com/solar/db/dao/SoCitiesMapper.xml" />
+		<mapper resource="com/solar/db/dao/SoAreasMapper.xml" />
 	</mappers>
 </configuration>

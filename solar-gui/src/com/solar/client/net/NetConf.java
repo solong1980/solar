@@ -2,7 +2,7 @@ package com.solar.client.net;
 
 public class NetConf {
 	//123.56.76.77
-	public static final String HOST_IP_ADDR = "123.56.76.77";// 服务器地址
+	public static final String HOST_IP_ADDR = "localhost";// 服务器地址
 	public static final int HOST_PORT = 10122;// 服务器端口号
 
 	private String dataServerIP;

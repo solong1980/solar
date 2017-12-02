@@ -31,6 +31,9 @@ public class ConnectAPI {
 	public static final int APK_VERSION_QUERY_COMMAND = 0x000009;
 
 	// 11开始
+	public static final int ADDR_PROVINCES_QUERY_COMMAND = 0x000011;
+	public static final int ADDR_CITIES_QUERY_COMMAND = 0x000012;
+	public static final int ADDR_AREAS_QUERY_COMMAND = 0x000013;
 
 	// 控制终端指令
 	public static final int CTRL_COMMAND = 0x999999;
@@ -55,5 +58,9 @@ public class ConnectAPI {
 	public static final int APP_VERSION_QUERY_RESPONSE = 0x100009;
 	// 警告信息响应
 	public static final int WARNNING_RESPONSE = 0x100004;
+
+	public static final int ADDR_PROVINCES_QUERY_RESPONSE = 0x100011;
+	public static final int ADDR_CITIES_QUERY_RESPONSE = 0x100012;
+	public static final int ADDR_AREAS_QUERY_RESPONSE = 0x100013;
 
 }

@@ -5,6 +5,9 @@ import com.solar.command.processor.AppVersionCmdProcessor;
 import com.solar.command.processor.DataServerInfoCmdProcessor;
 import com.solar.command.processor.DataUploadCmdProcessor;
 import com.solar.command.processor.DeviceAccessCmdProcessor;
+import com.solar.command.processor.GetAreasCmdProcessor;
+import com.solar.command.processor.GetCitiesCmdProcessor;
+import com.solar.command.processor.GetProvincesCmdProcessor;
 import com.solar.command.processor.GetWorkingModeCmdProcessor;
 import com.solar.command.processor.LoginCmdProcessor;
 import com.solar.command.processor.OpenAppMsgProcessor;
@@ -28,6 +31,10 @@ public enum MsgProcessorRegister {
 
 	DEVICE_ACCESS_COMMAND(ConnectAPI.DEVICE_ACCESS_COMMAND, new DeviceAccessCmdProcessor()),
 
+	ADDR_PROVINCES_QUERY_COMMAND(ConnectAPI.ADDR_PROVINCES_QUERY_COMMAND, new GetProvincesCmdProcessor()),
+	ADDR_CITIES_QUERY_COMMAND(ConnectAPI.ADDR_CITIES_QUERY_COMMAND, new GetCitiesCmdProcessor()),
+	ADDR_AREAS_QUERY_COMMAND(ConnectAPI.ADDR_AREAS_QUERY_COMMAND, new GetAreasCmdProcessor()),
+	
 	// 内部使用，服务端通知客户端断开
 	EMPYTCOMMAND(ConnectAPI.ZERO_RESPONSE, new OpenAppMsgProcessor());
 

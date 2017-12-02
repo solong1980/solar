@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solar.db.dao.SoAreasMapper">
+	<resultMap id="BaseResultMap" type="com.solar.entity.SoAreas">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="areaid" jdbcType="VARCHAR" property="areaid" />
+		<result column="area" jdbcType="VARCHAR" property="area" />
+		<result column="cityid" jdbcType="VARCHAR" property="cityid" />
+	</resultMap>
+
+	<sql id="Columns">
+		id,
+		areaid,
+		area,
+		cityid
+	</sql>
+
+	<select id="selectById" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Columns" />
+		from areas
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+
+	<select id="selectByCityId" resultMap="BaseResultMap" parameterType="java.lang.String">
+		select
+		<include refid="Columns" />
+		from areas
+		where cityid=#{cityid,jdbcType=VARCHAR}
+	</select>
+
+</mapper>

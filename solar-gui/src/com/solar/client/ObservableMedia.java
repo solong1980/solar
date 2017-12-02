@@ -77,7 +77,7 @@ public class ObservableMedia extends Observable {
 		// data connect
 		DataClient dataClient = new DataClient(hostClient.getDataServerNetConf());
 		// send & receive & close
-		dataClient.dataUpload();
+		// dataClient.dataUpload();
 	}
 
 	public void deviceAccess(SoDevices devices) {

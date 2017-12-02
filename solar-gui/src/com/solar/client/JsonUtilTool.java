@@ -1,6 +1,5 @@
 package com.solar.client;
 
-
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +43,19 @@ public class JsonUtilTool {
 	 */
 	public static <T> T fromJson(String jsonString, Class<T> type) {
 		return (T) JSONObject.parseObject(jsonString, type);
+	}
+
+	/**
+	 * JSON字符串转换成对象数组
+	 *
+	 * @param jsonString
+	 *            需要转换的字符串
+	 * @param type
+	 *            需要转换的对象类型
+	 * @return 对象
+	 */
+	public static <T> List<T> fromJsonArray(String jsonString, Class<T> type) {
+		return (List<T>) JSONObject.parseArray(jsonString, type);
 	}
 
 	/**

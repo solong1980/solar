@@ -6,7 +6,6 @@ import org.apache.mina.core.buffer.IoBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.solar.common.context.ConnectAPI;
 import com.solar.server.mina.net.codec.MsgProtocol;
 
 /**
