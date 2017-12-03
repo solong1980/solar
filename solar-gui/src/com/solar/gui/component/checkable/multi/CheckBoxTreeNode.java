@@ -1,4 +1,4 @@
-package com.solar.gui.component.checkable;
+package com.solar.gui.component.checkable.multi;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -46,8 +46,7 @@ public class CheckBoxTreeNode extends DefaultMutableTreeNode {
 						break;
 				}
 				/*
-				 * 表明pNode所有子结点都已经选中，则选中父结点， 该方法是一个递归方法，因此在此不需要进行迭代，因为
-				 * 当选中父结点后，父结点本身会向上检查的。
+				 * 表明pNode所有子结点都已经选中，则选中父结点， 该方法是一个递归方法，因此在此不需要进行迭代，因为 当选中父结点后，父结点本身会向上检查的。
 				 */
 				if (index == pNode.children.size()) {
 					if (pNode.isSelected() != _isSelected)
@@ -56,8 +55,8 @@ public class CheckBoxTreeNode extends DefaultMutableTreeNode {
 			}
 		} else {
 			/*
-			 * 如果是取消父结点导致子结点取消，那么此时所有的子结点都应该是选择上的；
-			 * 否则就是子结点取消导致父结点取消，然后父结点取消导致需要取消子结点，但 是这时候是不需要取消子结点的。
+			 * 如果是取消父结点导致子结点取消，那么此时所有的子结点都应该是选择上的； 否则就是子结点取消导致父结点取消，然后父结点取消导致需要取消子结点，但
+			 * 是这时候是不需要取消子结点的。
 			 */
 			if (children != null) {
 				int index = 0;

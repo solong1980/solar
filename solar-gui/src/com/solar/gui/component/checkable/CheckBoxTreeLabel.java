@@ -15,6 +15,7 @@ public class CheckBoxTreeLabel extends JLabel {
 	private boolean hasFocus;
 
 	public CheckBoxTreeLabel() {
+
 	}
 
 	@Override

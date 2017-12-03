@@ -1,6 +1,5 @@
 package com.solar.entity;
 
-import com.solar.common.context.RoleType;
 
 @SuppressWarnings("serial")
 public class SoAbtAuth extends SoAbt {

@@ -1,6 +1,7 @@
 package com.solar.gui.module.working;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
@@ -8,12 +9,17 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
 import javax.swing.AbstractAction;
 import javax.swing.ButtonGroup;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,9 +37,16 @@ import com.solar.client.ObservableMedia;
 import com.solar.client.SoRet;
 import com.solar.common.context.ActionType;
 import com.solar.common.context.ConnectAPI;
+import com.solar.common.context.Consts;
 import com.solar.common.context.RoleType;
 import com.solar.entity.SoAccount;
+import com.solar.entity.SoAccountLocation;
+import com.solar.gui.SolarGUI;
+import com.solar.gui.component.AddressTreeField;
+import com.solar.gui.component.MultiAddressTreeField;
 import com.solar.gui.component.MultiComboBox;
+import com.solar.gui.component.model.TreeAddr;
+import com.solar.gui.module.working.fuc.AccountAuditPanel;
 import com.solar.gui.module.working.fuc.IndexPanel;
 import com.solar.gui.module.working.fuc.ProjectDataPanel;
 import com.solar.gui.module.working.fuc.RunningReportPanel;
@@ -77,6 +90,9 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 			case REGIEST:
 				registGUI();
 				break;
+			case FINDBACK:
+				findBackGUI();
+				break;
 			case LOGIN:
 				loginGUI();
 				break;
@@ -100,6 +116,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		fileMenu = (JMenu) menuBar.add(new JMenu("开始"));
 		createMenuItem(fileMenu, "连接", new AdaAction(ActionType.CONNECT, this));
 		createMenuItem(fileMenu, "注册", new AdaAction(ActionType.REGIEST, this));
+		createMenuItem(fileMenu, "找回", new AdaAction(ActionType.FINDBACK, this));
 		createMenuItem(fileMenu, "登陆", new AdaAction(ActionType.LOGIN, this));
 		createMenuItem(fileMenu, "登出", new AdaAction(ActionType.LOGOUT, this));
 		createMenuItem(fileMenu, "退出", new AdaAction(ActionType.EXIT, this));
@@ -110,11 +127,132 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		new AdaWorkingPanel(null);
 	}
 
+	private void findBackGUI() {
+		JLabel nameLabel = new JLabel(getBoldHTML("用户姓名"));
+		JLabel newPhoneLabel = new JLabel(getBoldHTML("输入新号码"));
+		// JLabel emailLabel = new JLabel(getBoldHTML("邮箱地址"));
+		JLabel userTypeLabel = new JLabel(getBoldHTML("用户类型"));
+		JLabel projectAddr1Label = new JLabel(getBoldHTML("项目地址"));
+		JLabel envAddrLabel = new JLabel(getBoldHTML("环保局地址"));
+		JLabel vcodeLabel = new JLabel(getBoldHTML("验证码"));
+		JComponent findBackPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		findBackPanel.add(nameLabel, gbc);
+		gbc.gridy++;
+		findBackPanel.add(newPhoneLabel, gbc);
+
+		gbc.gridy++;
+		findBackPanel.add(userTypeLabel, gbc);
+		gbc.gridy++;
+		findBackPanel.add(projectAddr1Label, gbc);
+		gbc.gridy++;
+		findBackPanel.add(envAddrLabel, gbc);
+		gbc.gridy++;
+		findBackPanel.add(vcodeLabel, gbc);
+
+		// admin,operator,cust_1,cust_2
+		JTextField nameField = new JTextField("");
+		JTextField phoneField = new JTextField("", 30);
+		// JTextField emailField = new JTextField("");
+		JComboBox<String> userTypeField = new JComboBox<>();
+		userTypeField.addItem("运维");
+		userTypeField.addItem("局方 ");
+		MultiAddressTreeField projectAddr1Field = MultiAddressTreeField.build();
+		AddressTreeField envAddrField = AddressTreeField.buildFoldLeaf();
+		JTextField vcodeField = new JTextField("", 30);
+		envAddrLabel.setEnabled(false);
+		envAddrField.setEnabled(false);
+
+		userTypeField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int selectedIndex = userTypeField.getSelectedIndex();
+				System.out.println("selectedIndex" + selectedIndex);
+				if (selectedIndex == 0) {
+					projectAddr1Label.setEnabled(true);
+					projectAddr1Field.setEnabled(true);
+					envAddrLabel.setEnabled(false);
+					envAddrField.setEnabled(false);
+				}
+				if (selectedIndex == 1) {
+					projectAddr1Label.setEnabled(false);
+					projectAddr1Field.setEnabled(false);
+					envAddrLabel.setEnabled(true);
+					envAddrField.setEnabled(true);
+				}
+			}
+		});
+
+		gbc.gridx++;
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		findBackPanel.add(nameField, gbc);
+		gbc.gridy++;
+		findBackPanel.add(phoneField, gbc);
+		gbc.gridy++;
+		findBackPanel.add(userTypeField, gbc);
+		gbc.gridy++;
+		findBackPanel.add(projectAddr1Field, gbc);
+		gbc.gridy++;
+		findBackPanel.add(envAddrField, gbc);
+		gbc.gridy++;
+		findBackPanel.add(vcodeField, gbc);
+
+		JComponent[] message = new JComponent[4];
+		message[0] = findBackPanel;
+		String[] options = { "提交审核", "取消" };
+		int result = JOptionPane.showOptionDialog(this, message, "用  户  找  回(需审核)", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
+		switch (result) {
+		case 0: // yes
+			SoAccount account = new SoAccount();
+			String name = nameField.getText();
+			String phone = phoneField.getText();
+		 
+
+			account.setName(name);
+			account.setPhone(phone);
+
+			int typeIndex = userTypeField.getSelectedIndex();
+			account.setType(Consts.ACCOUNT_TYPE[typeIndex]);
+			List<SoAccountLocation> accountLocations = new ArrayList<>();
+			if (typeIndex == 0) {
+				List<TreeAddr> workerAddrs = projectAddr1Field.getSelectedKeys();
+				for (TreeAddr treeAddr : workerAddrs) {
+					SoAccountLocation accountLocation = new SoAccountLocation();
+					accountLocation.setLocationId(treeAddr.getKey());
+					accountLocations.add(accountLocation);
+				}
+			}
+			if (typeIndex == 1) {
+				List<TreeAddr> envAddrs = envAddrField.getSelectedKeys();
+				for (TreeAddr treeAddr : envAddrs) {
+					SoAccountLocation accountLocation = new SoAccountLocation();
+					accountLocation.setLocationId(treeAddr.getKey());
+					accountLocations.add(accountLocation);
+				}
+			}
+			account.setLocations(accountLocations);
+			ObservableMedia.getInstance().regiest(account);
+			break;
+		case 1: // no
+			break;
+		default:
+			break;
+		}
+	}
+
 	private void registGUI() {
 		/*
-		 * 邮箱地址 用于找回用户信息 用户类型 （下拉复选框） 环保部门工作人员 系统运维人员 项目地址1 （下拉复选框）
-		 * 省市（地区）区（县市）街道（镇） 项目地址2 （下拉复选框） 省市（地区）区（县市）街道（镇） 项目地址3 （下拉复选框）
-		 * 省市（地区）区（县市）街道（镇） 环保局地址 （下拉复选框） 省市（地区）区（县市）街道（镇）
+		 * 邮箱地址 用于找回用户信息 用户类型 （下拉复选框） 环保部门工作人员 系统运维人员 项目地址1 （下拉复选框） 省市（地区）区（县市）街道（镇）
+		 * 项目地址2 （下拉复选框） 省市（地区）区（县市）街道（镇） 项目地址3 （下拉复选框） 省市（地区）区（县市）街道（镇） 环保局地址 （下拉复选框）
+		 * 省市（地区）区（县市）街道（镇）
 		 */
 		JLabel nameLabel = new JLabel(getBoldHTML("用户姓名"));
 		JLabel phoneLabel = new JLabel(getBoldHTML("手机号码"));
@@ -153,12 +291,35 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		JTextField nameField = new JTextField("");
 		JTextField phoneField = new JTextField("", 30);
 		JTextField emailField = new JTextField("");
-		JTextField userTypeField = new JTextField("", 10);
-
-		MultiComboBox projectAddr1Field = MultiComboBox.build();
+		JComboBox<String> userTypeField = new JComboBox<>();
+		userTypeField.addItem("运维");
+		userTypeField.addItem("局方 ");
+		MultiAddressTreeField projectAddr1Field = MultiAddressTreeField.build();
 		MultiComboBox projectAddr2Field = MultiComboBox.build();
 		MultiComboBox projectAddr3Field = MultiComboBox.build();
-		MultiComboBox envAddrField = MultiComboBox.build();
+		AddressTreeField envAddrField = AddressTreeField.buildFoldLeaf();
+		envAddrLabel.setEnabled(false);
+		envAddrField.setEnabled(false);
+
+		userTypeField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int selectedIndex = userTypeField.getSelectedIndex();
+				System.out.println("selectedIndex" + selectedIndex);
+				if (selectedIndex == 0) {
+					projectAddr1Label.setEnabled(true);
+					projectAddr1Field.setEnabled(true);
+					envAddrLabel.setEnabled(false);
+					envAddrField.setEnabled(false);
+				}
+				if (selectedIndex == 1) {
+					projectAddr1Label.setEnabled(false);
+					projectAddr1Field.setEnabled(false);
+					envAddrLabel.setEnabled(true);
+					envAddrField.setEnabled(true);
+				}
+			}
+		});
 
 		gbc.gridx++;
 		gbc.gridy = 0;
@@ -181,22 +342,41 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 
 		JComponent[] message = new JComponent[4];
 		message[0] = regiestPanel;
-		String[] options = { "注册", "重置" };
-		int result = JOptionPane.showOptionDialog(this, message, "注册", JOptionPane.DEFAULT_OPTION,
+		String[] options = { "提交审核", "取消" };
+		int result = JOptionPane.showOptionDialog(this, message, "注册新用户(需审核)", JOptionPane.DEFAULT_OPTION,
 				JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
 		switch (result) {
 		case 0: // yes
-			Thread td = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					try {
-						
-					} catch (Exception e) {
-						JOptionPane.showMessageDialog(AdaWorkingPanel.this, "连接后台失败");
-					}
+			SoAccount account = new SoAccount();
+			String name = nameField.getText();
+			String phone = phoneField.getText();
+			String email = emailField.getText();
+
+			account.setName(name);
+			account.setPhone(phone);
+			account.setEmail(email);
+
+			int typeIndex = userTypeField.getSelectedIndex();
+			account.setType(Consts.ACCOUNT_TYPE[typeIndex]);
+			List<SoAccountLocation> accountLocations = new ArrayList<>();
+			if (typeIndex == 0) {
+				List<TreeAddr> workerAddrs = projectAddr1Field.getSelectedKeys();
+				for (TreeAddr treeAddr : workerAddrs) {
+					SoAccountLocation accountLocation = new SoAccountLocation();
+					accountLocation.setLocationId(treeAddr.getKey());
+					accountLocations.add(accountLocation);
 				}
-			});
-			td.start();
+			}
+			if (typeIndex == 1) {
+				List<TreeAddr> envAddrs = envAddrField.getSelectedKeys();
+				for (TreeAddr treeAddr : envAddrs) {
+					SoAccountLocation accountLocation = new SoAccountLocation();
+					accountLocation.setLocationId(treeAddr.getKey());
+					accountLocations.add(accountLocation);
+				}
+			}
+			account.setLocations(accountLocations);
+			ObservableMedia.getInstance().regiest(account);
 			break;
 		case 1: // no
 			break;
@@ -278,9 +458,10 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 
 		frame.getContentPane().setLayout(new BorderLayout());
 		frame.getContentPane().add(this, BorderLayout.CENTER);
-		//this.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
-		frame.setMinimumSize(new Dimension(800,600));
-		frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		this.setBackground(Color.DARK_GRAY);
+		// this.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
+		frame.setMinimumSize(new Dimension(800, 600));
+		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
@@ -357,44 +538,44 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 							tabName = " 首页";
 							IndexPanel indexPanel = new IndexPanel();
 							tabbedpane.add(tabName, indexPanel);
-							
+
 							ProjectDataPanel projectDataPanel = new ProjectDataPanel();
 							tabbedpane.add("项目信息", projectDataPanel);
 							observableMedia.addObserver(projectDataPanel);
-							
+
 							WorkerInfoPanel workerInfoPanel = new WorkerInfoPanel();
 							tabbedpane.add("维护人员信息", workerInfoPanel);
-							
+
 							RunningReportPanel reportPanel = new RunningReportPanel();
 							tabbedpane.add("运行信息查询", reportPanel);
-							
-							RunningDataPanel runningDataPanel;
-							WorkingModeManagerPanel workingModeManagerPanel;
+							tabbedpane.add("注册找回信息审核", new AccountAuditPanel());
+//							RunningDataPanel runningDataPanel;
+//							WorkingModeManagerPanel workingModeManagerPanel;
 							// create tab
 							switch (roleType) {
 							case ADMIN:
 								// 用户管理
-								tabName = " 用户管理";
-								UserManagerPanel userManagerPanel = new UserManagerPanel();
-								tabbedpane.add(tabName, userManagerPanel);
+//								tabName = " 用户管理";
+//								UserManagerPanel userManagerPanel = new UserManagerPanel();
+//								tabbedpane.add(tabName, userManagerPanel);
 								// observableMedia.addObserver(userManagerPanel);
 
 								// 升级管理
-								tabName = "升级管理";
-								UpgradeManagerPanel upgradeManagerPanel = new UpgradeManagerPanel();
-								tabbedpane.add(tabName, upgradeManagerPanel);
+//								tabName = "升级管理";
+//								UpgradeManagerPanel upgradeManagerPanel = new UpgradeManagerPanel();
+//								tabbedpane.add(tabName, upgradeManagerPanel);
 								// observableMedia.addObserver(upgradeManagerPanel);
 							case OPERATOR:
 								// 配置管理
-								tabName = "配置管理";
-								workingModeManagerPanel = new WorkingModeManagerPanel();
-								tabbedpane.add(tabName, workingModeManagerPanel);
+//								tabName = "配置管理";
+//								workingModeManagerPanel = new WorkingModeManagerPanel();
+//								tabbedpane.add(tabName, workingModeManagerPanel);
 								// observableMedia.addObserver(workingModeManagerPanel);
 							case USER:
 								// 数据查询
-								tabName = "数据查询";
-								runningDataPanel = new RunningDataPanel();
-								tabbedpane.add(tabName, runningDataPanel);
+//								tabName = "数据查询";
+//								runningDataPanel = new RunningDataPanel();
+//								tabbedpane.add(tabName, runningDataPanel);
 								// observableMedia.addObserver(runningDataPanel);
 								break;
 							default:

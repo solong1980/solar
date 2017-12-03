@@ -5,6 +5,7 @@ public enum ActionType {
 
 	CONNECT,
 	REGIEST,
+	FINDBACK,
 	LOGIN,
 	LOGOUT,
 	EXIT,

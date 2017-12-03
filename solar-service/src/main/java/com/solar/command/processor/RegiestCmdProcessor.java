@@ -3,14 +3,11 @@ package com.solar.command.processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Charsets;
-import com.google.common.hash.Hashing;
 import com.solar.command.message.request.ClientRequest;
 import com.solar.command.message.response.AccountResponse;
 import com.solar.common.annotation.ProcessCMD;
 import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.ErrorCode;
-import com.solar.common.context.RoleType;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.INotAuthProcessor;
 import com.solar.controller.common.MsgProcessor;
@@ -23,12 +20,12 @@ import com.solar.server.commons.session.AppSession;
  * @author long lianghua
  *
  */
-@ProcessCMD(API_CODE = ConnectAPI.LOGIN_COMMAND)
-public class LoginCmdProcessor extends MsgProcessor implements INotAuthProcessor {
-	private static final Logger logger = LoggerFactory.getLogger(LoginCmdProcessor.class);
+@ProcessCMD(API_CODE = ConnectAPI.ACCOUNT_ADD_COMMAND)
+public class RegiestCmdProcessor extends MsgProcessor implements INotAuthProcessor {
+	private static final Logger logger = LoggerFactory.getLogger(RegiestCmdProcessor.class);
 	private SoAccountService accountService;
 
-	public LoginCmdProcessor() {
+	public RegiestCmdProcessor() {
 		accountService = SoAccountService.getInstance();
 	}
 
@@ -39,29 +36,15 @@ public class LoginCmdProcessor extends MsgProcessor implements INotAuthProcessor
 			logger.debug("login : {}", json);
 		}
 		SoAccount account = JsonUtilTool.fromJson(json, SoAccount.class);
-
-		String acc = account.getAccount();
-		String passwd = account.getPassword();
-		SoAccount dbAccount = accountService.selectByAccount(acc);
-
-		@SuppressWarnings("deprecation")
-		String md = Hashing.md5().newHasher().putString(passwd, Charsets.UTF_8).hash().toString();
-
-		if (null == dbAccount) {
+		if (null == account) {
+			account = new SoAccount();
 			account.setMsg(ErrorCode.Error_000003);
 			account.setRetCode(SoAccount.FAILURE);
 			appSession.sendMsg(new AccountResponse(JsonUtilTool.toJson(account)));
-		} else if (dbAccount.getPassword().equals(md)) {
-			dbAccount.setMsg("登陆成功");
-			dbAccount.setPassword(null);
-			appSession.setEnti(dbAccount);
-			appSession.setLogin(true);
-			int type = dbAccount.getType();
-			dbAccount.setRole(type);
-			appSession.sendMsg(new AccountResponse(JsonUtilTool.toJson(dbAccount)));
 		} else {
-			account.setMsg(ErrorCode.Error_000004);
-			account.setRetCode(SoAccount.FAILURE);
+			accountService.regiest(account);
+			account = new SoAccount();
+			account.setRetCode(SoAccount.SUCCESS);
 			appSession.sendMsg(new AccountResponse(JsonUtilTool.toJson(account)));
 		}
 	}

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solar.db.dao.SoAccountLocationMapper">
+	<resultMap id="BaseResultMap" type="com.solar.entity.SoAccountLocation">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="accountId" jdbcType="VARCHAR" property="account" />
+		<result column="locationId" jdbcType="VARCHAR" property="name" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+	</resultMap>
+
+	<sql id="Columns">
+		id,
+		accountId,
+		locationId,
+		create_time
+	</sql>
+
+
+	<select id="selectByAccountId" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Columns" />
+		from so_account_location
+		where account_id =
+		#{accountId,jdbcType=INTEGER}
+	</select>
+
+	<insert id="addAccountLocations" parameterType="com.solar.entity.SoAccountLocation"
+		useGeneratedKeys="true">
+		insert
+		into so_account_location ( account_id, location_id )
+		values
+		<foreach collection="locations" item="item" separator=",">
+			(
+			#{item.accountId,jdbcType=VARCHAR},
+			#{item.locationId,jdbcType=VARCHAR}
+			)
+		</foreach>
+	</insert>
+</mapper>

@@ -1,12 +1,12 @@
 package com.solar.gui.component;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 
@@ -19,8 +19,6 @@ import javax.swing.JTree;
 import javax.swing.SwingConstants;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
@@ -30,16 +28,19 @@ import com.solar.common.context.Consts.AddrType;
 import com.solar.entity.SoAreas;
 import com.solar.entity.SoCities;
 import com.solar.entity.SoProvinces;
-import com.solar.gui.component.checkable.single.SingleTreeNodeSelectionListener;
+import com.solar.gui.component.checkable.CheckBoxTreeCellRenderer;
+import com.solar.gui.component.checkable.multi.CheckBoxTreeNode;
+import com.solar.gui.component.checkable.multi.MutltOnlyCheckBoxTreeNodeSelectionListener;
 import com.solar.gui.component.model.TreeAddr;
 
 @SuppressWarnings("serial")
-public class AddressTreePopup extends JPopupMenu {
+public class MultiAddressTreePopup extends JPopupMenu {
 	private List<ActionListener> listeners = new ArrayList<ActionListener>();
-	private List<TreeAddr> selectedKeys = new ArrayList<TreeAddr>(1);
-	private List<DefaultMutableTreeNode> selectedNodes = new ArrayList<DefaultMutableTreeNode>(1);
+	MutltOnlyCheckBoxTreeNodeSelectionListener checkBoxTreeNodeSelectionListener = new MutltOnlyCheckBoxTreeNodeSelectionListener();
 
-	SingleTreeNodeSelectionListener listener = new SingleTreeNodeSelectionListener(selectedNodes);
+	private List<TreeAddr> selectedKeys = new ArrayList<TreeAddr>(1);
+
+	private List<CheckBoxTreeNode> selectedNodes = new ArrayList<CheckBoxTreeNode>(10);
 
 	private DataClient dataClient = new DataClient(NetConf.buildHostConf());
 
@@ -48,16 +49,9 @@ public class AddressTreePopup extends JPopupMenu {
 	public static final String COMMIT_EVENT = "commit";
 	public static final String CANCEL_EVENT = "cancel";
 
-	private boolean leafOnly = true;
-
-	public AddressTreePopup(Map<String, Object> valueMap, Object[] defaultValue, boolean leafOnly) {
+	public MultiAddressTreePopup(Map<String, Object> valueMap, Object[] defaultValue) {
 		super();
-		this.leafOnly = leafOnly;
 		initComponent();
-	}
-
-	public AddressTreePopup(Map<String, Object> valueMap, Object[] defaultValue) {
-		this(valueMap, defaultValue, true);
 	}
 
 	public void addActionListener(ActionListener listener) {
@@ -76,10 +70,10 @@ public class AddressTreePopup extends JPopupMenu {
 	}
 
 	public JPanel createTree() {
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+		MyCheckBoxTreeNode root = new MyCheckBoxTreeNode("root");
 		List<SoProvinces> provinces = dataClient.getProvinces();
 		for (SoProvinces soProvinces : provinces) {
-			DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(
+			MyCheckBoxTreeNode node1 = new MyCheckBoxTreeNode(
 					new TreeAddr(AddrType.PROVINCE, soProvinces.getProvinceid(), soProvinces.getProvince()));
 			root.add(node1);
 		}
@@ -91,12 +85,12 @@ public class AddressTreePopup extends JPopupMenu {
 		};
 		tree.setRootVisible(false);
 		tree.setEditable(false);
-		tree.setCellRenderer(new MyDefaultTreeCellRenderer());
+		tree.setCellRenderer(new CheckBoxTreeCellRenderer());
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
 				TreePath path = e.getPath();
-				DefaultMutableTreeNode lastNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+				MyCheckBoxTreeNode lastNode = (MyCheckBoxTreeNode) path.getLastPathComponent();
 				if (lastNode.getChildCount() > 0) {
 					return;
 				}
@@ -107,7 +101,7 @@ public class AddressTreePopup extends JPopupMenu {
 					String key = userObject.getKey();
 					List<SoCities> citiesIn = dataClient.getCitiesIn(key);
 					for (SoCities soCities : citiesIn) {
-						lastNode.add(new DefaultMutableTreeNode(
+						lastNode.add(new MyCheckBoxTreeNode(
 								new TreeAddr(AddrType.CITY, soCities.getCityid(), soCities.getCity())));
 					}
 					break;
@@ -115,13 +109,11 @@ public class AddressTreePopup extends JPopupMenu {
 					key = userObject.getKey();
 					List<SoAreas> areasIn = dataClient.getAreasIn(key);
 					for (SoAreas areas : areasIn) {
-						lastNode.add(new DefaultMutableTreeNode(
+						lastNode.add(new MyCheckBoxTreeNode(
 								new TreeAddr(AddrType.AREA, areas.getAreaid(), areas.getArea(), true)));
 					}
 					break;
 				case AREA:
-					selectedNodes.clear();
-					selectedNodes.add(lastNode);
 					break;
 				default:
 					break;
@@ -129,8 +121,8 @@ public class AddressTreePopup extends JPopupMenu {
 				System.out.println(paramString());
 			}
 		});
-		if (!leafOnly)
-			tree.addMouseListener(listener);
+
+		tree.addMouseListener(checkBoxTreeNodeSelectionListener);
 
 		JPanel jp = new JPanel();
 		jp.setLayout(new BorderLayout());
@@ -178,15 +170,14 @@ public class AddressTreePopup extends JPopupMenu {
 	public Object[] getSelectedValues() {
 		List<Object> selectedValues = new ArrayList<Object>();
 		selectedKeys.clear();
-
-		for (DefaultMutableTreeNode mutableTreeNode : selectedNodes) {
-			TreeAddr sn = (TreeAddr) mutableTreeNode.getUserObject();
+		for (CheckBoxTreeNode checkBoxTreeNode : selectedNodes) {
+			TreeAddr sn = (TreeAddr) checkBoxTreeNode.getUserObject();
 			selectedKeys.add(sn);
 
 			StringBuilder sb = new StringBuilder();
-			TreeNode[] path = mutableTreeNode.getPath();
+			TreeNode[] path = checkBoxTreeNode.getPath();
 			for (TreeNode treeNode : path) {
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) treeNode;
+				MyCheckBoxTreeNode node = (MyCheckBoxTreeNode) treeNode;
 				if (node.getUserObject().toString().equals("root"))
 					continue;
 				TreeAddr treeAddr = (TreeAddr) node.getUserObject();
@@ -213,16 +204,70 @@ public class AddressTreePopup extends JPopupMenu {
 		fireActionPerformed(new ActionEvent(this, 0, CANCEL_EVENT));
 	}
 
-	public static class MyDefaultTreeCellRenderer extends DefaultTreeCellRenderer {
+	class MyCheckBoxTreeNode extends CheckBoxTreeNode {
 		private static final long serialVersionUID = 1L;
 
-		@Override
-		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
-				boolean leaf, int row, boolean hasFocus) {
-			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-			TreeAddr userObject = (TreeAddr) node.getUserObject();
-			leaf = leaf && userObject.isArea();
-			return super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
+		public MyCheckBoxTreeNode(TreeAddr treeAddr) {
+			super(treeAddr);
+		}
+
+		public MyCheckBoxTreeNode(String name) {
+			super(name);
+		}
+
+		public void disChildSelect(Enumeration children) {
+			if (children != null) {
+				while (children.hasMoreElements()) {
+					CheckBoxTreeNode node = (CheckBoxTreeNode) children.nextElement();
+					selectedNodes.remove(node);
+					if (node.isSelected())
+						node.setSelected(false);
+					disChildSelect(node.children());
+				}
+			}
+		}
+
+		public void disParentSelect(CheckBoxTreeNode parent) {
+			if (parent != null) {
+				if (parent.isSelected()) {
+					parent.setSelected(false);
+				}
+				selectedNodes.remove(parent);
+				MyCheckBoxTreeNode pNode = (MyCheckBoxTreeNode) parent.getParent();
+				disParentSelect(pNode);
+			}
+		}
+
+		public void setSelected(boolean _isSelected) {
+			this.isSelected = _isSelected;
+			if (_isSelected) {
+				selectedNodes.add(this);
+				// 如果选中，则将其所有的子结点都选中
+				disChildSelect(children());
+
+				// 向上检查，如果父结点的所有子结点都被选中，那么将父结点也选中
+				MyCheckBoxTreeNode pNode = (MyCheckBoxTreeNode) parent;
+				disParentSelect(pNode);
+			} else {
+				selectedNodes.remove(this);
+			}
+
+		}
+
+		public boolean isLeaf() {
+			Object o = super.getUserObject();
+			if (!o.toString().equals("root")) {
+				TreeAddr treeAddr = (TreeAddr) super.getUserObject();
+				AddrType addrType = treeAddr.getAddrType();
+				switch (addrType) {
+				case PROVINCE:
+				case CITY:
+					return false;
+				default:
+					break;
+				}
+			}
+			return (getChildCount() == 0);
 		}
 
 	}

@@ -1,10 +1,17 @@
 package com.solar.entity;
 
+import java.util.List;
+
 @SuppressWarnings("serial")
 public class SoAccount extends SoAbtAuth {
 
 	private Long id;
 	private String account;
+	private String name;// 用户姓名
+	private String phone;// 手机号码
+	private String email;// 邮箱地址
+	private int type;// 用户类型
+	private List<SoAccountLocation> locations;
 	private String password;
 	private Boolean savePwd;
 
@@ -48,6 +55,46 @@ public class SoAccount extends SoAbtAuth {
 
 	public void setSavePwd(Boolean savePwd) {
 		this.savePwd = savePwd;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public int getType() {
+		return type;
+	}
+
+	public void setType(int type) {
+		this.type = type;
+	}
+
+	public List<SoAccountLocation> getLocations() {
+		return locations;
+	}
+
+	public void setLocations(List<SoAccountLocation> locations) {
+		this.locations = locations;
 	}
 
 }

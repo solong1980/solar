@@ -11,6 +11,7 @@ import com.solar.command.processor.GetProvincesCmdProcessor;
 import com.solar.command.processor.GetWorkingModeCmdProcessor;
 import com.solar.command.processor.LoginCmdProcessor;
 import com.solar.command.processor.OpenAppMsgProcessor;
+import com.solar.command.processor.RegiestCmdProcessor;
 import com.solar.command.processor.WorkingModeUpdateCmdProcessor;
 import com.solar.common.context.ConnectAPI;
 
@@ -34,6 +35,8 @@ public enum MsgProcessorRegister {
 	ADDR_PROVINCES_QUERY_COMMAND(ConnectAPI.ADDR_PROVINCES_QUERY_COMMAND, new GetProvincesCmdProcessor()),
 	ADDR_CITIES_QUERY_COMMAND(ConnectAPI.ADDR_CITIES_QUERY_COMMAND, new GetCitiesCmdProcessor()),
 	ADDR_AREAS_QUERY_COMMAND(ConnectAPI.ADDR_AREAS_QUERY_COMMAND, new GetAreasCmdProcessor()),
+	
+	ACCOUNT_ADD_COMMAND(ConnectAPI.ACCOUNT_ADD_COMMAND, new RegiestCmdProcessor()),
 	
 	// 内部使用，服务端通知客户端断开
 	EMPYTCOMMAND(ConnectAPI.ZERO_RESPONSE, new OpenAppMsgProcessor());

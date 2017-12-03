@@ -263,8 +263,13 @@ public class HostClient extends MinaClient {
 
 	public void saveProject(SoProject soProject) {
 		String json = JsonUtilTool.toJson(soProject);
-		System.out.println(json);
 		send(ConnectAPI.PROJECT_ADD_COMMAND, json);
+	}
+
+	public void regiest(SoAccount account) {
+		String json = JsonUtilTool.toJson(account);
+		System.out.println(json);
+		send(ConnectAPI.ACCOUNT_ADD_COMMAND, json);
 	}
 
 }

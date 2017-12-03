@@ -32,4 +32,8 @@ public class SoAccountService {
 	public SoAccount selectByAccount(String acc) {
 		return accountDao.selectByAccount(acc);
 	}
+
+	public void regiest(SoAccount account) {
+		accountDao.addAccount(account);
+	}
 }

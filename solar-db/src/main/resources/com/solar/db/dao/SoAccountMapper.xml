@@ -3,19 +3,23 @@
 <mapper namespace="com.solar.db.dao.SoAccountMapper">
 	<resultMap id="BaseResultMap" type="com.solar.entity.SoAccount">
 		<id column="id" jdbcType="BIGINT" property="id" />
-		<result column="cust_id" jdbcType="BIGINT" property="custId" />
 		<result column="account" jdbcType="VARCHAR" property="account" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="phone" jdbcType="VARCHAR" property="phone" />
+		<result column="email" jdbcType="VARCHAR" property="email" />
+		<result column="type" jdbcType="INTEGER" property="type" />
 		<result column="password" jdbcType="VARCHAR" property="password" />
-		<result column="role" jdbcType="INTEGER" property="role" />
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 	</resultMap>
 
 	<sql id="Columns">
 		id,
-		cust_id,
 		account,
+		name,
+		phone,
+		email,
+		type,
 		password,
-		role,
 		create_time
 	</sql>
 
@@ -35,5 +39,20 @@
 		from so_account
 		where account = #{account,jdbcType=VARCHAR}
 	</select>
+
+	<insert id="addAccount" parameterType="com.solar.entity.SoAccount"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into so_account ( account,
+		name,
+		phone, email,
+		type,password)
+		values (
+		#{account,jdbcType=VARCHAR},
+		#{name,jdbcType=VARCHAR},
+		#{phone,jdbcType=VARCHAR},
+		#{email,jdbcType=VARCHAR},
+		#{type,jdbcType=INTEGER},
+		#{password,jdbcType=VARCHAR})
+	</insert>
 
 </mapper>

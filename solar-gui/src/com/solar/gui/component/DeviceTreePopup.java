@@ -23,8 +23,8 @@ import javax.swing.tree.TreePath;
 import com.solar.common.context.Consts.DevInfoType;
 import com.solar.entity.SoDevConfig;
 import com.solar.gui.component.checkable.CheckBoxTreeCellRenderer;
-import com.solar.gui.component.checkable.CheckBoxTreeNode;
-import com.solar.gui.component.checkable.CheckBoxTreeNodeSelectionListener;
+import com.solar.gui.component.checkable.multi.CheckBoxTreeNode;
+import com.solar.gui.component.checkable.multi.MutltCheckBoxTreeNodeSelectionListener;
 
 @SuppressWarnings("serial")
 public class DeviceTreePopup extends JPopupMenu {
@@ -40,7 +40,7 @@ public class DeviceTreePopup extends JPopupMenu {
 	public static final String COMMIT_EVENT = "commit";
 	public static final String CANCEL_EVENT = "cancel";
 
-	CheckBoxTreeNodeSelectionListener checkBoxTreeNodeSelectionListener = new CheckBoxTreeNodeSelectionListener();
+	MutltCheckBoxTreeNodeSelectionListener checkBoxTreeNodeSelectionListener = new MutltCheckBoxTreeNodeSelectionListener();
 
 	public DeviceTreePopup(Map<String, Object> valueMap, Object[] defaultValue) {
 		super();

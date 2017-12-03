@@ -14,7 +14,10 @@ public class Consts {
 	public static final int[] PROJECT_TYPE = { 10, 20 };
 	public static final int[] CAPS = { 5, 10, 20, 30, 50, 100 };
 	public static final int[] EMISSION_STANDARDS = { 10, 20 };
-
+	
+	
+	public static final int[] ACCOUNT_TYPE = { 10, 20 };
+	
 	public static enum AddrType {
 		PROVINCE,
 		CITY,

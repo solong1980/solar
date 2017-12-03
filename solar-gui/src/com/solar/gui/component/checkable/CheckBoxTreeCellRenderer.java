@@ -11,6 +11,8 @@ import javax.swing.UIManager;
 import javax.swing.plaf.ColorUIResource;
 import javax.swing.tree.TreeCellRenderer;
 
+import com.solar.gui.component.checkable.multi.CheckBoxTreeNode;
+
 public class CheckBoxTreeCellRenderer extends JPanel implements TreeCellRenderer {
 	private static final long serialVersionUID = 1L;
 	protected JCheckBox check;

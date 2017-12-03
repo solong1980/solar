@@ -1,4 +1,4 @@
-package com.solar.gui.component.checkable;
+package com.solar.gui.component.checkable.multi;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -10,7 +10,7 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
-public class CheckBoxTreeNodeSelectionListener extends MouseAdapter {
+public class MutltCheckBoxTreeNodeSelectionListener extends MouseAdapter {
 
 	private List<CheckBoxTreeNode> checkedList = new ArrayList<>();
 

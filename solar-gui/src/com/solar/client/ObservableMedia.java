@@ -122,4 +122,9 @@ public class ObservableMedia extends Observable {
 		hostClient.saveProject(soProject);
 		setChanged();
 	}
+
+	public void regiest(SoAccount account) {
+		hostClient.regiest(account);
+		setChanged();
+	}
 }

@@ -104,7 +104,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 			projectTypeField.addItem(projectTypes[i]);
 		}
 
-		addressField = AddressTreeField.build();
+		addressField = AddressTreeField.buildLeafOnly();
 		streetField = new JTextField();
 		// 设计处理量
 		capabilityField = new JComboBox<>();

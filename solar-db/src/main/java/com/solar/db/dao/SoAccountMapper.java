@@ -8,4 +8,5 @@ public interface SoAccountMapper {
 
 	SoAccount selectByAccount(String acc);
 
+	void addAccount(SoAccount soAccount);
 }

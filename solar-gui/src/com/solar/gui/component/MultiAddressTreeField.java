@@ -30,7 +30,7 @@ import javax.swing.plaf.basic.BasicArrowButton;
 import com.solar.gui.component.model.TreeAddr;
 
 @SuppressWarnings("serial")
-public class AddressTreeField extends JPanel {
+public class MultiAddressTreeField extends JPanel {
 
 	private Map<String, Object> values;
 
@@ -40,28 +40,23 @@ public class AddressTreeField extends JPanel {
 
 	private List<ActionListener> listeners = new ArrayList<ActionListener>();
 
-	private AddressTreePopup popup;
+	private MultiAddressTreePopup popup;
 	private JTextField editor;
 
 	protected JButton arrowButton;
 	private String valueSperator;
 	private static final String DEFAULT_VALUE_SPERATOR = ",";
-
 	EditorHandler l = new EditorHandler();
 
-	public AddressTreeField(Map<String, Object> value, Object[] defaultValue, boolean leafOnly) {
-		this(value, defaultValue, DEFAULT_VALUE_SPERATOR, leafOnly);
+	public MultiAddressTreeField(Map<String, Object> value, Object[] defaultValue) {
+		this(value, defaultValue, DEFAULT_VALUE_SPERATOR);
 	}
 
-	public AddressTreeField(Map<String, Object> value, Object[] defaultValue) {
-		this(value, defaultValue, DEFAULT_VALUE_SPERATOR, true);
-	}
-
-	public AddressTreeField(Map<String, Object> value, Object[] defaultValue, String valueSperator, boolean leafOnly) {
+	public MultiAddressTreeField(Map<String, Object> value, Object[] defaultValue, String valueSperator) {
 		this.values = value;
 		defaultValues = defaultValue;
 		this.valueSperator = valueSperator;
-		initComponent(leafOnly);
+		initComponent();
 	}
 
 	public void cleanSelected() {
@@ -69,21 +64,20 @@ public class AddressTreeField extends JPanel {
 		popup.cleanSelected();
 	}
 
-	private void initComponent(boolean leafOnly) { // 暂时使用该布局,后续自己写个布局
+	private void initComponent() { // 暂时使用该布局,后续自己写个布局
 		this.setLayout(new FlowLayout());
-		popup = new AddressTreePopup(values, defaultValues, leafOnly);
+		popup = new MultiAddressTreePopup(values, defaultValues);
 		popup.addActionListener(new PopupAction());
 		editor = new JTextField("", 35);
 		editor.setBackground(Color.WHITE);
 		editor.setEditable(false);
 		editor.setBorder(BorderFactory.createLineBorder(Color.BLUE));
-		arrowButton = createArrowButton();
 		editor.addMouseListener(l);
+		arrowButton = createArrowButton();
 		arrowButton.addMouseListener(l);
 		add(editor);
 		add(arrowButton);
 		setText();
-
 	}
 
 	@Override
@@ -244,7 +238,7 @@ public class AddressTreeField extends JPanel {
 	}
 
 	public void addMultCombox(JComponent component, Map<String, Object> values, Object[] defaultValues) {
-		AddressTreeField mulit = new AddressTreeField(values, defaultValues);
+		MultiAddressTreeField mulit = new MultiAddressTreeField(values, defaultValues);
 		component.add(mulit);
 	}
 
@@ -252,21 +246,13 @@ public class AddressTreeField extends JPanel {
 		return selectedKeys;
 	}
 
-	public static AddressTreeField buildLeafOnly() {
+	public static MultiAddressTreeField build() {
 		Map<String, Object> values = new HashMap<String, Object>() {
 		};
 
 		Object[] defaultValue = new String[] {};
-		AddressTreeField mulit = new AddressTreeField(values, defaultValue);
+		MultiAddressTreeField mulit = new MultiAddressTreeField(values, defaultValue);
 		return mulit;
 	}
 
-	public static AddressTreeField buildFoldLeaf() {
-		Map<String, Object> values = new HashMap<String, Object>() {
-		};
-
-		Object[] defaultValue = new String[] {};
-		AddressTreeField mulit = new AddressTreeField(values, defaultValue, false);
-		return mulit;
-	}
 }
