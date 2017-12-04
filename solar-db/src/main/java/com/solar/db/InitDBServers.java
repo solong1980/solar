@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.solar.db.services.SoAccountFindService;
 import com.solar.db.services.SoAccountService;
 import com.solar.db.services.SoAppVersionService;
 import com.solar.db.services.SoCustomerService;
@@ -34,9 +35,13 @@ public class InitDBServers {
 		SoAppVersionService.getInstance().initSetSession(sqlSessionFactory);
 
 		SoLocationService.getInstance().initSetSession(sqlSessionFactory);
+		
+		SoAccountFindService.getInstance().initSetSession(sqlSessionFactory);
 		// 做个查询,使数据库连接池初始化
 		Long maxId = SoRunningDataService.getInstance().getMaxId();
 		logger.info("current max data id :" + maxId);
+
+		// SoLocationService.getInstance().createLocationFile();
 	}
 
 	private static InitDBServers initDBServers = new InitDBServers();

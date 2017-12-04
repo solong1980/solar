@@ -46,6 +46,7 @@
 	<mappers>
 		<mapper resource="com/solar/db/dao/SoAccountMapper.xml" />
 		<mapper resource="com/solar/db/dao/SoAccountLocationMapper.xml" />
+		<mapper resource="com/solar/db/dao/SoAccountFindMapper.xml" />
 
 		<mapper resource="com/solar/db/dao/SoCustomerMapper.xml" />
 		<mapper resource="com/solar/db/dao/SoDevicesMapper.xml" />

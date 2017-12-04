@@ -120,7 +120,7 @@ public class MultiAddressTreeField extends JPanel {
 				selectedKeys = popup.getSelectedKeys();
 				setText(); // 把事件继续传递出去
 				fireActionPerformed(e);
-				System.out.println(selectedKeys);
+				//System.out.println(selectedKeys);
 			}
 			JComponent component = (JComponent) e.getSource();
 			int compHeight = component.getHeight();
@@ -145,7 +145,7 @@ public class MultiAddressTreeField extends JPanel {
 			builder.append(dv);
 			builder.append(valueSperator);
 		}
-		System.out.println(selectedKeys);
+		//System.out.println(selectedKeys);
 		editor.setText(builder.substring(0, builder.length() > 0 ? builder.length() - 1 : 0).toString());
 	}
 

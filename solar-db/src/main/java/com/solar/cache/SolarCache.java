@@ -1,8 +1,11 @@
 package com.solar.cache;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -17,6 +20,7 @@ public class SolarCache {
 
 	private Cache<Long, SoWorkingMode> guavaWorkingModeCache;
 	private Cache<Long, List<SoDevices>> guavaDevicesCache;
+	private Cache<String, Map<String, Object>> guavaAppSersionCache;
 
 	private SoWorkingModeService workingModeService;
 	private SoDevicesService devicesService;
@@ -28,6 +32,10 @@ public class SolarCache {
 	private SolarCache() {
 		guavaWorkingModeCache = CacheBuilder.newBuilder().initialCapacity(1000).build();
 		guavaDevicesCache = CacheBuilder.newBuilder().initialCapacity(1000).build();
+
+		guavaAppSersionCache = CacheBuilder.newBuilder().initialCapacity(30).expireAfterAccess(30, TimeUnit.MINUTES)
+				.build();
+
 		workingModeService = SoWorkingModeService.getInstance();
 		devicesService = SoDevicesService.getInstance();
 	}
@@ -58,4 +66,16 @@ public class SolarCache {
 		// guavaWorkingModeCache.put(custId, workingMode);
 	}
 
+	public Map<String, Object> getSessionContext(String sessionId) throws ExecutionException {
+		return guavaAppSersionCache.get(sessionId, new Callable<HashMap<String, Object>>() {
+			@Override
+			public HashMap<String, Object> call() throws Exception {
+				return new HashMap<String, Object>();
+			}
+		});
+	}
+
+	public void removeSessionContext(String sessionId) throws ExecutionException {
+		guavaAppSersionCache.invalidate(sessionId);
+	}
 }

@@ -39,11 +39,11 @@ public class ConnectAPI {
 	public static final int PROJECT_UPDATE_COMMAND = 0x000015;
 	public static final int PROJECT_DELETE_COMMAND = 0x000016;
 
-	
 	public static final int ACCOUNT_ADD_COMMAND = 0x000017;
 	public static final int ACCOUNT_UPDATE_COMMAND = 0x000018;
 	public static final int ACCOUNT_DELETE_COMMAND = 0x000019;
-	
+
+	public static final int VCODE_GET_COMMAND = 0x000020;
 	// 控制终端指令
 	public static final int CTRL_COMMAND = 0x999999;
 
@@ -76,4 +76,9 @@ public class ConnectAPI {
 	public static final int PROJECT_UPDATE_RESPONSE = 0x100015;
 	public static final int PROJECT_DELETE_RESPONSE = 0x100016;
 
+	public static final int ACCOUNT_ADD_RESPONSE = 0x100017;
+	public static final int ACCOUNT_UPDATE_RESPONSE = 0x100018;
+	public static final int ACCOUNT_DELETE_RESPONSE = 0x100019;
+
+	public static final int VCODE_GET_RESPONSE = 0x000020;
 }

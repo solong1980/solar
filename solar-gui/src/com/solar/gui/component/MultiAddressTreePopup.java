@@ -17,17 +17,14 @@ import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreeNode;
-import javax.swing.tree.TreePath;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.solar.client.DataClient;
 import com.solar.client.net.NetConf;
 import com.solar.common.context.Consts.AddrType;
-import com.solar.entity.SoAreas;
-import com.solar.entity.SoCities;
-import com.solar.entity.SoProvinces;
+import com.solar.common.util.LocationLoader;
 import com.solar.gui.component.checkable.CheckBoxTreeCellRenderer;
 import com.solar.gui.component.checkable.multi.CheckBoxTreeNode;
 import com.solar.gui.component.checkable.multi.MutltOnlyCheckBoxTreeNodeSelectionListener;
@@ -42,6 +39,7 @@ public class MultiAddressTreePopup extends JPopupMenu {
 
 	private List<CheckBoxTreeNode> selectedNodes = new ArrayList<CheckBoxTreeNode>(10);
 
+	@SuppressWarnings("unused")
 	private DataClient dataClient = new DataClient(NetConf.buildHostConf());
 
 	private JButton commitButton;
@@ -71,12 +69,44 @@ public class MultiAddressTreePopup extends JPopupMenu {
 
 	public JPanel createTree() {
 		MyCheckBoxTreeNode root = new MyCheckBoxTreeNode("root");
-		List<SoProvinces> provinces = dataClient.getProvinces();
-		for (SoProvinces soProvinces : provinces) {
+
+		JSONObject locations = LocationLoader.loadLocation();
+		JSONArray provinces = locations.getJSONArray("Province");
+		for (int i = 0; i < provinces.size(); i++) {
+			JSONObject province = provinces.getJSONObject(i);
+			String provinceid = province.getString("Id");
+			String provinceName = province.getString("Name");
+
 			MyCheckBoxTreeNode node1 = new MyCheckBoxTreeNode(
-					new TreeAddr(AddrType.PROVINCE, soProvinces.getProvinceid(), soProvinces.getProvince()));
+					new TreeAddr(AddrType.PROVINCE, provinceid, provinceName));
 			root.add(node1);
+
+			JSONArray cities = province.getJSONArray("City");
+			for (int j = 0; j < cities.size(); j++) {
+				JSONObject city = cities.getJSONObject(j);
+				String cityid = city.getString("Id");
+				String cityName = city.getString("Name");
+				MyCheckBoxTreeNode node2 = new MyCheckBoxTreeNode(new TreeAddr(AddrType.CITY, cityid, cityName));
+				node1.add(node2);
+
+				JSONArray areas = city.getJSONArray("Area");
+				for (int k = 0; k < areas.size(); k++) {
+					JSONObject area = areas.getJSONObject(k);
+					String areaid = area.getString("Id");
+					String areaName = area.getString("Name");
+					MyCheckBoxTreeNode node3 = new MyCheckBoxTreeNode(new TreeAddr(AddrType.AREA, areaid, areaName));
+					node2.add(node3);
+				}
+			}
 		}
+
+		// List<SoProvinces> provinces = dataClient.getProvinces();
+		// for (SoProvinces soProvinces : provinces) {
+		// MyCheckBoxTreeNode node1 = new MyCheckBoxTreeNode(
+		// new TreeAddr(AddrType.PROVINCE, soProvinces.getProvinceid(),
+		// soProvinces.getProvince()));
+		// root.add(node1);
+		// }
 
 		JTree tree = new JTree(root) {
 			public Insets getInsets() {
@@ -86,41 +116,42 @@ public class MultiAddressTreePopup extends JPopupMenu {
 		tree.setRootVisible(false);
 		tree.setEditable(false);
 		tree.setCellRenderer(new CheckBoxTreeCellRenderer());
-		tree.addTreeSelectionListener(new TreeSelectionListener() {
-			@Override
-			public void valueChanged(TreeSelectionEvent e) {
-				TreePath path = e.getPath();
-				MyCheckBoxTreeNode lastNode = (MyCheckBoxTreeNode) path.getLastPathComponent();
-				if (lastNode.getChildCount() > 0) {
-					return;
-				}
-				TreeAddr userObject = (TreeAddr) lastNode.getUserObject();
-				AddrType addrType = userObject.getAddrType();
-				switch (addrType) {
-				case PROVINCE:
-					String key = userObject.getKey();
-					List<SoCities> citiesIn = dataClient.getCitiesIn(key);
-					for (SoCities soCities : citiesIn) {
-						lastNode.add(new MyCheckBoxTreeNode(
-								new TreeAddr(AddrType.CITY, soCities.getCityid(), soCities.getCity())));
-					}
-					break;
-				case CITY:
-					key = userObject.getKey();
-					List<SoAreas> areasIn = dataClient.getAreasIn(key);
-					for (SoAreas areas : areasIn) {
-						lastNode.add(new MyCheckBoxTreeNode(
-								new TreeAddr(AddrType.AREA, areas.getAreaid(), areas.getArea(), true)));
-					}
-					break;
-				case AREA:
-					break;
-				default:
-					break;
-				}
-				System.out.println(paramString());
-			}
-		});
+		// tree.addTreeSelectionListener(new TreeSelectionListener() {
+		// @Override
+		// public void valueChanged(TreeSelectionEvent e) {
+		// TreePath path = e.getPath();
+		// MyCheckBoxTreeNode lastNode = (MyCheckBoxTreeNode)
+		// path.getLastPathComponent();
+		// if (lastNode.getChildCount() > 0) {
+		// return;
+		// }
+		// TreeAddr userObject = (TreeAddr) lastNode.getUserObject();
+		// AddrType addrType = userObject.getAddrType();
+		// switch (addrType) {
+		// case PROVINCE:
+		// String key = userObject.getKey();
+		// List<SoCities> citiesIn = dataClient.getCitiesIn(key);
+		// for (SoCities soCities : citiesIn) {
+		// lastNode.add(new MyCheckBoxTreeNode(
+		// new TreeAddr(AddrType.CITY, soCities.getCityid(), soCities.getCity())));
+		// }
+		// break;
+		// case CITY:
+		// key = userObject.getKey();
+		// List<SoAreas> areasIn = dataClient.getAreasIn(key);
+		// for (SoAreas areas : areasIn) {
+		// lastNode.add(new MyCheckBoxTreeNode(
+		// new TreeAddr(AddrType.AREA, areas.getAreaid(), areas.getArea(), true)));
+		// }
+		// break;
+		// case AREA:
+		// break;
+		// default:
+		// break;
+		// }
+		// // System.out.println(paramString());
+		// }
+		// });
 
 		tree.addMouseListener(checkBoxTreeNodeSelectionListener);
 
@@ -183,7 +214,6 @@ public class MultiAddressTreePopup extends JPopupMenu {
 				TreeAddr treeAddr = (TreeAddr) node.getUserObject();
 				sb.append(treeAddr.getValue()).append("->");
 			}
-			System.out.println(sb);
 			selectedValues.add(sb);
 		}
 		return selectedValues.toArray(new Object[selectedValues.size()]);
@@ -215,7 +245,7 @@ public class MultiAddressTreePopup extends JPopupMenu {
 			super(name);
 		}
 
-		public void disChildSelect(Enumeration children) {
+		public void disChildSelect(@SuppressWarnings("rawtypes") Enumeration children) {
 			if (children != null) {
 				while (children.hasMoreElements()) {
 					CheckBoxTreeNode node = (CheckBoxTreeNode) children.nextElement();
@@ -241,6 +271,7 @@ public class MultiAddressTreePopup extends JPopupMenu {
 		public void setSelected(boolean _isSelected) {
 			this.isSelected = _isSelected;
 			if (_isSelected) {
+				System.out.println("add:" + this.toString());
 				selectedNodes.add(this);
 				// 如果选中，则将其所有的子结点都选中
 				disChildSelect(children());
@@ -249,6 +280,7 @@ public class MultiAddressTreePopup extends JPopupMenu {
 				MyCheckBoxTreeNode pNode = (MyCheckBoxTreeNode) parent;
 				disParentSelect(pNode);
 			} else {
+				System.out.println("remove:" + this.toString());
 				selectedNodes.remove(this);
 			}
 

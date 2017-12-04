@@ -7,8 +7,11 @@ public class ErrorCode {
 	public static String Error_000004 = "帐号密码错误";
 	public static String Error_000005 = "当前用户没有设备接入";
 	public static String Error_000006 = "此设备号不存在";
-	public static String Error_000007 = "牌数组里没有这张牌";
-	public static String Error_000008 = "牌数组里已经有4张牌";
+	public static String Error_000007 = "未指定校验码类型";
+	
+	public static String Error_000008 = "验证码不正确";
+	
+	
 	public static String Error_000009 = "摸牌出錯";
 	public static String Error_000010 = "房间次数已经用完";
 	public static String Error_000011 = "房间人已经满了";

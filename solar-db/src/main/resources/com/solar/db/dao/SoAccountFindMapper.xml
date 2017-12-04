@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solar.db.dao.SoAccountFindMapper">
+	<resultMap id="BaseResultMap" type="com.solar.entity.SoAccountFind">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="name" jdbcType="VARCHAR" property="name" />
+		<result column="phone" jdbcType="VARCHAR" property="phone" />
+		<result column="location_id" jdbcType="VARCHAR" property="locationId" />
+		<result column="address" jdbcType="VARCHAR" property="address" />
+		<result column="type" jdbcType="INTEGER" property="type" />
+		<result column="vcode" jdbcType="VARCHAR" property="vcode" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+	</resultMap>
+
+	<sql id="Columns">
+		id,
+		name,
+		phone,
+		type,
+		location_id,
+		address,
+		vcode,
+		create_time
+	</sql>
+
+	<insert id="addAccountFind" parameterType="com.solar.entity.SoAccount"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into so_account_find (
+		name,
+		phone,
+		type,
+		location_id,
+		address,
+		vcode
+		)
+		values (
+		#{name,jdbcType=VARCHAR},
+		#{phone,jdbcType=VARCHAR},
+		#{type,jdbcType=VARCHAR},
+		#{locationId,jdbcType=VARCHAR},
+		#{address,jdbcType=INTEGER},
+		#{vcode,jdbcType=VARCHAR}
+		)
+	</insert>
+
+</mapper>

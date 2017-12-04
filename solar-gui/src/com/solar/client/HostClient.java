@@ -20,6 +20,7 @@ import com.solar.entity.SoAppVersion;
 import com.solar.entity.SoDataServerInfo;
 import com.solar.entity.SoDevices;
 import com.solar.entity.SoProject;
+import com.solar.entity.SoVCode;
 import com.solar.entity.SoWorkingMode;
 
 public class HostClient extends MinaClient {
@@ -270,6 +271,12 @@ public class HostClient extends MinaClient {
 		String json = JsonUtilTool.toJson(account);
 		System.out.println(json);
 		send(ConnectAPI.ACCOUNT_ADD_COMMAND, json);
+	}
+
+	public void getVCode(SoVCode soVCode) {
+		String json = JsonUtilTool.toJson(soVCode);
+		System.out.println(json);
+		send(ConnectAPI.VCODE_GET_COMMAND, json);
 	}
 
 }

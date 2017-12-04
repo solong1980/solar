@@ -57,7 +57,7 @@ public class SoAccountDao implements SoAccountMapper {
 			for (SoAccountLocation accountLocation : locations) {
 				accountLocation.setAccountId(id);
 			}
-			locationMapper.addAccountLocations(soAccount.getLocations());
+			locationMapper.addAccountLocations(locations);
 			sqlSession.commit();
 		} catch (Exception e) {
 			throw new RuntimeException(e);

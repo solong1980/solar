@@ -1,7 +1,14 @@
 package com.solar.db.services;
 
-import org.apache.ibatis.session.SqlSessionFactory;
+import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.base.Charsets;
+import com.google.common.hash.Hashing;
+import com.solar.common.util.VCodeUtil;
 import com.solar.db.dao.SoAccountMapper;
 import com.solar.db.dao.impl.SoAccountDao;
 import com.solar.entity.SoAccount;
@@ -10,8 +17,11 @@ import com.solar.entity.SoAccount;
  * @author long liang hua
  */
 public class SoAccountService {
+	private static final Logger logger = LoggerFactory.getLogger(SoAccountService.class);
+
 	private static SoAccountService accountService = new SoAccountService();
 	private SoAccountMapper accountDao;
+	private AtomicLong SEED_LINE = new AtomicLong(System.currentTimeMillis());
 
 	public SoAccountService() {
 		super();
@@ -34,6 +44,20 @@ public class SoAccountService {
 	}
 
 	public void regiest(SoAccount account) {
+
+		String password = account.getPassword();
+		if (password == null) {
+			password = "00000000";
+		}
+		@SuppressWarnings("deprecation")
+		String md = Hashing.md5().newHasher().putString(password, Charsets.UTF_8).hash().toString();
+		logger.error("trans pd " + password + " to " + md);
+		account.setPassword(md);
 		accountDao.addAccount(account);
+	}
+
+	public String genVcode() {
+		String serialCode = VCodeUtil.toSerialCode(SEED_LINE.getAndIncrement());
+		return serialCode;
 	}
 }

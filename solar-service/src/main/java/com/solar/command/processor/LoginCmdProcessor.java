@@ -6,11 +6,10 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
 import com.solar.command.message.request.ClientRequest;
-import com.solar.command.message.response.AccountResponse;
+import com.solar.command.message.response.LoginResponse;
 import com.solar.common.annotation.ProcessCMD;
 import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.ErrorCode;
-import com.solar.common.context.RoleType;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.INotAuthProcessor;
 import com.solar.controller.common.MsgProcessor;
@@ -50,7 +49,7 @@ public class LoginCmdProcessor extends MsgProcessor implements INotAuthProcessor
 		if (null == dbAccount) {
 			account.setMsg(ErrorCode.Error_000003);
 			account.setRetCode(SoAccount.FAILURE);
-			appSession.sendMsg(new AccountResponse(JsonUtilTool.toJson(account)));
+			appSession.sendMsg(new LoginResponse(JsonUtilTool.toJson(account)));
 		} else if (dbAccount.getPassword().equals(md)) {
 			dbAccount.setMsg("登陆成功");
 			dbAccount.setPassword(null);
@@ -58,11 +57,11 @@ public class LoginCmdProcessor extends MsgProcessor implements INotAuthProcessor
 			appSession.setLogin(true);
 			int type = dbAccount.getType();
 			dbAccount.setRole(type);
-			appSession.sendMsg(new AccountResponse(JsonUtilTool.toJson(dbAccount)));
+			appSession.sendMsg(new LoginResponse(JsonUtilTool.toJson(dbAccount)));
 		} else {
 			account.setMsg(ErrorCode.Error_000004);
 			account.setRetCode(SoAccount.FAILURE);
-			appSession.sendMsg(new AccountResponse(JsonUtilTool.toJson(account)));
+			appSession.sendMsg(new LoginResponse(JsonUtilTool.toJson(account)));
 		}
 	}
 }

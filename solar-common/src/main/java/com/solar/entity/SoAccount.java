@@ -15,6 +15,8 @@ public class SoAccount extends SoAbtAuth {
 	private String password;
 	private Boolean savePwd;
 
+	private String vcode;// 验证码
+
 	private String createTime;
 
 	public Long getId() {
@@ -87,6 +89,14 @@ public class SoAccount extends SoAbtAuth {
 
 	public void setType(int type) {
 		this.type = type;
+	}
+
+	public String getVcode() {
+		return vcode;
+	}
+
+	public void setVcode(String vcode) {
+		this.vcode = vcode;
 	}
 
 	public List<SoAccountLocation> getLocations() {

@@ -1,12 +1,16 @@
 package com.solar.command.processor;
 
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.solar.cache.SolarCache;
 import com.solar.command.message.request.ClientRequest;
-import com.solar.command.message.response.AccountResponse;
+import com.solar.command.message.response.AccountAddResponse;
 import com.solar.common.annotation.ProcessCMD;
 import com.solar.common.context.ConnectAPI;
+import com.solar.common.context.Consts;
 import com.solar.common.context.ErrorCode;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.INotAuthProcessor;
@@ -40,12 +44,26 @@ public class RegiestCmdProcessor extends MsgProcessor implements INotAuthProcess
 			account = new SoAccount();
 			account.setMsg(ErrorCode.Error_000003);
 			account.setRetCode(SoAccount.FAILURE);
-			appSession.sendMsg(new AccountResponse(JsonUtilTool.toJson(account)));
+			appSession.sendMsg(new AccountAddResponse(JsonUtilTool.toJson(account)));
 		} else {
-			accountService.regiest(account);
-			account = new SoAccount();
-			account.setRetCode(SoAccount.SUCCESS);
-			appSession.sendMsg(new AccountResponse(JsonUtilTool.toJson(account)));
+			String vcode = account.getVcode();
+			Map<String, Object> sessionContext = SolarCache.getInstance().getSessionContext(appSession.getSessionID());
+			Object object = sessionContext.get(Consts.REGIEST_VCODE_KEY);
+			if (null == object) {
+				// 失效
+			} else if (vcode == null || !vcode.equals(object)) {
+				// 验证码不对
+				account = new SoAccount();
+				account.setRetCode(SoAccount.FAILURE);
+				account.setMsg(ErrorCode.Error_000008);
+				appSession.sendMsg(new AccountAddResponse(JsonUtilTool.toJson(account)));
+			} else {
+				accountService.regiest(account);
+				account = new SoAccount();
+				account.setRetCode(SoAccount.SUCCESS);
+				appSession.sendMsg(new AccountAddResponse(JsonUtilTool.toJson(account)));
+				sessionContext.remove(Consts.REGIEST_VCODE_KEY);
+			}
 		}
 	}
 }

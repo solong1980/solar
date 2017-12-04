@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.solar.db.dao.SoAreasMapper;
 import com.solar.db.dao.SoCitiesMapper;
 import com.solar.db.dao.SoProvincesMapper;
@@ -48,5 +50,45 @@ public class SoLocationService {
 
 	public List<SoAreas> getAreasInCity(String cityId) {
 		return areasDao.selectByCityId(cityId);
+	}
+	
+	public void createLocationFile() {
+		
+		JSONObject locationsObject = new JSONObject();
+		JSONArray provinceArray = new JSONArray();
+		locationsObject.put("Province", provinceArray);
+		
+		List<SoProvinces> allProvinces = getAllProvinces();
+		for (SoProvinces soProvinces : allProvinces) {
+			JSONObject provinceObject = new JSONObject();
+			JSONArray citiesArray = new JSONArray();
+
+			provinceObject.put("Id", soProvinces.getProvinceid());
+			provinceObject.put("Name", soProvinces.getProvince());
+			provinceObject.put("City", citiesArray);
+			provinceArray.add(provinceObject);
+
+			String provinceid = soProvinces.getProvinceid();
+			List<SoCities> citiesInProvice = getCitiesInProvice(provinceid);
+			for (SoCities soCities : citiesInProvice) {
+				JSONObject cityObject = new JSONObject();
+				JSONArray areasArray = new JSONArray();
+				cityObject.put("Id", soCities.getCityid());
+				cityObject.put("Name", soCities.getCity());
+				cityObject.put("Area", areasArray);
+				citiesArray.add(cityObject);
+				
+				String cityid = soCities.getCityid();
+				List<SoAreas> areasInCity = getAreasInCity(cityid);
+				for (SoAreas soAreas : areasInCity) {
+					JSONObject areaObject = new JSONObject();
+					areaObject.put("Id", soAreas.getAreaid());
+					areaObject.put("Name", soAreas.getArea());
+					areasArray.add(areaObject);
+				}
+			}
+		}
+		
+		//System.out.println(JsonUtilTool.toJson(locationsObject));
 	}
 }

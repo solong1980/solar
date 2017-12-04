@@ -3,17 +3,26 @@ package com.solar.server.commons.session;
 import java.io.Closeable;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.util.UUID;
 
 import org.apache.mina.core.future.WriteFuture;
 import org.apache.mina.core.session.AttributeKey;
 import org.apache.mina.core.session.IoSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.solar.command.message.ResponseMsg;
 
-/**
- * 游戏中的session回话，封装了mina的session
- */
 public class AppSession implements Closeable {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(AppSession.class);
+
+	private String SessionID = UUID.randomUUID().toString();
+
+	public String getSessionID() {
+		return SessionID;
+	}
+
 	/**
 	 * IoSession
 	 */
@@ -29,6 +38,7 @@ public class AppSession implements Closeable {
 	private Object enti;
 	private boolean isLogin = false;
 	private static final AttributeKey KEY_PLAYER_SESSION = new AttributeKey(AppSession.class, "player.session");
+
 	public AppSession(IoSession session) {
 		SocketAddress socketaddress = session.getRemoteAddress();
 		InetSocketAddress s = (InetSocketAddress) socketaddress;
@@ -36,6 +46,7 @@ public class AppSession implements Closeable {
 		address = s.getAddress().getHostAddress();
 		this.session = session;
 		this.session.setAttribute(KEY_PLAYER_SESSION, this);
+		LOGGER.debug("create session " + SessionID);
 	}
 
 	/**

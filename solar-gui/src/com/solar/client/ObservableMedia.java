@@ -9,6 +9,7 @@ import com.solar.entity.SoAppVersion;
 import com.solar.entity.SoDataServerInfo;
 import com.solar.entity.SoDevices;
 import com.solar.entity.SoProject;
+import com.solar.entity.SoVCode;
 
 public class ObservableMedia extends Observable {
 	HostClient hostClient = null;
@@ -125,6 +126,11 @@ public class ObservableMedia extends Observable {
 
 	public void regiest(SoAccount account) {
 		hostClient.regiest(account);
+		setChanged();
+	}
+	
+	public void getVCode(SoVCode soVCode) {
+		hostClient.getVCode(soVCode);
 		setChanged();
 	}
 }
