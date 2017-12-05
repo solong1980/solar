@@ -1,15 +1,19 @@
 package com.solar.gui.module.working.fuc;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.Collections;
 import java.util.List;
 import java.util.Observer;
 
 import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -26,11 +30,9 @@ import com.solar.client.SoRet;
 import com.solar.common.context.ActionType;
 import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.Consts;
-import com.solar.entity.SoAbt;
 import com.solar.entity.SoDevConfig;
 import com.solar.entity.SoProject;
 import com.solar.gui.component.AddressTreeField;
-import com.solar.gui.component.DeviceTreeField;
 import com.solar.gui.component.model.TreeAddr;
 import com.solar.gui.module.working.BasePanel;
 
@@ -43,7 +45,9 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 	private AddressTreeField addressField;
 	private JTextField streetField;
 	private JComboBox<String> emissionStandardsField;
-	private DeviceTreeField equipmentField;
+
+	private JLabel equipmentField;
+
 	private JComboBox<String> capabilityField;
 
 	private JTextField workerNameField;
@@ -108,12 +112,29 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		streetField = new JTextField();
 		// 设计处理量
 		capabilityField = new JComboBox<>();
-		String[] cabs = new String[] { "5D/T", "10D/T", "20D/T", "30D/T", "50D/T", "80D/T", "100D/T" };
+		String[] cabs = new String[] { "", "5D/T", "10D/T", "20D/T", "30D/T", "50D/T", "80D/T", "100D/T" };
 		for (int i = 0; i < cabs.length; i++) {
 			capabilityField.addItem(cabs[i]);
 		}
 
-		equipmentField = DeviceTreeField.build();
+		capabilityField.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int idx = capabilityField.getSelectedIndex() - 1;
+				if (idx < 0) {
+					equipmentField.setText("");
+					return;
+				}
+				StringBuffer s = new StringBuffer();
+				for (int i = 0; i < Consts.devices.length; i++) {
+					String devName = Consts.devices[i];
+					int count = Consts.devCountOpts[i][idx];
+					s.append(devName).append(":").append(count).append(" / ");
+				}
+				equipmentField.setText(s.toString().substring(0, s.length() - 3));
+			}
+		});
+		equipmentField = new JLabel("");
 
 		// 排放标准
 		String[] emises = new String[] { "一级A", "一级B" };
@@ -195,7 +216,6 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 	class EditorAction extends AbstractAction {
 		private static final long serialVersionUID = -6048630218852730717L;
 		private ActionType operate;
-		private JComponent parent;
 
 		protected EditorAction(ActionType operate, JComponent parent) {
 			super("AdaAction");
@@ -203,7 +223,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		}
 
 		public void actionPerformed(ActionEvent e) {
-			ObservableMedia instance = ObservableMedia.getInstance();
+			ObservableMedia media = ObservableMedia.getInstance();
 			switch (operate) {
 			case PROJECT_NEW:
 				nameField.setText("");
@@ -212,7 +232,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 				streetField.setText("");
 				emissionStandardsField.setSelectedItem(null);
 				capabilityField.setSelectedItem(null);
-				equipmentField.cleanSelected();
+				equipmentField.setText("");
 				workerNameField.setText("");
 				workerContactField.setText("");
 				soProject = new SoProject();
@@ -224,7 +244,10 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 
 				List<TreeAddr> selectedAddress = addressField.getSelectedKeys();
 				if (selectedAddress == null || selectedAddress.isEmpty()) {
-
+					showWarningDailog("输入错误", "未选项目地址");
+					addressField.setBorder(BorderFactory.createLineBorder(Color.RED));
+					addressField.grabFocus();
+					return;
 				}
 				TreeAddr treeAddr = selectedAddress.get(0);
 				String locationId = treeAddr.getKey();
@@ -233,9 +256,16 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 				int emissionStandard = Consts.EMISSION_STANDARDS[emissionStandardIdx];
 
 				int capabilityIdx = capabilityField.getSelectedIndex();
-				int cap = Consts.CAPS[capabilityIdx];
+				if (capabilityIdx == 0) {
+					showWarningDailog("输入错误", "未选者处理量");
+					capabilityField.setBorder(BorderFactory.createLineBorder(Color.RED));
+					capabilityField.grabFocus();
+					return;
+				}
+				int cap = Consts.CAPS[capabilityIdx - 1];
 
-				List<SoDevConfig> devConfigs = equipmentField.getSelectedKeys();
+				List<SoDevConfig> devConfigs = Collections.emptyList();
+
 				String workerName = workerNameField.getText();
 				String workerPhone = workerContactField.getText();
 
@@ -248,8 +278,8 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 				soProject.setCapability(cap);
 				soProject.setDevConfiures(devConfigs);
 				soProject.setWorkerName(workerName);
-				soProject.setWorkerName(workerPhone);
-				instance.saveProject(soProject);
+				soProject.setWorkerPhone(workerPhone);
+				media.saveProject(soProject);
 				break;
 			default:
 				break;
@@ -264,7 +294,15 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 			int code = ret.getCode();
 			int status = ret.getStatus();
 			if (status == 0) {
-				SoAbt soAbt = JsonUtilTool.fromJson(ret.getRet(), SoAbt.class);
+				SoProject soAbt = JsonUtilTool.fromJson(ret.getRet(), SoProject.class);
+				switch (code) {
+				case ConnectAPI.PROJECT_ADD_RESPONSE:
+					soProject = soAbt;// 设置为返回的内容
+					break;
+				default:
+					break;
+				}
+
 				EventQueue.invokeLater(new Runnable() {
 					@Override
 					public void run() {
@@ -273,12 +311,6 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 				});
 			} else {
 				JOptionPane.showMessageDialog(this, ret.getRet());
-			}
-			switch (code) {
-			case ConnectAPI.PROJECT_ADD_RESPONSE:
-				break;
-			default:
-				break;
 			}
 		}
 	}

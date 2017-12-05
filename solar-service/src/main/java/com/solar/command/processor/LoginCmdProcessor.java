@@ -1,5 +1,8 @@
 package com.solar.command.processor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,11 +13,15 @@ import com.solar.command.message.response.LoginResponse;
 import com.solar.common.annotation.ProcessCMD;
 import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.ErrorCode;
+import com.solar.common.context.RoleType;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.INotAuthProcessor;
 import com.solar.controller.common.MsgProcessor;
 import com.solar.db.services.SoAccountService;
+import com.solar.db.services.SoProjectService;
 import com.solar.entity.SoAccount;
+import com.solar.entity.SoAccountLocation;
+import com.solar.entity.SoProject;
 import com.solar.server.commons.session.AppSession;
 
 /**
@@ -24,11 +31,14 @@ import com.solar.server.commons.session.AppSession;
  */
 @ProcessCMD(API_CODE = ConnectAPI.LOGIN_COMMAND)
 public class LoginCmdProcessor extends MsgProcessor implements INotAuthProcessor {
+	private static final String ADMIN_LOCATION_ID = "000000";
 	private static final Logger logger = LoggerFactory.getLogger(LoginCmdProcessor.class);
 	private SoAccountService accountService;
+	private SoProjectService projectService;
 
 	public LoginCmdProcessor() {
 		accountService = SoAccountService.getInstance();
+		projectService = SoProjectService.getInstance();
 	}
 
 	@Override
@@ -57,8 +67,37 @@ public class LoginCmdProcessor extends MsgProcessor implements INotAuthProcessor
 			appSession.setLogin(true);
 			int type = dbAccount.getType();
 			dbAccount.setRole(type);
+			RoleType roleType = RoleType.roleType(type);
+			// 查询管辖地,管理员查询所有工程地址,维护员/局方查询自己注册地址,再根据注册地址查项目
+			List<SoAccountLocation> accountLocations = new ArrayList<>();
+			switch (roleType) {
+			case ADMIN:
+				List<SoProject> projects = projectService.queryProjectByLocationId(ADMIN_LOCATION_ID);
+				dbAccount.setProjects(projects);
+				SoAccountLocation accountLocation = new SoAccountLocation();
+				accountLocation.setLocationId(ADMIN_LOCATION_ID);
+				accountLocations.add(accountLocation);
+				break;
+			case OPERATOR:
+			case USER:
+				accountLocations = accountService.queryGovernmentLocation(dbAccount.getId());
+				List<String> locations = new ArrayList<>();
+				for (SoAccountLocation location : accountLocations) {
+					locations.add(location.getLocationId());
+				}
+				// 查项目
+				projects = projectService.queryProjectByLocationIds(locations);
+				dbAccount.setProjects(projects);
+				break;
+			default:
+				break;
+			}
+
+			dbAccount.setLocations(accountLocations);
 			appSession.sendMsg(new LoginResponse(JsonUtilTool.toJson(dbAccount)));
-		} else {
+		} else
+
+		{
 			account.setMsg(ErrorCode.Error_000004);
 			account.setRetCode(SoAccount.FAILURE);
 			appSession.sendMsg(new LoginResponse(JsonUtilTool.toJson(account)));

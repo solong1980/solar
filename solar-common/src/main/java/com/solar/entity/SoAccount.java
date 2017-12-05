@@ -12,6 +12,7 @@ public class SoAccount extends SoAbtAuth {
 	private String email;// 邮箱地址
 	private int type;// 用户类型
 	private List<SoAccountLocation> locations;
+	private List<SoProject> projects;
 	private String password;
 	private Boolean savePwd;
 
@@ -105,6 +106,14 @@ public class SoAccount extends SoAbtAuth {
 
 	public void setLocations(List<SoAccountLocation> locations) {
 		this.locations = locations;
+	}
+
+	public List<SoProject> getProjects() {
+		return projects;
+	}
+
+	public void setProjects(List<SoProject> projects) {
+		this.projects = projects;
 	}
 
 }

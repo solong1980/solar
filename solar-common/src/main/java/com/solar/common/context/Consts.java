@@ -20,6 +20,33 @@ public class Consts {
 	public static final String REGIEST_VCODE_KEY = "REGIEST_VCODE_KEY";
 	public static final String ACCOUNT_FIND_VCODE_KEY = "ACCOUNT_FIND_VCODE_KEY";
 
+	/** 设备类型 及配置参数 */
+	public static int[] devTypes = new int[] { 10, 20, 30, 40 };
+	public static String[] devices = new String[] { "太阳能板", "电池", "曝气系统", "太阳能控制器" };
+	public static int[][] devCountOpts = new int[][] { { 2, 4, 6, 8, 16, 24, 32 }, { 2, 4, 6, 8, 16, 24, 32 },
+			{ 2, 2, 3, 3, 6, 9, 12 }, { 1, 1, 1, 2, 4, 6, 8 } };
+
+	public static enum ProjectType {
+		SUN_POWER(10),
+		SMART(20);
+		private int type;
+
+		private ProjectType(int type) {
+			this.type = type;
+		}
+
+		public int getType() {
+			return type;
+		}
+
+		public static ProjectType type(int type) {
+			if (type == SUN_POWER.type) {
+				return ProjectType.SUN_POWER;
+			} else
+				return ProjectType.SMART;
+		}
+	}
+
 	public static enum AddrType {
 		PROVINCE,
 		CITY,

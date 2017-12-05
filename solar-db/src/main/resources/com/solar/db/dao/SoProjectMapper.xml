@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solar.db.dao.SoProjectMapper">
+	<resultMap id="BaseResultMap" type="com.solar.entity.SoProject">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="project_name" jdbcType="VARCHAR" property="projectName" />
+		<result column="type" jdbcType="INTEGER" property="type" />
+		<result column="capability" jdbcType="INTEGER" property="capability" />
+		<result column="emission_standards" jdbcType="INTEGER"
+			property="emissionStandards" />
+		<result column="location_id" jdbcType="VARCHAR" property="locationId" />
+		<result column="street" jdbcType="VARCHAR" property="street" />
+		<result column="worker_name" jdbcType="VARCHAR" property="workerName" />
+		<result column="worker_phone" jdbcType="INTEGER" property="workerPhone" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+	</resultMap>
+
+	<sql id="Columns">
+		id,
+		project_name,
+		type,
+		capability,
+		emission_standards,
+		location_id,
+		street,
+		worker_name,
+		worker_phone,
+		create_time
+	</sql>
+
+
+	<select id="selectById" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Columns" />
+		from so_project
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+
+	<insert id="addProject" parameterType="com.solar.entity.SoProject"
+		keyProperty="id" useGeneratedKeys="true">
+		insert into so_project
+		(
+		project_name,
+		type,
+		capability,
+		emission_standards,
+		location_id,
+		street,
+		worker_name,
+		worker_phone
+		)values(
+		#{projectName,jdbcType=VARCHAR},
+		#{type,jdbcType=INTEGER},
+		#{capability,jdbcType=INTEGER},
+		#{emissionStandards,jdbcType=INTEGER},
+		#{locationId,jdbcType=VARCHAR},
+		#{street,jdbcType=VARCHAR},
+		#{workerName,jdbcType=VARCHAR},
+		#{workerPhone,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<update id="updateProject">
+		update so_project set
+		project_name =
+		#{projectName,jdbcType=VARCHAR},
+		type=#{type,jdbcType=INTEGER},
+		capability=#{capability,jdbcType=INTEGER},
+		emission_standards=#{emissionStandards,jdbcType=INTEGER},
+		location_id=#{locationId,jdbcType=VARCHAR},
+		street=#{street,jdbcType=VARCHAR},
+		worker_name=#{workerName,jdbcType=VARCHAR},
+		worker_phone=#{workerPhone,jdbcType=VARCHAR}
+	</update>
+
+	<delete id="deleteProject" parameterType="java.lang.Long">
+		delete
+		from so_project
+		where id = #{id,jdbcType=BIGINT}
+	</delete>
+
+
+
+	<select id="queryProjectByLocationId" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		id,
+		project_name,
+		type,
+		location_id
+		from so_project
+		where
+		location_id like
+		concat(#{locationId,jdbcType=VARCHAR},'%')
+	</select>
+
+	<select id="queryProjectByLocationIds" resultMap="BaseResultMap">
+		<foreach collection="locationIds" item="locationId" separator=" ">
+			select
+			id,
+			project_name,
+			type,
+			location_id
+			from so_project
+			where
+			location_id
+			like
+			concat(#{locationId,jdbcType=VARCHAR},'%')
+			union
+		</foreach>
+		select
+		id,
+		project_name,
+		type,
+		location_id
+		from so_project
+		where 1=0
+
+	</select>
+</mapper>

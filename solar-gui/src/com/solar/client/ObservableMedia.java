@@ -1,9 +1,13 @@
 package com.solar.client;
 
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Observable;
+import java.util.Set;
 
 import com.solar.client.net.NetConf;
+import com.solar.common.context.Consts.ProjectType;
 import com.solar.entity.SoAccount;
 import com.solar.entity.SoAppVersion;
 import com.solar.entity.SoDataServerInfo;
@@ -13,6 +17,59 @@ import com.solar.entity.SoVCode;
 
 public class ObservableMedia extends Observable {
 	HostClient hostClient = null;
+
+	private SoAccount sessionAccount;
+
+	private Set<String> sunPowerLocationFilterSet = new HashSet<>();
+	private Set<String> smartLocationFilterSet = new HashSet<>();
+
+	public void setSessionAccount(SoAccount sessionAccount) {
+		this.sessionAccount = sessionAccount;
+		if (sessionAccount != null) {
+			projectLocationFilterSet();
+		}
+	}
+
+	public SoAccount getSessionAccount() {
+		return sessionAccount;
+	}
+
+	public Set<String> getSunPowerLocationFilterSet() {
+		return sunPowerLocationFilterSet;
+	}
+
+	public Set<String> getSmartLocationFilterSet() {
+		return smartLocationFilterSet;
+	}
+
+	private void projectLocationFilterSet() {
+		List<SoProject> projects = sessionAccount.getProjects();
+		if (projects == null)
+			return;
+		for (SoProject soProject : projects) {
+
+			String locationId = soProject.getLocationId();
+			String provinceId = locationId.substring(0, 2) + "0000";
+			String cityId = locationId.substring(0, 4) + "00";
+
+			int type = soProject.getType();
+			ProjectType pt = ProjectType.type(type);
+			switch (pt) {
+			case SUN_POWER:
+				sunPowerLocationFilterSet.add(locationId);
+				sunPowerLocationFilterSet.add(provinceId);
+				sunPowerLocationFilterSet.add(cityId);
+				break;
+			case SMART:
+				smartLocationFilterSet.add(locationId);
+				smartLocationFilterSet.add(provinceId);
+				smartLocationFilterSet.add(cityId);
+				break;
+			default:
+				break;
+			}
+		}
+	}
 
 	public static void main(String[] args) {
 		long t = System.currentTimeMillis();
@@ -128,9 +185,10 @@ public class ObservableMedia extends Observable {
 		hostClient.regiest(account);
 		setChanged();
 	}
-	
+
 	public void getVCode(SoVCode soVCode) {
 		hostClient.getVCode(soVCode);
 		setChanged();
 	}
+
 }

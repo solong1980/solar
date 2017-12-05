@@ -8,7 +8,8 @@ import com.solar.entity.SoAccountLocation;
 
 public interface SoAccountLocationMapper {
 
-	List<SoAccountLocation> selectByAccountId(String accountId);
+	List<SoAccountLocation> selectByAccountId(Long accountId);
 
 	void addAccountLocations(@Param("locations") List<SoAccountLocation> accountLocations);
+
 }

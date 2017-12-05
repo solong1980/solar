@@ -10,8 +10,8 @@
 
 	<sql id="Columns">
 		id,
-		accountId,
-		locationId,
+		account_id,
+		location_id,
 		create_time
 	</sql>
 
@@ -22,7 +22,7 @@
 		<include refid="Columns" />
 		from so_account_location
 		where account_id =
-		#{accountId,jdbcType=INTEGER}
+		#{accountId,jdbcType=BIGINT}
 	</select>
 
 	<insert id="addAccountLocations" parameterType="com.solar.entity.SoAccountLocation"

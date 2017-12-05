@@ -1,7 +1,6 @@
 package com.solar.gui.module.working.fuc;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -14,6 +13,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 
 import com.solar.gui.component.BezierAnimationPanel;
@@ -24,6 +24,9 @@ import com.solar.gui.module.working.BasePanel;
  */
 @SuppressWarnings("serial")
 public class IndexPanel extends BasePanel {
+
+	JSplitPane splitPane = null;
+
 	JScrollPane projectPanel;
 
 	// JPanel dashPanel;
@@ -231,11 +234,17 @@ public class IndexPanel extends BasePanel {
 
 	public IndexPanel() {
 		super(new BorderLayout(5, 5));
+
 		JPanel projectPanel = createTree();
 		JPanel dashPanel = createDashpanel();
-		add(projectPanel, BorderLayout.WEST);
-		dashPanel.setBorder(BorderFactory.createLineBorder(Color.RED));
-		add(dashPanel, BorderLayout.CENTER);
+		// add(projectPanel, BorderLayout.WEST);
+		//dashPanel.setBorder(BorderFactory.createLineBorder(Color.RED));
+
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, projectPanel, dashPanel);
+		splitPane.setContinuousLayout(true);
+		splitPane.setOneTouchExpandable(true);
+		splitPane.setDividerSize(5);
+		add(splitPane, BorderLayout.CENTER);
 	}
 
 }

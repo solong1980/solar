@@ -59,16 +59,22 @@ public class VcodeGetCmdProcessor extends MsgProcessor implements INotAuthProces
 			case REGIEST:
 				genVcode = accountService.genVcode();
 				sessionContext.put(Consts.REGIEST_VCODE_KEY, genVcode);
-
 				break;
 			default:
 				genVcode = accountFindService.genVcode();
 				sessionContext.put(Consts.ACCOUNT_FIND_VCODE_KEY, genVcode);
 				break;
 			}
+			logger.info("session:" + appSession.getSessionID() + ",send to phone:" + soVCode.getPhone() + ",vcode: "
+					+ genVcode);
 			soVCode.setVcode(genVcode);
+
 			// 发送短信
-			logger.info("send vcode:" + genVcode);
+//			SendSmsResponse smsResponse = PublishSMSMessage.sendVCode(genVCodeType, appSession.getSessionID(),
+//					soVCode.getPhone(), JsonUtilTool.toJson(soVCode));
+//			if (smsResponse == null || smsResponse.getCode() == "") {
+//
+//			}
 			appSession.sendMsg(new VCodeResponse(JsonUtilTool.toJson(soVCode)));
 		}
 	}

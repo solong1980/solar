@@ -30,7 +30,7 @@ public abstract class MinaClient {
 	private void bSocket() throws UnknownHostException, IOException {
 		close();
 		socket = new Socket(this.netConf.getDataServerIP(), this.netConf.getDataServerPort());
-		socket.setSoTimeout(SOCKET_TIMEOUT);
+		//socket.setSoTimeout(SOCKET_TIMEOUT);
 		int tr = 5;
 		while (!socket.isConnected() && (tr--) >= 0) {
 			sleep();

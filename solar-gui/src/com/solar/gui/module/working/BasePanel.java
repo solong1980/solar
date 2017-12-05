@@ -5,22 +5,26 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.awt.Rectangle;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URL;
+import java.util.Set;
 
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
+
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.solar.client.ObservableMedia;
+import com.solar.common.context.Consts.AddrType;
+import com.solar.common.util.LocationLoader;
+import com.solar.gui.component.model.TreeAddr;
 
 @SuppressWarnings("serial")
 public class BasePanel extends JPanel {
@@ -70,58 +74,91 @@ public class BasePanel extends JPanel {
 	}
 
 	public JPanel createTree() {
-		DefaultMutableTreeNode[] tops = new DefaultMutableTreeNode[2];
+		// 如果是管理员则加载所有地址
+		// 如果是维护或局方则查询后台,或者在登陆的时候保存管辖位置数据
+		JPanel jp = new JPanel();
+		Set<String> sunPowerFilterSet = ObservableMedia.getInstance().getSunPowerLocationFilterSet();
+		Set<String> smartFilterSet = ObservableMedia.getInstance().getSmartLocationFilterSet();
 
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
-		tops[0] = new DefaultMutableTreeNode(getBoldHTML("太阳能污水处理系统"));
-		tops[1] = new DefaultMutableTreeNode(getBoldHTML("智能运维系统"));
-		root.add(tops[0]);
-		root.add(tops[1]);
+		DefaultMutableTreeNode sumPowerNode = new DefaultMutableTreeNode(getBoldHTML("太阳能污水处理系统"));
+		DefaultMutableTreeNode smartNode = new DefaultMutableTreeNode(getBoldHTML("智能运维系统"));
+		root.add(sumPowerNode);
+		root.add(smartNode);
 
-		DefaultMutableTreeNode catagory = null;
-		DefaultMutableTreeNode artist = null;
-		DefaultMutableTreeNode record = null;
+		JSONObject locations = LocationLoader.loadLocation();
+		JSONArray provinces = locations.getJSONArray("Province");
+		for (int i = 0; i < provinces.size(); i++) {
+			JSONObject province = provinces.getJSONObject(i);
+			String provinceid = province.getString("Id");
+			if (!sunPowerFilterSet.contains(provinceid))
+				continue;
 
-		// open tree data
-		URL url = getClass().getResource("/resources/tree.txt");
+			String provinceName = province.getString("Name");
+			DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(
+					new TreeAddr(AddrType.PROVINCE, provinceid, provinceName));
+			sumPowerNode.add(node1);
+			JSONArray cities = province.getJSONArray("City");
+			for (int j = 0; j < cities.size(); j++) {
+				JSONObject city = cities.getJSONObject(j);
+				String cityid = city.getString("Id");
+				if (!sunPowerFilterSet.contains(cityid))
+					continue;
 
-		try {
-			// convert url to buffered string
-			InputStream is = url.openStream();
-			InputStreamReader isr = new InputStreamReader(is, "UTF-8");
-			BufferedReader reader = new BufferedReader(isr);
+				String cityName = city.getString("Name");
+				DefaultMutableTreeNode node2 = new DefaultMutableTreeNode(
+						new TreeAddr(AddrType.CITY, cityid, cityName));
+				node1.add(node2);
 
-			// read one line at a time, put into tree
-			String line = reader.readLine();
-			while (line != null) {
-				// System.out.println("reading in: ->" + line + "<-");
-				char linetype = line.charAt(0);
-				switch (linetype) {
-				case 'C':
-					catagory = new DefaultMutableTreeNode("湖北");
-					tops[0].add(catagory);
-					break;
-				case 'A':
-					if (catagory != null) {
-						catagory.add(artist = new DefaultMutableTreeNode("湖南"));
-					}
-					break;
-				case 'R':
-					if (artist != null) {
-						artist.add(record = new DefaultMutableTreeNode("江西"));
-					}
-					break;
-				case 'S':
-					if (record != null) {
-						record.add(new DefaultMutableTreeNode(line.substring(2)));
-					}
-					break;
-				default:
-					break;
+				JSONArray areas = city.getJSONArray("Area");
+				for (int k = 0; k < areas.size(); k++) {
+					JSONObject area = areas.getJSONObject(k);
+					String areaid = area.getString("Id");
+					if (!sunPowerFilterSet.contains(areaid))
+						continue;
+
+					String areaName = area.getString("Name");
+					DefaultMutableTreeNode node3 = new DefaultMutableTreeNode(
+							new TreeAddr(AddrType.AREA, areaid, areaName));
+					node2.add(node3);
 				}
-				line = reader.readLine();
 			}
-		} catch (IOException e) {
+		}
+
+		for (int i = 0; i < provinces.size(); i++) {
+			JSONObject province = provinces.getJSONObject(i);
+			String provinceid = province.getString("Id");
+			if (!smartFilterSet.contains(provinceid))
+				continue;
+			
+			String provinceName = province.getString("Name");
+			DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(
+					new TreeAddr(AddrType.PROVINCE, provinceid, provinceName));
+			smartNode.add(node1);
+			JSONArray cities = province.getJSONArray("City");
+			for (int j = 0; j < cities.size(); j++) {
+				JSONObject city = cities.getJSONObject(j);
+				String cityid = city.getString("Id");
+				if (!smartFilterSet.contains(cityid))
+					continue;
+				
+				String cityName = city.getString("Name");
+				DefaultMutableTreeNode node2 = new DefaultMutableTreeNode(
+						new TreeAddr(AddrType.CITY, cityid, cityName));
+				node1.add(node2);
+				JSONArray areas = city.getJSONArray("Area");
+				for (int k = 0; k < areas.size(); k++) {
+					JSONObject area = areas.getJSONObject(k);
+					String areaid = area.getString("Id");
+					if (!smartFilterSet.contains(areaid))
+						continue;
+					
+					String areaName = area.getString("Name");
+					DefaultMutableTreeNode node3 = new DefaultMutableTreeNode(
+							new TreeAddr(AddrType.AREA, areaid, areaName));
+					node2.add(node3);
+				}
+			}
 		}
 
 		tree = new JTree(root) {
@@ -132,10 +169,17 @@ public class BasePanel extends JPanel {
 		tree.setRootVisible(false);
 		tree.setEditable(false);
 
-		JPanel jp = new JPanel();
 		jp.setLayout(new BorderLayout());
 		jp.add(new JLabel("项目列表", SwingConstants.CENTER), BorderLayout.NORTH);
 		jp.add(new JScrollPane(tree), BorderLayout.CENTER);
 		return jp;
+	}
+
+	public void showErrorDailog(String title, String msg) {
+		JOptionPane.showMessageDialog(this, msg, title, JOptionPane.ERROR_MESSAGE);
+	}
+
+	public void showWarningDailog(String title, String msg) {
+		JOptionPane.showMessageDialog(this, msg, title, JOptionPane.WARNING_MESSAGE);
 	}
 }

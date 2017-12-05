@@ -6,8 +6,6 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.solar.db.dao.SoAccountLocationMapper;
-import com.solar.db.dao.SoAccountMapper;
-import com.solar.entity.SoAccount;
 import com.solar.entity.SoAccountLocation;
 
 public class SoAccountLocationDao implements SoAccountLocationMapper {
@@ -18,7 +16,7 @@ public class SoAccountLocationDao implements SoAccountLocationMapper {
 	}
 
 	@Override
-	public List<SoAccountLocation> selectByAccountId(String accountId) {
+	public List<SoAccountLocation> selectByAccountId(Long accountId) {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
 			SoAccountLocationMapper mapper = sqlSession.getMapper(SoAccountLocationMapper.class);
