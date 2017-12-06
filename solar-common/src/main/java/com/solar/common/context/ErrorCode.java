@@ -1,7 +1,8 @@
 package com.solar.common.context;
 
 public class ErrorCode {
-
+	public static String Error_000001 = "消息为空,请不要乱发";
+	
 	public static String Error_000002 = "还没有登录/接入";
 	public static String Error_000003 = "帐号不存在";
 	public static String Error_000004 = "帐号密码错误";
@@ -10,9 +11,8 @@ public class ErrorCode {
 	public static String Error_000007 = "未指定校验码类型";
 	
 	public static String Error_000008 = "验证码不正确";
+	public static String Error_000009 = "验证码还未生成或已失效";
 	
-	
-	public static String Error_000009 = "摸牌出錯";
 	public static String Error_000010 = "房间次数已经用完";
 	public static String Error_000011 = "房间人已经满了";
 	public static String Error_000012 = "房间不存在";

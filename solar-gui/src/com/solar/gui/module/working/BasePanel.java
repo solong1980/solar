@@ -63,8 +63,8 @@ public class BasePanel extends JPanel {
 		// delBtn.setOpaque(true);
 		// forbBtn.setOpaque(true);
 		btn.setMargin(new Insets(0, 0, 0, 0));
-		btn.setBounds(new Rectangle(0, 0, 30, 30));
-		btn.setPreferredSize(new Dimension(40, 30));
+		//btn.setBounds(new Rectangle(0, 0, 30, 30));
+		//btn.setPreferredSize(new Dimension(40, 30));
 		// Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
 		// delBtn.setFont(font);
 		// delBtn.setBorder(new EmptyBorder(0, 0, 40, 0));

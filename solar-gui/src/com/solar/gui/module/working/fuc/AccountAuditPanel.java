@@ -2,18 +2,12 @@ package com.solar.gui.module.working.fuc;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
-import java.util.List;
 import java.util.Observer;
 
 import javax.swing.AbstractAction;
-import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -26,13 +20,12 @@ import com.solar.client.ObservableMedia;
 import com.solar.client.SoRet;
 import com.solar.common.context.ActionType;
 import com.solar.common.context.ConnectAPI;
-import com.solar.common.context.Consts;
 import com.solar.entity.SoAbt;
-import com.solar.entity.SoDevConfig;
 import com.solar.entity.SoProject;
 import com.solar.gui.component.AddressTreeField;
 import com.solar.gui.component.DeviceTreeField;
-import com.solar.gui.component.model.TreeAddr;
+import com.solar.gui.component.FindbackAuditPanel;
+import com.solar.gui.component.RegiestAuditPanel;
 import com.solar.gui.module.working.BasePanel;
 
 @SuppressWarnings("serial")
@@ -51,9 +44,9 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 	private JTextField workerContactField;
 
 	public JTabbedPane createEditor() {
-		JTabbedPane auditPanel = new  JTabbedPane();
-		auditPanel.add("注册信息", new JPanel());
-		auditPanel.add("找回信息", new JPanel());
+		JTabbedPane auditPanel = new JTabbedPane();
+		auditPanel.add("注册信息", new RegiestAuditPanel());
+		auditPanel.add("找回信息", new FindbackAuditPanel());
 		return auditPanel;
 	}
 

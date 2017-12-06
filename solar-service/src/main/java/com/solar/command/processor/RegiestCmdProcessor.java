@@ -12,6 +12,7 @@ import com.solar.common.annotation.ProcessCMD;
 import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.Consts;
 import com.solar.common.context.ErrorCode;
+import com.solar.common.context.SuccessCode;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.INotAuthProcessor;
 import com.solar.controller.common.MsgProcessor;
@@ -42,7 +43,7 @@ public class RegiestCmdProcessor extends MsgProcessor implements INotAuthProcess
 		SoAccount account = JsonUtilTool.fromJson(json, SoAccount.class);
 		if (null == account) {
 			account = new SoAccount();
-			account.setMsg(ErrorCode.Error_000003);
+			account.setMsg(ErrorCode.Error_000001);
 			account.setRetCode(SoAccount.FAILURE);
 			appSession.sendMsg(new AccountAddResponse(JsonUtilTool.toJson(account)));
 		} else {
@@ -50,7 +51,11 @@ public class RegiestCmdProcessor extends MsgProcessor implements INotAuthProcess
 			Map<String, Object> sessionContext = SolarCache.getInstance().getSessionContext(appSession.getSessionID());
 			Object object = sessionContext.get(Consts.REGIEST_VCODE_KEY);
 			if (null == object) {
-				// 失效
+				// 未生成验证码
+				account = new SoAccount();
+				account.setRetCode(SoAccount.FAILURE);
+				account.setMsg(ErrorCode.Error_000009);
+				appSession.sendMsg(new AccountAddResponse(JsonUtilTool.toJson(account)));
 			} else if (vcode == null || !vcode.equals(object)) {
 				// 验证码不对
 				account = new SoAccount();
@@ -61,6 +66,7 @@ public class RegiestCmdProcessor extends MsgProcessor implements INotAuthProcess
 				accountService.regiest(account);
 				account = new SoAccount();
 				account.setRetCode(SoAccount.SUCCESS);
+				account.setMsg(SuccessCode.Sucess_000001);
 				appSession.sendMsg(new AccountAddResponse(JsonUtilTool.toJson(account)));
 				sessionContext.remove(Consts.REGIEST_VCODE_KEY);
 			}
