@@ -9,6 +9,7 @@ import java.util.Set;
 import com.solar.client.net.NetConf;
 import com.solar.common.context.Consts.ProjectType;
 import com.solar.entity.SoAccount;
+import com.solar.entity.SoAccountFind;
 import com.solar.entity.SoAppVersion;
 import com.solar.entity.SoDataServerInfo;
 import com.solar.entity.SoDevices;
@@ -43,6 +44,8 @@ public class ObservableMedia extends Observable {
 	}
 
 	private void projectLocationFilterSet() {
+		if (sessionAccount == null)
+			return;
 		List<SoProject> projects = sessionAccount.getProjects();
 		if (projects == null)
 			return;
@@ -188,6 +191,11 @@ public class ObservableMedia extends Observable {
 
 	public void getVCode(SoVCode soVCode) {
 		hostClient.getVCode(soVCode);
+		setChanged();
+	}
+
+	public void findBack(SoAccountFind accountFind) {
+		hostClient.findBack(accountFind);
 		setChanged();
 	}
 

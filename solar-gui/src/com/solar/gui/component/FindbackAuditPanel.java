@@ -43,12 +43,12 @@ public class FindbackAuditPanel extends JPanel implements Observer {
 
 	final int INITIAL_ROWHEIGHT = 33;
 	JTable regiestTable;
-	final String[] names = { "ID", "用户姓名", "新手机号码", "邮箱地址", "用户类型", "地址", "状态", "操作" };
+	final String[] names = { "ID", "用户姓名", "新手机号码", "用户类型", "地址", "状态", "操作" };
 	String[] optItems = new String[] { "审核通过", "审核不通过" };
 	DefaultTableModel dataModel;
 
 	public FindbackAuditPanel() {
-		regiestAuditPanel();
+		findBackAuditPanel();
 	}
 
 	public void updateData(final Object[][] data) {
@@ -61,9 +61,9 @@ public class FindbackAuditPanel extends JPanel implements Observer {
 
 	public JScrollPane createTable() {
 
-		final Object[][] data = { { "1", "龙良华名", "1567323233", "long@test.com", "环保菊",
+		final Object[][] data = { { "1", "龙良华名", "1567323233", "环保菊",
 				"北京->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa辨别辨别",
-				" 审核通过", optItems }, { "2", "郑辉", "1597323233", "zhen@test.com", "环保菊", "天津,广州", " 审核通过", optItems } };
+				" 审核通过", optItems }, { "2", "郑辉", "1597323233", "环保菊", "天津,广州", " 待审核", optItems } };
 		dataModel = new DefaultTableModel(data, names) {
 			public boolean isCellEditable(int row, int col) {
 				return true;
@@ -91,15 +91,12 @@ public class FindbackAuditPanel extends JPanel implements Observer {
 		columnModel.getColumn(1).setMaxWidth(100);
 		columnModel.getColumn(2).setPreferredWidth(150);
 		columnModel.getColumn(2).setMaxWidth(150);
-		columnModel.getColumn(3).setPreferredWidth(150);
-		columnModel.getColumn(3).setMaxWidth(150);
-		columnModel.getColumn(4).setPreferredWidth(100);
-		columnModel.getColumn(4).setMaxWidth(100);
-
-		columnModel.getColumn(6).setPreferredWidth(100);
-		columnModel.getColumn(6).setMaxWidth(100);
-		columnModel.getColumn(7).setPreferredWidth(150);
-		columnModel.getColumn(7).setMaxWidth(150);
+		columnModel.getColumn(3).setPreferredWidth(100);
+		columnModel.getColumn(3).setMaxWidth(100);
+		columnModel.getColumn(5).setPreferredWidth(100);
+		columnModel.getColumn(5).setMaxWidth(100);
+		columnModel.getColumn(6).setPreferredWidth(150);
+		columnModel.getColumn(6).setMaxWidth(150);
 
 		tableView.setFont(new Font("Menu.font", Font.PLAIN, 15));
 		tableView.setRowHeight(INITIAL_ROWHEIGHT);
@@ -115,7 +112,7 @@ public class FindbackAuditPanel extends JPanel implements Observer {
 		return scrollpane;
 	}
 
-	public void regiestAuditPanel() {
+	public void findBackAuditPanel() {
 		regiestTable = new JTable();
 		setLayout(new BorderLayout());
 		JScrollPane scrollTablePanel = createTable();

@@ -1,14 +1,16 @@
 package com.solar.entity;
 
+import java.util.List;
+
 @SuppressWarnings("serial")
 public class SoAccountFind extends SoAbtAuth {
 
 	private Long id;
 	private String name;
 	private String phone;
-	private String locationId;
+	private String locationIds;
+	private List<SoAccountLocation> locations;
 	private int type;// 用户类型
-	private String password;
 	private String createTime;
 	private String vcode;
 
@@ -36,12 +38,20 @@ public class SoAccountFind extends SoAbtAuth {
 		this.phone = phone;
 	}
 
-	public String getLocationId() {
-		return locationId;
+	public String getLocationIds() {
+		return locationIds;
 	}
 
-	public void setLocationId(String locationId) {
-		this.locationId = locationId;
+	public void setLocationIds(String locationIds) {
+		this.locationIds = locationIds;
+	}
+
+	public List<SoAccountLocation> getLocations() {
+		return locations;
+	}
+
+	public void setLocations(List<SoAccountLocation> locations) {
+		this.locations = locations;
 	}
 
 	public int getType() {
@@ -50,14 +60,6 @@ public class SoAccountFind extends SoAbtAuth {
 
 	public void setType(int type) {
 		this.type = type;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
 	}
 
 	public String getCreateTime() {

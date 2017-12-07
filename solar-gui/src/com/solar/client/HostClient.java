@@ -16,6 +16,7 @@ import com.solar.client.net.MinaClient;
 import com.solar.client.net.NetConf;
 import com.solar.common.context.ConnectAPI;
 import com.solar.entity.SoAccount;
+import com.solar.entity.SoAccountFind;
 import com.solar.entity.SoAppVersion;
 import com.solar.entity.SoDataServerInfo;
 import com.solar.entity.SoDevices;
@@ -277,6 +278,12 @@ public class HostClient extends MinaClient {
 		String json = JsonUtilTool.toJson(soVCode);
 		System.out.println(json);
 		send(ConnectAPI.VCODE_GET_COMMAND, json);
+	}
+
+	public void findBack(SoAccountFind accountFind) {
+		String json = JsonUtilTool.toJson(accountFind);
+		System.out.println(json);
+		send(ConnectAPI.ACCOUNT_FINDBACK_COMMAND, json);
 	}
 
 }

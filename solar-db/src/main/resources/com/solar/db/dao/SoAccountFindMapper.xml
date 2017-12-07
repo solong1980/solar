@@ -5,7 +5,7 @@
 		<id column="id" jdbcType="BIGINT" property="id" />
 		<result column="name" jdbcType="VARCHAR" property="name" />
 		<result column="phone" jdbcType="VARCHAR" property="phone" />
-		<result column="location_id" jdbcType="VARCHAR" property="locationId" />
+		<result column="location_ids" jdbcType="VARCHAR" property="locationIds" />
 		<result column="address" jdbcType="VARCHAR" property="address" />
 		<result column="type" jdbcType="INTEGER" property="type" />
 		<result column="vcode" jdbcType="VARCHAR" property="vcode" />
@@ -17,8 +17,7 @@
 		name,
 		phone,
 		type,
-		location_id,
-		address,
+		location_ids,
 		vcode,
 		create_time
 	</sql>
@@ -29,16 +28,14 @@
 		name,
 		phone,
 		type,
-		location_id,
-		address,
+		location_ids,
 		vcode
 		)
 		values (
 		#{name,jdbcType=VARCHAR},
 		#{phone,jdbcType=VARCHAR},
 		#{type,jdbcType=VARCHAR},
-		#{locationId,jdbcType=VARCHAR},
-		#{address,jdbcType=INTEGER},
+		#{locationIds,jdbcType=VARCHAR},
 		#{vcode,jdbcType=VARCHAR}
 		)
 	</insert>

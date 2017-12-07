@@ -19,6 +19,7 @@ public class SoAccountFindService {
 
 	private static SoAccountFindService accountService = new SoAccountFindService();
 	private SoAccountFindMapper accountFindDao;
+	
 	private AtomicLong SEED_LINE = new AtomicLong(System.currentTimeMillis());
 
 	public SoAccountFindService() {
@@ -33,8 +34,8 @@ public class SoAccountFindService {
 		accountFindDao = new SoAccountFindDao(sqlSessionFactory);
 	}
 
-	public void findAccount(SoAccountFind accountFind) {
-		logger.error("account findback");
+	public void addAccountFind(SoAccountFind accountFind) {
+		logger.error("add account findback");
 		accountFindDao.addAccountFind(accountFind);
 	}
 

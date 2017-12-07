@@ -5,8 +5,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.Observer;
 
@@ -14,7 +12,6 @@ import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -27,9 +24,10 @@ import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
 import com.solar.gui.module.working.BasePanel;
+import com.solar.gui.module.working.fuc.AccountAuditPanel.AuditAction;
 
 @SuppressWarnings("serial")
-public class RegiestAuditPanel extends JPanel implements Observer{
+public class RegiestAuditPanel extends JPanel implements Observer {
 
 	public static void main(String[] args) {
 		JFrame frame = new JFrame();
@@ -47,7 +45,16 @@ public class RegiestAuditPanel extends JPanel implements Observer{
 	String[] optItems = new String[] { "审核通过", "审核不通过" };
 	DefaultTableModel dataModel;
 
+	AuditAction agreeAction;
+	AuditAction rejectAction;
+
 	public RegiestAuditPanel() {
+		regiestAuditPanel();
+	}
+
+	public RegiestAuditPanel(AuditAction agreeAction, AuditAction rejectAction) {
+		this.agreeAction = agreeAction;
+		this.rejectAction = rejectAction;
 		regiestAuditPanel();
 	}
 
@@ -63,8 +70,8 @@ public class RegiestAuditPanel extends JPanel implements Observer{
 
 		final Object[][] data = { { "1", "Albers", "龙良华名", "1567323233", "long@test.com", "环保菊",
 				"北京->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa辨别辨别",
-				" 审核通过", optItems },
-				{ "2", "Blerm", "郑辉", "1597323233", "zhen@test.com", "环保菊", "天津,广州", " 审核通过", optItems } };
+				" 审核通过", new int[] { 1, 10 } },
+				{ "2", "Blerm", "郑辉", "1597323233", "zhen@test.com", "环保菊", "天津,广州", " 审核通过", new int[] { 2, 10 } } };
 		dataModel = new DefaultTableModel(data, names) {
 			public boolean isCellEditable(int row, int col) {
 				return true;
@@ -156,42 +163,53 @@ public class RegiestAuditPanel extends JPanel implements Observer{
 				setBackground(UIManager.getColor("Button.background"));
 			}
 			// 传入状态,id等信息,用于绑定事件,设置是否disable
+			int[] v = (int[]) value;
+			if (v[1] == 60 | v[1] == 50) {
+				removeAll();
+				repaint();
+			} else {
+				add(agreeBtn);
+				add(rejectBtn);
+				agreeBtn.setActionCommand(Integer.toString(v[0]));
+				rejectBtn.setActionCommand(Integer.toString(v[0]));
+			}
 			return this;
 		}
 	}
 
 	class OperateBtnGroupEditor extends DefaultCellEditor {
-		JPanel jPanel;
-		JButton agreeBtn;
-		JButton rejectBtn;
-
-		private Object label;
-		private boolean isPushed;
-
-		private int row;
-		private JTable table;
+		private Object value;
 
 		public OperateBtnGroupEditor(JCheckBox checkBox) {
 			super(checkBox);
-			jPanel = new JPanel();
-			jPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
-			agreeBtn = BasePanel.createTableButton("审核通过");
-			rejectBtn = BasePanel.createTableButton("审核不通过");
-			agreeBtn.setOpaque(true);
-			rejectBtn.setOpaque(true);
-			// 传入状态,id等信息,用于绑定事件,设置是否disable
-			jPanel.add(agreeBtn);
-			jPanel.add(rejectBtn);
-			agreeBtn.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					fireEditingStopped();
-					System.out.println("-----------------------" + table.getModel().getValueAt(row, 1).toString());
-				}
-			});
 		}
 
 		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row,
 				int column) {
+			JPanel jPanel;
+			JButton agreeBtn;
+			JButton rejectBtn;
+			jPanel = new JPanel();
+			jPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+			int[] v = (int[]) value;
+			if (v[1] == 60 | v[1] == 50) {
+				jPanel.removeAll();
+				repaint();
+			} else {
+				agreeBtn = BasePanel.createTableButton("审核通过");
+				agreeBtn.setActionCommand(Integer.toString(v[0]));
+				agreeBtn.addActionListener(agreeAction);
+				rejectBtn = BasePanel.createTableButton("审核不通过");
+				rejectBtn.setActionCommand(Integer.toString(v[0]));
+				rejectBtn.addActionListener(rejectAction);
+				agreeBtn.setOpaque(true);
+				rejectBtn.setOpaque(true);
+				// 传入状态,id等信息,用于绑定事件,设置是否disable
+				jPanel.add(agreeBtn);
+				jPanel.add(rejectBtn);
+
+			}
 			if (isSelected) {
 				jPanel.setForeground(table.getSelectionForeground());
 				jPanel.setBackground(table.getSelectionBackground());
@@ -200,27 +218,16 @@ public class RegiestAuditPanel extends JPanel implements Observer{
 				jPanel.setBackground(table.getBackground());
 			}
 
-			this.row = row;
-			this.table = table;
-
-			String[] optItems = (String[]) value;
-			label = value;
-			agreeBtn.setText(optItems[0]);
-			rejectBtn.setText(optItems[1]);
-			isPushed = true;
+			// value穿id号
+			this.value = value;
 			return jPanel;
 		}
 
 		public Object getCellEditorValue() {
-			if (isPushed) {
-				JOptionPane.showMessageDialog(agreeBtn, label.toString() + ": Ouch!");
-			}
-			isPushed = false;
-			return label;
+			return value;
 		}
 
 		public boolean stopCellEditing() {
-			isPushed = false;
 			return super.stopCellEditing();
 		}
 
@@ -228,7 +235,11 @@ public class RegiestAuditPanel extends JPanel implements Observer{
 			super.fireEditingStopped();
 		}
 	}
-
+	
+	public void reload() {
+		
+	}
+	
 	@Override
 	public void update(java.util.Observable o, Object arg) {
 		

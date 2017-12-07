@@ -1,5 +1,6 @@
 package com.solar.controller.common;
 
+import com.solar.command.processor.AccountFindbackCmdProcessor;
 import com.solar.command.processor.AppUpgradeCmdProcessor;
 import com.solar.command.processor.AppVersionCmdProcessor;
 import com.solar.command.processor.DataServerInfoCmdProcessor;
@@ -43,6 +44,8 @@ public enum MsgProcessorRegister {
 	VCODE_GET_COMMAND(ConnectAPI.VCODE_GET_COMMAND, new VcodeGetCmdProcessor()),
 
 	PROJECT_ADD_COMMAND(ConnectAPI.PROJECT_ADD_COMMAND, new ProjectAddCmdProcessor()),
+
+	ACCOUNT_FINDBACK_COMMAND(ConnectAPI.ACCOUNT_FINDBACK_COMMAND, new AccountFindbackCmdProcessor()),
 
 	// 内部使用，服务端通知客户端断开
 	EMPYTCOMMAND(ConnectAPI.ZERO_RESPONSE, new OpenAppMsgProcessor());

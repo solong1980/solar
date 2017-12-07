@@ -32,21 +32,28 @@ import com.solar.gui.module.working.BasePanel;
 public class AccountAuditPanel extends BasePanel implements Observer {
 
 	private SoProject soProject;
-	private JTextField nameField;
-	private JComboBox<String> projectTypeField;
-	private AddressTreeField addressField;
-	private JTextField streetField;
-	private JComboBox<String> emissionStandardsField;
-	private DeviceTreeField equipmentField;
-	private JComboBox<String> capabilityField;
 
-	private JTextField workerNameField;
-	private JTextField workerContactField;
+	RegiestAuditPanel regiestAuditPanel;
+	FindbackAuditPanel findbackAuditPanel;
+
+	AuditAction regiestAuditAgreeAction;
+	AuditAction regiestAuditRejectAction;
+	AuditAction accountFindbackAgreeAction;
+	AuditAction accountFindbackRejectAction;
 
 	public JTabbedPane createEditor() {
 		JTabbedPane auditPanel = new JTabbedPane();
-		auditPanel.add("注册信息", new RegiestAuditPanel());
-		auditPanel.add("找回信息", new FindbackAuditPanel());
+
+		regiestAuditAgreeAction = new AuditAction(ActionType.REGIEST_ADUIT_AGREE, this);
+		regiestAuditRejectAction = new AuditAction(ActionType.REGIEST_ADUIT_REJECT, this);
+		accountFindbackAgreeAction = new AuditAction(ActionType.ACCOUNT_FINDBACK_ADUIT_AGREE, this);
+		accountFindbackRejectAction = new AuditAction(ActionType.ACCOUNT_FINDBACK_ADUIT_REJECT, this);
+
+		regiestAuditPanel = new RegiestAuditPanel(regiestAuditAgreeAction, regiestAuditRejectAction);
+		findbackAuditPanel = new FindbackAuditPanel(/* accountFindbackAgreeAction, accountFindbackRejectAction */);
+
+		auditPanel.add("注册信息", regiestAuditPanel);
+		auditPanel.add("找回信息", findbackAuditPanel);
 		return auditPanel;
 	}
 
@@ -66,7 +73,7 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 		return menuBar;
 	}
 
-	class AuditAction extends AbstractAction {
+	public class AuditAction extends AbstractAction {
 		private static final long serialVersionUID = -6048630218852730717L;
 		private ActionType operate;
 		private JComponent parent;
@@ -77,18 +84,13 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 		}
 
 		public void actionPerformed(ActionEvent e) {
+			System.out.println("Action--------------------" + e.getActionCommand());
 			ObservableMedia instance = ObservableMedia.getInstance();
 			switch (operate) {
-			case PROJECT_NEW:
-				nameField.setText("");
-				projectTypeField.setSelectedItem(null);
-				addressField.cleanSelected();
-				streetField.setText("");
-				emissionStandardsField.setSelectedItem(null);
-				capabilityField.setSelectedItem(null);
-				equipmentField.cleanSelected();
-				workerNameField.setText("");
-				workerContactField.setText("");
+			case ACCOUNT_FINDBACK_ADUIT_AGREE:
+			case ACCOUNT_FINDBACK_ADUIT_REJECT:
+			case REGIEST_ADUIT_AGREE:
+			case REGIEST_ADUIT_REJECT:
 				soProject = new SoProject();
 				break;
 			default:
@@ -115,8 +117,16 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 				JOptionPane.showMessageDialog(this, ret.getRet());
 			}
 			switch (code) {
-			case ConnectAPI.PROJECT_ADD_RESPONSE:
-				break;
+			// case ConnectAPI.ACCOUNT_ADD_NEXTPAGE_RESPONSE:
+			// break;
+			// case ConnectAPI.ACCOUNT_FINDBACK_NEXTPAGE_RESPONSE:
+			// break;
+			// case ConnectAPI.ACCOUNT_ADD_ADUIT_RESPONSE:
+			// break;
+			// case ConnectAPI.ACCOUNT_FINDBACK_ADUIT_RESPONSE:
+			// break;
+			// case ConnectAPI.PROJECT_REFRESH_RESPONSE:
+			// break;
 			default:
 				break;
 			}

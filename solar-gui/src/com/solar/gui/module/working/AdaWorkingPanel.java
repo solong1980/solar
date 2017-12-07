@@ -42,6 +42,7 @@ import com.solar.common.context.Consts;
 import com.solar.common.context.Consts.GenVCodeType;
 import com.solar.common.context.RoleType;
 import com.solar.entity.SoAccount;
+import com.solar.entity.SoAccountFind;
 import com.solar.entity.SoAccountLocation;
 import com.solar.entity.SoVCode;
 import com.solar.gui.component.AddressTreeField;
@@ -228,7 +229,6 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 				timerFlag = true;
 				timer.scheduleAtFixedRate(new TimerTask() {
 					int w = SMS_DISABLE_PERIOD;
-
 					@Override
 					public void run() {
 						if (timerFlag) {
@@ -256,13 +256,14 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		timer.cancel();
 		switch (result) {
 		case 0: // yes
-			SoAccount account = new SoAccount();
+			SoAccountFind account = new SoAccountFind();
 			String name = nameField.getText();
-			String phone = newPhoneField.getText();
-
+			String newPhone = newPhoneField.getText();
+			String vcode = vcodeField.getText();
 			account.setName(name);
-			account.setPhone(phone);
-
+			account.setPhone(newPhone);
+			account.setVcode(vcode);
+			
 			int typeIndex = userTypeField.getSelectedIndex();
 			account.setType(Consts.ACCOUNT_TYPE[typeIndex]);
 			List<SoAccountLocation> accountLocations = new ArrayList<>();
@@ -283,7 +284,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 				}
 			}
 			account.setLocations(accountLocations);
-			ObservableMedia.getInstance().regiest(account);
+			ObservableMedia.getInstance().findBack(account);
 			break;
 		case 1: // no
 			break;
@@ -714,6 +715,13 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 				status = ret.getStatus();
 				if (status == 0) {
 					SoAccount account = JsonUtilTool.fromJson(ret.getRet(), SoAccount.class);
+					JOptionPane.showMessageDialog(this, account.getMsg());
+				}
+				break;
+			case ConnectAPI.ACCOUNT_FINDBACK_RESPONSE:
+				status = ret.getStatus();
+				if (status == 0) {
+					SoAccountFind account = JsonUtilTool.fromJson(ret.getRet(), SoAccountFind.class);
 					JOptionPane.showMessageDialog(this, account.getMsg());
 				}
 				break;
