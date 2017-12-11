@@ -9,6 +9,7 @@ import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.Date;
+import java.util.List;
 
 import com.solar.client.http.HttpClientDownloadFile;
 import com.solar.client.msg.ClientSendRequest;
@@ -286,4 +287,15 @@ public class HostClient extends MinaClient {
 		send(ConnectAPI.ACCOUNT_FINDBACK_COMMAND, json);
 	}
 
+	public void accountFindQuery(SoAccountFind soAccountFind) {
+		String json = JsonUtilTool.toJson(soAccountFind);
+		System.out.println(json);
+		send(ConnectAPI.ACCOUNT_FINDBACK_QUERY_COMMAND, json);
+	}
+	
+	public void accountFindAudit(SoAccountFind soAccountFind) {
+		String json = JsonUtilTool.toJson(soAccountFind);
+		System.out.println(json);
+		send(ConnectAPI.ACCOUNT_FINDBACK_AUDIT_COMMAND, json);
+	}
 }

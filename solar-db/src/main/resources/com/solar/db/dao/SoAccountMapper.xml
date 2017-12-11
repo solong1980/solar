@@ -40,6 +40,51 @@
 		where account = #{account,jdbcType=VARCHAR}
 	</select>
 
+	<select id="selectBySoAccount" parameterType="com.solar.entity.SoAccount"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Columns" />
+		from so_account where 1=2
+		<if test="account!=null">
+			union
+			select
+			<include refid="Columns" />
+			from so_account
+			where account = #{account,jdbcType=VARCHAR}
+		</if>
+		<if test="phone!=null">
+			union
+			select
+			<include refid="Columns" />
+			from so_account
+			where phone = #{phone,jdbcType=VARCHAR}
+		</if>
+		<if test="email!=null">
+			union
+			select
+			<include refid="Columns" />
+			from so_account
+			where email = #{email,jdbcType=VARCHAR}
+		</if>
+	</select>
+
+
+	<select id="selectByPhone" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Columns" />
+		from so_account
+		where phone = #{phone,jdbcType=VARCHAR}
+	</select>
+
+
+	<update id="updateAccount" parameterType="com.solar.entity.SoAccount">
+		update so_account
+		set
+		phone=#{phone}, password=#{password}
+		where id=#{id}
+	</update>
+
 	<insert id="addAccount" parameterType="com.solar.entity.SoAccount"
 		useGeneratedKeys="true" keyProperty="id">
 		insert into so_account ( account,

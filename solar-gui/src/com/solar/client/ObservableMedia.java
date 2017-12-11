@@ -7,6 +7,7 @@ import java.util.Observable;
 import java.util.Set;
 
 import com.solar.client.net.NetConf;
+import com.solar.common.context.Consts.AuditResult;
 import com.solar.common.context.Consts.ProjectType;
 import com.solar.entity.SoAccount;
 import com.solar.entity.SoAccountFind;
@@ -199,4 +200,24 @@ public class ObservableMedia extends Observable {
 		setChanged();
 	}
 
+	public void accountFindQuery(SoAccountFind soAccountFind) {
+		hostClient.accountFindQuery(soAccountFind);
+		setChanged();
+	}
+
+	public void accountFindAgree(Long id) {
+		SoAccountFind accountFind = new SoAccountFind();
+		accountFind.setId(id);
+		accountFind.setStatus(AuditResult.AGREE.getStatus());
+		hostClient.accountFindAudit(accountFind);
+		setChanged();
+	}
+
+	public void accountFindReject(Long id) {
+		SoAccountFind accountFind = new SoAccountFind();
+		accountFind.setId(id);
+		accountFind.setStatus(AuditResult.REJECT.getStatus());
+		hostClient.accountFindAudit(accountFind);
+		setChanged();
+	}
 }

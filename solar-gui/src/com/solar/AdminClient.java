@@ -20,6 +20,7 @@ import com.solar.common.context.AppType;
 import com.solar.common.context.Consts;
 import com.solar.common.context.Consts.AddrType;
 import com.solar.entity.SoAccount;
+import com.solar.entity.SoAccountFind;
 import com.solar.entity.SoAccountLocation;
 import com.solar.entity.SoAreas;
 import com.solar.entity.SoCities;
@@ -51,7 +52,8 @@ public class AdminClient extends JFrame {
 		JButton closeButton = new JButton("关闭");
 
 		JButton regiestBtn = new JButton("注册");
-
+		JButton accountFindQueryBtn = new JButton("找回申请");
+		
 		jPanel.add(connectButton);
 		jPanel.add(loginButton);
 		jPanel.add(upConfigButton);
@@ -62,11 +64,16 @@ public class AdminClient extends JFrame {
 		jPanel.add(areaBtn);
 		jPanel.add(regiestBtn);
 		jPanel.add(closeButton);
-
+		jPanel.add(accountFindQueryBtn);
 		getContentPane().add(jPanel);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
-
+		accountFindQueryBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				media.accountFindQuery(new SoAccountFind());
+			}
+		});
 		connectButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -87,7 +94,7 @@ public class AdminClient extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				SoAccount soAccount = new SoAccount();
 				soAccount.setAccount("admin");
-				soAccount.setPassword("1233456");
+				soAccount.setPassword("123456");
 				media.login(soAccount);
 			}
 		});

@@ -66,4 +66,46 @@ public class SoAccountDao implements SoAccountMapper {
 		}
 	}
 
+	@Override
+	public SoAccount selectByPhone(String matchPhone) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoAccountMapper mapper = sqlSession.getMapper(SoAccountMapper.class);
+			SoAccount matchedAccount = mapper.selectByPhone(matchPhone);
+			return matchedAccount;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public void updateAccount(SoAccount account) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoAccountMapper mapper = sqlSession.getMapper(SoAccountMapper.class);
+			mapper.updateAccount(account);
+			sqlSession.commit();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public List<SoAccount> selectBySoAccount(SoAccount account) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoAccountMapper mapper = sqlSession.getMapper(SoAccountMapper.class);
+			List<SoAccount> accounts = mapper.selectBySoAccount(account);
+			return accounts;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
 }

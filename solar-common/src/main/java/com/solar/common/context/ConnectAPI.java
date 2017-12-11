@@ -44,9 +44,10 @@ public class ConnectAPI {
 	public static final int ACCOUNT_DELETE_COMMAND = 0x000019;
 
 	public static final int VCODE_GET_COMMAND = 0x000020;
-	
+
 	public static final int ACCOUNT_FINDBACK_COMMAND = 0x000021;
-	
+	public static final int ACCOUNT_FINDBACK_QUERY_COMMAND = 0x000022;
+	public static final int ACCOUNT_FINDBACK_AUDIT_COMMAND = 0x000023;
 	// 控制终端指令
 	public static final int CTRL_COMMAND = 0x999999;
 
@@ -84,6 +85,9 @@ public class ConnectAPI {
 	public static final int ACCOUNT_DELETE_RESPONSE = 0x100019;
 
 	public static final int VCODE_GET_RESPONSE = 0x000020;
-	
+
 	public static final int ACCOUNT_FINDBACK_RESPONSE = 0x100021;
+	public static final int ACCOUNT_FINDBACK_QUERY_RESPONSE = 0x100022;
+	public static final int ACCOUNT_FINDBACK_AUDIT_RESPONSE = 0x100023;
+
 }

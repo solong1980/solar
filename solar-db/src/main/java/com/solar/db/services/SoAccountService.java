@@ -49,6 +49,15 @@ public class SoAccountService {
 		return accountDao.selectByAccount(acc);
 	}
 
+	/**
+	 * 根据帐号,手机号,email查询
+	 * @param account
+	 * @return
+	 */
+	public List<SoAccount> selectByAccount(SoAccount account) {
+		return accountDao.selectBySoAccount(account);
+	}
+	
 	public void regiest(SoAccount account) {
 
 		String password = account.getPassword();

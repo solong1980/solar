@@ -1,9 +1,13 @@
 package com.solar.db.dao.impl;
 
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.solar.db.dao.SoAccountFindMapper;
+import com.solar.db.dao.SoAccountMapper;
+import com.solar.entity.SoAccount;
 import com.solar.entity.SoAccountFind;
 
 public class SoAccountFindDao implements SoAccountFindMapper {
@@ -25,6 +29,74 @@ public class SoAccountFindDao implements SoAccountFindMapper {
 		} finally {
 			sqlSession.close();
 		}
+	}
+
+	@Override
+	public List<SoAccountFind> queryAccountFind(SoAccountFind accountFind) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoAccountFindMapper mapper = sqlSession.getMapper(SoAccountFindMapper.class);
+			List<SoAccountFind> accountFinds = mapper.queryAccountFind(accountFind);
+			return accountFinds;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public SoAccountFind getAccountFindById(Long id) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoAccountFindMapper mapper = sqlSession.getMapper(SoAccountFindMapper.class);
+			SoAccountFind accountFind = mapper.getAccountFindById(id);
+			return accountFind;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public void doAuditAgree(SoAccountFind accountFind, SoAccount account) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoAccountFindMapper accountFindMapper = sqlSession.getMapper(SoAccountFindMapper.class);
+			SoAccountMapper accountMapper = sqlSession.getMapper(SoAccountMapper.class);
+			// update find back status
+			accountFindMapper.updateStatus(accountFind);
+			// update account phone and new password
+			accountMapper.updateAccount(account);
+			sqlSession.commit();
+		} catch (Exception e) {
+			sqlSession.rollback();
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public void updateStatus(SoAccountFind accountFind) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoAccountFindMapper accountFindMapper = sqlSession.getMapper(SoAccountFindMapper.class);
+			// update find back status
+			accountFindMapper.updateStatus(accountFind);
+			sqlSession.commit();
+		} catch (Exception e) {
+			sqlSession.rollback();
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public void doAuditReject(SoAccountFind accountFind) {
+		updateStatus(accountFind);
 	}
 
 }

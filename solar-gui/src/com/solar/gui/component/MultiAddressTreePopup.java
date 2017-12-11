@@ -70,7 +70,7 @@ public class MultiAddressTreePopup extends JPopupMenu {
 	public JPanel createTree() {
 		MyCheckBoxTreeNode root = new MyCheckBoxTreeNode("root");
 
-		JSONObject locations = LocationLoader.loadLocation();
+		JSONObject locations = LocationLoader.getInstance().loadLocation();
 		JSONArray provinces = locations.getJSONArray("Province");
 		for (int i = 0; i < provinces.size(); i++) {
 			JSONObject province = provinces.getJSONObject(i);

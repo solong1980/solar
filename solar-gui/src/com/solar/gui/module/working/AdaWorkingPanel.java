@@ -135,6 +135,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 
 	private void findBackGUI() {
 		JLabel nameLabel = new JLabel(getBoldHTML("用户姓名"));
+		JLabel oldPhoneLabel = new JLabel(getBoldHTML("输入原号码"));
 		JLabel newPhoneLabel = new JLabel(getBoldHTML("输入新号码"));
 		// JLabel emailLabel = new JLabel(getBoldHTML("邮箱地址"));
 		JLabel userTypeLabel = new JLabel(getBoldHTML("用户类型"));
@@ -151,6 +152,8 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		gbc.insets = new Insets(5, 5, 5, 5);
 		findBackPanel.add(nameLabel, gbc);
 		gbc.gridy++;
+		findBackPanel.add(oldPhoneLabel, gbc);
+		gbc.gridy++;
 		findBackPanel.add(newPhoneLabel, gbc);
 		gbc.gridy++;
 		findBackPanel.add(vcodeLabel, gbc);
@@ -164,6 +167,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 
 		// admin,operator,cust_1,cust_2
 		JTextField nameField = new JTextField("");
+		JTextField oldPhoneField = new JTextField("", 30);
 		JTextField newPhoneField = new JTextField("", 30);
 		// JTextField emailField = new JTextField("");
 		JComboBox<String> userTypeField = new JComboBox<>();
@@ -199,6 +203,8 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		gbc.gridy = 0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		findBackPanel.add(nameField, gbc);
+		gbc.gridy++;
+		findBackPanel.add(oldPhoneField, gbc);
 		gbc.gridy++;
 		findBackPanel.add(newPhoneField, gbc);
 		gbc.gridy++;
@@ -256,16 +262,18 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		timer.cancel();
 		switch (result) {
 		case 0: // yes
-			SoAccountFind account = new SoAccountFind();
+			SoAccountFind accountFind = new SoAccountFind();
 			String name = nameField.getText();
+			String oldPhone = oldPhoneField.getText();
 			String newPhone = newPhoneField.getText();
 			String vcode = vcodeField.getText();
-			account.setName(name);
-			account.setPhone(newPhone);
-			account.setVcode(vcode);
+			accountFind.setName(name);
+			accountFind.setOldPhone(oldPhone);
+			accountFind.setPhone(newPhone);
+			accountFind.setVcode(vcode);
 			
 			int typeIndex = userTypeField.getSelectedIndex();
-			account.setType(Consts.ACCOUNT_TYPE[typeIndex]);
+			accountFind.setType(Consts.ACCOUNT_TYPE[typeIndex]);
 			List<SoAccountLocation> accountLocations = new ArrayList<>();
 			if (typeIndex == 0) {
 				List<TreeAddr> workerAddrs = projectAddr1Field.getSelectedKeys();
@@ -283,8 +291,8 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 					accountLocations.add(accountLocation);
 				}
 			}
-			account.setLocations(accountLocations);
-			ObservableMedia.getInstance().findBack(account);
+			accountFind.setLocations(accountLocations);
+			ObservableMedia.getInstance().findBack(accountFind);
 			break;
 		case 1: // no
 			break;
@@ -667,7 +675,9 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 
 								RunningReportPanel reportPanel = new RunningReportPanel();
 								tabbedpane.add("运行信息查询", reportPanel);
-								tabbedpane.add("注册找回信息审核", new AccountAuditPanel());
+								AccountAuditPanel accountAuditPanel = new AccountAuditPanel();
+								observableMedia.addObserver(accountAuditPanel);
+								tabbedpane.add("注册找回信息审核", accountAuditPanel);
 								// 用户管理
 								// tabName = " 用户管理";
 								// UserManagerPanel userManagerPanel = new UserManagerPanel();

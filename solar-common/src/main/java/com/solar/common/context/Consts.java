@@ -80,4 +80,38 @@ public class Consts {
 				return GenVCodeType.ACCOUNT_FIND;
 		}
 	}
+
+	public static enum AuditResult {
+		WAIT_FOR_AUDIT(10),
+		AGREE(50),
+		REJECT(60);
+		private int status;
+
+		private AuditResult(int status) {
+			this.status = status;
+		}
+
+		public int getStatus() {
+			return status;
+		}
+
+		public static AuditResult status(int status) {
+			if (status == AGREE.status) {
+				return AuditResult.AGREE;
+			} else if (status == REJECT.status) {
+				return AuditResult.REJECT;
+			} else
+				return AuditResult.WAIT_FOR_AUDIT;
+		}
+
+		public String resultName() {
+			if (status == AGREE.status) {
+				return "审核通过";
+			} else if (status == REJECT.status) {
+				return "审核不通过";
+			} else
+				return "待审核";
+		}
+
+	}
 }

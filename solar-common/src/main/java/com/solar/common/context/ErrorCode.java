@@ -13,9 +13,11 @@ public class ErrorCode {
 	public static String Error_000008 = "验证码不正确";
 	public static String Error_000009 = "验证码还未生成或已失效";
 	
-	public static String Error_000010 = "房间次数已经用完";
-	public static String Error_000011 = "房间人已经满了";
-	public static String Error_000012 = "房间不存在";
+	public static String Error_000010 = "帐号找回未输入有效匹配信息";
+	public static String Error_000011 = "未匹配到帐号信息";
+	
+	public static String Error_000012 = "登陆帐号存在重复";
+	
 	public static String Error_000013 = "你已经在房间，不能重复创建";
 	public static String Error_000014 = "房卡不足！";
 	public static String Error_000015 = "只有庄家才能开始";

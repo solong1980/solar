@@ -49,58 +49,63 @@ public class LoginCmdProcessor extends MsgProcessor implements INotAuthProcessor
 		}
 		SoAccount account = JsonUtilTool.fromJson(json, SoAccount.class);
 
-		String acc = account.getAccount();
+		// String acc = account.getAccount();
 		String passwd = account.getPassword();
-		SoAccount dbAccount = accountService.selectByAccount(acc);
+		List<SoAccount> dbAccounts = accountService.selectByAccount(account);
 
 		@SuppressWarnings("deprecation")
 		String md = Hashing.md5().newHasher().putString(passwd, Charsets.UTF_8).hash().toString();
 
-		if (null == dbAccount) {
+		if (null == dbAccounts || dbAccounts.isEmpty()) {
 			account.setMsg(ErrorCode.Error_000003);
 			account.setRetCode(SoAccount.FAILURE);
 			appSession.sendMsg(new LoginResponse(JsonUtilTool.toJson(account)));
-		} else if (dbAccount.getPassword().equals(md)) {
-			dbAccount.setMsg("登陆成功");
-			dbAccount.setPassword(null);
-			appSession.setEnti(dbAccount);
-			appSession.setLogin(true);
-			int type = dbAccount.getType();
-			dbAccount.setRole(type);
-			RoleType roleType = RoleType.roleType(type);
-			// 查询管辖地,管理员查询所有工程地址,维护员/局方查询自己注册地址,再根据注册地址查项目
-			List<SoAccountLocation> accountLocations = new ArrayList<>();
-			switch (roleType) {
-			case ADMIN:
-				List<SoProject> projects = projectService.queryProjectByLocationId(ADMIN_LOCATION_ID);
-				dbAccount.setProjects(projects);
-				SoAccountLocation accountLocation = new SoAccountLocation();
-				accountLocation.setLocationId(ADMIN_LOCATION_ID);
-				accountLocations.add(accountLocation);
-				break;
-			case OPERATOR:
-			case USER:
-				accountLocations = accountService.queryGovernmentLocation(dbAccount.getId());
-				List<String> locations = new ArrayList<>();
-				for (SoAccountLocation location : accountLocations) {
-					locations.add(location.getLocationId());
-				}
-				// 查项目
-				projects = projectService.queryProjectByLocationIds(locations);
-				dbAccount.setProjects(projects);
-				break;
-			default:
-				break;
-			}
-
-			dbAccount.setLocations(accountLocations);
-			appSession.sendMsg(new LoginResponse(JsonUtilTool.toJson(dbAccount)));
-		} else
-
-		{
-			account.setMsg(ErrorCode.Error_000004);
+		} else if (dbAccounts.size() > 1) {
+			account.setMsg(ErrorCode.Error_000012);
 			account.setRetCode(SoAccount.FAILURE);
 			appSession.sendMsg(new LoginResponse(JsonUtilTool.toJson(account)));
+		} else {
+			SoAccount dbAccount = dbAccounts.get(0);
+			if (dbAccount.getPassword().equals(md)) {
+				dbAccount.setMsg("登陆成功");
+				dbAccount.setPassword(null);
+				appSession.setEnti(dbAccount);
+				appSession.setLogin(true);
+				int type = dbAccount.getType();
+				dbAccount.setRole(type);
+				RoleType roleType = RoleType.roleType(type);
+				// 查询管辖地,管理员查询所有工程地址,维护员/局方查询自己注册地址,再根据注册地址查项目
+				List<SoAccountLocation> accountLocations = new ArrayList<>();
+				switch (roleType) {
+				case ADMIN:
+					List<SoProject> projects = projectService.queryProjectByLocationId(ADMIN_LOCATION_ID);
+					dbAccount.setProjects(projects);
+					SoAccountLocation accountLocation = new SoAccountLocation();
+					accountLocation.setLocationId(ADMIN_LOCATION_ID);
+					accountLocations.add(accountLocation);
+					break;
+				case OPERATOR:
+				case USER:
+					accountLocations = accountService.queryGovernmentLocation(dbAccount.getId());
+					List<String> locations = new ArrayList<>();
+					for (SoAccountLocation location : accountLocations) {
+						locations.add(location.getLocationId());
+					}
+					// 查项目
+					projects = projectService.queryProjectByLocationIds(locations);
+					dbAccount.setProjects(projects);
+					break;
+				default:
+					break;
+				}
+
+				dbAccount.setLocations(accountLocations);
+				appSession.sendMsg(new LoginResponse(JsonUtilTool.toJson(dbAccount)));
+			} else {
+				account.setMsg(ErrorCode.Error_000004);
+				account.setRetCode(SoAccount.FAILURE);
+				appSession.sendMsg(new LoginResponse(JsonUtilTool.toJson(account)));
+			}
 		}
 	}
 }

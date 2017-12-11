@@ -5,6 +5,7 @@ import java.awt.Insets;
 import java.awt.LayoutManager;
 import java.util.Set;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -56,6 +57,21 @@ public class BasePanel extends JPanel {
 		return mi;
 	}
 
+	public static JButton createTableButton(String text,AbstractAction btnAction) {
+		JButton btn = new JButton(btnAction);
+		// delBtn.setOpaque(true);
+		// forbBtn.setOpaque(true);
+		btn.setMargin(new Insets(0, 0, 0, 0));
+		//btn.setBounds(new Rectangle(0, 0, 30, 30));
+		//btn.setPreferredSize(new Dimension(40, 30));
+		// Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
+		// delBtn.setFont(font);
+		// delBtn.setBorder(new EmptyBorder(0, 0, 40, 0));
+		// btn.setBorder(BorderFactory.createRaisedBevelBorder());
+		btn.setText(text);
+		return btn;
+	}
+	
 	public static JButton createTableButton(String text) {
 		JButton btn = new JButton();
 		// delBtn.setOpaque(true);
@@ -84,7 +100,7 @@ public class BasePanel extends JPanel {
 		root.add(sumPowerNode);
 		root.add(smartNode);
 
-		JSONObject locations = LocationLoader.loadLocation();
+		JSONObject locations = LocationLoader.getInstance().loadLocation();
 		JSONArray provinces = locations.getJSONArray("Province");
 		for (int i = 0; i < provinces.size(); i++) {
 			JSONObject province = provinces.getJSONObject(i);

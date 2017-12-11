@@ -66,12 +66,12 @@ public class RegiestAuditPanel extends JPanel implements Observer {
 		dataModel.fireTableDataChanged();
 	}
 
-	public JScrollPane createTable() {
+	public JScrollPane createTable(final Object[][] data) {
 
-		final Object[][] data = { { "1", "Albers", "龙良华名", "1567323233", "long@test.com", "环保菊",
-				"北京->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa辨别辨别",
-				" 审核通过", new int[] { 1, 10 } },
-				{ "2", "Blerm", "郑辉", "1597323233", "zhen@test.com", "环保菊", "天津,广州", " 审核通过", new int[] { 2, 10 } } };
+//		final Object[][] data = { { "1", "Albers", "龙良华名", "1567323233", "long@test.com", "环保菊",
+//				"北京->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa辨别辨别",
+//				" 审核通过", new int[] { 1, 10 } },
+//				{ "2", "Blerm", "郑辉", "1597323233", "zhen@test.com", "环保菊", "天津,广州", " 审核通过", new int[] { 2, 10 } } };
 		dataModel = new DefaultTableModel(data, names) {
 			public boolean isCellEditable(int row, int col) {
 				return true;
@@ -128,7 +128,7 @@ public class RegiestAuditPanel extends JPanel implements Observer {
 	public void regiestAuditPanel() {
 		regiestTable = new JTable();
 		setLayout(new BorderLayout());
-		JScrollPane scrollTablePanel = createTable();
+		JScrollPane scrollTablePanel = createTable(new Object[0][0]);
 		add(scrollTablePanel, BorderLayout.CENTER);
 		JPanel pagionationPanel = new JPanel();
 		pagionationPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));

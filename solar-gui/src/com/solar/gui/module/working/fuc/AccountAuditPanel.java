@@ -1,29 +1,30 @@
 package com.solar.gui.module.working.fuc;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
+import java.util.List;
 import java.util.Observer;
 
 import javax.swing.AbstractAction;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import com.solar.client.JsonUtilTool;
 import com.solar.client.ObservableMedia;
 import com.solar.client.SoRet;
 import com.solar.common.context.ActionType;
 import com.solar.common.context.ConnectAPI;
-import com.solar.entity.SoAbt;
+import com.solar.common.context.Consts.AuditResult;
+import com.solar.common.context.RoleType;
+import com.solar.common.util.LocationLoader;
+import com.solar.entity.SoAccountFind;
 import com.solar.entity.SoProject;
-import com.solar.gui.component.AddressTreeField;
-import com.solar.gui.component.DeviceTreeField;
 import com.solar.gui.component.FindbackAuditPanel;
 import com.solar.gui.component.RegiestAuditPanel;
 import com.solar.gui.module.working.BasePanel;
@@ -50,11 +51,25 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 		accountFindbackRejectAction = new AuditAction(ActionType.ACCOUNT_FINDBACK_ADUIT_REJECT, this);
 
 		regiestAuditPanel = new RegiestAuditPanel(regiestAuditAgreeAction, regiestAuditRejectAction);
-		findbackAuditPanel = new FindbackAuditPanel(/* accountFindbackAgreeAction, accountFindbackRejectAction */);
+		findbackAuditPanel = new FindbackAuditPanel(accountFindbackAgreeAction, accountFindbackRejectAction);
 
 		auditPanel.add("注册信息", regiestAuditPanel);
 		auditPanel.add("找回信息", findbackAuditPanel);
+		auditPanel.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				if (auditPanel.getSelectedIndex() == 1) {
+					queryAccountFind();
+				}
+				System.out.println(1111);
+			}
+		});
 		return auditPanel;
+	}
+
+	private void queryAccountFind() {
+		SoAccountFind soAccountFind = new SoAccountFind();
+		ObservableMedia.getInstance().accountFindQuery(soAccountFind);
 	}
 
 	public AccountAuditPanel() {
@@ -85,13 +100,28 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 
 		public void actionPerformed(ActionEvent e) {
 			System.out.println("Action--------------------" + e.getActionCommand());
+			String actionCommand = e.getActionCommand();
+
+			Long id = Long.parseLong(actionCommand);
+
 			ObservableMedia instance = ObservableMedia.getInstance();
 			switch (operate) {
 			case ACCOUNT_FINDBACK_ADUIT_AGREE:
+				// create confirm dialog
+				int ret = JOptionPane.showConfirmDialog(parent, "确认通过", "找回审核", JOptionPane.OK_CANCEL_OPTION);
+				if (ret == 0) {
+					instance.accountFindAgree(id);
+				}
+				break;
 			case ACCOUNT_FINDBACK_ADUIT_REJECT:
+				// create confirm dialog
+				ret = JOptionPane.showConfirmDialog(parent, "确认不通过", "找回审核", JOptionPane.OK_CANCEL_OPTION);
+				if (ret == 0) {
+					instance.accountFindReject(id);
+				}
+				break;
 			case REGIEST_ADUIT_AGREE:
 			case REGIEST_ADUIT_REJECT:
-				soProject = new SoProject();
 				break;
 			default:
 				break;
@@ -106,29 +136,65 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 			int code = ret.getCode();
 			int status = ret.getStatus();
 			if (status == 0) {
-				SoAbt soAbt = JsonUtilTool.fromJson(ret.getRet(), SoAbt.class);
-				EventQueue.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						JOptionPane.showMessageDialog(AccountAuditPanel.this, soAbt.getMsg());
+				switch (code) {
+				case ConnectAPI.ACCOUNT_FINDBACK_QUERY_RESPONSE:
+					List<SoAccountFind> accountFinds = JsonUtilTool.fromJsonArray(ret.getRet(), SoAccountFind.class);
+
+					final Object[][] data = new Object[accountFinds.size()][9];
+					for (int i = 0; i < accountFinds.size(); i++) {
+						data[i] = new Object[9];
+						data[i][0] = accountFinds.get(i).getId();
+						data[i][1] = accountFinds.get(i).getName();
+						data[i][2] = accountFinds.get(i).getOldPhone();
+						data[i][3] = accountFinds.get(i).getPhone();
+
+						int type = accountFinds.get(i).getType();
+						RoleType roleType = RoleType.roleType(type);
+						String typeName = roleType.typeName();
+						int applyStatus = accountFinds.get(i).getStatus();
+						AuditResult auditResult = AuditResult.status(applyStatus);
+						String auditName = auditResult.resultName();
+
+						data[i][4] = typeName;
+						String locationIds = accountFinds.get(i).getLocationIds();
+						if (locationIds != null && !locationIds.trim().isEmpty()) {
+							String[] split = locationIds.split(",");
+							// get location name
+							StringBuilder ser = new StringBuilder();
+							for (String locationId : split) {
+								String locationFullName = LocationLoader.getInstance().getLocationFullName(locationId);
+								ser.append(locationFullName).append(",");
+							}
+							data[i][5] = ser.subSequence(0, ser.length() - 1).toString();
+						} else {
+							data[i][5] = "";
+						}
+						data[i][6] = auditName;
+						data[i][7] = accountFinds.get(i).getCreateTime();
+						Long[] optItems = new Long[] { accountFinds.get(i).getId(), new Long(applyStatus) };
+						data[i][8] = optItems;
+
 					}
-				});
-			} else {
-				JOptionPane.showMessageDialog(this, ret.getRet());
-			}
-			switch (code) {
-			// case ConnectAPI.ACCOUNT_ADD_NEXTPAGE_RESPONSE:
-			// break;
-			// case ConnectAPI.ACCOUNT_FINDBACK_NEXTPAGE_RESPONSE:
-			// break;
-			// case ConnectAPI.ACCOUNT_ADD_ADUIT_RESPONSE:
-			// break;
-			// case ConnectAPI.ACCOUNT_FINDBACK_ADUIT_RESPONSE:
-			// break;
-			// case ConnectAPI.PROJECT_REFRESH_RESPONSE:
-			// break;
-			default:
-				break;
+					findbackAuditPanel.updateData(data);
+					break;
+				case ConnectAPI.ACCOUNT_FINDBACK_AUDIT_RESPONSE:
+					SoAccountFind accountFind = JsonUtilTool.fromJson(ret.getRet(), SoAccountFind.class);
+					JOptionPane.showMessageDialog(this, accountFind.getMsg());
+					queryAccountFind();
+					break;
+				// case ConnectAPI.ACCOUNT_ADD_NEXTPAGE_RESPONSE:
+				// break;
+				// case ConnectAPI.ACCOUNT_FINDBACK_NEXTPAGE_RESPONSE:
+				// break;
+				// case ConnectAPI.ACCOUNT_ADD_ADUIT_RESPONSE:
+				// break;
+				// case ConnectAPI.ACCOUNT_FINDBACK_ADUIT_RESPONSE:
+				// break;
+				// case ConnectAPI.PROJECT_REFRESH_RESPONSE:
+				// break;
+				default:
+					break;
+				}
 			}
 		}
 	}

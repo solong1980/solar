@@ -5,6 +5,7 @@
 		<id column="id" jdbcType="BIGINT" property="id" />
 		<result column="name" jdbcType="VARCHAR" property="name" />
 		<result column="phone" jdbcType="VARCHAR" property="phone" />
+		<result column="old_phone" jdbcType="VARCHAR" property="oldPhone" />
 		<result column="location_ids" jdbcType="VARCHAR" property="locationIds" />
 		<result column="address" jdbcType="VARCHAR" property="address" />
 		<result column="type" jdbcType="INTEGER" property="type" />
@@ -16,17 +17,41 @@
 		id,
 		name,
 		phone,
+		old_phone,
 		type,
 		location_ids,
 		vcode,
 		create_time
 	</sql>
 
-	<insert id="addAccountFind" parameterType="com.solar.entity.SoAccount"
+	<select id="queryAccountFind" resultMap="BaseResultMap"
+		parameterType="com.solar.entity.SoAccountFind">
+		select
+		<include refid="Columns"></include>
+		from so_account_find
+		where status = 10
+	</select>
+
+	<select id="getAccountFindById" resultMap="BaseResultMap"
+		parameterType="java.lang.Integer">
+		select
+		<include refid="Columns"></include>
+		from so_account_find
+		where id = #{id}
+	</select>
+
+	<update id="updateStatus" parameterType="com.solar.entity.SoAccountFind">
+		update so_account_find
+		set status=#{status}
+		where id=#{id}
+	</update>
+
+	<insert id="addAccountFind" parameterType="com.solar.entity.SoAccountFind"
 		useGeneratedKeys="true" keyProperty="id">
 		insert into so_account_find (
 		name,
 		phone,
+		old_phone,
 		type,
 		location_ids,
 		vcode
@@ -34,6 +59,7 @@
 		values (
 		#{name,jdbcType=VARCHAR},
 		#{phone,jdbcType=VARCHAR},
+		#{oldPhone,jdbcType=VARCHAR},
 		#{type,jdbcType=VARCHAR},
 		#{locationIds,jdbcType=VARCHAR},
 		#{vcode,jdbcType=VARCHAR}

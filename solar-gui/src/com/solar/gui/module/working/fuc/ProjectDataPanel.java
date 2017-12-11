@@ -294,21 +294,20 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 			int code = ret.getCode();
 			int status = ret.getStatus();
 			if (status == 0) {
-				SoProject soAbt = JsonUtilTool.fromJson(ret.getRet(), SoProject.class);
 				switch (code) {
 				case ConnectAPI.PROJECT_ADD_RESPONSE:
+					SoProject soAbt = JsonUtilTool.fromJson(ret.getRet(), SoProject.class);
 					soProject = soAbt;// 设置为返回的内容
+					EventQueue.invokeLater(new Runnable() {
+						@Override
+						public void run() {
+							JOptionPane.showMessageDialog(ProjectDataPanel.this, soAbt.getMsg());
+						}
+					});
 					break;
 				default:
 					break;
 				}
-
-				EventQueue.invokeLater(new Runnable() {
-					@Override
-					public void run() {
-						JOptionPane.showMessageDialog(ProjectDataPanel.this, soAbt.getMsg());
-					}
-				});
 			} else {
 				JOptionPane.showMessageDialog(this, ret.getRet());
 			}
