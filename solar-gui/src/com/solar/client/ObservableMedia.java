@@ -14,6 +14,7 @@ import com.solar.entity.SoAccountFind;
 import com.solar.entity.SoAppVersion;
 import com.solar.entity.SoDataServerInfo;
 import com.solar.entity.SoDevices;
+import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
 import com.solar.entity.SoVCode;
 
@@ -218,6 +219,32 @@ public class ObservableMedia extends Observable {
 		accountFind.setId(id);
 		accountFind.setStatus(AuditResult.REJECT.getStatus());
 		hostClient.accountFindAudit(accountFind);
+		setChanged();
+	}
+
+	public void accountQuery(SoPage<SoAccount, List<SoAccount>> page) {
+		hostClient.accountQuery(page);
+		setChanged();
+	}
+
+	public void regiestAgree(SoAccount account) {
+		account.setStatus(AuditResult.AGREE.getStatus());
+		hostClient.regiestAudit(account);
+		setChanged();
+	}
+
+	public void regiestReject(Long id) {
+		SoAccount account = new SoAccount();
+		account.setId(id);
+		account.setStatus(AuditResult.REJECT.getStatus());
+		hostClient.regiestAudit(account);
+		setChanged();
+	}
+
+	public void checkAccountProject(Long id) {
+		SoAccount account = new SoAccount();
+		account.setId(id);
+		hostClient.checkAccountProject(account);
 		setChanged();
 	}
 }

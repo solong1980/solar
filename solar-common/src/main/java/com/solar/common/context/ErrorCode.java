@@ -17,8 +17,9 @@ public class ErrorCode {
 	public static String Error_000011 = "未匹配到帐号信息";
 	
 	public static String Error_000012 = "登陆帐号存在重复";
+
+	public static String Error_000013 = "注册地区没有项目,请先添加";
 	
-	public static String Error_000013 = "你已经在房间，不能重复创建";
 	public static String Error_000014 = "房卡不足！";
 	public static String Error_000015 = "只有庄家才能开始";
 	public static String Error_000016 = "杠牌出错";

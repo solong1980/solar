@@ -1,5 +1,6 @@
 package com.solar.db.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -9,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
+import com.solar.common.context.ErrorCode;
+import com.solar.common.context.RoleType;
 import com.solar.common.util.VCodeUtil;
 import com.solar.db.dao.SoAccountLocationMapper;
 import com.solar.db.dao.SoAccountMapper;
@@ -16,6 +19,9 @@ import com.solar.db.dao.impl.SoAccountDao;
 import com.solar.db.dao.impl.SoAccountLocationDao;
 import com.solar.entity.SoAccount;
 import com.solar.entity.SoAccountLocation;
+import com.solar.entity.SoPage;
+import com.solar.entity.SoPrivilege;
+import com.solar.entity.SoProject;
 
 /**
  * @author long liang hua
@@ -26,6 +32,8 @@ public class SoAccountService {
 	private static SoAccountService accountService = new SoAccountService();
 	private SoAccountMapper accountDao;
 	private SoAccountLocationMapper accountLocationDao;
+	private SoProjectService projectService;
+
 	private AtomicLong SEED_LINE = new AtomicLong(System.currentTimeMillis());
 
 	public SoAccountService() {
@@ -39,6 +47,7 @@ public class SoAccountService {
 	public void initSetSession(SqlSessionFactory sqlSessionFactory) {
 		accountDao = new SoAccountDao(sqlSessionFactory);
 		accountLocationDao = new SoAccountLocationDao(sqlSessionFactory);
+		projectService = SoProjectService.getInstance();
 	}
 
 	public SoAccount selectById(Long id) {
@@ -51,13 +60,14 @@ public class SoAccountService {
 
 	/**
 	 * 根据帐号,手机号,email查询
+	 * 
 	 * @param account
 	 * @return
 	 */
 	public List<SoAccount> selectByAccount(SoAccount account) {
 		return accountDao.selectBySoAccount(account);
 	}
-	
+
 	public void regiest(SoAccount account) {
 
 		String password = account.getPassword();
@@ -75,8 +85,69 @@ public class SoAccountService {
 		return accountLocationDao.selectByAccountId(accountId);
 	}
 
+	public List<String> queryGovernmentLocationIds(Long accountId) {
+		List<SoAccountLocation> governmentLocation = queryGovernmentLocation(accountId);
+		List<String> locationIds = new ArrayList<>();
+		for (SoAccountLocation soAccountLocation : governmentLocation) {
+			locationIds.add(soAccountLocation.getLocationId());
+		}
+		return locationIds;
+	}
+
+	public SoPage<SoAccount, List<SoAccount>> queryAccount(SoPage<SoAccount, List<SoAccount>> accountPage) {
+		List<SoAccount> accounts = accountDao.queryAccount(accountPage);
+		accountPage.setT(accounts);
+		return accountPage;
+	}
+
 	public String genVcode() {
 		String serialCode = VCodeUtil.toSerialCode(SEED_LINE.getAndIncrement());
 		return serialCode;
+	}
+
+	public void auditAgree(SoAccount account) {
+		Long id = account.getId();
+		SoAccount dbAccount = accountDao.selectById(account.getId());
+		// query locations
+		List<SoAccountLocation> accountLocations = accountLocationDao.selectByAccountId(id);
+		List<String> locationIds = new ArrayList<>();
+		for (SoAccountLocation soAccountLocation : accountLocations) {
+			locationIds.add(soAccountLocation.getLocationId());
+		}
+
+		// store projects chooses by administrator,this time no use
+		// List<SoProject> projectsInLocations = account.getProjects();
+
+		// query projects in the locations
+		List<SoProject> projectsInLocations = projectService.queryProjectByLocationIds(locationIds);
+		if (projectsInLocations == null || projectsInLocations.isEmpty()) {
+			throw new RuntimeException(ErrorCode.Error_000013);
+		}
+
+		int type = dbAccount.getType();
+		RoleType roleType = RoleType.roleType(type);
+		switch (roleType) {
+		case OPERATOR:
+			// if operator add relation to privilege and update status
+			List<SoPrivilege> privileges = new ArrayList<>();
+			for (SoProject soProject : projectsInLocations) {
+				SoPrivilege privilege = new SoPrivilege();
+				privilege.setAccountId(id);
+				privilege.setLocationId(soProject.getLocationId());
+				privilege.setProjectId(soProject.getId());
+				privileges.add(privilege);
+			}
+			accountDao.agreeOperatorAccount(account, privileges);
+			break;
+		default:
+			// update status
+			accountDao.updateStatus(account);
+			break;
+		}
+	}
+
+	public void auditReject(SoAccount account) {
+		// update status
+		accountDao.updateStatus(account);
 	}
 }

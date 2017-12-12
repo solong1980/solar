@@ -1,8 +1,11 @@
 package com.solar.controller.common;
 
+import com.solar.command.processor.AccountAuditCmdProcessor;
 import com.solar.command.processor.AccountFindAuditCmdProcessor;
 import com.solar.command.processor.AccountFindQueryCmdProcessor;
 import com.solar.command.processor.AccountFindbackCmdProcessor;
+import com.solar.command.processor.AccountProjectCheckCmdProcessor;
+import com.solar.command.processor.AccountQueryCmdProcessor;
 import com.solar.command.processor.AppUpgradeCmdProcessor;
 import com.solar.command.processor.AppVersionCmdProcessor;
 import com.solar.command.processor.DataServerInfoCmdProcessor;
@@ -50,6 +53,11 @@ public enum MsgProcessorRegister {
 	ACCOUNT_FINDBACK_COMMAND(ConnectAPI.ACCOUNT_FINDBACK_COMMAND, new AccountFindbackCmdProcessor()),
 	ACCOUNT_FINDBACK_QUERY_COMMAND(ConnectAPI.ACCOUNT_FINDBACK_QUERY_COMMAND, new AccountFindQueryCmdProcessor()),
 	ACCOUNT_FINDBACK_AUDIT_COMMAND(ConnectAPI.ACCOUNT_FINDBACK_AUDIT_COMMAND, new AccountFindAuditCmdProcessor()),
+
+	ACCOUNT_QUERY_COMMAND(ConnectAPI.ACCOUNT_QUERY_COMMAND, new AccountQueryCmdProcessor()),
+
+	ACCOUNT_AUDIT_COMMAND(ConnectAPI.ACCOUNT_AUDIT_COMMAND, new AccountAuditCmdProcessor()),
+	ACCOUNT_PROJECT_CHECK_COMMAND(ConnectAPI.ACCOUNT_PROJECT_CHECK_COMMAND, new AccountProjectCheckCmdProcessor()),
 
 	// 内部使用，服务端通知客户端断开
 	EMPYTCOMMAND(ConnectAPI.ZERO_RESPONSE, new OpenAppMsgProcessor());

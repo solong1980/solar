@@ -6,6 +6,7 @@ import java.util.List;
 public class SoAccount extends SoAbtAuth {
 
 	private Long id;
+	private Integer status;
 	private String account;
 	private String name;// 用户姓名
 	private String phone;// 手机号码
@@ -20,12 +21,22 @@ public class SoAccount extends SoAbtAuth {
 
 	private String createTime;
 
+	private String locationIds;
+
 	public Long getId() {
 		return id;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public Integer getStatus() {
+		return status;
+	}
+
+	public void setStatus(Integer status) {
+		this.status = status;
 	}
 
 	public String getAccount() {
@@ -114,6 +125,14 @@ public class SoAccount extends SoAbtAuth {
 
 	public void setProjects(List<SoProject> projects) {
 		this.projects = projects;
+	}
+
+	public String getLocationIds() {
+		return locationIds;
+	}
+
+	public void setLocationIds(String locationIds) {
+		this.locationIds = locationIds;
 	}
 
 }

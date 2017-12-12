@@ -21,6 +21,7 @@ import com.solar.entity.SoAccountFind;
 import com.solar.entity.SoAppVersion;
 import com.solar.entity.SoDataServerInfo;
 import com.solar.entity.SoDevices;
+import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
 import com.solar.entity.SoVCode;
 import com.solar.entity.SoWorkingMode;
@@ -292,10 +293,28 @@ public class HostClient extends MinaClient {
 		System.out.println(json);
 		send(ConnectAPI.ACCOUNT_FINDBACK_QUERY_COMMAND, json);
 	}
-	
+
 	public void accountFindAudit(SoAccountFind soAccountFind) {
 		String json = JsonUtilTool.toJson(soAccountFind);
 		System.out.println(json);
 		send(ConnectAPI.ACCOUNT_FINDBACK_AUDIT_COMMAND, json);
+	}
+
+	public void accountQuery(SoPage<SoAccount, List<SoAccount>> page) {
+		String json = JsonUtilTool.toJson(page);
+		System.out.println(json);
+		send(ConnectAPI.ACCOUNT_QUERY_COMMAND, json);
+	}
+
+	void regiestAudit(SoAccount account) {
+		String json = JsonUtilTool.toJson(account);
+		System.out.println(json);
+		send(ConnectAPI.ACCOUNT_AUDIT_COMMAND, json);
+	}
+
+	public void checkAccountProject(SoAccount account) {
+		String json = JsonUtilTool.toJson(account);
+		System.out.println(json);
+		send(ConnectAPI.ACCOUNT_PROJECT_CHECK_COMMAND, json);
 	}
 }

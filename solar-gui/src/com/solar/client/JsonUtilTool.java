@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
 
 /**
  * JSON转换工具类
@@ -42,6 +43,10 @@ public class JsonUtilTool {
 	 * @return 对象
 	 */
 	public static <T> T fromJson(String jsonString, Class<T> type) {
+		return (T) JSONObject.parseObject(jsonString, type);
+	}
+
+	public static <T> T fromJson(String jsonString, TypeReference<T> type) {
 		return (T) JSONObject.parseObject(jsonString, type);
 	}
 

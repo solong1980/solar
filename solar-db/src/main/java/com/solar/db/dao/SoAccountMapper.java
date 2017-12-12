@@ -5,6 +5,8 @@ import java.util.List;
 import org.apache.ibatis.annotations.Param;
 
 import com.solar.entity.SoAccount;
+import com.solar.entity.SoPage;
+import com.solar.entity.SoPrivilege;
 
 public interface SoAccountMapper {
 
@@ -20,4 +22,9 @@ public interface SoAccountMapper {
 
 	List<SoAccount> selectBySoAccount(SoAccount account);
 
+	List<SoAccount> queryAccount(@Param("page") SoPage<SoAccount,List<SoAccount>> accountPage);
+
+	void agreeOperatorAccount(SoAccount account, List<SoPrivilege> privileges);
+
+	void updateStatus(SoAccount account);
 }

@@ -59,6 +59,7 @@
 		<mapper resource="com/solar/db/dao/SoAreasMapper.xml" />
 
 		<mapper resource="com/solar/db/dao/SoProjectMapper.xml" />
+		<mapper resource="com/solar/db/dao/SoPrivilegeMapper.xml" />
 		
 		
 	</mappers>

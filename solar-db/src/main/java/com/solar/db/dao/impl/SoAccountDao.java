@@ -7,8 +7,11 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.solar.db.dao.SoAccountLocationMapper;
 import com.solar.db.dao.SoAccountMapper;
+import com.solar.db.dao.SoPrivilegeMapper;
 import com.solar.entity.SoAccount;
 import com.solar.entity.SoAccountLocation;
+import com.solar.entity.SoPage;
+import com.solar.entity.SoPrivilege;
 
 public class SoAccountDao implements SoAccountMapper {
 	private SqlSessionFactory sqlSessionFactory;
@@ -102,6 +105,52 @@ public class SoAccountDao implements SoAccountMapper {
 			List<SoAccount> accounts = mapper.selectBySoAccount(account);
 			return accounts;
 		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public List<SoAccount> queryAccount(SoPage<SoAccount, List<SoAccount>> accountPage) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoAccountMapper mapper = sqlSession.getMapper(SoAccountMapper.class);
+			List<SoAccount> accounts = mapper.queryAccount(accountPage);
+			return accounts;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public void agreeOperatorAccount(SoAccount account, List<SoPrivilege> privileges) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoAccountMapper accountMapper = sqlSession.getMapper(SoAccountMapper.class);
+			SoPrivilegeMapper privilegeMapper = sqlSession.getMapper(SoPrivilegeMapper.class);
+			accountMapper.updateStatus(account);
+			privilegeMapper.addPrivilege(privileges);
+			sqlSession.commit();
+		} catch (Exception e) {
+			sqlSession.rollback();
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public void updateStatus(SoAccount account) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoAccountMapper accountMapper = sqlSession.getMapper(SoAccountMapper.class);
+			accountMapper.updateStatus(account);
+			sqlSession.commit();
+		} catch (Exception e) {
+			sqlSession.rollback();
 			throw new RuntimeException(e);
 		} finally {
 			sqlSession.close();

@@ -85,6 +85,13 @@
 		where id=#{id}
 	</update>
 
+	<update id="updateStatus" parameterType="com.solar.entity.SoAccount">
+		update so_account
+		set
+		status=#{status}
+		where id=#{id}
+	</update>
+
 	<insert id="addAccount" parameterType="com.solar.entity.SoAccount"
 		useGeneratedKeys="true" keyProperty="id">
 		insert into so_account ( account,
@@ -100,4 +107,30 @@
 		#{password,jdbcType=VARCHAR})
 	</insert>
 
+	<select id="queryAccount" parameterType="com.solar.entity.SoPage"
+		resultType="com.solar.entity.SoAccount">
+		select
+		sac.*
+		,
+		acl.locationIds as locationIds
+		from so_account sac,(
+		select acc.id,group_concat(acl.location_id) as
+		locationIds from so_account acc left join so_account_location acl on
+		acc.id=acl.account_id
+		group by acc.id) acl 
+		where sac.id=acl.id
+		and sac.status = 10
+		<if test="page.c.status!=null">
+			and sac.status=#{page.c.status}
+		</if>
+		<if test="page.c.account!=null">
+			and sac.account=#{page.c.account}
+		</if>
+		<if test="page.start!=null and page.count!=null">
+			limit #{page.start},#{page.count}
+		</if>
+		<if test="page.count!=null and page.start==null">
+			limit #{page.count}
+		</if>
+	</select>
 </mapper>

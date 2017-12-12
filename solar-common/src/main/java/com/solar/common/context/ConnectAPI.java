@@ -48,6 +48,11 @@ public class ConnectAPI {
 	public static final int ACCOUNT_FINDBACK_COMMAND = 0x000021;
 	public static final int ACCOUNT_FINDBACK_QUERY_COMMAND = 0x000022;
 	public static final int ACCOUNT_FINDBACK_AUDIT_COMMAND = 0x000023;
+
+	public static final int ACCOUNT_QUERY_COMMAND = 0x000024;
+	public static final int ACCOUNT_AUDIT_COMMAND = 0x000025;
+	public static final int ACCOUNT_PROJECT_CHECK_COMMAND = 0x000026;
+
 	// 控制终端指令
 	public static final int CTRL_COMMAND = 0x999999;
 
@@ -89,5 +94,9 @@ public class ConnectAPI {
 	public static final int ACCOUNT_FINDBACK_RESPONSE = 0x100021;
 	public static final int ACCOUNT_FINDBACK_QUERY_RESPONSE = 0x100022;
 	public static final int ACCOUNT_FINDBACK_AUDIT_RESPONSE = 0x100023;
+
+	public static final int ACCOUNT_QUERY_RESPONSE = 0x100024;
+	public static final int ACCOUNT_AUDIT_RESPONSE = 0x100025;
+	public static final int ACCOUNT_PROJECT_CHECK_RESPONSE = 0x100026;
 
 }

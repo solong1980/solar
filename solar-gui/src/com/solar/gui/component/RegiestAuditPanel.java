@@ -41,7 +41,7 @@ public class RegiestAuditPanel extends JPanel implements Observer {
 
 	final int INITIAL_ROWHEIGHT = 33;
 	JTable regiestTable;
-	final String[] names = { "ID", "帐号", "用户姓名", "手机号码", "邮箱地址", "用户类型", "地址", "状态", "操作" };
+	final String[] names = { "ID", "帐号", "用户姓名", "手机号码", "邮箱地址", "用户类型", "地址", "状态", "申请时间", "操作" };
 	String[] optItems = new String[] { "审核通过", "审核不通过" };
 	DefaultTableModel dataModel;
 
@@ -68,10 +68,12 @@ public class RegiestAuditPanel extends JPanel implements Observer {
 
 	public JScrollPane createTable(final Object[][] data) {
 
-//		final Object[][] data = { { "1", "Albers", "龙良华名", "1567323233", "long@test.com", "环保菊",
-//				"北京->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa辨别辨别",
-//				" 审核通过", new int[] { 1, 10 } },
-//				{ "2", "Blerm", "郑辉", "1597323233", "zhen@test.com", "环保菊", "天津,广州", " 审核通过", new int[] { 2, 10 } } };
+		// final Object[][] data = { { "1", "Albers", "龙良华名", "1567323233",
+		// "long@test.com", "环保菊",
+		// "北京->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa上海->aaa->aaaa,上海->aaa->aaaa,上海->aaa->aaaa辨别辨别",
+		// " 审核通过", new int[] { 1, 10 } },
+		// { "2", "Blerm", "郑辉", "1597323233", "zhen@test.com", "环保菊", "天津,广州", " 审核通过",
+		// new int[] { 2, 10 } } };
 		dataModel = new DefaultTableModel(data, names) {
 			public boolean isCellEditable(int row, int col) {
 				return true;
@@ -147,8 +149,8 @@ public class RegiestAuditPanel extends JPanel implements Observer {
 			setBackground(Color.BLUE);
 			setLayout(new FlowLayout(FlowLayout.LEFT));
 			setOpaque(true);
-			agreeBtn = BasePanel.createTableButton("审核通过");
-			rejectBtn = BasePanel.createTableButton("审核不通过");
+			agreeBtn = BasePanel.createTableButton("通过", agreeAction);
+			rejectBtn = BasePanel.createTableButton("不通过", rejectAction);
 			add(agreeBtn);
 			add(rejectBtn);
 		}
@@ -163,15 +165,18 @@ public class RegiestAuditPanel extends JPanel implements Observer {
 				setBackground(UIManager.getColor("Button.background"));
 			}
 			// 传入状态,id等信息,用于绑定事件,设置是否disable
-			int[] v = (int[]) value;
-			if (v[1] == 60 | v[1] == 50) {
+			Long[] v = (Long[]) value;
+			Long id = v[0];
+			Integer status = v[1].intValue();
+
+			if (status == 60 || status == 50) {
 				removeAll();
 				repaint();
 			} else {
 				add(agreeBtn);
 				add(rejectBtn);
-				agreeBtn.setActionCommand(Integer.toString(v[0]));
-				rejectBtn.setActionCommand(Integer.toString(v[0]));
+				agreeBtn.setActionCommand(Long.toString(id));
+				rejectBtn.setActionCommand(Long.toString(id));
 			}
 			return this;
 		}
@@ -192,19 +197,18 @@ public class RegiestAuditPanel extends JPanel implements Observer {
 			jPanel = new JPanel();
 			jPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-			int[] v = (int[]) value;
-			if (v[1] == 60 | v[1] == 50) {
+			Long[] v = (Long[]) value;
+			Long id = v[0];
+			Integer status = v[1].intValue();
+
+			if (status == 60 || status == 50) {
 				jPanel.removeAll();
 				repaint();
 			} else {
-				agreeBtn = BasePanel.createTableButton("审核通过");
-				agreeBtn.setActionCommand(Integer.toString(v[0]));
-				agreeBtn.addActionListener(agreeAction);
-				rejectBtn = BasePanel.createTableButton("审核不通过");
-				rejectBtn.setActionCommand(Integer.toString(v[0]));
-				rejectBtn.addActionListener(rejectAction);
-				agreeBtn.setOpaque(true);
-				rejectBtn.setOpaque(true);
+				agreeBtn = BasePanel.createTableButton("通过", agreeAction);
+				agreeBtn.setActionCommand(Long.toString(id));
+				rejectBtn = BasePanel.createTableButton("不通过", rejectAction);
+				rejectBtn.setActionCommand(Long.toString(id));
 				// 传入状态,id等信息,用于绑定事件,设置是否disable
 				jPanel.add(agreeBtn);
 				jPanel.add(rejectBtn);
@@ -218,7 +222,6 @@ public class RegiestAuditPanel extends JPanel implements Observer {
 				jPanel.setBackground(table.getBackground());
 			}
 
-			// value穿id号
 			this.value = value;
 			return jPanel;
 		}
@@ -235,14 +238,10 @@ public class RegiestAuditPanel extends JPanel implements Observer {
 			super.fireEditingStopped();
 		}
 	}
-	
-	public void reload() {
-		
-	}
-	
+
 	@Override
 	public void update(java.util.Observable o, Object arg) {
-		
-	}
 
+	}
+	
 }

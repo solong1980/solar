@@ -85,6 +85,9 @@ public class LoginCmdProcessor extends MsgProcessor implements INotAuthProcessor
 					accountLocations.add(accountLocation);
 					break;
 				case OPERATOR:
+					//需要查询权限表
+					
+					break;
 				case USER:
 					accountLocations = accountService.queryGovernmentLocation(dbAccount.getId());
 					List<String> locations = new ArrayList<>();
