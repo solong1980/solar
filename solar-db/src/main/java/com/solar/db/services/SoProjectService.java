@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.solar.db.dao.SoProjectMapper;
 import com.solar.db.dao.impl.SoProjectDao;
+import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
 
 /**
@@ -67,9 +68,10 @@ public class SoProjectService {
 		}
 		return projectDao.queryProjectByLocationId(query);
 	}
-	
+
 	/**
 	 * 根据location id list查询所有管辖的项目
+	 * 
 	 * @param locations
 	 * @return
 	 */
@@ -84,7 +86,7 @@ public class SoProjectService {
 			String query = locationId;
 			String areaCode = locationId.substring(4, 6);
 			String cityCode = locationId.substring(2, 4);
-			//String provinceCode = locationId.substring(0, 2);
+			// String provinceCode = locationId.substring(0, 2);
 			if ("00".equals(cityCode)) {
 				query = locationId.substring(0, 2);
 			} else if ("00".equals(areaCode)) {
@@ -95,4 +97,32 @@ public class SoProjectService {
 		return projectDao.queryProjectByLocationIds(querys);
 	}
 
+	/**
+	 * 根据location id list查询所有管辖的项目
+	 * 
+	 * @param locations
+	 * @return
+	 */
+	public SoPage<SoProject, List<SoProject>> queryProjects(SoPage<SoProject, List<SoProject>> page) {
+		SoProject c = page.getC();
+
+		String locationId = c.getLocationId();
+		if (locationId != null && !locationId.isEmpty()) {
+			if (locationId.length() != 6) {
+				throw new RuntimeException("");
+			}
+			String areaCode = locationId.substring(4, 6);
+			String cityCode = locationId.substring(2, 4);
+			// String provinceCode = locationId.substring(0, 2);
+			if ("00".equals(cityCode)) {
+				locationId = locationId.substring(0, 2);
+			} else if ("00".equals(areaCode)) {
+				locationId = locationId.substring(0, 4);
+			}
+		}
+		c.setLocationId(locationId);
+		List<SoProject> projects = projectDao.queryProjects(page);
+		page.setT(projects);
+		return page;
+	}
 }

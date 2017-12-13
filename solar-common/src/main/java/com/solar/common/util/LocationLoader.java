@@ -18,9 +18,13 @@ public class LocationLoader {
 	private JSONObject fromJson = null;
 
 	private Map<String, String> locationIdFullNameMap = new HashMap<>();
+	private Map<String, String> locationIdNameMap = new HashMap<>();
+
+	public String getLocationName(String locationId) {
+		return locationIdNameMap.get(locationId);
+	}
 
 	public String getLocationFullName(String locationId) {
-
 		if (locationIdFullNameMap.isEmpty()) {
 			synchronized (locationIdFullNameMap) {
 				if (locationIdFullNameMap.isEmpty()) {
@@ -31,6 +35,7 @@ public class LocationLoader {
 						String provinceid = province.getString("Id");
 						String provinceName = province.getString("Name");
 						locationIdFullNameMap.put(provinceid, provinceName);
+						locationIdNameMap.put(provinceid, provinceName);
 						JSONArray cities = province.getJSONArray("City");
 						for (int j = 0; j < cities.size(); j++) {
 							JSONObject city = cities.getJSONObject(j);
@@ -38,13 +43,14 @@ public class LocationLoader {
 							String cityName = city.getString("Name");
 							String cityFullName = provinceName + " \\ " + cityName;
 							locationIdFullNameMap.put(cityid, cityFullName);
-
+							locationIdNameMap.put(cityid, cityName);
 							JSONArray areas = city.getJSONArray("Area");
 							for (int k = 0; k < areas.size(); k++) {
 								JSONObject area = areas.getJSONObject(k);
 								String areaid = area.getString("Id");
 								String areaName = area.getString("Name");
 								locationIdFullNameMap.put(areaid, cityFullName + "\\" + areaName);
+								locationIdNameMap.put(areaid, areaName);
 							}
 						}
 					}

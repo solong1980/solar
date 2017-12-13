@@ -102,10 +102,10 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 
 	public AccountAuditPanel() {
 		super();
-		JPanel projectPanel = createTree();
+		//JPanel projectPanel = createTree();
 		setLayout(new BorderLayout());
 		add(createToolBar(), BorderLayout.PAGE_START);
-		add(projectPanel, BorderLayout.WEST);
+		//add(projectPanel, BorderLayout.WEST);
 		add(createEditor(), BorderLayout.CENTER);
 	}
 

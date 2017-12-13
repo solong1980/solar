@@ -252,6 +252,14 @@ public class AddressTreeField extends JPanel {
 		return selectedKeys;
 	}
 
+	public void setSelectedKeys(List<TreeAddr> selectedKeys) {
+		popup.setDefaultLocations(selectedKeys);
+		this.selectedKeys = selectedKeys;
+	}
+	public void setText(String fullName) {
+		this.editor.setText(fullName);
+	}
+
 	public static AddressTreeField buildLeafOnly() {
 		Map<String, Object> values = new HashMap<String, Object>() {
 		};

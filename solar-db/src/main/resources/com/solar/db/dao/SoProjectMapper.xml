@@ -80,7 +80,28 @@
 		where id = #{id,jdbcType=BIGINT}
 	</delete>
 
-
+	<select id="queryProjects" resultMap="BaseResultMap"
+		parameterType="com.solar.entity.SoProject">
+		select
+		<include refid="Columns" />
+		from so_project
+		where
+		1=1
+		<if test="page.c.locationId!=null">
+			and location_id like
+			concat(#{page.c.locationId,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="page.c.projectName!=null">
+			and project_name like
+			concat(#{page.c.projectName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="page.c.type!=null and page.c.type>0">
+			and type = #{page.c.type,jdbcType=INTEGER}
+		</if>
+		<if test="page.c.capability!=null and page.c.capability>0">
+			and capability = #{page.c.capability,jdbcType=INTEGER}
+		</if>
+	</select>
 
 	<select id="queryProjectByLocationId" parameterType="java.lang.String"
 		resultMap="BaseResultMap">
@@ -110,6 +131,6 @@
 		<include refid="Columns" />
 		from so_project
 		where 1=0
-
 	</select>
+
 </mapper>

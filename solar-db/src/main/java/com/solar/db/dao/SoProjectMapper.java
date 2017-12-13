@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
 
 public interface SoProjectMapper {
@@ -31,5 +32,7 @@ public interface SoProjectMapper {
 	 * @return
 	 */
 	List<SoProject> queryProjectByLocationIds(@Param("locationIds") List<String> locationIds);
+
+	List<SoProject> queryProjects(@Param("page") SoPage<SoProject, List<SoProject>> page);
 
 }

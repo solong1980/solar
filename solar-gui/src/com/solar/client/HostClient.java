@@ -317,4 +317,16 @@ public class HostClient extends MinaClient {
 		System.out.println(json);
 		send(ConnectAPI.ACCOUNT_PROJECT_CHECK_COMMAND, json);
 	}
+
+	public void queryProjects(SoPage<SoProject, List<SoProject>> soPage) {
+		String json = JsonUtilTool.toJson(soPage);
+		System.out.println(json);
+		send(ConnectAPI.PROJECT_QUERY_COMMAND, json);
+	}
+
+	public void selectProject(SoProject project) {
+		String json = JsonUtilTool.toJson(project);
+		System.out.println(json);
+		send(ConnectAPI.PROJECT_SELECT_COMMAND, json);
+	}
 }

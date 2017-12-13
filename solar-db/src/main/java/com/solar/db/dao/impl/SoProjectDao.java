@@ -6,6 +6,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.solar.db.dao.SoProjectMapper;
+import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
 
 public class SoProjectDao implements SoProjectMapper {
@@ -88,6 +89,20 @@ public class SoProjectDao implements SoProjectMapper {
 		try {
 			SoProjectMapper mapper = sqlSession.getMapper(SoProjectMapper.class);
 			List<SoProject> projects = mapper.queryProjectByLocationIds(locationIds);
+			return projects;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public List<SoProject> queryProjects(SoPage<SoProject, List<SoProject>> project) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoProjectMapper mapper = sqlSession.getMapper(SoProjectMapper.class);
+			List<SoProject> projects = mapper.queryProjects(project);
 			return projects;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

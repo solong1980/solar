@@ -18,6 +18,8 @@ import com.solar.command.processor.GetWorkingModeCmdProcessor;
 import com.solar.command.processor.LoginCmdProcessor;
 import com.solar.command.processor.OpenAppMsgProcessor;
 import com.solar.command.processor.ProjectAddCmdProcessor;
+import com.solar.command.processor.ProjectQueryCmdProcessor;
+import com.solar.command.processor.ProjectSelectCmdProcessor;
 import com.solar.command.processor.RegiestCmdProcessor;
 import com.solar.command.processor.VcodeGetCmdProcessor;
 import com.solar.command.processor.WorkingModeUpdateCmdProcessor;
@@ -58,6 +60,8 @@ public enum MsgProcessorRegister {
 
 	ACCOUNT_AUDIT_COMMAND(ConnectAPI.ACCOUNT_AUDIT_COMMAND, new AccountAuditCmdProcessor()),
 	ACCOUNT_PROJECT_CHECK_COMMAND(ConnectAPI.ACCOUNT_PROJECT_CHECK_COMMAND, new AccountProjectCheckCmdProcessor()),
+	PROJECT_QUERY_COMMAND(ConnectAPI.PROJECT_QUERY_COMMAND, new ProjectQueryCmdProcessor()),
+	PROJECT_SELECT_COMMAND(ConnectAPI.PROJECT_SELECT_COMMAND, new ProjectSelectCmdProcessor()),
 
 	// 内部使用，服务端通知客户端断开
 	EMPYTCOMMAND(ConnectAPI.ZERO_RESPONSE, new OpenAppMsgProcessor());

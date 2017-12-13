@@ -275,4 +275,19 @@ public class ObservableMedia extends Observable {
 		hostClient.checkAccountProject(account);
 		setChanged();
 	}
+
+	public void queryProjects(SoPage<SoProject, List<SoProject>> soPage) {
+		SoProject c = soPage.getC();
+		if (c == null)
+			soPage.setC(new SoProject());
+		hostClient.queryProjects(soPage);
+		setChanged();
+	}
+
+	public void selectProject(Long id) {
+		SoProject project = new SoProject();
+		project.setId(id);
+		hostClient.selectProject(project);
+		setChanged();
+	}
 }

@@ -7,8 +7,12 @@ import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -24,11 +28,15 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.solar.client.DataClient;
 import com.solar.client.net.NetConf;
 import com.solar.common.context.Consts.AddrType;
+import com.solar.common.util.LocationLoader;
 import com.solar.entity.SoAreas;
 import com.solar.entity.SoCities;
+import com.solar.entity.SoProject;
 import com.solar.entity.SoProvinces;
 import com.solar.gui.component.checkable.single.SingleTreeNodeSelectionListener;
 import com.solar.gui.component.model.TreeAddr;
@@ -75,8 +83,43 @@ public class AddressTreePopup extends JPopupMenu {
 		selectedKeys.clear();
 	}
 
-	public JPanel createTree() {
-		DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+	JTree tree;
+	DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+
+	public void createNodeMode() {
+		JSONObject locations = LocationLoader.getInstance().loadLocation();
+		JSONArray provinces = locations.getJSONArray("Province");
+		for (int i = 0; i < provinces.size(); i++) {
+			JSONObject province = provinces.getJSONObject(i);
+			String provinceid = province.getString("Id");
+			String provinceName = province.getString("Name");
+			DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(
+					new TreeAddr(AddrType.PROVINCE, provinceid, provinceName));
+			root.add(node1);
+			JSONArray cities = province.getJSONArray("City");
+			for (int j = 0; j < cities.size(); j++) {
+				JSONObject city = cities.getJSONObject(j);
+				String cityid = city.getString("Id");
+
+				String cityName = city.getString("Name");
+				DefaultMutableTreeNode node2 = new DefaultMutableTreeNode(
+						new TreeAddr(AddrType.CITY, cityid, cityName));
+				node1.add(node2);
+
+				JSONArray areas = city.getJSONArray("Area");
+				for (int k = 0; k < areas.size(); k++) {
+					JSONObject area = areas.getJSONObject(k);
+					String areaid = area.getString("Id");
+					String areaName = area.getString("Name");
+					DefaultMutableTreeNode node3 = new DefaultMutableTreeNode(
+							new TreeAddr(AddrType.AREA, areaid, areaName, true));
+					node2.add(node3);
+				}
+			}
+		}
+	}
+
+	public void createNodeModelUnSyc() {
 		List<SoProvinces> provinces = dataClient.getProvinces();
 		for (SoProvinces soProvinces : provinces) {
 			DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(
@@ -84,14 +127,6 @@ public class AddressTreePopup extends JPopupMenu {
 			root.add(node1);
 		}
 
-		JTree tree = new JTree(root) {
-			public Insets getInsets() {
-				return new Insets(5, 5, 5, 5);
-			}
-		};
-		tree.setRootVisible(false);
-		tree.setEditable(false);
-		tree.setCellRenderer(new MyDefaultTreeCellRenderer());
 		tree.addTreeSelectionListener(new TreeSelectionListener() {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
@@ -118,6 +153,43 @@ public class AddressTreePopup extends JPopupMenu {
 						lastNode.add(new DefaultMutableTreeNode(
 								new TreeAddr(AddrType.AREA, areas.getAreaid(), areas.getArea(), true)));
 					}
+					break;
+				case AREA:
+					// selectedNodes.clear();
+					// selectedNodes.add(lastNode);
+					break;
+				default:
+					break;
+				}
+				System.out.println(paramString());
+			}
+		});
+	}
+
+	public JPanel createTree() {
+		createNodeMode();
+		tree = new JTree(root) {
+			public Insets getInsets() {
+				return new Insets(5, 5, 5, 5);
+			}
+		};
+		tree.setRootVisible(false);
+		tree.setEditable(false);
+		tree.setCellRenderer(new MyDefaultTreeCellRenderer());
+		tree.addTreeSelectionListener(new TreeSelectionListener() {
+			@Override
+			public void valueChanged(TreeSelectionEvent e) {
+				TreePath path = e.getPath();
+				DefaultMutableTreeNode lastNode = (DefaultMutableTreeNode) path.getLastPathComponent();
+				if (lastNode.getChildCount() > 0) {
+					return;
+				}
+				TreeAddr userObject = (TreeAddr) lastNode.getUserObject();
+				AddrType addrType = userObject.getAddrType();
+				switch (addrType) {
+				case PROVINCE:
+					break;
+				case CITY:
 					break;
 				case AREA:
 					selectedNodes.clear();
@@ -182,7 +254,6 @@ public class AddressTreePopup extends JPopupMenu {
 		for (DefaultMutableTreeNode mutableTreeNode : selectedNodes) {
 			TreeAddr sn = (TreeAddr) mutableTreeNode.getUserObject();
 			selectedKeys.add(sn);
-
 			StringBuilder sb = new StringBuilder();
 			TreeNode[] path = mutableTreeNode.getPath();
 			for (TreeNode treeNode : path) {
@@ -190,16 +261,48 @@ public class AddressTreePopup extends JPopupMenu {
 				if (node.getUserObject().toString().equals("root"))
 					continue;
 				TreeAddr treeAddr = (TreeAddr) node.getUserObject();
-				sb.append(treeAddr.getValue()).append("->");
+				sb.append(treeAddr.getValue()).append("\\");
 			}
-			System.out.println(sb);
-			selectedValues.add(sb);
+			selectedValues.add(sb.substring(0, sb.length() - 1));
 		}
 		return selectedValues.toArray(new Object[selectedValues.size()]);
 	}
 
 	public List<TreeAddr> getSelectedKeys() {
 		return selectedKeys;
+	}
+
+	public void expandTree(JTree tree, TreePath parent) {
+		TreeNode node = (TreeNode) parent.getLastPathComponent();
+		if (node.getChildCount() >= 0) {
+			for (Enumeration<?> e = node.children(); e.hasMoreElements();) {
+				DefaultMutableTreeNode n = (DefaultMutableTreeNode) e.nextElement();
+				TreeAddr addr = (TreeAddr) n.getUserObject();
+				TreePath path = parent.pathByAddingChild(n);
+				expandTree(tree, path);
+				if (locationSet.contains(addr.getKey())) {
+					tree.setSelectionPath(path);
+					do {
+						tree.expandPath(path);
+						path = path.getParentPath();
+					} while (path != null);
+				}
+			}
+		}
+	}
+
+	private Set<String> locationSet = new HashSet<>();
+
+	public void setDefaultLocations(List<TreeAddr> selectedKeys) {
+		this.selectedKeys.clear();
+		this.locationSet.clear();
+		for (TreeAddr treeAddr : selectedKeys) {
+			String key = treeAddr.getKey();
+			this.locationSet.add(key);
+			this.selectedKeys.add(treeAddr);
+		}
+		TreePath root = new TreePath(this.root);
+		expandTree(tree, root);
 	}
 
 	public void setDefaultValue(Object[] defaultValue) {
@@ -220,8 +323,11 @@ public class AddressTreePopup extends JPopupMenu {
 		public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded,
 				boolean leaf, int row, boolean hasFocus) {
 			DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-			TreeAddr userObject = (TreeAddr) node.getUserObject();
-			leaf = leaf && userObject.isArea();
+			Object uo = node.getUserObject();
+			if (uo instanceof TreeAddr) {
+				TreeAddr userObject = (TreeAddr) uo;
+				leaf = leaf && userObject.isArea();
+			}
 			return super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 		}
 
