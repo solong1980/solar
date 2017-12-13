@@ -1,6 +1,5 @@
 package com.solar.entity;
 
-import java.util.Date;
 import java.util.List;
 
 @SuppressWarnings("serial")
@@ -33,7 +32,7 @@ public class SoProject extends SoAbtAuth {
 	private String street;
 	private String workerName;
 	private String workerPhone;
-	private Date createTime;
+	private String createTime;
 
 	public Long getId() {
 		return id;
@@ -115,11 +114,11 @@ public class SoProject extends SoAbtAuth {
 		this.workerPhone = workerPhone;
 	}
 
-	public Date getCreateTime() {
+	public String getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(Date createTime) {
+	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
 	}
 

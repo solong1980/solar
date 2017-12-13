@@ -2,6 +2,7 @@ package com.solar.gui.module.working.fuc;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -36,6 +37,7 @@ import com.solar.client.ObservableMedia;
 import com.solar.client.SoRet;
 import com.solar.common.context.ActionType;
 import com.solar.common.context.ConnectAPI;
+import com.solar.common.context.Consts;
 import com.solar.common.context.Consts.AuditResult;
 import com.solar.common.context.RoleType;
 import com.solar.common.util.LocationLoader;
@@ -225,17 +227,22 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 		// create table
 		List<SoProject> projects = account.getProjects();
 
-		final String[] names = { "ID", "项目名称", "位置", "创建时间" };
-		Object[][] data = new Object[projects.size()][4];
+		final String[] names = { "ID", "项目名称", "类型", "位置", "街道", "处理能力", "维护员", "联系方式", "创建时间" };
+		Object[][] data = new Object[projects.size()][9];
 
 		for (int i = 0; i < projects.size(); i++) {
 			SoProject project = projects.get(i);
 			data[i][0] = project.getId();
 			data[i][1] = project.getProjectName();
+			data[i][2] = Consts.ProjectType.type(project.getType()).projectName();
 			String locationId = project.getLocationId();
 			String locationFullName = LocationLoader.getInstance().getLocationFullName(locationId);
-			data[i][2] = locationFullName;
-			data[i][3] = project.getCreateTime();
+			data[i][3] = locationFullName;
+			data[i][4] = project.getStreet();
+			data[i][5] = project.getCapability() + "t";
+			data[i][6] = project.getWorkerName();
+			data[i][7] = project.getWorkerPhone();
+			data[i][8] = project.getCreateTime();
 		}
 
 		DefaultTableModel dataModel = new DefaultTableModel(data, names) {
@@ -263,7 +270,7 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 		final int tableFirstColumn = 0;
 		final JTableHeader tableHeader = projectTable.getTableHeader();
 		final JCheckBox selectBox = new JCheckBox(dataModel.getColumnName(tableFirstColumn));
-		//selectBox.setSelected(true);
+		// selectBox.setSelected(true);
 		tableHeader.setDefaultRenderer(new TableCellRenderer() {
 			public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
 					boolean hasFocus, int row, int column) {
@@ -288,7 +295,7 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 					if (selectColumn == tableFirstColumn) {
 						boolean value = !selectBox.isSelected();
 						selectBox.setSelected(value);
-						//dataModel.selectAll(value);
+						// dataModel.selectAll(value);
 						for (JCheckBox cb : checkBoxs) {
 							cb.setSelected(value);
 						}
@@ -296,12 +303,16 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 					}
 				}
 			}
+
 			public void mouseEntered(MouseEvent e) {
 			}
+
 			public void mouseExited(MouseEvent e) {
 			}
+
 			public void mousePressed(MouseEvent e) {
 			}
+
 			public void mouseReleased(MouseEvent e) {
 			}
 		});
@@ -309,22 +320,33 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 		projectTable.getColumn("ID").setCellEditor(new DefaultCellEditor(new JCheckBox()));
 		projectTable.getColumnModel().getColumn(0).setCellEditor(new CheckBoxEditor(new JCheckBox()));
 		projectTable.getColumnModel().getColumn(0).setCellRenderer(new CheckBoxRenderer());
-		// projectTable.setMinimumSize(new Dimension(800, 300));
-		// projectTable.setPreferredSize(new Dimension(800, 300));
-		// projectTable.setSize(800,200);
 		JComponent[] message = new JComponent[2];
 		JScrollPane scrollPane = new JScrollPane(projectTable);
+		scrollPane.setMinimumSize(new Dimension(1000, 300));
+		scrollPane.setPreferredSize(new Dimension(1000, 300));
+		scrollPane.setSize(1000, 200);
 		message[0] = scrollPane;
 
 		String[] options = { "确认", "取消" };
+
 		int result = JOptionPane.showOptionDialog(this, message, "选择项目(审核)", JOptionPane.DEFAULT_OPTION,
 				JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
 
 		switch (result) {
 		case 0: // yes
-			int[] selectedRows = projectTable.getSelectedRows();
-
-			ObservableMedia.getInstance().regiestAgree(account);
+			List<SoProject> selProjects = new ArrayList<>();
+			for (int i = 0; i < checkBoxs.size(); i++) {
+				if (checkBoxs.get(i).isSelected()) {
+					SoProject selProj = projects.get(i);
+					selProjects.add(selProj);
+				}
+			}
+			if (selProjects.size() == 0) {
+				JOptionPane.showMessageDialog(this, "请选择项目", "未选项目", JOptionPane.WARNING_MESSAGE);
+			} else {
+				account.setProjects(selProjects);
+				ObservableMedia.getInstance().regiestAgree(account);
+			}
 			break;
 		case 1: // no
 			break;

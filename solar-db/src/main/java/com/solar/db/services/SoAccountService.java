@@ -108,26 +108,29 @@ public class SoAccountService {
 	public void auditAgree(SoAccount account) {
 		Long id = account.getId();
 		SoAccount dbAccount = accountDao.selectById(account.getId());
-		// query locations
-		List<SoAccountLocation> accountLocations = accountLocationDao.selectByAccountId(id);
-		List<String> locationIds = new ArrayList<>();
-		for (SoAccountLocation soAccountLocation : accountLocations) {
-			locationIds.add(soAccountLocation.getLocationId());
-		}
-
-		// store projects chooses by administrator,this time no use
-		// List<SoProject> projectsInLocations = account.getProjects();
-
-		// query projects in the locations
-		List<SoProject> projectsInLocations = projectService.queryProjectByLocationIds(locationIds);
-		if (projectsInLocations == null || projectsInLocations.isEmpty()) {
-			throw new RuntimeException(ErrorCode.Error_000013);
-		}
 
 		int type = dbAccount.getType();
 		RoleType roleType = RoleType.roleType(type);
 		switch (roleType) {
 		case OPERATOR:
+			// query locations
+			// List<SoAccountLocation> accountLocations =
+			// accountLocationDao.selectByAccountId(id);
+			// List<String> locationIds = new ArrayList<>();
+			// for (SoAccountLocation soAccountLocation : accountLocations) {
+			// locationIds.add(soAccountLocation.getLocationId());
+			// }
+			
+			// store projects chooses by administrator,this time no use
+			List<SoProject> projectsInLocations = account.getProjects();
+			
+			// query projects in the locations
+			// List<SoProject> projectsInLocations =
+			// projectService.queryProjectByLocationIds(locationIds);
+			
+			if (projectsInLocations == null || projectsInLocations.isEmpty()) {
+				throw new RuntimeException(ErrorCode.Error_000013);
+			}
 			// if operator add relation to privilege and update status
 			List<SoPrivilege> privileges = new ArrayList<>();
 			for (SoProject soProject : projectsInLocations) {

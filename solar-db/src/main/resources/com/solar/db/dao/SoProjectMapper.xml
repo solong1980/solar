@@ -98,10 +98,7 @@
 	<select id="queryProjectByLocationIds" resultMap="BaseResultMap">
 		<foreach collection="locationIds" item="locationId" separator=" ">
 			select
-			id,
-			project_name,
-			type,
-			location_id
+			<include refid="Columns" />
 			from so_project
 			where
 			location_id
@@ -110,10 +107,7 @@
 			union
 		</foreach>
 		select
-		id,
-		project_name,
-		type,
-		location_id
+		<include refid="Columns" />
 		from so_project
 		where 1=0
 

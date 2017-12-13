@@ -45,6 +45,13 @@ public class Consts {
 			} else
 				return ProjectType.SMART;
 		}
+
+		public String projectName() {
+			if (this == SUN_POWER) {
+				return "太阳能污水控制系统";
+			} else
+				return "智能运维系统";
+		}
 	}
 
 	public static enum AddrType {
