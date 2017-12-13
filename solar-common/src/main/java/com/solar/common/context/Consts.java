@@ -58,7 +58,9 @@ public class Consts {
 		PROVINCE,
 		CITY,
 		AREA,
-		STREET;
+		STREET,
+		PROJECT,
+		DEVICE;
 	}
 
 	public static enum DevInfoType {

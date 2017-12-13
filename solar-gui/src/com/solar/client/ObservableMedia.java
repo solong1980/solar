@@ -1,8 +1,11 @@
 package com.solar.client;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 import java.util.Set;
 
@@ -25,6 +28,8 @@ public class ObservableMedia extends Observable {
 
 	private Set<String> sunPowerLocationFilterSet = new HashSet<>();
 	private Set<String> smartLocationFilterSet = new HashSet<>();
+	private Map<String, List<SoProject>> sunPowerLocationProjectsMap = new HashMap<String, List<SoProject>>();
+	private Map<String, List<SoProject>> smartLocationProjectsMap = new HashMap<String, List<SoProject>>();
 
 	public void setSessionAccount(SoAccount sessionAccount) {
 		this.sessionAccount = sessionAccount;
@@ -43,6 +48,14 @@ public class ObservableMedia extends Observable {
 
 	public Set<String> getSmartLocationFilterSet() {
 		return smartLocationFilterSet;
+	}
+
+	public List<SoProject> getSunPowerProjects(String locationId) {
+		return sunPowerLocationProjectsMap.get(locationId);
+	}
+
+	public List<SoProject> getSmartProjects(String locationId) {
+		return smartLocationProjectsMap.get(locationId);
 	}
 
 	private void projectLocationFilterSet() {
@@ -64,11 +77,26 @@ public class ObservableMedia extends Observable {
 				sunPowerLocationFilterSet.add(locationId);
 				sunPowerLocationFilterSet.add(provinceId);
 				sunPowerLocationFilterSet.add(cityId);
+
+				List<SoProject> sunPowList = sunPowerLocationProjectsMap.get(locationId);
+				if (sunPowList == null) {
+					sunPowList = new ArrayList<>();
+					sunPowerLocationProjectsMap.put(locationId, sunPowList);
+				}
+				sunPowList.add(soProject);
+
 				break;
 			case SMART:
 				smartLocationFilterSet.add(locationId);
 				smartLocationFilterSet.add(provinceId);
 				smartLocationFilterSet.add(cityId);
+
+				List<SoProject> smartList = smartLocationProjectsMap.get(locationId);
+				if (smartList == null) {
+					smartList = new ArrayList<>();
+					smartLocationProjectsMap.put(locationId, smartList);
+				}
+				smartList.add(soProject);
 				break;
 			default:
 				break;

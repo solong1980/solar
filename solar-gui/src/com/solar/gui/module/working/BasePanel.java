@@ -3,6 +3,7 @@ package com.solar.gui.module.working;
 import java.awt.BorderLayout;
 import java.awt.Insets;
 import java.awt.LayoutManager;
+import java.util.List;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
@@ -16,13 +17,17 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.solar.client.ObservableMedia;
 import com.solar.common.context.Consts.AddrType;
 import com.solar.common.util.LocationLoader;
+import com.solar.entity.SoProject;
 import com.solar.gui.component.model.TreeAddr;
 
 @SuppressWarnings("serial")
@@ -57,13 +62,13 @@ public class BasePanel extends JPanel {
 		return mi;
 	}
 
-	public static JButton createTableButton(String text,AbstractAction btnAction) {
+	public static JButton createTableButton(String text, AbstractAction btnAction) {
 		JButton btn = new JButton(btnAction);
 		// delBtn.setOpaque(true);
 		// forbBtn.setOpaque(true);
 		btn.setMargin(new Insets(0, 0, 0, 0));
-		//btn.setBounds(new Rectangle(0, 0, 30, 30));
-		//btn.setPreferredSize(new Dimension(40, 30));
+		// btn.setBounds(new Rectangle(0, 0, 30, 30));
+		// btn.setPreferredSize(new Dimension(40, 30));
 		// Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
 		// delBtn.setFont(font);
 		// delBtn.setBorder(new EmptyBorder(0, 0, 40, 0));
@@ -71,14 +76,14 @@ public class BasePanel extends JPanel {
 		btn.setText(text);
 		return btn;
 	}
-	
+
 	public static JButton createTableButton(String text) {
 		JButton btn = new JButton();
 		// delBtn.setOpaque(true);
 		// forbBtn.setOpaque(true);
 		btn.setMargin(new Insets(0, 0, 0, 0));
-		//btn.setBounds(new Rectangle(0, 0, 30, 30));
-		//btn.setPreferredSize(new Dimension(40, 30));
+		// btn.setBounds(new Rectangle(0, 0, 30, 30));
+		// btn.setPreferredSize(new Dimension(40, 30));
 		// Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 10);
 		// delBtn.setFont(font);
 		// delBtn.setBorder(new EmptyBorder(0, 0, 40, 0));
@@ -91,8 +96,10 @@ public class BasePanel extends JPanel {
 		// 如果是管理员则加载所有地址
 		// 如果是维护或局方则查询后台,或者在登陆的时候保存管辖位置数据
 		JPanel jp = new JPanel();
-		Set<String> sunPowerFilterSet = ObservableMedia.getInstance().getSunPowerLocationFilterSet();
-		Set<String> smartFilterSet = ObservableMedia.getInstance().getSmartLocationFilterSet();
+		ObservableMedia instance = ObservableMedia.getInstance();
+
+		Set<String> sunPowerFilterSet = instance.getSunPowerLocationFilterSet();
+		Set<String> smartFilterSet = instance.getSmartLocationFilterSet();
 
 		DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
 		DefaultMutableTreeNode sumPowerNode = new DefaultMutableTreeNode(getBoldHTML("太阳能污水处理系统"));
@@ -135,6 +142,13 @@ public class BasePanel extends JPanel {
 					DefaultMutableTreeNode node3 = new DefaultMutableTreeNode(
 							new TreeAddr(AddrType.AREA, areaid, areaName));
 					node2.add(node3);
+
+					List<SoProject> sunPowerProjects = instance.getSunPowerProjects(areaid);
+					for (SoProject soProject : sunPowerProjects) {
+						DefaultMutableTreeNode node4 = new DefaultMutableTreeNode(
+								new TreeAddr(AddrType.PROJECT, Long.toString(soProject.getId()), soProject));
+						node3.add(node4);
+					}
 				}
 			}
 		}
@@ -144,7 +158,7 @@ public class BasePanel extends JPanel {
 			String provinceid = province.getString("Id");
 			if (!smartFilterSet.contains(provinceid))
 				continue;
-			
+
 			String provinceName = province.getString("Name");
 			DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(
 					new TreeAddr(AddrType.PROVINCE, provinceid, provinceName));
@@ -155,7 +169,7 @@ public class BasePanel extends JPanel {
 				String cityid = city.getString("Id");
 				if (!smartFilterSet.contains(cityid))
 					continue;
-				
+
 				String cityName = city.getString("Name");
 				DefaultMutableTreeNode node2 = new DefaultMutableTreeNode(
 						new TreeAddr(AddrType.CITY, cityid, cityName));
@@ -166,11 +180,18 @@ public class BasePanel extends JPanel {
 					String areaid = area.getString("Id");
 					if (!smartFilterSet.contains(areaid))
 						continue;
-					
+
 					String areaName = area.getString("Name");
 					DefaultMutableTreeNode node3 = new DefaultMutableTreeNode(
 							new TreeAddr(AddrType.AREA, areaid, areaName));
 					node2.add(node3);
+
+					List<SoProject> smartProjects = instance.getSmartProjects(areaid);
+					for (SoProject soProject : smartProjects) {
+						DefaultMutableTreeNode node4 = new DefaultMutableTreeNode(
+								new TreeAddr(AddrType.PROJECT, Long.toString(soProject.getId()), soProject));
+						node3.add(node4);
+					}
 				}
 			}
 		}
@@ -182,6 +203,35 @@ public class BasePanel extends JPanel {
 		};
 		tree.setRootVisible(false);
 		tree.setEditable(false);
+
+		tree.addTreeSelectionListener(new TreeSelectionListener() {
+			@Override
+			public void valueChanged(TreeSelectionEvent e) {
+				TreePath path = e.getPath();
+				Object lastPathComponent = path.getLastPathComponent();
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) lastPathComponent;
+				Object userObject = node.getUserObject();
+				if (userObject instanceof TreeAddr) {
+					TreeAddr ta = (TreeAddr) userObject;
+					AddrType addrType = ta.getAddrType();
+					String id = ta.getKey();
+					Object value = ta.getValue();
+
+					switch (addrType) {
+					case PROJECT:
+						// Load device
+						// node.add
+						break;
+					case DEVICE:
+						// monitor device
+						
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		});
 
 		jp.setLayout(new BorderLayout());
 		jp.add(new JLabel("项目列表", SwingConstants.CENTER), BorderLayout.NORTH);

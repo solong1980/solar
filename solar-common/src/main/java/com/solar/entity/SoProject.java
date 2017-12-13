@@ -122,4 +122,9 @@ public class SoProject extends SoAbtAuth {
 		this.createTime = createTime;
 	}
 
+	@Override
+	public String toString() {
+		return projectName;
+	}
+
 }
