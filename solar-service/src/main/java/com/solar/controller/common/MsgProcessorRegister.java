@@ -18,8 +18,10 @@ import com.solar.command.processor.GetWorkingModeCmdProcessor;
 import com.solar.command.processor.LoginCmdProcessor;
 import com.solar.command.processor.OpenAppMsgProcessor;
 import com.solar.command.processor.ProjectAddCmdProcessor;
+import com.solar.command.processor.ProjectDeleteCmdProcessor;
 import com.solar.command.processor.ProjectQueryCmdProcessor;
 import com.solar.command.processor.ProjectSelectCmdProcessor;
+import com.solar.command.processor.ProjectUpdateCmdProcessor;
 import com.solar.command.processor.RegiestCmdProcessor;
 import com.solar.command.processor.VcodeGetCmdProcessor;
 import com.solar.command.processor.WorkingModeUpdateCmdProcessor;
@@ -27,11 +29,8 @@ import com.solar.common.context.ConnectAPI;
 
 public enum MsgProcessorRegister {
 	DATA_UPLOAD(ConnectAPI.DATA_UPLOAD_COMMAND, new DataUploadCmdProcessor()),
-
 	WORKING_MODE_UPDATE(ConnectAPI.WORKING_MODE_UPDATE_COMMAND, new WorkingModeUpdateCmdProcessor()),
-
 	GET_WORKING_MODE(ConnectAPI.GET_WORKING_MODE_COMMAND, new GetWorkingModeCmdProcessor()),
-
 	APP_UPGRADE_COMMAND(ConnectAPI.APP_UPGRADE_COMMAND, new AppUpgradeCmdProcessor()),
 
 	DATA_SERVER_INFO_COMMAND(ConnectAPI.DATA_SERVER_QUERY_COMMAND, new DataServerInfoCmdProcessor()),
@@ -39,27 +38,26 @@ public enum MsgProcessorRegister {
 	APK_VERSION_QUERY_COMMAND(ConnectAPI.APK_VERSION_QUERY_COMMAND, new AppVersionCmdProcessor()),
 
 	LOGIN_COMMAND(ConnectAPI.LOGIN_COMMAND, new LoginCmdProcessor()),
-
 	DEVICE_ACCESS_COMMAND(ConnectAPI.DEVICE_ACCESS_COMMAND, new DeviceAccessCmdProcessor()),
 
 	ADDR_PROVINCES_QUERY_COMMAND(ConnectAPI.ADDR_PROVINCES_QUERY_COMMAND, new GetProvincesCmdProcessor()),
 	ADDR_CITIES_QUERY_COMMAND(ConnectAPI.ADDR_CITIES_QUERY_COMMAND, new GetCitiesCmdProcessor()),
 	ADDR_AREAS_QUERY_COMMAND(ConnectAPI.ADDR_AREAS_QUERY_COMMAND, new GetAreasCmdProcessor()),
 
-	ACCOUNT_ADD_COMMAND(ConnectAPI.ACCOUNT_ADD_COMMAND, new RegiestCmdProcessor()),
-
 	VCODE_GET_COMMAND(ConnectAPI.VCODE_GET_COMMAND, new VcodeGetCmdProcessor()),
-
-	PROJECT_ADD_COMMAND(ConnectAPI.PROJECT_ADD_COMMAND, new ProjectAddCmdProcessor()),
 
 	ACCOUNT_FINDBACK_COMMAND(ConnectAPI.ACCOUNT_FINDBACK_COMMAND, new AccountFindbackCmdProcessor()),
 	ACCOUNT_FINDBACK_QUERY_COMMAND(ConnectAPI.ACCOUNT_FINDBACK_QUERY_COMMAND, new AccountFindQueryCmdProcessor()),
 	ACCOUNT_FINDBACK_AUDIT_COMMAND(ConnectAPI.ACCOUNT_FINDBACK_AUDIT_COMMAND, new AccountFindAuditCmdProcessor()),
 
+	ACCOUNT_ADD_COMMAND(ConnectAPI.ACCOUNT_ADD_COMMAND, new RegiestCmdProcessor()),
 	ACCOUNT_QUERY_COMMAND(ConnectAPI.ACCOUNT_QUERY_COMMAND, new AccountQueryCmdProcessor()),
-
 	ACCOUNT_AUDIT_COMMAND(ConnectAPI.ACCOUNT_AUDIT_COMMAND, new AccountAuditCmdProcessor()),
 	ACCOUNT_PROJECT_CHECK_COMMAND(ConnectAPI.ACCOUNT_PROJECT_CHECK_COMMAND, new AccountProjectCheckCmdProcessor()),
+	
+	PROJECT_ADD_COMMAND(ConnectAPI.PROJECT_ADD_COMMAND, new ProjectAddCmdProcessor()),
+	PROJECT_UPDATE_COMMAND(ConnectAPI.PROJECT_UPDATE_COMMAND, new ProjectUpdateCmdProcessor()),
+	PROJECT_DELETE_COMMAND(ConnectAPI.PROJECT_DELETE_COMMAND, new ProjectDeleteCmdProcessor()),
 	PROJECT_QUERY_COMMAND(ConnectAPI.PROJECT_QUERY_COMMAND, new ProjectQueryCmdProcessor()),
 	PROJECT_SELECT_COMMAND(ConnectAPI.PROJECT_SELECT_COMMAND, new ProjectSelectCmdProcessor()),
 

@@ -34,6 +34,8 @@ public class SoProject extends SoAbtAuth {
 	private String workerPhone;
 	private String createTime;
 
+	private int state;
+
 	public Long getId() {
 		return id;
 	}
@@ -120,6 +122,14 @@ public class SoProject extends SoAbtAuth {
 
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
 	}
 
 	@Override

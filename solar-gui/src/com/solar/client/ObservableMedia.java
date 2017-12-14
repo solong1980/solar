@@ -290,4 +290,11 @@ public class ObservableMedia extends Observable {
 		hostClient.selectProject(project);
 		setChanged();
 	}
+
+	public void deleteProject(Long id) {
+		SoProject project = new SoProject();
+		project.setId(id);
+		hostClient.deleteProject(project);
+		setChanged();
+	}
 }

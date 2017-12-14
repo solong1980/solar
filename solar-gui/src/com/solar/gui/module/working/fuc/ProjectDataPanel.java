@@ -5,6 +5,7 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -60,7 +61,11 @@ import com.solar.gui.module.working.BasePanel;
 @SuppressWarnings("serial")
 public class ProjectDataPanel extends BasePanel implements Observer {
 
-	private SoProject soProject;
+	final int INITIAL_ROWHEIGHT = 33;
+
+	private SoProject soProject = null;
+	JLabel titleLable;
+
 	private JTextField nameField;
 	private JComboBox<String> projectTypeField;
 	private AddressTreeField addressField;
@@ -76,7 +81,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 
 	public JPanel createEditor() {
 		//
-		JLabel titleLable = new JLabel(getBoldHTML("项目信息更改"), JLabel.CENTER);
+		titleLable = new JLabel(getBoldHTML("项目信息更改"), JLabel.CENTER);
 		JLabel nameLabel = new JLabel(getBoldHTML("项目名称"));
 
 		JLabel projectTypeLabel = new JLabel(getBoldHTML("项目类别"));
@@ -220,8 +225,19 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 	}
 
 	DefaultTableModel dataModel;
+	List<JCheckBox> checkBoxs = new ArrayList<>();
+	JTable projectTable;
+
+	int rmRow = -1;
 
 	public void updateData(final Object[][] data) {
+		checkBoxs.clear();
+		projectTable.clearSelection();
+		projectTable.setRowMargin(1);
+		projectTable.setRowSelectionAllowed(true);
+		projectTable.setCellEditor(null);
+		projectTable.setEditingColumn(-1);
+		projectTable.setEditingRow(-1);
 		dataModel.getDataVector().clear();
 		for (Object[] objects : data) {
 			dataModel.addRow(objects);
@@ -230,8 +246,6 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 	}
 
 	public JScrollPane projectListTable(List<SoProject> projects) {
-		List<JCheckBox> checkBoxs = new ArrayList<>();
-
 		class CheckBoxRenderer implements TableCellRenderer {
 			private JCheckBox button;
 
@@ -324,13 +338,17 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 				p.setLayout(new GridLayout(1, 2));
 				updataBtn = createTableButton("修改", updateAction);
 				delBtn = createTableButton("删除", deleteAction);
-				updataBtn.setActionCommand(value.toString());
-				delBtn.setActionCommand(value.toString());
+				String rowstr = Integer.toString(row);
+				updataBtn.setActionCommand(rowstr);
+				/*
+				 * delete button with id and row for delete row from table directly without back
+				 * request
+				 */
+				delBtn.setActionCommand(rowstr);
 				// updataBtn.setHorizontalAlignment((int) 0.1f);
 				// delBtn.setHorizontalAlignment((int) 0.1f);
 				p.add(updataBtn);
 				p.add(delBtn);
-
 				this.value = value;
 
 				updataBtn.addItemListener(this);
@@ -344,6 +362,14 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 				return this.value;
 			}
 
+			// @Override
+			// public boolean stopCellEditing() {
+			// boolean selected = delBtn.isSelected();
+			// return true;
+			// }
+			// return delegate.stopCellEditing();
+			// }
+
 			public void itemStateChanged(ItemEvent e) {
 				super.fireEditingStopped();
 			}
@@ -351,7 +377,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 
 		// create table
 		final String[] names = { "ID", "项目名称", "类型", "位置", "街道", "处理能力", "维护员", "联系方式", "创建时间", "操作" };
-		Object[][] data = new Object[projects.size()][9];
+		Object[][] data = new Object[projects.size()][10];
 
 		for (int i = 0; i < projects.size(); i++) {
 			SoProject project = projects.get(i);
@@ -366,6 +392,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 			data[i][6] = project.getWorkerName();
 			data[i][7] = project.getWorkerPhone();
 			data[i][8] = project.getCreateTime();
+			data[i][8] = project.getId();
 		}
 
 		dataModel = new DefaultTableModel(data, names) {
@@ -376,7 +403,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 			}
 		};
 		// Create the table
-		JTable projectTable = new JTable(dataModel) {
+		projectTable = new JTable(dataModel) {
 			public String getToolTipText(MouseEvent e) {
 				int row = rowAtPoint(e.getPoint());
 				int col = columnAtPoint(e.getPoint());
@@ -389,7 +416,9 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 				return tiptextString;
 			}
 		};
-
+		projectTable.setFont(new Font("Menu.font", Font.PLAIN, 15));
+		projectTable.setRowHeight(INITIAL_ROWHEIGHT);
+		
 		final int tableFirstColumn = 0;
 		final JTableHeader tableHeader = projectTable.getTableHeader();
 		final JCheckBox selectBox = new JCheckBox(dataModel.getColumnName(tableFirstColumn));
@@ -506,17 +535,36 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 	class EditorAction extends AbstractAction {
 		private static final long serialVersionUID = -6048630218852730717L;
 		private ActionType operate;
+		private JComponent parent;
 
 		protected EditorAction(ActionType operate, JComponent parent) {
 			super("AdaAction");
 			this.operate = operate;
+			this.parent = parent;
 		}
 
 		public void actionPerformed(ActionEvent e) {
-
 			ObservableMedia media = ObservableMedia.getInstance();
 			switch (operate) {
+			case PROJECT_DELETE:
+				int ret = JOptionPane.showConfirmDialog(parent, "确认删除", "删除", JOptionPane.OK_CANCEL_OPTION);
+				if (ret == 0) {
+					String command = e.getActionCommand();
+					rmRow = Integer.parseInt(command);
+					Object vAtone = projectTable.getValueAt(rmRow, 0);
+					Long id = Long.parseLong(vAtone.toString());
+					media.deleteProject(id);
+				}
+				break;
+			case PROJECT_UPDATE:
+				String command = e.getActionCommand();
+				Integer row = Integer.parseInt(command);
+				Object vAtone = projectTable.getValueAt(row, 0);
+				Long id = Long.parseLong(vAtone.toString());
+				media.selectProject(id);
+				break;
 			case PROJECT_NEW:
+				titleLable.setText("项目添加");
 				nameField.setText("");
 				projectTypeField.setSelectedItem(null);
 				addressField.cleanSelected();
@@ -533,6 +581,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 				ObservableMedia.getInstance().queryProjects(new SoPage<SoProject, List<SoProject>>());
 				break;
 			case PROJECT_CANCEL:
+				soProject = null;
 				nameField.setText("");
 				projectTypeField.setSelectedItem(null);
 				addressField.cleanSelected();
@@ -545,14 +594,11 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 				soProject = new SoProject();
 				cardLayout.show(ProjectDataPanel.this, "list");
 				break;
-			case PROJECT_UPDATE:
-				String command = e.getActionCommand();
-				Long id = Long.parseLong(command);
-				media.selectProject(id);
-				break;
 			case PROJECT_UPDATE_SUBMIT:
-
-				break;
+				if (soProject == null || soProject.getId() == null) {
+					showWarningDailog("未选择项目", "警告");
+					return;
+				}
 			case PROJECT_NEW_SUBMIT:
 				String name = nameField.getText();
 				int typeIndex = projectTypeField.getSelectedIndex();
@@ -584,8 +630,9 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 
 				String workerName = workerNameField.getText();
 				String workerPhone = workerContactField.getText();
-
-				soProject = new SoProject();
+				// if update the soProject should not null
+				if (soProject == null)
+					soProject = new SoProject();
 				soProject.setProjectName(name);
 				soProject.setType(projectType);
 				soProject.setLocationId(locationId);
@@ -611,13 +658,26 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 			int status = ret.getStatus();
 			if (status == 0) {
 				switch (code) {
-				case ConnectAPI.PROJECT_ADD_RESPONSE:
+				case ConnectAPI.PROJECT_DELETE_RESPONSE:
 					SoProject soAbt = JsonUtilTool.fromJson(ret.getRet(), SoProject.class);
-					soProject = soAbt;// 设置为返回的内容
+					JOptionPane.showMessageDialog(ProjectDataPanel.this, soAbt.getMsg());
+					dataModel.removeRow(rmRow);
+
+					projectTable.setRowMargin(1);
+					projectTable.setRowSelectionAllowed(true);
+					projectTable.setCellEditor(null);
+					projectTable.setEditingColumn(-1);
+					projectTable.setEditingRow(-1);
+					break;
+				case ConnectAPI.PROJECT_ADD_RESPONSE:
+				case ConnectAPI.PROJECT_UPDATE_RESPONSE:
+					soAbt = JsonUtilTool.fromJson(ret.getRet(), SoProject.class);
+					soProject = null;// 设置为返回的内容
+					JOptionPane.showMessageDialog(ProjectDataPanel.this, soAbt.getMsg());
 					EventQueue.invokeLater(new Runnable() {
 						@Override
 						public void run() {
-							JOptionPane.showMessageDialog(ProjectDataPanel.this, soAbt.getMsg());
+							ObservableMedia.getInstance().queryProjects(new SoPage<SoProject, List<SoProject>>());
 						}
 					});
 					break;
@@ -644,10 +704,13 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 						data[i][9] = project.getId();
 					}
 					updateData(data);
+					cardLayout.show(this, "list");
 					break;
 				case ConnectAPI.PROJECT_SELECT_RESPONSE:
 					SoProject project = JsonUtilTool.fromJson(ret.getRet(), SoProject.class);
 					this.soProject = project;
+
+					titleLable.setText("项目更新");
 					nameField.setText(project.getProjectName());
 
 					int type = project.getType();
@@ -672,7 +735,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 						}
 					});
 					addressField.setText(LocationLoader.getInstance().getLocationFullName(locationId));
-					
+
 					streetField.setText(project.getStreet());
 
 					int emissionStandards = project.getEmissionStandards();
@@ -682,7 +745,9 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 					int capability = project.getCapability();
 					capabilityField.setSelectedIndex(capability == 5 ? 1
 							: (capability == 10 ? 2
-									: (capability == 20 ? 3 : (capability == 30 ? 4 : (capability == 50 ? 5 : 6)))));
+									: (capability == 20 ? 3
+											: (capability == 30 ? 4
+													: (capability == 50 ? 5 : (capability == 80 ? 6 : 7))))));
 
 					int idx = capabilityField.getSelectedIndex() - 1;
 					if (idx < 0) {

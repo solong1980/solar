@@ -12,7 +12,7 @@ public class Consts {
 	public static final String FAILURE = "Failure";
 
 	public static final int[] PROJECT_TYPE = { 10, 20 };
-	public static final int[] CAPS = { 5, 10, 20, 30, 50, 100 };
+	public static final int[] CAPS = { 5, 10, 20, 30, 50, 80, 100 };
 	public static final int[] EMISSION_STANDARDS = { 10, 20 };
 
 	public static final int[] ACCOUNT_TYPE = { 20, 30 };

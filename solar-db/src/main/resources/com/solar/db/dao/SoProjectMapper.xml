@@ -13,6 +13,7 @@
 		<result column="worker_name" jdbcType="VARCHAR" property="workerName" />
 		<result column="worker_phone" jdbcType="INTEGER" property="workerPhone" />
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="state" jdbcType="INTEGER" property="state" />
 	</resultMap>
 
 	<sql id="Columns">
@@ -25,7 +26,8 @@
 		street,
 		worker_name,
 		worker_phone,
-		create_time
+		create_time,
+		state
 	</sql>
 
 
@@ -72,13 +74,19 @@
 		street=#{street,jdbcType=VARCHAR},
 		worker_name=#{workerName,jdbcType=VARCHAR},
 		worker_phone=#{workerPhone,jdbcType=VARCHAR}
+		where
+		id=#{id,jdbcType=BIGINT}
 	</update>
 
-	<delete id="deleteProject" parameterType="java.lang.Long">
-		delete
-		from so_project
-		where id = #{id,jdbcType=BIGINT}
-	</delete>
+	<update id="deleteProject">
+		update so_project set
+		state = 10
+		where
+		id=#{id,jdbcType=BIGINT}
+	</update>
+
+	<!-- <delete id="deleteProject" parameterType="java.lang.Long"> delete from 
+		so_project where id = #{id,jdbcType=BIGINT} </delete> -->
 
 	<select id="queryProjects" resultMap="BaseResultMap"
 		parameterType="com.solar.entity.SoProject">
@@ -86,7 +94,7 @@
 		<include refid="Columns" />
 		from so_project
 		where
-		1=1
+		state = 0
 		<if test="page.c.locationId!=null">
 			and location_id like
 			concat(#{page.c.locationId,jdbcType=VARCHAR},'%')
@@ -114,6 +122,7 @@
 		where
 		location_id like
 		concat(#{locationId,jdbcType=VARCHAR},'%')
+		and state = 0
 	</select>
 
 	<select id="queryProjectByLocationIds" resultMap="BaseResultMap">
@@ -124,13 +133,13 @@
 			where
 			location_id
 			like
-			concat(#{locationId,jdbcType=VARCHAR},'%')
+			concat(#{locationId,jdbcType=VARCHAR},'%') and state = 0
 			union
 		</foreach>
 		select
 		<include refid="Columns" />
 		from so_project
-		where 1=0
+		where 1 = 0
 	</select>
 
 </mapper>

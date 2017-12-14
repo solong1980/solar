@@ -267,7 +267,10 @@ public class HostClient extends MinaClient {
 
 	public void saveProject(SoProject soProject) {
 		String json = JsonUtilTool.toJson(soProject);
-		send(ConnectAPI.PROJECT_ADD_COMMAND, json);
+		if (soProject.getId() != null)
+			send(ConnectAPI.PROJECT_UPDATE_COMMAND, json);
+		else
+			send(ConnectAPI.PROJECT_ADD_COMMAND, json);
 	}
 
 	public void regiest(SoAccount account) {
@@ -328,5 +331,12 @@ public class HostClient extends MinaClient {
 		String json = JsonUtilTool.toJson(project);
 		System.out.println(json);
 		send(ConnectAPI.PROJECT_SELECT_COMMAND, json);
+	}
+
+	public void deleteProject(SoProject project) {
+		String json = JsonUtilTool.toJson(project);
+		System.out.println(json);
+		send(ConnectAPI.PROJECT_DELETE_COMMAND, json);
+
 	}
 }
