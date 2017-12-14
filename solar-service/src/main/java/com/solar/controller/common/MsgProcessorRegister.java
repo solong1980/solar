@@ -52,9 +52,10 @@ public enum MsgProcessorRegister {
 
 	ACCOUNT_ADD_COMMAND(ConnectAPI.ACCOUNT_ADD_COMMAND, new RegiestCmdProcessor()),
 	ACCOUNT_QUERY_COMMAND(ConnectAPI.ACCOUNT_QUERY_COMMAND, new AccountQueryCmdProcessor()),
+	ACCOUNT_AUDIT_QUERY_COMMAND(ConnectAPI.ACCOUNT_AUDIT_QUERY_COMMAND, new AccountQueryCmdProcessor()),
 	ACCOUNT_AUDIT_COMMAND(ConnectAPI.ACCOUNT_AUDIT_COMMAND, new AccountAuditCmdProcessor()),
 	ACCOUNT_PROJECT_CHECK_COMMAND(ConnectAPI.ACCOUNT_PROJECT_CHECK_COMMAND, new AccountProjectCheckCmdProcessor()),
-	
+
 	PROJECT_ADD_COMMAND(ConnectAPI.PROJECT_ADD_COMMAND, new ProjectAddCmdProcessor()),
 	PROJECT_UPDATE_COMMAND(ConnectAPI.PROJECT_UPDATE_COMMAND, new ProjectUpdateCmdProcessor()),
 	PROJECT_DELETE_COMMAND(ConnectAPI.PROJECT_DELETE_COMMAND, new ProjectDeleteCmdProcessor()),

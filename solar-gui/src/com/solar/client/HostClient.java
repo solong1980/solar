@@ -339,4 +339,10 @@ public class HostClient extends MinaClient {
 		send(ConnectAPI.PROJECT_DELETE_COMMAND, json);
 
 	}
+
+	public void accountSelect(SoAccount account) {
+		String json = JsonUtilTool.toJson(account);
+		System.out.println(json);
+		send(ConnectAPI.ACCOUNT_SELECT_COMMAND, json);
+	}
 }

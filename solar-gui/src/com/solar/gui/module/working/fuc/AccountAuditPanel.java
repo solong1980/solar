@@ -20,7 +20,6 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -96,7 +95,9 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 	}
 
 	private void queryAccount() {
-		SoPage<SoAccount, List<SoAccount>> page = new SoPage<>(new SoAccount());
+		SoAccount soAccount = new SoAccount();
+		soAccount.setStatus(AuditResult.WAIT_FOR_AUDIT.getStatus());
+		SoPage<SoAccount, List<SoAccount>> page = new SoPage<>(soAccount);
 		ObservableMedia.getInstance().accountQuery(page);
 	}
 
@@ -408,7 +409,7 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 					JOptionPane.showMessageDialog(this, accountFind.getMsg());
 					queryAccountFind();
 					break;
-				case ConnectAPI.ACCOUNT_QUERY_RESPONSE:
+				case ConnectAPI.ACCOUNT_AUDIT_QUERY_RESPONSE:
 					SoPage<SoAccount, List<SoAccount>> accountPage = JsonUtilTool.fromJson(ret.getRet(),
 							new TypeReference<SoPage<SoAccount, List<SoAccount>>>() {
 							});

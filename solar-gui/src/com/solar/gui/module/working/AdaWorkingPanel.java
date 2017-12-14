@@ -672,7 +672,8 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 
 								WorkerInfoPanel workerInfoPanel = new WorkerInfoPanel();
 								tabbedpane.add("维护人员信息", workerInfoPanel);
-
+								observableMedia.addObserver(workerInfoPanel);
+								
 								RunningReportPanel reportPanel = new RunningReportPanel();
 								tabbedpane.add("运行信息查询", reportPanel);
 								AccountAuditPanel accountAuditPanel = new AccountAuditPanel();

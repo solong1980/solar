@@ -119,9 +119,11 @@
 		acc.id=acl.account_id
 		group by acc.id) acl 
 		where sac.id=acl.id
-		and sac.status = 10
 		<if test="page.c.status!=null">
 			and sac.status=#{page.c.status}
+		</if>
+		<if test="page.c.status == null">
+			and sac.status=50
 		</if>
 		<if test="page.c.account!=null">
 			and sac.account=#{page.c.account}

@@ -255,6 +255,13 @@ public class ObservableMedia extends Observable {
 		setChanged();
 	}
 
+	public void accountSelect(Long id) {
+		SoAccount account = new SoAccount();
+		account.setId(id);
+		hostClient.accountSelect(account);
+		setChanged();
+	}
+
 	public void regiestAgree(SoAccount account) {
 		account.setStatus(AuditResult.AGREE.getStatus());
 		hostClient.regiestAudit(account);
@@ -296,5 +303,9 @@ public class ObservableMedia extends Observable {
 		project.setId(id);
 		hostClient.deleteProject(project);
 		setChanged();
+	}
+
+	public void queryAccounts(SoPage<SoAccount, List<SoAccount>> soPage) {
+
 	}
 }

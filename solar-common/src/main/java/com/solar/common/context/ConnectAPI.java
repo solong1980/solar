@@ -56,6 +56,11 @@ public class ConnectAPI {
 	public static final int PROJECT_QUERY_COMMAND = 0x000027;
 	
 	public static final int PROJECT_SELECT_COMMAND = 0x000028;
+	
+	public static final int ACCOUNT_AUDIT_QUERY_COMMAND = 0x000029;
+	
+	public static final int ACCOUNT_SELECT_COMMAND = 0x000030;
+	
 	// 控制终端指令
 	public static final int CTRL_COMMAND = 0x999999;
 
@@ -105,5 +110,7 @@ public class ConnectAPI {
 	public static final int PROJECT_QUERY_RESPONSE = 0x100027;
 	public static final int PROJECT_SELECT_RESPONSE = 0x100028;
 	
+	public static final int ACCOUNT_AUDIT_QUERY_RESPONSE = 0x100029;
 	
+	public static final int ACCOUNT_SELECT_RESPONSE = 0x100030;
 }

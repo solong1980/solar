@@ -4,9 +4,10 @@ import java.util.List;
 
 import com.alibaba.fastjson.TypeReference;
 import com.solar.command.message.request.ClientRequest;
-import com.solar.command.message.response.AccountFindQueryResponse;
+import com.solar.command.message.response.AccountQueryResponse;
 import com.solar.common.annotation.ProcessCMD;
 import com.solar.common.context.ConnectAPI;
+import com.solar.common.context.Consts.AuditResult;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.MsgProcessor;
 import com.solar.db.services.SoAccountService;
@@ -35,8 +36,20 @@ public class AccountQueryCmdProcessor extends MsgProcessor {
 		}
 		accountPage = accountService.queryAccount(accountPage);
 
+		SoAccount c = accountPage.getC();
+		Integer status = c.getStatus();
+		AuditResult auditResult = AuditResult.status(status);
 		json = JsonUtilTool.toJson(accountPage);
-		appSession.sendMsg(new AccountFindQueryResponse(ConnectAPI.ACCOUNT_QUERY_RESPONSE, json));
+		switch (auditResult) {
+		case WAIT_FOR_AUDIT:
+			appSession.sendMsg(new AccountQueryResponse(ConnectAPI.ACCOUNT_AUDIT_QUERY_RESPONSE, json));
+			break;
+		case AGREE:
+			appSession.sendMsg(new AccountQueryResponse(ConnectAPI.ACCOUNT_QUERY_RESPONSE, json));
+			break;
+		default:
+			break;
+		}
 	}
 
 }
