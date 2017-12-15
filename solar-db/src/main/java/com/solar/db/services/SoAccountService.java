@@ -153,4 +153,8 @@ public class SoAccountService {
 		// update status
 		accountDao.updateStatus(account);
 	}
+
+	public void updateAccount(SoAccount account) {
+		accountDao.updateAccount(account);
+	}
 }

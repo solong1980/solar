@@ -17,9 +17,11 @@ public interface SoAccountMapper {
 	void addAccount(SoAccount soAccount);
 
 	SoAccount selectByPhone(@Param("phone") String matchPhone);
-
+	
 	void updateAccount(SoAccount account);
-
+	
+	void updateAccountPhonePwd(SoAccount account);
+	
 	List<SoAccount> selectBySoAccount(SoAccount account);
 
 	List<SoAccount> queryAccount(@Param("page") SoPage<SoAccount,List<SoAccount>> accountPage);

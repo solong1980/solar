@@ -2,6 +2,8 @@ package com.solar.entity;
 
 import java.io.Serializable;
 
+import com.solar.common.context.SuccessCode;
+
 /**
  * 按照需要继承,可以提供业务响应码和提示信息
  * 
@@ -16,7 +18,7 @@ public abstract class SoAbt implements Serializable {
 	// 业务响应码
 	private int retCode = SUCCESS;
 	// 提示信息
-	private String msg;
+	private String msg = SuccessCode.Sucess_000000;
 
 	public int getRetCode() {
 		return retCode;

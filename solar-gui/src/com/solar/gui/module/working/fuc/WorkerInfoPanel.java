@@ -3,6 +3,7 @@ package com.solar.gui.module.working.fuc;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -13,10 +14,13 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Observer;
+import java.util.Set;
 
 import javax.swing.AbstractAction;
 import javax.swing.DefaultCellEditor;
@@ -45,31 +49,68 @@ import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.Consts.AuditResult;
 import com.solar.common.context.RoleType;
 import com.solar.entity.SoAccount;
+import com.solar.entity.SoAccountLocation;
 import com.solar.entity.SoPage;
-import com.solar.gui.component.MultiComboBox;
+import com.solar.entity.SoProject;
+import com.solar.gui.component.checkable.multi.CheckBoxTreeNode;
+import com.solar.gui.component.model.TreeAddr;
+import com.solar.gui.component.tree.TreeUI;
 import com.solar.gui.module.working.BasePanel;
 
 @SuppressWarnings("serial")
 public class WorkerInfoPanel extends BasePanel implements Observer {
 
 	private static final int INITIAL_ROWHEIGHT = 33;
+	SoAccount account = null;
 
-	JTextField workerNameField = new JTextField("", 30);
-	JTextField workerContactField = new JTextField("", 30);
-	MultiComboBox projectField = MultiComboBox.build();
-	MultiComboBox addrField = MultiComboBox.build();
-	MultiComboBox projectTypeField = MultiComboBox.build();
+	JTextField nameField = new JTextField("", 30);
+	JTextField phoneField = new JTextField("", 30);
+	JTextField emailField = new JTextField("", 30);
+	JPanel editorPanel;
+	JPanel multiAddressPanel;
+	JPanel multiSelProjectPanel;
+	JPanel btnPanel;
+	TreeUI treeUI = new TreeUI();
 
-	public JPanel createEditor() {
-		//
-		JLabel titleLable = new JLabel(getBoldHTML("维护人员信息更改"), JLabel.CENTER);
-		JLabel workerLabel = new JLabel(getBoldHTML("运维人员姓名"));
-		JLabel contactLabel = new JLabel(getBoldHTML("运维人员联系方式"));
-		JLabel projectNameLabel = new JLabel(getBoldHTML("项目名称"));
-		JLabel addrLabel = new JLabel(getBoldHTML("项目地址"));
-		JLabel projectTypeLabel = new JLabel(getBoldHTML("项目类别"));
+	public JPanel createEditForm() {
 
+		JPanel formPanel = new JPanel();
+		formPanel.setLayout(new GridLayout(2, 2));
+		editorPanel = createEditPanel();
+		multiAddressPanel = treeUI.createMultiAddressTree("运维注册地址", null);
+		multiSelProjectPanel = treeUI.createMultiSelProjectTree("运维管理工程列表", null);
+		btnPanel = createBtnPanel();
+
+		formPanel.add(editorPanel);
+		formPanel.add(multiAddressPanel);
+		formPanel.add(multiSelProjectPanel);
+		formPanel.add(btnPanel);
+		return formPanel;
+	}
+
+	private JPanel createBtnPanel() {
+		JPanel jPanel = new JPanel();
+		jPanel.setLayout(new GridBagLayout());
+		GridBagConstraints gpc = new GridBagConstraints();
+		gpc.insets = new Insets(1, 15, 1, 15);
+		gpc.gridy = 0;
+		gpc.gridx = 0;
+		JButton submitBtn = new JButton("提交");
+		submitBtn.setAction(new WorkerAction("提交", ActionType.WORKER_UPDATE_SUBMIT, this));
+		JButton cancelBtn = new JButton("取消");
+		cancelBtn.setAction(new WorkerAction("取消", ActionType.WORKER_CANCEL, this));
+		jPanel.add(submitBtn, gpc);
+		gpc.gridx = 1;
+		jPanel.add(cancelBtn, gpc);
+		return jPanel;
+	}
+
+	private JPanel createEditPanel() {
 		JPanel editorPanel = new JPanel(new GridBagLayout());
+		JLabel titleLable = new JLabel(getBoldHTML("维护人员信息更改"), JLabel.CENTER);
+		JLabel nameLabel = new JLabel(getBoldHTML("姓名"));
+		JLabel phoneLabel = new JLabel(getBoldHTML("联系方式"));
+		JLabel emailLabel = new JLabel(getBoldHTML("邮箱"));
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		gbc.gridx = 0;
@@ -81,65 +122,34 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 		editorPanel.add(titleLable, gbc);
 
 		gbc.gridwidth = 1;
-		gbc.gridy++;
-		editorPanel.add(workerLabel, gbc);
-		gbc.gridy++;
-		editorPanel.add(contactLabel, gbc);
-		gbc.gridy++;
-		editorPanel.add(projectNameLabel, gbc);
-		gbc.gridy++;
-		editorPanel.add(addrLabel, gbc);
-		gbc.gridy++;
-		editorPanel.add(projectTypeLabel, gbc);
-
-		gbc.gridx++;
 		gbc.gridy = 1;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		editorPanel.add(workerNameField, gbc);
-		gbc.gridy++;
-		editorPanel.add(workerContactField, gbc);
-		gbc.gridy++;
-		editorPanel.add(projectField, gbc);
-		gbc.gridy++;
-		editorPanel.add(addrField, gbc);
-		gbc.gridy++;
-		editorPanel.add(projectTypeField, gbc);
+		editorPanel.add(nameLabel, gbc);
+		gbc.gridx = 1;
+		editorPanel.add(nameField, gbc);
 
-		gbc.gridx++;
-		int tmp = gbc.gridy;
-		gbc.gridy = 4;
+		gbc.gridy++;
+		gbc.gridx = 0;
+		editorPanel.add(phoneLabel, gbc);
+		gbc.gridx = 1;
+		editorPanel.add(phoneField, gbc);
+
+		gbc.gridy++;
+		gbc.gridx = 0;
+		editorPanel.add(emailLabel, gbc);
+		gbc.gridx = 1;
+		editorPanel.add(emailField, gbc);
+
+		gbc.gridy++;
+		gbc.gridx = 0;
+		gbc.gridwidth = 2;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		editorPanel.add(new JButton("地图"), gbc);
-
-		JPanel jPanel = new JPanel();
-		jPanel.setLayout(new GridBagLayout());
-		GridBagConstraints gpc = new GridBagConstraints();
-		gpc.insets = new Insets(1, 15, 1, 15);
-		gpc.gridy = 0;
-		gpc.gridx = 0;
-
-		JButton submitBtn = new JButton("提交");
-		submitBtn.setAction(new WorkerAction(ActionType.WORKER_UPDATE_SUBMIT, this));
-
-		JButton cancelBtn = new JButton("取消");
-		cancelBtn.setAction(new WorkerAction(ActionType.WORKER_CANCEL, this));
-
-		jPanel.add(submitBtn, gpc);
-		gpc.gridx = 1;
-		jPanel.add(cancelBtn, gpc);
-
-		gbc.gridx = 0;
-		gbc.gridy = tmp + 1;
-		gbc.gridwidth = 2;
-		editorPanel.add(jPanel, gbc);
-
 		return editorPanel;
 	}
 
 	DefaultTableModel dataModel;
 	List<JCheckBox> checkBoxs = new ArrayList<>();
 	JTable workerTable;
-
 	int rmRow = -1;
 
 	public JMenuBar createToolBar() {
@@ -410,7 +420,7 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 		setLayout(cardLayout);
 		// list
 		JPanel workerListPanel = createListPanel();
-		JPanel editorPanel = createEditor();
+		JPanel editorPanel = createEditForm();
 		cardLayout.addLayoutComponent(workerListPanel, "list");
 		cardLayout.addLayoutComponent(editorPanel, "edit");
 		add(workerListPanel);
@@ -439,6 +449,12 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 			this.parent = parent;
 		}
 
+		public WorkerAction(String text, ActionType operate, JComponent parent) {
+			super(text);
+			this.operate = operate;
+			this.parent = parent;
+		}
+
 		public void actionPerformed(ActionEvent e) {
 			switch (operate) {
 			case WORKER_REFRESH:
@@ -450,7 +466,43 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 				Integer row = Integer.parseInt(command);
 				Object valueAtOne = dataModel.getValueAt(row, 0);
 				Long id = Long.parseLong(valueAtOne.toString());
-				ObservableMedia.getInstance().selectProject(id);
+				ObservableMedia.getInstance().accountSelect(id);
+				break;
+			case WORKER_CANCEL:
+				account = null;
+				nameField.setText("");
+				phoneField.setText("");
+				emailField.setText("");
+				cardLayout.show(parent, "list");
+				break;
+			case WORKER_UPDATE_SUBMIT:
+				id = account.getId();
+				account.setName(nameField.getText());
+				account.setPhone(phoneField.getText());
+				account.setEmail(emailField.getText());
+				List<CheckBoxTreeNode> multiSelectedPojectsNodes = treeUI.getMultiSelectedPojectsNodes();
+				List<SoProject> projects = new ArrayList<>();
+				for (CheckBoxTreeNode checkBoxTreeNode : multiSelectedPojectsNodes) {
+					Object userObject = checkBoxTreeNode.getUserObject();
+					TreeAddr p = (TreeAddr) userObject;
+					SoProject value = (SoProject) p.getValue();
+					projects.add(value);
+				}
+				account.setProjects(projects);
+
+				List<CheckBoxTreeNode> multiSelectedAddressNodes = treeUI.getMultiSelectedAddressNodes();
+				List<SoAccountLocation> accountLocations = new ArrayList<>();
+				for (CheckBoxTreeNode checkBoxTreeNode : multiSelectedAddressNodes) {
+					Object userObject = checkBoxTreeNode.getUserObject();
+					TreeAddr p = (TreeAddr) userObject;
+					String key = p.getKey();
+					SoAccountLocation accountLocation = new SoAccountLocation();
+					accountLocation.setAccountId(id);
+					accountLocation.setLocationId(key);
+					accountLocations.add(accountLocation);
+				}
+				account.setLocations(accountLocations);
+				ObservableMedia.getInstance().accountUpdate(account);
 				break;
 			default:
 				break;
@@ -486,8 +538,42 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 					}
 					updateData(data);
 					break;
+				case ConnectAPI.ACCOUNT_UPDATE_RESPONSE:
+					account = JsonUtilTool.fromJson(ret.getRet(), SoAccount.class);
+					JOptionPane.showMessageDialog(this, account.getMsg());
+					
+					cardLayout.show(this, "list");
+					sendRefresh();
+					break;
 				case ConnectAPI.ACCOUNT_SELECT_RESPONSE:
-					SoAccount account = JsonUtilTool.fromJson(ret.getRet(), SoAccount.class);
+					account = JsonUtilTool.fromJson(ret.getRet(), SoAccount.class);
+					cardLayout.show(this, "edit");
+					nameField.setText(account.getName());
+					phoneField.setText(account.getPhone());
+					emailField.setText(account.getEmail());
+
+					List<SoAccountLocation> locations = account.getLocations();
+					Set<String> locationIds = new HashSet<>();
+					for (SoAccountLocation soAccountLocation : locations) {
+						locationIds.add(soAccountLocation.getLocationId());
+					}
+
+					List<SoProject> projects = account.getProjects();
+					Set<Long> projectIds = new HashSet<>();
+					for (SoProject soProject : projects) {
+						projectIds.add(soProject.getId());
+					}
+					try {
+						EventQueue.invokeAndWait(new Runnable() {
+							@Override
+							public void run() {
+								treeUI.updateAddressNodeSelect(locationIds);
+							}
+						});
+						treeUI.updateProjectNodeSelect(projectIds);
+					} catch (InvocationTargetException | InterruptedException e) {
+						e.printStackTrace();
+					}
 
 					break;
 				default:

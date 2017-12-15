@@ -46,6 +46,21 @@
 			#{item.projectId,jdbcType=BIGINT}
 			)
 		</foreach>
-
 	</insert>
+
+	<select id="queryOwnerProjects" parameterType="java.lang.Long"
+		resultType="com.solar.entity.SoProject">
+		select pro.id as id,
+		pro.project_name as projectName,
+		pro.location_id as locationId
+		from
+		so_privilege pri,so_project pro
+		where
+		pri.project_id = pro.id
+		and pri.account_id=#{id}
+	</select>
+
+	<delete id="deleteByAccountId">
+		delete from so_privilege where account_id = #{id}
+	</delete>
 </mapper>

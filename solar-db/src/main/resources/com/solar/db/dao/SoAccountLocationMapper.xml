@@ -37,4 +37,9 @@
 			)
 		</foreach>
 	</insert>
+
+	<delete id="deleteByAccountId" parameterType="java.lang.Long">
+		delete from
+		so_account_location where account_id = #{id}
+	</delete>
 </mapper>

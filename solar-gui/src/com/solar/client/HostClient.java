@@ -345,4 +345,10 @@ public class HostClient extends MinaClient {
 		System.out.println(json);
 		send(ConnectAPI.ACCOUNT_SELECT_COMMAND, json);
 	}
+
+	public void accountUpdate(SoAccount account) {
+		String json = JsonUtilTool.toJson(account);
+		System.out.println(json);
+		send(ConnectAPI.ACCOUNT_UPDATE_COMMAND, json);
+	}
 }

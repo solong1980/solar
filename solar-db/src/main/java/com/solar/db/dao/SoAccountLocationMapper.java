@@ -12,4 +12,6 @@ public interface SoAccountLocationMapper {
 
 	void addAccountLocations(@Param("locations") List<SoAccountLocation> accountLocations);
 
+	void deleteByAccountId(Long accountId);
+
 }

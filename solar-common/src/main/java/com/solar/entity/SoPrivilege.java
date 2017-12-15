@@ -9,6 +9,8 @@ public class SoPrivilege extends SoAbtAuth {
 	private Long projectId;
 	private String createTime;
 
+	private SoProject soProject;
+
 	public Long getId() {
 		return id;
 	}
@@ -47,6 +49,14 @@ public class SoPrivilege extends SoAbtAuth {
 
 	public void setCreateTime(String createTime) {
 		this.createTime = createTime;
+	}
+
+	public SoProject getSoProject() {
+		return soProject;
+	}
+
+	public void setSoProject(SoProject soProject) {
+		this.soProject = soProject;
 	}
 
 }

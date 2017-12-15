@@ -1,5 +1,6 @@
 package com.solar.db.dao.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -12,6 +13,7 @@ import com.solar.entity.SoAccount;
 import com.solar.entity.SoAccountLocation;
 import com.solar.entity.SoPage;
 import com.solar.entity.SoPrivilege;
+import com.solar.entity.SoProject;
 
 public class SoAccountDao implements SoAccountMapper {
 	private SqlSessionFactory sqlSessionFactory;
@@ -82,13 +84,41 @@ public class SoAccountDao implements SoAccountMapper {
 			sqlSession.close();
 		}
 	}
-
+	
+	/**
+	 * update account all info include address and privilege
+	 * @param account
+	 */
 	@Override
 	public void updateAccount(SoAccount account) {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
-			SoAccountMapper mapper = sqlSession.getMapper(SoAccountMapper.class);
-			mapper.updateAccount(account);
+			SoAccountMapper accountMapper = sqlSession.getMapper(SoAccountMapper.class);
+			SoAccountLocationMapper accountLocationMapper = sqlSession.getMapper(SoAccountLocationMapper.class);
+			SoPrivilegeMapper privilegeMapper = sqlSession.getMapper(SoPrivilegeMapper.class);
+			accountMapper.updateAccount(account);
+			List<SoAccountLocation> locations = account.getLocations();
+			Long accountId = account.getId();
+			if (!locations.isEmpty()) {
+				// do delete and insert
+				accountLocationMapper.deleteByAccountId(accountId);
+				accountLocationMapper.addAccountLocations(locations);
+			}
+			List<SoProject> projects = account.getProjects();
+			if (!projects.isEmpty()) {
+				List<SoPrivilege> privileges = new ArrayList<>();
+				for (SoProject project : projects) {
+					SoPrivilege privilege = new SoPrivilege();
+					privilege.setAccountId(accountId);
+					privilege.setLocationId(project.getLocationId());
+					privilege.setProjectId(project.getId());
+					privileges.add(privilege);
+				}
+				// do delete and update
+				privilegeMapper.deleteByAccountId(accountId);
+				privilegeMapper.addPrivilege(privileges);
+			}
+
 			sqlSession.commit();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -155,6 +185,11 @@ public class SoAccountDao implements SoAccountMapper {
 		} finally {
 			sqlSession.close();
 		}
+	}
+
+	@Override
+	public void updateAccountPhonePwd(SoAccount account) {
+		
 	}
 
 }

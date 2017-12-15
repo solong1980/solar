@@ -42,4 +42,9 @@ public class SoAccountLocationDao implements SoAccountLocationMapper {
 		}
 	}
 
+	@Override
+	public void deleteByAccountId(Long accountId) {
+
+	}
+
 }

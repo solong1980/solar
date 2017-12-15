@@ -68,7 +68,7 @@ public class SoAccountFindDao implements SoAccountFindMapper {
 			// update find back status
 			accountFindMapper.updateStatus(accountFind);
 			// update account phone and new password
-			accountMapper.updateAccount(account);
+			accountMapper.updateAccountPhonePwd(account);
 			sqlSession.commit();
 		} catch (Exception e) {
 			sqlSession.rollback();

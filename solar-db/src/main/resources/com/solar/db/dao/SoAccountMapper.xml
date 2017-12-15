@@ -78,11 +78,23 @@
 	</select>
 
 
-	<update id="updateAccount" parameterType="com.solar.entity.SoAccount">
-		update so_account
+	<update id="updateAccountPhonePwd" parameterType="com.solar.entity.SoAccount">
+		update
+		so_account
 		set
 		phone=#{phone}, password=#{password}
 		where id=#{id}
+	</update>
+
+	<update id="updateAccount" parameterType="com.solar.entity.SoAccount">
+		update
+		so_account
+		set
+		name=#{name},
+		email=#{email},
+		phone=#{phone}
+		where
+		id=#{id}
 	</update>
 
 	<update id="updateStatus" parameterType="com.solar.entity.SoAccount">
@@ -114,10 +126,13 @@
 		,
 		acl.locationIds as locationIds
 		from so_account sac,(
-		select acc.id,group_concat(acl.location_id) as
-		locationIds from so_account acc left join so_account_location acl on
+		select
+		acc.id,group_concat(acl.location_id) as
+		locationIds from so_account acc
+		left join so_account_location acl on
 		acc.id=acl.account_id
-		group by acc.id) acl 
+		group by
+		acc.id) acl
 		where sac.id=acl.id
 		<if test="page.c.status!=null">
 			and sac.status=#{page.c.status}

@@ -224,7 +224,7 @@ public class BasePanel extends JPanel {
 						break;
 					case DEVICE:
 						// monitor device
-						
+
 						break;
 					default:
 						break;
@@ -235,6 +235,53 @@ public class BasePanel extends JPanel {
 
 		jp.setLayout(new BorderLayout());
 		jp.add(new JLabel("项目列表", SwingConstants.CENTER), BorderLayout.NORTH);
+		jp.add(new JScrollPane(tree), BorderLayout.CENTER);
+		return jp;
+	}
+
+	public JPanel createAddressTree() {
+		JPanel jp = new JPanel();
+
+		DefaultMutableTreeNode root = new DefaultMutableTreeNode("root");
+		JSONObject locations = LocationLoader.getInstance().loadLocation();
+		JSONArray provinces = locations.getJSONArray("Province");
+		for (int i = 0; i < provinces.size(); i++) {
+			JSONObject province = provinces.getJSONObject(i);
+			String provinceid = province.getString("Id");
+			String provinceName = province.getString("Name");
+			DefaultMutableTreeNode node1 = new DefaultMutableTreeNode(
+					new TreeAddr(AddrType.PROVINCE, provinceid, provinceName));
+			root.add(node1);
+			JSONArray cities = province.getJSONArray("City");
+			for (int j = 0; j < cities.size(); j++) {
+				JSONObject city = cities.getJSONObject(j);
+				String cityid = city.getString("Id");
+				String cityName = city.getString("Name");
+				DefaultMutableTreeNode node2 = new DefaultMutableTreeNode(
+						new TreeAddr(AddrType.CITY, cityid, cityName));
+				node1.add(node2);
+				JSONArray areas = city.getJSONArray("Area");
+				for (int k = 0; k < areas.size(); k++) {
+					JSONObject area = areas.getJSONObject(k);
+					String areaid = area.getString("Id");
+					String areaName = area.getString("Name");
+					DefaultMutableTreeNode node3 = new DefaultMutableTreeNode(
+							new TreeAddr(AddrType.AREA, areaid, areaName));
+					node2.add(node3);
+				}
+			}
+		}
+
+		JTree tree = new JTree(root) {
+			public Insets getInsets() {
+				return new Insets(5, 5, 5, 5);
+			}
+		};
+		tree.setRootVisible(false);
+		tree.setEditable(false);
+
+		jp.setLayout(new BorderLayout());
+		jp.add(new JLabel("地址列表", SwingConstants.CENTER), BorderLayout.NORTH);
 		jp.add(new JScrollPane(tree), BorderLayout.CENTER);
 		return jp;
 	}

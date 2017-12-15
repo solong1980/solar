@@ -14,9 +14,10 @@ public class SoAccount extends SoAbtAuth {
 	private int type;// 用户类型
 	private List<SoAccountLocation> locations;
 	private List<SoProject> projects;
+ 
 	private String password;
 	private Boolean savePwd;
-
+	
 	private String vcode;// 验证码
 
 	private String createTime;

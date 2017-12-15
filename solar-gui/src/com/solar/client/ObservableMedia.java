@@ -262,6 +262,11 @@ public class ObservableMedia extends Observable {
 		setChanged();
 	}
 
+	public void accountUpdate(SoAccount account) {
+		hostClient.accountUpdate(account);
+		setChanged();
+	}
+
 	public void regiestAgree(SoAccount account) {
 		account.setStatus(AuditResult.AGREE.getStatus());
 		hostClient.regiestAudit(account);
@@ -305,7 +310,4 @@ public class ObservableMedia extends Observable {
 		setChanged();
 	}
 
-	public void queryAccounts(SoPage<SoAccount, List<SoAccount>> soPage) {
-
-	}
 }

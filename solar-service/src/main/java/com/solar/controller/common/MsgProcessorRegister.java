@@ -6,6 +6,8 @@ import com.solar.command.processor.AccountFindQueryCmdProcessor;
 import com.solar.command.processor.AccountFindbackCmdProcessor;
 import com.solar.command.processor.AccountProjectCheckCmdProcessor;
 import com.solar.command.processor.AccountQueryCmdProcessor;
+import com.solar.command.processor.AccountSelectCmdProcessor;
+import com.solar.command.processor.AccountUpdateCmdProcessor;
 import com.solar.command.processor.AppUpgradeCmdProcessor;
 import com.solar.command.processor.AppVersionCmdProcessor;
 import com.solar.command.processor.DataServerInfoCmdProcessor;
@@ -51,10 +53,12 @@ public enum MsgProcessorRegister {
 	ACCOUNT_FINDBACK_AUDIT_COMMAND(ConnectAPI.ACCOUNT_FINDBACK_AUDIT_COMMAND, new AccountFindAuditCmdProcessor()),
 
 	ACCOUNT_ADD_COMMAND(ConnectAPI.ACCOUNT_ADD_COMMAND, new RegiestCmdProcessor()),
+	ACCOUNT_UPDATE_COMMAND(ConnectAPI.ACCOUNT_UPDATE_COMMAND, new AccountUpdateCmdProcessor()),
 	ACCOUNT_QUERY_COMMAND(ConnectAPI.ACCOUNT_QUERY_COMMAND, new AccountQueryCmdProcessor()),
 	ACCOUNT_AUDIT_QUERY_COMMAND(ConnectAPI.ACCOUNT_AUDIT_QUERY_COMMAND, new AccountQueryCmdProcessor()),
 	ACCOUNT_AUDIT_COMMAND(ConnectAPI.ACCOUNT_AUDIT_COMMAND, new AccountAuditCmdProcessor()),
 	ACCOUNT_PROJECT_CHECK_COMMAND(ConnectAPI.ACCOUNT_PROJECT_CHECK_COMMAND, new AccountProjectCheckCmdProcessor()),
+	ACCOUNT_SELECT_COMMAND(ConnectAPI.ACCOUNT_SELECT_COMMAND, new AccountSelectCmdProcessor()),
 
 	PROJECT_ADD_COMMAND(ConnectAPI.PROJECT_ADD_COMMAND, new ProjectAddCmdProcessor()),
 	PROJECT_UPDATE_COMMAND(ConnectAPI.PROJECT_UPDATE_COMMAND, new ProjectUpdateCmdProcessor()),

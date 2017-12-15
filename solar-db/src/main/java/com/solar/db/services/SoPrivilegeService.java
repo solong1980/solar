@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import com.solar.db.dao.SoPrivilegeMapper;
 import com.solar.db.dao.impl.SoPrivilegeDao;
 import com.solar.entity.SoPrivilege;
+import com.solar.entity.SoProject;
 
 /**
  * @author long liang hua
@@ -38,5 +39,7 @@ public class SoPrivilegeService {
 	public List<String> queryOwnerLocationIds(Long accountId) {
 		return privilegeDao.selectOwnerLocations(accountId);
 	}
-
+	public List<SoProject> queryOwnerProjects(Long accountId) {
+		return privilegeDao.queryOwnerProjects(accountId);
+	}
 }

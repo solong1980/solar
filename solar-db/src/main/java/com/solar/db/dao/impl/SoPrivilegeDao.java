@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.solar.db.dao.SoPrivilegeMapper;
 import com.solar.entity.SoPrivilege;
+import com.solar.entity.SoProject;
 
 public class SoPrivilegeDao implements SoPrivilegeMapper {
 	private SqlSessionFactory sqlSessionFactory;
@@ -53,6 +54,25 @@ public class SoPrivilegeDao implements SoPrivilegeMapper {
 		} finally {
 			sqlSession.close();
 		}
+	}
+
+	@Override
+	public List<SoProject> queryOwnerProjects(Long accountId) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoPrivilegeMapper mapper = sqlSession.getMapper(SoPrivilegeMapper.class);
+			List<SoProject> projects = mapper.queryOwnerProjects(accountId);
+			return projects;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public void deleteByAccountId(Long accountId) {
+		
 	}
 
 }
