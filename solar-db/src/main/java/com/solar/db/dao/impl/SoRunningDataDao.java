@@ -37,7 +37,7 @@ public class SoRunningDataDao implements SoRunningDataMapper {
 			result = mapper.insert(runningData);
 			sqlSession.commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		} finally {
 			sqlSession.close();
 		}

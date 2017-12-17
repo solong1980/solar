@@ -113,7 +113,7 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 	public JMenuBar createToolBar() {
 		JMenuBar menuBar = new JMenuBar();
 		JMenu editorMenu = (JMenu) menuBar.add(new JMenu("信息审核 &"));
-		createMenuItem(editorMenu, "刷新", new AuditAction(ActionType.PROJECT_NEW, this));
+		createMenuItem(editorMenu, "刷新", new AuditAction(ActionType.PROJECT_REFRESH, this));
 		return menuBar;
 	}
 

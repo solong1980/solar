@@ -59,6 +59,7 @@ public class BasePanel extends JPanel {
 		if (action == null) {
 			mi.setEnabled(false);
 		}
+		mi.setActionCommand("0");
 		return mi;
 	}
 
