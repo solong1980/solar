@@ -61,6 +61,7 @@ int main(int argc, char** argv) {
 	u_long flagSize=1;
 	u_long lengthSize=4;
 	u_long msgCodeSize=4;
+
 	u_short datalen = strlen(data);
 	u_long length = flagSize+lengthSize+msgCodeSize+strlen(data)+2;
 	
@@ -80,9 +81,36 @@ int main(int argc, char** argv) {
 	send(sockClient,buf,length,0);
  
 //	send(sockClient,"hello",strlen("hello")+1,0);
-	char recvBuf[500];
-	recv(sockClient,recvBuf,100,0);
-	printf("%s\n",recvBuf);
+	char recvBuf[1024 * 5];
+	u_long retLen = recv(sockClient,recvBuf,1024 * 5,0);
+	
+	u_long statusSize=4;
+	char defaultFlag;
+	//u_long length;
+	//u_long msgCode;
+	u_long status;
+	u_short responseDataLen;
+ 
+
+	memcpy(&defaultFlag , recvBuf , flagSize);
+	
+	memcpy(&length, recvBuf+flagSize , lengthSize);
+	length = ntohl(length);
+	
+	memcpy(&msgCode , recvBuf + flagSize+ lengthSize, msgCodeSize);
+	msgCode = ntohl(msgCode);
+	
+	memcpy(&status, recvBuf  + flagSize + lengthSize + msgCodeSize, statusSize);
+	status = ntohl(status);
+	
+	memcpy(&responseDataLen, recvBuf + flagSize + lengthSize + msgCodeSize + statusSize, 2);
+	responseDataLen = ntohs(responseDataLen);
+	
+	char retdata[responseDataLen+1];
+	memcpy(retdata, recvBuf  + flagSize + lengthSize + msgCodeSize+statusSize + 2, responseDataLen);
+	
+	retdata[responseDataLen]=0;
+	printf("%s\n",retdata);
 	 
 	closesocket(sockClient);
 	WSACleanup();	
