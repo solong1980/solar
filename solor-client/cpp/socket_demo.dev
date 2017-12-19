@@ -11,7 +11,7 @@ ResourceIncludes=
 MakeIncludes=
 Compiler=
 CppCompiler=
-Linker=../../tools/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib/libws2_32.a_@@_
+Linker=../../../../../tools/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib/libws2_32.a_@@_json/json_reader.o_@@_json/json_value.o_@@_json/json_writer.o_@@_
 IsCpp=1
 Icon=
 ExeOutput=
@@ -29,7 +29,7 @@ IncludeVersionInfo=0
 SupportXPThemes=0
 CompilerSet=0
 CompilerSettings=0000000000000000001000000
-UnitCount=1
+UnitCount=3
 
 [VersionInfo]
 Major=1
@@ -51,7 +51,27 @@ AutoIncBuildNr=0
 SyncProduct=1
 
 [Unit1]
-FileName=main.cpp
+FileName=src\json_demo.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit2]
+FileName=src\main.cpp
+CompileCpp=1
+Folder=
+Compile=1
+Link=1
+Priority=1000
+OverrideBuildCmd=0
+BuildCmd=
+
+[Unit3]
+FileName=src\socket_sendrev.cpp
 CompileCpp=1
 Folder=
 Compile=1

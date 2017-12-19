@@ -1,0 +1,18 @@
+[
+    {
+    "Name" : "MachineGun", 
+    "WeaponAttribute": {
+        "ID": 105,
+        "AttackValue": 50,
+        "Defense": 0
+    }},
+
+    {
+    "Name" : "PlasmaGun", 
+    "WeaponAttribute": {
+        "ID": 106,
+        "AttackValue": 5,
+        "Defense": 50
+    }}
+
+]
