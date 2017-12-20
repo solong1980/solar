@@ -12,6 +12,7 @@ namespace JsonCall {
 }
 namespace NetSend {
 	void SplitString(const string& s, vector<string>& v, const string& c);
+	void sendrev();
 }
 int main(int argc, char** argv) {
 	JsonCall::readFromFile();
@@ -26,6 +27,6 @@ int main(int argc, char** argv) {
 		cout<<v[i]<<endl;
 	}
 
-
+	NetSend::sendrev();
 	return 0;
 }

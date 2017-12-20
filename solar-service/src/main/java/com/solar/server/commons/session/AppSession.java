@@ -26,11 +26,11 @@ public class AppSession implements Closeable {
 	/**
 	 * IoSession
 	 */
-	private volatile IoSession session;
+	private IoSession session;
 	/**
 	 * 用户的服务器地址
 	 */
-	private volatile String address;
+	private String address;
 	/**
 	 * 记录心跳时间， 间隔，到达一定时间就表示前端断线了
 	 */

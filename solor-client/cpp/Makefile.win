@@ -4,12 +4,12 @@
 CPP      = g++.exe -D__DEBUG__
 CC       = gcc.exe -D__DEBUG__
 WINDRES  = windres.exe
-OBJ      = output/main.o output/socket_sendrev.o output/json_demo.o
-LINKOBJ  = output/main.o output/socket_sendrev.o output/json_demo.o
+OBJ      = output/json_demo.o output/main.o output/socket_sendrev.o
+LINKOBJ  = output/json_demo.o output/main.o output/socket_sendrev.o
 LIBS     = -L"E:/tools/Dev-Cpp/MinGW64/lib" -L"E:/tools/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib" -static-libgcc ../../../../../tools/Dev-Cpp/MinGW64/x86_64-w64-mingw32/lib/libws2_32.a libs/json_reader.o libs/json_value.o libs/json_writer.o -g3
 INCS     = -I"E:/tools/Dev-Cpp/MinGW64/include" -I"E:/tools/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"E:/tools/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include"
 CXXINCS  = -I"E:/tools/Dev-Cpp/MinGW64/include" -I"E:/tools/Dev-Cpp/MinGW64/x86_64-w64-mingw32/include" -I"E:/tools/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include" -I"E:/tools/Dev-Cpp/MinGW64/lib/gcc/x86_64-w64-mingw32/4.9.2/include/c++"
-BIN      = output/socket_demo.exe
+BIN      = socket_demo.exe
 CXXFLAGS = $(CXXINCS) -g3 -std=c++11 -lwsokt32
 CFLAGS   = $(INCS) -g3 -std=c++11 -lwsokt32
 RM       = rm.exe -f
@@ -24,11 +24,11 @@ clean: clean-custom
 $(BIN): $(OBJ)
 	$(CPP) $(LINKOBJ) -o $(BIN) $(LIBS)
 
+output/json_demo.o: src/json_demo.cpp
+	$(CPP) -c src/json_demo.cpp -o output/json_demo.o $(CXXFLAGS)
+
 output/main.o: src/main.cpp
 	$(CPP) -c src/main.cpp -o output/main.o $(CXXFLAGS)
 
 output/socket_sendrev.o: src/socket_sendrev.cpp
 	$(CPP) -c src/socket_sendrev.cpp -o output/socket_sendrev.o $(CXXFLAGS)
-
-output/json_demo.o: src/json_demo.cpp
-	$(CPP) -c src/json_demo.cpp -o output/json_demo.o $(CXXFLAGS)

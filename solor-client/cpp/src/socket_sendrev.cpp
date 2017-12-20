@@ -111,28 +111,29 @@ namespace NetSend {
 		int t;
 
 		char flag=1;
-		char *data= "我们g,23.0,45.39,200,1,110";//
+		char *data= "g,23.0,45.39,200,1,110";//
 		data = G2U(data);
 		u_long msgCode= 0x000002;
-
+		
+		//协议 
 		u_long flagSize=1;
 		u_long lengthSize=4;
 		u_long msgCodeSize=4;
 
 		u_short datalen = strlen(data);
-		u_long length = flagSize+lengthSize+msgCodeSize+strlen(data)+2;
+		u_long length = flagSize+lengthSize+msgCodeSize+strlen(data)+2;//总长 
 
-		int bufSize = length + (length % 4 == 0)?0:(4 - length % 4);
+		int bufSize = length + (length % 4 == 0)?0:(4 - length % 4);//对齐 
 		char buf[bufSize];
 
-		u_long length_n = htonl(msgCodeSize + strlen(data) + 2);
+		u_long length_n = htonl(msgCodeSize + strlen(data) + 2);//主机字节序转网络字节序 
 		u_long msgCode_n = htonl(msgCode);
 		u_long datalen_n = htons(datalen);
 
 		memcpy(buf , &flag , flagSize);
 		memcpy(buf + flagSize, &length_n , lengthSize);
 		memcpy(buf + flagSize+ lengthSize, &msgCode_n , msgCodeSize);
-		memcpy(buf + flagSize+ lengthSize + msgCodeSize, &datalen_n , 2);
+		memcpy(buf + flagSize+ lengthSize + msgCodeSize, &datalen_n , 2);//写utf字符串长度 
 		memcpy(buf + flagSize+ lengthSize + msgCodeSize + 2, data , length);
 
 		send(sockClient,buf,length,0);
