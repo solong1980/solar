@@ -10,6 +10,7 @@ import com.solar.client.net.ShortClient;
 import com.solar.common.context.ConnectAPI;
 import com.solar.entity.SoAreas;
 import com.solar.entity.SoCities;
+import com.solar.entity.SoDevices;
 import com.solar.entity.SoProvinces;
 
 public class DataClient extends ShortClient {
@@ -99,6 +100,10 @@ public class DataClient extends ShortClient {
 	@Override
 	public boolean countinueTry() {
 		return false;
+	}
+
+	public List<SoDevices> getDeviceIn(String id) {
+		return null;
 	}
 
 }

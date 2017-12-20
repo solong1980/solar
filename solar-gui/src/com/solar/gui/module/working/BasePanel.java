@@ -24,9 +24,12 @@ import javax.swing.tree.TreePath;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.solar.client.DataClient;
 import com.solar.client.ObservableMedia;
+import com.solar.client.net.NetConf;
 import com.solar.common.context.Consts.AddrType;
 import com.solar.common.util.LocationLoader;
+import com.solar.entity.SoDevices;
 import com.solar.entity.SoProject;
 import com.solar.gui.component.model.TreeAddr;
 
@@ -34,8 +37,11 @@ import com.solar.gui.component.model.TreeAddr;
 public class BasePanel extends JPanel {
 	protected static final String LABEL_REFRESH = "刷新";
 	protected static final String LABEL_UPDATA = "修改";
+
+	private DataClient dataClient = new DataClient(NetConf.buildHostConf());
+
 	// 项目树
-	JTree tree;
+	// JTree tree;
 
 	public BasePanel(LayoutManager layout) {
 		super(layout);
@@ -197,7 +203,7 @@ public class BasePanel extends JPanel {
 			}
 		}
 
-		tree = new JTree(root) {
+		JTree tree = new JTree(root) {
 			public Insets getInsets() {
 				return new Insets(5, 5, 5, 5);
 			}
@@ -220,11 +226,20 @@ public class BasePanel extends JPanel {
 
 					switch (addrType) {
 					case PROJECT:
+						System.out.println("PROJECT" + id);
 						// Load device
 						// node.add
+						List<SoDevices> devices = dataClient.getDeviceIn(id);
+						for (SoDevices device : devices) {
+							node.add(new DefaultMutableTreeNode(
+									new TreeAddr(AddrType.DEVICE, device.getId().toString(), device, true)));
+						}
 						break;
 					case DEVICE:
 						// monitor device
+						System.out.println("DEVICE" + id);
+						// on click,get device info,
+						// query data from db include running model,runing info
 
 						break;
 					default:

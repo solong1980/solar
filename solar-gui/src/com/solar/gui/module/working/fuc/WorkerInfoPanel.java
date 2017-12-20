@@ -139,11 +139,11 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 		gbc.gridx = 1;
 		editorPanel.add(emailField, gbc);
 
-		gbc.gridy++;
-		gbc.gridx = 0;
-		gbc.gridwidth = 2;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		editorPanel.add(new JButton("地图"), gbc);
+//		gbc.gridy++;
+//		gbc.gridx = 0;
+//		gbc.gridwidth = 2;
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
+//		editorPanel.add(new JButton("地图"), gbc);
 		return editorPanel;
 	}
 

@@ -4,11 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
 import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -86,8 +88,19 @@ public class IndexPanel extends BasePanel {
 		ctrlPanel.add(warnningPanel, BorderLayout.NORTH);
 
 		JPanel schedulePanel = new JPanel();
-		schedulePanel.setLayout(new FlowLayout());
-		schedulePanel.add(new JLabel("定时运行列表"));
+		schedulePanel.setLayout(new BorderLayout());
+		
+		JPanel checkPanel = new JPanel(new GridLayout(12, 2));
+		for (int i = 0; i < 24; i++) {
+			//0:00-1:00
+			JCheckBox box = new JCheckBox(i+":00-"+(i+1)+":00");
+			checkPanel.add(box);
+		}
+		JScrollPane scheduleCheckBoxScrollPane = new JScrollPane(checkPanel);
+		schedulePanel.add(new JLabel("定时运行配置"),BorderLayout.NORTH);
+		schedulePanel.add(scheduleCheckBoxScrollPane,BorderLayout.CENTER);
+		JButton updateRunMode = new JButton("设定运行模式");
+		schedulePanel.add(updateRunMode,BorderLayout.SOUTH);
 		ctrlPanel.add(schedulePanel, BorderLayout.CENTER);
 
 		JPanel runCtrlPanel = new JPanel();
@@ -224,10 +237,10 @@ public class IndexPanel extends BasePanel {
 		gbc.gridy++;
 		gpsPanel.add(new JTextField("", 20), gbc);
 
-		gbc.gridx++;
-		gbc.gridy = 0;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gpsPanel.add(new JButton("地图"), gbc);
+//		gbc.gridx++;
+//		gbc.gridy = 0;
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
+//		gpsPanel.add(new JButton("地图"), gbc);
 
 		return gpsPanel;
 	}

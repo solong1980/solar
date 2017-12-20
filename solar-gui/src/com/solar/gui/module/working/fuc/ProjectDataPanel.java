@@ -195,11 +195,11 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		gbc.gridy++;
 		editorPanel.add(workerContactField, gbc);
 
-		gbc.gridx++;
-		int tmp = gbc.gridy;
-		gbc.gridy = 3;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		editorPanel.add(new JButton("地图"), gbc);
+//		gbc.gridx++;
+//		int tmp = gbc.gridy;
+//		gbc.gridy = 3;
+//		gbc.fill = GridBagConstraints.HORIZONTAL;
+//		editorPanel.add(new JButton("地图"), gbc);
 
 		JPanel jPanel = new JPanel();
 		jPanel.setLayout(new GridBagLayout());
@@ -217,7 +217,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		jPanel.add(cancelBtn, gpc);
 
 		gbc.gridx = 0;
-		gbc.gridy = tmp + 1;
+		gbc.gridy ++;
 		gbc.gridwidth = 2;
 		editorPanel.add(jPanel, gbc);
 
