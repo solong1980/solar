@@ -5,22 +5,25 @@ import java.util.Date;
 
 @SuppressWarnings("serial")
 public class SoRunningData implements Serializable {
+	// rev:01,17DD5E6E,FFFFFFFF,0,6,121,0,0,0,0,18,0,0,0,0,20171223055949,67.925,30.473866
 	private Long id;
-	private Long realTime;
-	private Integer warnningCode;
-	private String ipAddr;
-	private Float chargingVoltage;
-	private Float chargingCurrent;
-	private Float dcChargingVoltage;
-	private Float dcChargingCurrent;
-	private Float batteryVoltage;
-	private Float batteryChargingCurrent;
-	private Float rtNTCTemperature;
-	private Float loadCurrent1;
-	private Float loadCurrent2;
-	private Float loadCurrent3;
-	private Float loadCurrent4;
-	private String gpsInfo;
+	private String uuid; // 设备号
+	private String fmid; // 固件版本
+	private String vssun; // 太阳能板电压
+	private String ichg; // 电池充电电流
+	private String vbat; // 电池电压
+	private String qbat; // 电池剩余容量
+	private String ild1; // 负载1电流
+	private String ild2; // 负载2电流
+	private String ild3; // 负载3电流
+	private String temp; // 环境温度
+	private String ain1; // 第1路4-20mA
+	private String ain2; // 第2路4-20mA
+	private String ain3; // 第3路4-20mA
+	private String stat; // 控制器状态
+	private String utcTime;// GPS时间
+	private String altitude;// GPS纬度
+	private String longitude;// GPS经度
 	private Date createTime;
 
 	public Long getId() {
@@ -31,124 +34,140 @@ public class SoRunningData implements Serializable {
 		this.id = id;
 	}
 
-	public Long getRealTime() {
-		return realTime;
+	public String getUuid() {
+		return uuid;
 	}
 
-	public void setRealTime(Long realTime) {
-		this.realTime = realTime;
+	public void setUuid(String uuid) {
+		this.uuid = uuid;
 	}
 
-	public Integer getWarnningCode() {
-		return warnningCode;
+	public String getFmid() {
+		return fmid;
 	}
 
-	public void setWarnningCode(Integer warnningCode) {
-		this.warnningCode = warnningCode;
+	public void setFmid(String fmid) {
+		this.fmid = fmid;
 	}
 
-	public String getIpAddr() {
-		return ipAddr;
+	public String getVssun() {
+		return vssun;
 	}
 
-	public void setIpAddr(String ipAddr) {
-		this.ipAddr = ipAddr;
+	public void setVssun(String vssun) {
+		this.vssun = vssun;
 	}
 
-	public Float getChargingVoltage() {
-		return chargingVoltage;
+	public String getIchg() {
+		return ichg;
 	}
 
-	public void setChargingVoltage(Float chargingVoltage) {
-		this.chargingVoltage = chargingVoltage;
+	public void setIchg(String ichg) {
+		this.ichg = ichg;
 	}
 
-	public Float getChargingCurrent() {
-		return chargingCurrent;
+	public String getVbat() {
+		return vbat;
 	}
 
-	public void setChargingCurrent(Float chargingCurrent) {
-		this.chargingCurrent = chargingCurrent;
+	public void setVbat(String vbat) {
+		this.vbat = vbat;
 	}
 
-	public Float getDcChargingVoltage() {
-		return dcChargingVoltage;
+	public String getQbat() {
+		return qbat;
 	}
 
-	public void setDcChargingVoltage(Float dcChargingVoltage) {
-		this.dcChargingVoltage = dcChargingVoltage;
+	public void setQbat(String qbat) {
+		this.qbat = qbat;
 	}
 
-	public Float getDcChargingCurrent() {
-		return dcChargingCurrent;
+	public String getIld1() {
+		return ild1;
 	}
 
-	public void setDcChargingCurrent(Float dcChargingCurrent) {
-		this.dcChargingCurrent = dcChargingCurrent;
+	public void setIld1(String ild1) {
+		this.ild1 = ild1;
 	}
 
-	public Float getBatteryVoltage() {
-		return batteryVoltage;
+	public String getIld2() {
+		return ild2;
 	}
 
-	public void setBatteryVoltage(Float batteryVoltage) {
-		this.batteryVoltage = batteryVoltage;
+	public void setIld2(String ild2) {
+		this.ild2 = ild2;
 	}
 
-	public Float getBatteryChargingCurrent() {
-		return batteryChargingCurrent;
+	public String getIld3() {
+		return ild3;
 	}
 
-	public void setBatteryChargingCurrent(Float batteryChargingCurrent) {
-		this.batteryChargingCurrent = batteryChargingCurrent;
+	public void setIld3(String ild3) {
+		this.ild3 = ild3;
 	}
 
-	public Float getRtNTCTemperature() {
-		return rtNTCTemperature;
+	public String getTemp() {
+		return temp;
 	}
 
-	public void setRtNTCTemperature(Float rtNTCTemperature) {
-		this.rtNTCTemperature = rtNTCTemperature;
+	public void setTemp(String temp) {
+		this.temp = temp;
 	}
 
-	public Float getLoadCurrent1() {
-		return loadCurrent1;
+	public String getAin1() {
+		return ain1;
 	}
 
-	public void setLoadCurrent1(Float loadCurrent1) {
-		this.loadCurrent1 = loadCurrent1;
+	public void setAin1(String ain1) {
+		this.ain1 = ain1;
 	}
 
-	public Float getLoadCurrent2() {
-		return loadCurrent2;
+	public String getAin2() {
+		return ain2;
 	}
 
-	public void setLoadCurrent2(Float loadCurrent2) {
-		this.loadCurrent2 = loadCurrent2;
+	public void setAin2(String ain2) {
+		this.ain2 = ain2;
 	}
 
-	public Float getLoadCurrent3() {
-		return loadCurrent3;
+	public String getAin3() {
+		return ain3;
 	}
 
-	public void setLoadCurrent3(Float loadCurrent3) {
-		this.loadCurrent3 = loadCurrent3;
+	public void setAin3(String ain3) {
+		this.ain3 = ain3;
 	}
 
-	public Float getLoadCurrent4() {
-		return loadCurrent4;
+	public String getStat() {
+		return stat;
 	}
 
-	public void setLoadCurrent4(Float loadCurrent4) {
-		this.loadCurrent4 = loadCurrent4;
+	public void setStat(String stat) {
+		this.stat = stat;
 	}
 
-	public String getGpsInfo() {
-		return gpsInfo;
+	public String getUtcTime() {
+		return utcTime;
 	}
 
-	public void setGpsInfo(String gpsInfo) {
-		this.gpsInfo = gpsInfo;
+	public void setUtcTime(String utcTime) {
+		this.utcTime = utcTime;
+	}
+
+	public String getAltitude() {
+		return altitude;
+	}
+
+	public void setAltitude(String altitude) {
+		this.altitude = altitude;
+	}
+
+	public String getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(String longitude) {
+		this.longitude = longitude;
 	}
 
 	public Date getCreateTime() {

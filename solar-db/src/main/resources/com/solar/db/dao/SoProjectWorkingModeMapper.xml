@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solar.db.dao.SoProjectWorkingModeMapper">
+	<resultMap id="BaseResultMap" type="com.solar.entity.SoProjectWorkingMode">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="project_id" jdbcType="BIGINT" property="projectId" />
+		<result column="h_0" jdbcType="BIT" property="h_0" />
+		<result column="h_1" jdbcType="BIT" property="h_1" />
+		<result column="h_2" jdbcType="BIT" property="h_2" />
+		<result column="h_3" jdbcType="BIT" property="h_3" />
+		<result column="h_4" jdbcType="BIT" property="h_4" />
+		<result column="h_5" jdbcType="BIT" property="h_5" />
+		<result column="h_6" jdbcType="BIT" property="h_6" />
+		<result column="h_7" jdbcType="BIT" property="h_7" />
+		<result column="h_8" jdbcType="BIT" property="h_8" />
+		<result column="h_9" jdbcType="BIT" property="h_9" />
+		<result column="h_10" jdbcType="BIT" property="h_10" />
+		<result column="h_11" jdbcType="BIT" property="h_11" />
+		<result column="h_12" jdbcType="BIT" property="h_12" />
+		<result column="h_13" jdbcType="BIT" property="h_13" />
+		<result column="h_14" jdbcType="BIT" property="h_14" />
+		<result column="h_15" jdbcType="BIT" property="h_15" />
+		<result column="h_16" jdbcType="BIT" property="h_16" />
+		<result column="h_17" jdbcType="BIT" property="h_17" />
+		<result column="h_18" jdbcType="BIT" property="h_18" />
+		<result column="h_19" jdbcType="BIT" property="h_19" />
+		<result column="h_20" jdbcType="BIT" property="h_20" />
+		<result column="h_21" jdbcType="BIT" property="h_21" />
+		<result column="h_22" jdbcType="BIT" property="h_22" />
+		<result column="h_23" jdbcType="BIT" property="h_23" />
+		<result column="create_by" jdbcType="BIGINT" property="createBy" />
+		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+	</resultMap>
+
+	<sql id="Columns">
+		id,
+		project_id,
+		h_0,
+		h_1,
+		h_2,
+		h_3,
+		h_4,
+		h_5,
+		h_6,
+		h_7,
+		h_8,
+		h_9,
+		h_10,
+		h_11,
+		h_12,
+		h_13,
+		h_14,
+		h_15,
+		h_16,
+		h_17,
+		h_18,
+		h_19,
+		h_20,
+		h_21,
+		h_22,
+		h_23,
+		create_by,
+		update_time
+	</sql>
+
+
+	<select id="selectById" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Columns" />
+		from so_project_working_mode
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+
+	<select id="selectByProjectId" parameterType="java.lang.Long"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Columns" />
+		from so_project_working_mode
+		where project_id =
+		#{projectId,jdbcType=BIGINT}
+	</select>
+
+	<insert id="insert" parameterType="com.solar.entity.SoProjectWorkingMode"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO so_working_mode
+		(
+		project_id,
+		h_0,
+		h_1,
+		h_2,
+		h_3,
+		h_4,
+		h_5,
+		h_6,
+		h_7,
+		h_8,
+		h_9,
+		h_10,
+		h_11,
+		h_12,
+		h_13,
+		h_14,
+		h_15,
+		h_16,
+		h_17,
+		h_18,
+		h_19,
+		h_20,
+		h_21,
+		h_22,
+		h_23,
+		create_by
+		)
+		VALUES
+		(
+		#{projectId},
+		#{h_0},
+		#{h_1},
+		#{h_2},
+		#{h_3},
+		#{h_4},
+		#{h_5},
+		#{h_6},
+		#{h_7},
+		#{h_8},
+		#{h_9},
+		#{h_10},
+		#{h_11},
+		#{h_12},
+		#{h_13},
+		#{h_14},
+		#{h_15},
+		#{h_16},
+		#{h_17},
+		#{h_18},
+		#{h_19},
+		#{h_20},
+		#{h_21},
+		#{h_22},
+		#{h_23},
+		#{createBy}
+		)
+	</insert>
+
+
+	<update id="update" parameterType="com.solar.entity.SoProjectWorkingMode">
+		update so_working_mode
+		set 
+		h_0 = #{h_0},
+		h_1 = #{h_1},
+		h_2 = #{h_2},
+		h_3 = #{h_3},
+		h_4 = #{h_4},
+		h_5 = #{h_5},
+		h_6 = #{h_6},
+		h_7 = #{h_7},
+		h_8 = #{h_8},
+		h_9 = #{h_9},
+		h_10 = #{h_10},
+		h_11 = #{h_11},
+		h_12 = #{h_12},
+		h_13 = #{h_13},
+		h_14 = #{h_14},
+		h_15 = #{h_15},
+		h_16 = #{h_16},
+		h_17 = #{h_17},
+		h_18 = #{h_18},
+		h_19 = #{h_19},
+		h_20 = #{h_20},
+		h_21 = #{h_21},
+		h_22 = #{h_22},
+		h_23 = #{h_23}
+		where
+		project_id=#{projectId}
+	</update>
+</mapper>

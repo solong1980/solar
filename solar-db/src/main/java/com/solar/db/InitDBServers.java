@@ -19,7 +19,7 @@ import com.solar.db.services.SoLocationService;
 import com.solar.db.services.SoPrivilegeService;
 import com.solar.db.services.SoProjectService;
 import com.solar.db.services.SoRunningDataService;
-import com.solar.db.services.SoWorkingModeService;
+import com.solar.db.services.SoProjectWorkingModeService;
 import com.solar.entity.SoAccount;
 import com.solar.entity.SoPage;
 
@@ -35,7 +35,7 @@ public class InitDBServers {
 		SoDevicesService.getInstance().initSetSession(sqlSessionFactory);
 
 		SoRunningDataService.getInstance().initSetSession(sqlSessionFactory);
-		SoWorkingModeService.getInstance().initSetSession(sqlSessionFactory);
+		SoProjectWorkingModeService.getInstance().initSetSession(sqlSessionFactory);
 
 		SoAppVersionService.getInstance().initSetSession(sqlSessionFactory);
 

@@ -4,7 +4,8 @@
 	<resultMap id="BaseResultMap" type="com.solar.entity.SoDevices">
 		<id column="id" jdbcType="BIGINT" property="id" />
 		<result column="dev_no" jdbcType="VARCHAR" property="devNo" />
-		<result column="cust_id" jdbcType="BIGINT" property="custId" />
+		<result column="location_id" jdbcType="BIGINT" property="locationId" />
+		<result column="project_id" jdbcType="BIGINT" property="projectId" />
 		<result column="gps_info" jdbcType="VARCHAR" property="gpsInfo" />
 		<result column="ip_addr" jdbcType="VARCHAR" property="ipAddr" />
 		<result column="data_server_ip" jdbcType="VARCHAR" property="dataServerIp" />
@@ -15,7 +16,8 @@
 	<sql id="Columns">
 		id,
 		dev_no,
-		cust_id,
+		location_id,
+		project_id,
 		gps_info,
 		ip_addr,
 		data_server_ip,
@@ -32,12 +34,12 @@
 		where id = #{id,jdbcType=INTEGER}
 	</select>
 
-	<select id="selectByCustId" parameterType="java.lang.Long"
+	<select id="selectByProjectId" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Columns" />
 		from so_devices
-		where cust_id = #{custId,jdbcType=LONG}
+		where project_id = #{projectId,jdbcType=LONG}
 	</select>
 
 	<select id="allDevs" resultMap="BaseResultMap">

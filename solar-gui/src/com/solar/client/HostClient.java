@@ -8,7 +8,6 @@ import java.net.ConnectException;
 import java.net.SocketException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.util.Date;
 import java.util.List;
 
 import com.solar.client.http.HttpClientDownloadFile;
@@ -23,8 +22,8 @@ import com.solar.entity.SoDataServerInfo;
 import com.solar.entity.SoDevices;
 import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
+import com.solar.entity.SoProjectWorkingMode;
 import com.solar.entity.SoVCode;
-import com.solar.entity.SoWorkingMode;
 
 public class HostClient extends MinaClient {
 
@@ -47,7 +46,7 @@ public class HostClient extends MinaClient {
 	// 数据服务器网路配置
 	private NetConf dataServerNetConf = null;
 	// 工作模式配置
-	private SoWorkingMode workingMode = null;
+	private SoProjectWorkingMode workingMode = null;
 	// 响应中介
 	private ObservableMedia observableMedia = null;
 
@@ -80,11 +79,11 @@ public class HostClient extends MinaClient {
 		close();
 	}
 
-	public SoWorkingMode getWorkingMode() {
+	public SoProjectWorkingMode getWorkingMode() {
 		return workingMode;
 	}
 
-	public void setWorkingMode(SoWorkingMode workingMode) {
+	public void setWorkingMode(SoProjectWorkingMode workingMode) {
 		this.workingMode = workingMode;
 	}
 
@@ -133,7 +132,7 @@ public class HostClient extends MinaClient {
 				dataServerNetConf = new NetConf(serverIP, port);
 				break;
 			case ConnectAPI.GET_WORKING_MODE_RESPONSE:
-				workingMode = JsonUtilTool.fromJson(ret, SoWorkingMode.class);
+				workingMode = JsonUtilTool.fromJson(ret, SoProjectWorkingMode.class);
 				break;
 			case ConnectAPI.APP_VERSION_QUERY_RESPONSE:
 				SoAppVersion appVersion = JsonUtilTool.fromJson(ret, SoAppVersion.class);
@@ -227,15 +226,7 @@ public class HostClient extends MinaClient {
 	}
 
 	public void workingModeUpdate() {
-		SoWorkingMode workingMode = new SoWorkingMode();
-
-		workingMode.setContinuous(false);
-		workingMode.setCreateBy(10000L);
-		workingMode.setEmergency(false);
-		workingMode.setFixedTimingLength(true);
-		workingMode.setTimeInterval(1000);
-		workingMode.setTiming(false);
-		workingMode.setPointOfTime(new Date());
+		SoProjectWorkingMode workingMode = new SoProjectWorkingMode();
 		String json = JsonUtilTool.toJson(workingMode);
 		send(ConnectAPI.WORKING_MODE_UPDATE_COMMAND, json);
 	}
@@ -248,7 +239,7 @@ public class HostClient extends MinaClient {
 
 	public void deviceAccess(SoDevices devices) {
 		String json = JsonUtilTool.toJson(devices);
-		send(ConnectAPI.DEVICE_ACCESS_COMMAND, json);
+		//send(ConnectAPI.DEVICE_ACCESS_COMMAND, json);
 	}
 
 	public void getDataServerInfo(SoDataServerInfo dataServerInfo) {

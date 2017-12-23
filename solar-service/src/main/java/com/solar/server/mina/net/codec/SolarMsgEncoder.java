@@ -7,7 +7,7 @@ import org.apache.mina.filter.codec.ProtocolEncoderOutput;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.solar.command.message.ResponseMsg;
+import com.solar.command.message.response.ResponseMsg;
 
 public class SolarMsgEncoder extends ProtocolEncoderAdapter {
 	private static final Logger logger = LoggerFactory.getLogger(SolarMsgEncoder.class);

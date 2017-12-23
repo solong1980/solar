@@ -3,44 +3,45 @@
 <mapper namespace="com.solar.db.dao.SoRunningDataMapper">
 	<resultMap id="BaseResultMap" type="com.solar.entity.SoRunningData">
 		<id column="id" jdbcType="BIGINT" property="id" />
-		<result column="real_time" jdbcType="BIGINT" property="realTime" />
-		<result column="warnning_code" jdbcType="INTEGER" property="warnningCode" />
-		<result column="ip_addr" jdbcType="VARCHAR" property="ipAddr" />
-		<result column="charging_voltage" jdbcType="FLOAT" property="chargingVoltage" />
-		<result column="charging_current" jdbcType="INTEGER" property="chargingCurrent" />
-		<result column="dc_charging_voltage" jdbcType="FLOAT"
-			property="dcChargingVoltage" />
-		<result column="dc_charging_current" jdbcType="FLOAT"
-			property="dcChargingCurrent" />
-		<result column="battery_voltage" jdbcType="FLOAT" property="batteryVoltage" />
-		<result column="battery_charging_current" jdbcType="FLOAT"
-			property="batteryChargingCurrent" />
-		<result column="rt_ntc_temperature" jdbcType="FLOAT" property="rtNTCTemperature" />
-		<result column="load_current_1" jdbcType="FLOAT" property="loadCurrent1" />
-		<result column="load_current_2" jdbcType="FLOAT" property="loadCurrent2" />
-		<result column="load_current_3" jdbcType="FLOAT" property="loadCurrent3" />
-		<result column="load_current_4" jdbcType="FLOAT" property="loadCurrent4" />
-		<result column="gps_info" jdbcType="VARCHAR" property="gpsInfo" />
+		<result column="uuid" jdbcType="VARCHAR" property="uuid" />
+		<result column="fmid" jdbcType="VARCHAR" property="fmid" />
+		<result column="vssun" jdbcType="VARCHAR" property="vssun" />
+		<result column="ichg" jdbcType="VARCHAR" property="ichg" />
+		<result column="vbat" jdbcType="VARCHAR" property="vbat" />
+		<result column="qbat" jdbcType="VARCHAR" property="qbat" />
+		<result column="ild1" jdbcType="VARCHAR" property="ild1" />
+		<result column="ild2" jdbcType="VARCHAR" property="ild2" />
+		<result column="ild3" jdbcType="VARCHAR" property="ild3" />
+		<result column="temp" jdbcType="VARCHAR" property="temp" />
+		<result column="ain1" jdbcType="VARCHAR" property="ain1" />
+		<result column="ain2" jdbcType="VARCHAR" property="ain2" />
+		<result column="ain3" jdbcType="VARCHAR" property="ain3" />
+		<result column="stat" jdbcType="VARCHAR" property="stat" />
+		<result column="utctime" jdbcType="VARCHAR" property="utcTime" />
+		<result column="altitude" jdbcType="VARCHAR" property="altitude" />
+		<result column="longitude" jdbcType="VARCHAR" property="longitude" />
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 	</resultMap>
 
 	<sql id="Columns">
-		id, 
-		real_time,
-		warnning_code,
-		ip_addr,
-		charging_voltage,
-		charging_current,
-		dc_charging_voltage,
-		dc_charging_current,
-		battery_voltage,
-		battery_charging_current,
-		rt_ntc_temperature,
-		load_current_1,
-		load_current_2,
-		load_current_3,
-		load_current_4,
-		gps_info,
+		id,
+		uuid,
+		fmid,
+		vssun,
+		ichg,
+		vbat,
+		qbat,
+		ild1,
+		ild2,
+		ild3,
+		temp,
+		ain1,
+		ain2,
+		ain3,
+		stat,
+		utctime,
+		altitude,
+		longitude,
 		create_time
 	</sql>
 
@@ -48,52 +49,68 @@
 	<select id="selectById" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">
 		select
-			<include refid="Columns" />
+		<include refid="Columns" />
 		from so_running_data
-		where id = #{id,jdbcType=INTEGER}
+		where id = #{id,jdbcType=BIGINT}
+	</select>
+
+	<select id="selectByUUID" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Columns" />
+		from so_running_data
+		where uuid = #{uuid,jdbcType=VARCHAR}
+		order by id
+		desc
+		limit #{count}
 	</select>
 
 	<insert id="insert" parameterType="com.solar.entity.SoRunningData"
 		useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO so_running_data
-		 (
-			 real_time,
-			 warnning_code,
-			 ip_addr,
-			 charging_voltage,
-			 charging_current,
-			 dc_charging_voltage,
-			 dc_charging_current,
-			 battery_voltage,
-			 battery_charging_current,
-			 rt_ntc_temperature,
-			 load_current_1,
-			 load_current_2,
-			 load_current_3,
-			 load_current_4,
-			 gps_info
-		 ) 
-		 VALUES 
-		 (
-			 #{realTime},
-			 #{warnningCode},
-			 #{ipAddr},
-			 #{chargingVoltage},
-			 #{chargingCurrent},
-			 #{dcChargingVoltage},
-			 #{dcChargingCurrent},
-			 #{batteryVoltage},
-			 #{batteryChargingCurrent},
-			 #{rtNTCTemperature},
-			 #{loadCurrent1}, 
-			 #{loadCurrent2}, 
-			 #{loadCurrent3}, 
-			 #{loadCurrent4},
-			 #{gpsInfo}
-		 )
+		(
+		uuid,
+		fmid,
+		vssun,
+		ichg,
+		vbat,
+		qbat,
+		ild1,
+		ild2,
+		ild3,
+		temp,
+		ain1,
+		ain2,
+		ain3,
+		stat,
+		utctime,
+		altitude,
+		longitude
+		)
+		VALUES
+		(
+		#{uuid},
+		#{fmid},
+		#{vssun},
+		#{ichg},
+		#{vbat},
+		#{qbat},
+		#{ild1},
+		#{ild2},
+		#{ild3},
+		#{temp},
+		#{ain1},
+		#{ain2},
+		#{ain3},
+		#{stat},
+		#{utcTime},
+		#{altitude},
+		#{longitude}
+		)
 	</insert>
 
 	<select id="selectMaxId" resultType="Long">
-		select COALESCE(MAX(id),0) from so_running_data
+		select COALESCE(MAX(id),0)
+		from so_running_data
 	</select>
 </mapper>

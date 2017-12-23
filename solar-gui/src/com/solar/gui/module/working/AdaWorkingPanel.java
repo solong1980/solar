@@ -7,6 +7,7 @@ import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -26,12 +27,14 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.MYJOptionPane;
 
 import com.solar.client.JsonUtilTool;
 import com.solar.client.ObservableMedia;
@@ -48,6 +51,8 @@ import com.solar.entity.SoVCode;
 import com.solar.gui.component.AddressTreeField;
 import com.solar.gui.component.MultiAddressTreeField;
 import com.solar.gui.component.MultiComboBox;
+import com.solar.gui.component.formate.InputState;
+import com.solar.gui.component.formate.JFieldBuilder;
 import com.solar.gui.component.model.TreeAddr;
 import com.solar.gui.module.working.fuc.AccountAuditPanel;
 import com.solar.gui.module.working.fuc.IndexPanel;
@@ -58,6 +63,9 @@ import com.solar.gui.module.working.fuc.WorkerInfoPanel;
 @SuppressWarnings("serial")
 public class AdaWorkingPanel extends BasePanel implements ActionListener, Observer {
 	private static final int SMS_DISABLE_PERIOD = 10;
+
+	private static Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
 	JTabbedPane tabbedpane;
 	ButtonGroup group;
 	JRadioButton top;
@@ -67,6 +75,13 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 
 	private JMenuBar menuBar = null;
 	private JMenu fileMenu = null;
+
+	JMenuItem connMi;
+	JMenuItem regiestMi;
+	JMenuItem findBackMi;
+	JMenuItem loginMi;
+	JMenuItem logoutMi;
+	JMenuItem exitMi;
 
 	ObservableMedia observableMedia = ObservableMedia.getInstance();
 
@@ -89,6 +104,12 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 				try {
 					observableMedia.connect();
 					observableMedia.addObserver(AdaWorkingPanel.this);
+
+					regiestMi.setEnabled(true);
+					findBackMi.setEnabled(true);
+					loginMi.setEnabled(true);
+					logoutMi.setEnabled(true);
+
 				} catch (Throwable e2) {
 					JOptionPane.showMessageDialog(parent, "连接失败", "错误", JOptionPane.ERROR_MESSAGE);
 				}
@@ -120,12 +141,14 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 	public JMenuBar createMenus() {
 		JMenuBar menuBar = new JMenuBar();
 		fileMenu = (JMenu) menuBar.add(new JMenu("开始"));
-		createMenuItem(fileMenu, "连接", new AdaAction(ActionType.CONNECT, this));
-		createMenuItem(fileMenu, "注册", new AdaAction(ActionType.REGIEST, this));
-		createMenuItem(fileMenu, "找回", new AdaAction(ActionType.FINDBACK, this));
-		createMenuItem(fileMenu, "登陆", new AdaAction(ActionType.LOGIN, this));
-		createMenuItem(fileMenu, "登出", new AdaAction(ActionType.LOGOUT, this));
-		createMenuItem(fileMenu, "退出", new AdaAction(ActionType.EXIT, this));
+		connMi = createMenuItem(fileMenu, "连接", new AdaAction(ActionType.CONNECT, this));
+
+		regiestMi = createMenuItem(fileMenu, "注册", new AdaAction(ActionType.REGIEST, this), false);
+		findBackMi = createMenuItem(fileMenu, "找回", new AdaAction(ActionType.FINDBACK, this), false);
+		loginMi = createMenuItem(fileMenu, "登陆", new AdaAction(ActionType.LOGIN, this), false);
+		logoutMi = createMenuItem(fileMenu, "登出", new AdaAction(ActionType.LOGOUT, this), false);
+
+		exitMi = createMenuItem(fileMenu, "退出", new AdaAction(ActionType.EXIT, this));
 		return menuBar;
 	}
 
@@ -165,10 +188,12 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		gbc.gridy++;
 		findBackPanel.add(envAddrLabel, gbc);
 
-		// admin,operator,cust_1,cust_2
-		JTextField nameField = new JTextField("");
-		JTextField oldPhoneField = new JTextField("", 30);
-		JTextField newPhoneField = new JTextField("", 30);
+		InputState inputState = new InputState();
+
+		JTextField nameField = JFieldBuilder.createNoEmptyField(this, inputState, "", 30);
+
+		JTextField oldPhoneField = JFieldBuilder.createPhoneField(this, inputState, true);
+		JTextField newPhoneField = JFieldBuilder.createPhoneField(this, inputState, true);
 		// JTextField emailField = new JTextField("");
 		JComboBox<String> userTypeField = new JComboBox<>();
 		userTypeField.addItem("运维");
@@ -183,14 +208,12 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int selectedIndex = userTypeField.getSelectedIndex();
-				System.out.println("selectedIndex" + selectedIndex);
 				if (selectedIndex == 0) {
 					projectAddr1Label.setEnabled(true);
 					projectAddr1Field.setEnabled(true);
 					envAddrLabel.setEnabled(false);
 					envAddrField.setEnabled(false);
-				}
-				if (selectedIndex == 1) {
+				} else if (selectedIndex == 1) {
 					projectAddr1Label.setEnabled(false);
 					projectAddr1Field.setEnabled(false);
 					envAddrLabel.setEnabled(true);
@@ -235,6 +258,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 				timerFlag = true;
 				timer.scheduleAtFixedRate(new TimerTask() {
 					int w = SMS_DISABLE_PERIOD;
+
 					@Override
 					public void run() {
 						if (timerFlag) {
@@ -256,8 +280,8 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		message[0] = findBackPanel;
 		String[] options = { "提交审核", "取消" };
 
-		int result = JOptionPane.showOptionDialog(this, message, "用  户  找  回(需审核)", JOptionPane.DEFAULT_OPTION,
-				JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
+		int result = MYJOptionPane.showOptionDialog(this, message, "用  户  找  回(需审核)", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.PLAIN_MESSAGE, null, options, options[1], (int) screenSize.getWidth() / 2, 100);
 
 		timer.cancel();
 		switch (result) {
@@ -271,7 +295,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 			accountFind.setOldPhone(oldPhone);
 			accountFind.setPhone(newPhone);
 			accountFind.setVcode(vcode);
-			
+
 			int typeIndex = userTypeField.getSelectedIndex();
 			accountFind.setType(Consts.ACCOUNT_TYPE[typeIndex]);
 			List<SoAccountLocation> accountLocations = new ArrayList<>();
@@ -282,8 +306,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 					accountLocation.setLocationId(treeAddr.getKey());
 					accountLocations.add(accountLocation);
 				}
-			}
-			if (typeIndex == 1) {
+			} else if (typeIndex == 1) {
 				List<TreeAddr> envAddrs = envAddrField.getSelectedKeys();
 				for (TreeAddr treeAddr : envAddrs) {
 					SoAccountLocation accountLocation = new SoAccountLocation();
@@ -642,6 +665,14 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 					ObservableMedia.getInstance().setSessionAccount(account);
 
 					JOptionPane.showMessageDialog(this, account.getMsg());
+
+					int retCode = account.getRetCode();
+
+					if (retCode != SoAccount.SUCCESS) {
+						loginGUI();
+						return;
+					}
+
 					RoleType roleType = RoleType.roleType(account.getRole());
 
 					Boolean savePwd = AdaWorkingPanel.this.account.getSavePwd();
@@ -651,6 +682,12 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 					EventQueue.invokeLater(new Runnable() {
 						@Override
 						public void run() {
+							// disable connect , regiest and findback
+							connMi.setEnabled(false);
+							regiestMi.setEnabled(false);
+							findBackMi.setEnabled(false);
+							loginMi.setEnabled(false);
+
 							// Tab panel
 							tabbedpane = new JTabbedPane();
 							add(tabbedpane, BorderLayout.CENTER);
@@ -673,7 +710,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 								WorkerInfoPanel workerInfoPanel = new WorkerInfoPanel();
 								tabbedpane.add("维护人员信息", workerInfoPanel);
 								observableMedia.addObserver(workerInfoPanel);
-								
+
 								RunningReportPanel reportPanel = new RunningReportPanel();
 								tabbedpane.add("运行信息查询", reportPanel);
 								AccountAuditPanel accountAuditPanel = new AccountAuditPanel();

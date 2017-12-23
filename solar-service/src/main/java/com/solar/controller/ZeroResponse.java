@@ -2,7 +2,7 @@ package com.solar.controller;
 
 import java.io.IOException;
 
-import com.solar.command.message.ServerResponse;
+import com.solar.command.message.response.ServerResponse;
 import com.solar.common.context.ConnectAPI;
 
 public class ZeroResponse extends ServerResponse {

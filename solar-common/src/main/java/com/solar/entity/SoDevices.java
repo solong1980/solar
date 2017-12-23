@@ -9,6 +9,9 @@ public class SoDevices extends SoAbtAuth {
 
 	private Long id;
 	private String devNo;
+	private String locationId;
+	private Long projectId;
+
 	private String gpsInfo;
 	private String ipAddr;
 	private String dataServerIp;
@@ -29,6 +32,22 @@ public class SoDevices extends SoAbtAuth {
 
 	public void setDevNo(String devNo) {
 		this.devNo = devNo;
+	}
+
+	public String getLocationId() {
+		return locationId;
+	}
+
+	public void setLocationId(String locationId) {
+		this.locationId = locationId;
+	}
+
+	public Long getProjectId() {
+		return projectId;
+	}
+
+	public void setProjectId(Long projectId) {
+		this.projectId = projectId;
 	}
 
 	public String getGpsInfo() {

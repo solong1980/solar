@@ -1,38 +1,35 @@
 package com.solar.controller.common;
 
-import com.solar.command.processor.AccountAuditCmdProcessor;
-import com.solar.command.processor.AccountFindAuditCmdProcessor;
-import com.solar.command.processor.AccountFindQueryCmdProcessor;
-import com.solar.command.processor.AccountFindbackCmdProcessor;
-import com.solar.command.processor.AccountProjectCheckCmdProcessor;
-import com.solar.command.processor.AccountQueryCmdProcessor;
-import com.solar.command.processor.AccountSelectCmdProcessor;
-import com.solar.command.processor.AccountUpdateCmdProcessor;
-import com.solar.command.processor.AppUpgradeCmdProcessor;
-import com.solar.command.processor.AppVersionCmdProcessor;
-import com.solar.command.processor.DataServerInfoCmdProcessor;
-import com.solar.command.processor.DataUploadCmdProcessor;
-import com.solar.command.processor.DeviceAccessCmdProcessor;
-import com.solar.command.processor.GetAreasCmdProcessor;
-import com.solar.command.processor.GetCitiesCmdProcessor;
-import com.solar.command.processor.GetProvincesCmdProcessor;
-import com.solar.command.processor.GetWorkingModeCmdProcessor;
-import com.solar.command.processor.LoginCmdProcessor;
-import com.solar.command.processor.OpenAppMsgProcessor;
-import com.solar.command.processor.ProjectAddCmdProcessor;
-import com.solar.command.processor.ProjectDeleteCmdProcessor;
-import com.solar.command.processor.ProjectQueryCmdProcessor;
-import com.solar.command.processor.ProjectSelectCmdProcessor;
-import com.solar.command.processor.ProjectUpdateCmdProcessor;
-import com.solar.command.processor.RegiestCmdProcessor;
-import com.solar.command.processor.VcodeGetCmdProcessor;
-import com.solar.command.processor.WorkingModeUpdateCmdProcessor;
+import com.solar.command.processor.app.AccountAuditCmdProcessor;
+import com.solar.command.processor.app.AccountFindAuditCmdProcessor;
+import com.solar.command.processor.app.AccountFindQueryCmdProcessor;
+import com.solar.command.processor.app.AccountFindbackCmdProcessor;
+import com.solar.command.processor.app.AccountProjectCheckCmdProcessor;
+import com.solar.command.processor.app.AccountQueryCmdProcessor;
+import com.solar.command.processor.app.AccountSelectCmdProcessor;
+import com.solar.command.processor.app.AccountUpdateCmdProcessor;
+import com.solar.command.processor.app.AppUpgradeCmdProcessor;
+import com.solar.command.processor.app.AppVersionCmdProcessor;
+import com.solar.command.processor.app.DataServerInfoCmdProcessor;
+import com.solar.command.processor.app.GetAreasCmdProcessor;
+import com.solar.command.processor.app.GetCitiesCmdProcessor;
+import com.solar.command.processor.app.GetProvincesCmdProcessor;
+import com.solar.command.processor.app.GetProjectWorkingModeCmdProcessor;
+import com.solar.command.processor.app.LoginCmdProcessor;
+import com.solar.command.processor.app.OpenAppMsgProcessor;
+import com.solar.command.processor.app.ProjectAddCmdProcessor;
+import com.solar.command.processor.app.ProjectDeleteCmdProcessor;
+import com.solar.command.processor.app.ProjectQueryCmdProcessor;
+import com.solar.command.processor.app.ProjectSelectCmdProcessor;
+import com.solar.command.processor.app.ProjectUpdateCmdProcessor;
+import com.solar.command.processor.app.RegiestCmdProcessor;
+import com.solar.command.processor.app.VcodeGetCmdProcessor;
+import com.solar.command.processor.app.WorkingModeUpdateCmdProcessor;
 import com.solar.common.context.ConnectAPI;
 
 public enum MsgProcessorRegister {
-	DATA_UPLOAD(ConnectAPI.DATA_UPLOAD_COMMAND, new DataUploadCmdProcessor()),
 	WORKING_MODE_UPDATE(ConnectAPI.WORKING_MODE_UPDATE_COMMAND, new WorkingModeUpdateCmdProcessor()),
-	GET_WORKING_MODE(ConnectAPI.GET_WORKING_MODE_COMMAND, new GetWorkingModeCmdProcessor()),
+	GET_WORKING_MODE(ConnectAPI.GET_WORKING_MODE_COMMAND, new GetProjectWorkingModeCmdProcessor()),
 	APP_UPGRADE_COMMAND(ConnectAPI.APP_UPGRADE_COMMAND, new AppUpgradeCmdProcessor()),
 
 	DATA_SERVER_INFO_COMMAND(ConnectAPI.DATA_SERVER_QUERY_COMMAND, new DataServerInfoCmdProcessor()),
@@ -40,7 +37,6 @@ public enum MsgProcessorRegister {
 	APK_VERSION_QUERY_COMMAND(ConnectAPI.APK_VERSION_QUERY_COMMAND, new AppVersionCmdProcessor()),
 
 	LOGIN_COMMAND(ConnectAPI.LOGIN_COMMAND, new LoginCmdProcessor()),
-	DEVICE_ACCESS_COMMAND(ConnectAPI.DEVICE_ACCESS_COMMAND, new DeviceAccessCmdProcessor()),
 
 	ADDR_PROVINCES_QUERY_COMMAND(ConnectAPI.ADDR_PROVINCES_QUERY_COMMAND, new GetProvincesCmdProcessor()),
 	ADDR_CITIES_QUERY_COMMAND(ConnectAPI.ADDR_CITIES_QUERY_COMMAND, new GetCitiesCmdProcessor()),

@@ -10,8 +10,8 @@ import java.net.UnknownHostException;
 
 public abstract class MinaClient {
 	private static final int SOCKET_TIMEOUT = 100000;
-	public static final String SERVER_IP_ADDR = "123.56.76.77";// 服务器地址
-	public static final int PORT = 10122;// 服务器端口号
+	// public static final String SERVER_IP_ADDR = "123.56.76.77";// 服务器地址
+	// public static final int PORT = 10122;// 服务器端口号
 	private NetConf netConf;
 	private Socket socket = null;
 	protected DataInputStream input = null;
@@ -30,7 +30,7 @@ public abstract class MinaClient {
 	private void bSocket() throws UnknownHostException, IOException {
 		close();
 		socket = new Socket(this.netConf.getDataServerIP(), this.netConf.getDataServerPort());
-		//socket.setSoTimeout(SOCKET_TIMEOUT);
+		// socket.setSoTimeout(SOCKET_TIMEOUT);
 		int tr = 5;
 		while (!socket.isConnected() && (tr--) >= 0) {
 			sleep();

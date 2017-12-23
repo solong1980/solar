@@ -1,5 +1,6 @@
 #include <iostream>
 #include <winsock2.h>
+#include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -99,6 +100,67 @@ namespace NetSend {
 		WideCharToMultiByte(CP_UTF8, 0, wstr, -1, str, len, NULL, NULL);
 		if(wstr) delete[] wstr;
 		return str;
+	}
+
+	int sendmsg() {
+		WORD wVersionRequested;
+		WSADATA wsaData;
+		int err;
+
+		wVersionRequested = MAKEWORD(1,1);
+		err = WSAStartup(wVersionRequested,&wsaData);
+
+		cout<<"startup:"+err<<endl;
+
+		if ( err != 0 ) {
+			return 1;
+		}
+		if ( LOBYTE( wsaData.wVersion ) != 1 ||
+		        HIBYTE( wsaData.wVersion ) != 1 ) {
+			WSACleanup( );
+			return 1;
+		}
+		SOCKET sockClient=socket(AF_INET,SOCK_STREAM,0);
+		SOCKADDR_IN addrSrv;
+
+		addrSrv.sin_addr.S_un.S_addr=inet_addr("127.0.0.1");
+		addrSrv.sin_family=AF_INET;
+
+		addrSrv.sin_port=htons(10124);
+		connect(sockClient,(SOCKADDR*)&addrSrv,sizeof(SOCKADDR));
+
+
+		char *data= "01,17DD5E6E,FFFFFFFF,0,6,121,0,0,0,0,18,0,0,0,0,20171223055949,67.925,30.473866";
+		char *d ="\r\n";
+		char deli  = '\n';
+		data = G2U(data);
+		send(sockClient,data,strlen(data),0);
+		//send(sockClient,d,strlen(d),0);
+		send(sockClient,&deli,1,0);
+
+		char recvBuf[1024 * 5];
+		u_long retLen = recv(sockClient,recvBuf,1024 * 5,0);
+		recvBuf[retLen] = '\0';
+		//printf("%s",recvBuf);
+		cout<<string(recvBuf)<<endl;
+		Sleep(10*1000);
+		send(sockClient,d,strlen(d),0);
+		Sleep(10*1000);
+		send(sockClient,d,strlen(d),0);
+		Sleep(10*1000);
+		send(sockClient,d,strlen(d),0);
+		Sleep(10*1000);
+		
+		send(sockClient,data,strlen(data),0);
+		send(sockClient,&deli,1,0);
+		retLen = recv(sockClient,recvBuf,1024 * 5,0);
+		recvBuf[retLen] = '\0';
+		//printf("%s",recvBuf);
+		cout<<string(recvBuf)<<endl;
+		
+		closesocket(sockClient);
+		WSACleanup();
+		return 0;
 	}
 
 	int sendrev() {

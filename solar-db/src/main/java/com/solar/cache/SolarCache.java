@@ -10,19 +10,19 @@ import java.util.concurrent.TimeUnit;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.solar.db.services.SoDevicesService;
-import com.solar.db.services.SoWorkingModeService;
+import com.solar.db.services.SoProjectWorkingModeService;
 import com.solar.entity.SoDevices;
-import com.solar.entity.SoWorkingMode;
+import com.solar.entity.SoProjectWorkingMode;
 
 public class SolarCache {
 
 	private static SolarCache solarCache = new SolarCache();
 
-	private Cache<Long, SoWorkingMode> guavaWorkingModeCache;
+	private Cache<Long, SoProjectWorkingMode> guavaWorkingModeCache;
 	private Cache<Long, List<SoDevices>> guavaDevicesCache;
 	private Cache<String, Map<String, Object>> guavaAppSersionCache;
 
-	private SoWorkingModeService workingModeService;
+	private SoProjectWorkingModeService workingModeService;
 	private SoDevicesService devicesService;
 
 	public static SolarCache getInstance() {
@@ -35,35 +35,38 @@ public class SolarCache {
 
 		guavaAppSersionCache = CacheBuilder.newBuilder().initialCapacity(30).expireAfterAccess(30, TimeUnit.MINUTES)
 				.build();
-
-		workingModeService = SoWorkingModeService.getInstance();
+		workingModeService = SoProjectWorkingModeService.getInstance();
 		devicesService = SoDevicesService.getInstance();
 	}
 
-	public SoWorkingMode getWorkingMode(Long custId) throws ExecutionException {
-		SoWorkingMode value = guavaWorkingModeCache.get(custId, new Callable<SoWorkingMode>() {
+	public SoProjectWorkingMode getWorkingMode(Long projectId) throws ExecutionException {
+		SoProjectWorkingMode value = guavaWorkingModeCache.get(projectId, new Callable<SoProjectWorkingMode>() {
 			@Override
-			public SoWorkingMode call() throws Exception {
-				return workingModeService.selectLastOne();
+			public SoProjectWorkingMode call() throws Exception {
+				return workingModeService.selectByProjectId(projectId);
 			}
 		});
 		return value;
 	}
 
-	public List<SoDevices> getDevices(Long custId) throws ExecutionException {
-		List<SoDevices> devs = guavaDevicesCache.get(custId, new Callable<List<SoDevices>>() {
+	public List<SoDevices> getDevices(Long projectId) throws ExecutionException {
+		List<SoDevices> devs = guavaDevicesCache.get(projectId, new Callable<List<SoDevices>>() {
 			@Override
 			public List<SoDevices> call() throws Exception {
-				return devicesService.selectCustDevs(custId);
+				return devicesService.selectProjectDevs(projectId);
 			}
 		});
 		return devs;
 	}
 
-	public void updateWorkingMode(Long custId) {
-		guavaWorkingModeCache.invalidate(custId);
+	public void updateWorkingMode(Long projectId) {
+		guavaWorkingModeCache.invalidate(projectId);
 		// SoWorkingMode workingMode = workingModeService.selectLastOne();
 		// guavaWorkingModeCache.put(custId, workingMode);
+	}
+
+	public void updateProjectDevs(Long projectId) {
+		guavaDevicesCache.invalidate(projectId);
 	}
 
 	public Map<String, Object> getSessionContext(String sessionId) throws ExecutionException {

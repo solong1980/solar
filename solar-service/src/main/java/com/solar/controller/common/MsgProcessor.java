@@ -4,7 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.solar.command.message.request.ClientRequest;
-import com.solar.command.message.response.FailureResponse;
+import com.solar.command.message.response.app.FailureResponse;
 import com.solar.server.commons.session.AppSession;
 
 public abstract class MsgProcessor {

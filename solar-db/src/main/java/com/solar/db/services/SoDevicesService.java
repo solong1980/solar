@@ -1,5 +1,6 @@
 package com.solar.db.services;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,12 +34,8 @@ public class SoDevicesService {
 		return deviceDao.selectById(id);
 	}
 
-	public SoDevices selectByDevNo(String devId) {
-		return deviceDao.selectByDevNo(devId);
-	}
-
-	public List<SoDevices> selectCustDevs(Long custId) {
-		List<SoDevices> devicesList = deviceDao.selectByCustId(custId);
+	public List<SoDevices> selectProjectDevs(Long projectId) {
+		List<SoDevices> devicesList = Collections.emptyList();
 		return devicesList;
 	}
 
@@ -47,12 +44,16 @@ public class SoDevicesService {
 	 * 
 	 * @return
 	 */
-	public Map<Long, List<SoDevices>> buildCustDevMap() {
-		Map<Long, List<SoDevices>> custDevMap = new HashMap<>();
+	public Map<Long, List<SoDevices>> buildProjectDevMap() {
+		Map<Long, List<SoDevices>> projectDevMap = new HashMap<>();
 		List<SoDevices> devices = deviceDao.allDevs();
 		for (SoDevices soDevices : devices) {
-			custDevMap.put(soDevices.getCustId(), devices);
+			projectDevMap.put(soDevices.getProjectId(), devices);
 		}
-		return custDevMap;
+		return projectDevMap;
+	}
+
+	public SoDevices selectByDevNo(String devNo) {
+		return deviceDao.selectByDevNo(devNo);
 	}
 }

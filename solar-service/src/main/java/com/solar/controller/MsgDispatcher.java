@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.solar.command.message.request.ClientRequest;
-import com.solar.command.message.response.ErrorResponse;
+import com.solar.command.message.response.app.ErrorResponse;
 import com.solar.common.annotation.ProcessCMD;
 import com.solar.common.bean.BeanContextAdv;
 import com.solar.common.context.ConnectAPI;

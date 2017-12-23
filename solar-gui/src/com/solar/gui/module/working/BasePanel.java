@@ -69,6 +69,14 @@ public class BasePanel extends JPanel {
 		return mi;
 	}
 
+	public JMenuItem createMenuItem(JMenu menu, String label, Action action, boolean disable) {
+		JMenuItem mi = (JMenuItem) menu.add(new JMenuItem(label));
+		mi.addActionListener(action);
+		mi.setEnabled(disable);
+		mi.setActionCommand("0");
+		return mi;
+	}
+
 	public static JButton createTableButton(String text, AbstractAction btnAction) {
 		JButton btn = new JButton(btnAction);
 		// delBtn.setOpaque(true);
@@ -223,16 +231,17 @@ public class BasePanel extends JPanel {
 					AddrType addrType = ta.getAddrType();
 					String id = ta.getKey();
 					Object value = ta.getValue();
-
 					switch (addrType) {
 					case PROJECT:
 						System.out.println("PROJECT" + id);
 						// Load device
 						// node.add
 						List<SoDevices> devices = dataClient.getDeviceIn(id);
-						for (SoDevices device : devices) {
-							node.add(new DefaultMutableTreeNode(
-									new TreeAddr(AddrType.DEVICE, device.getId().toString(), device, true)));
+						if (devices != null) {
+							for (SoDevices device : devices) {
+								node.add(new DefaultMutableTreeNode(
+										new TreeAddr(AddrType.DEVICE, device.getId().toString(), device, true)));
+							}
 						}
 						break;
 					case DEVICE:

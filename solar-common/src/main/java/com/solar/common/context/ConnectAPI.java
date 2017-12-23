@@ -10,8 +10,6 @@ public class ConnectAPI {
 	 */
 	// 业务终端指令
 	public static final int LOGIN_COMMAND = 0x000001;
-	// 数据上传指令
-	public static final int DATA_UPLOAD_COMMAND = 0x000002;
 	// 工作模式更新
 	public static final int WORKING_MODE_UPDATE_COMMAND = 0x000003;
 	// 获取模式设置指令
@@ -24,8 +22,6 @@ public class ConnectAPI {
 
 	// 查询数据服务器地址
 	public static final int DATA_SERVER_QUERY_COMMAND = 0x000007;
-	// 设备接入
-	public static final int DEVICE_ACCESS_COMMAND = 0x000008;
 
 	// apk版本查询
 	public static final int APK_VERSION_QUERY_COMMAND = 0x000009;
@@ -54,13 +50,13 @@ public class ConnectAPI {
 	public static final int ACCOUNT_PROJECT_CHECK_COMMAND = 0x000026;
 
 	public static final int PROJECT_QUERY_COMMAND = 0x000027;
-	
+
 	public static final int PROJECT_SELECT_COMMAND = 0x000028;
-	
+
 	public static final int ACCOUNT_AUDIT_QUERY_COMMAND = 0x000029;
-	
+
 	public static final int ACCOUNT_SELECT_COMMAND = 0x000030;
-	
+
 	// 控制终端指令
 	public static final int CTRL_COMMAND = 0x999999;
 
@@ -74,10 +70,11 @@ public class ConnectAPI {
 
 	public static final int FAILURE_RESPONSE = 0x100001;
 	public static final int SUCCESS_RESPONSE = 0x100002;
+
 	public static final int GET_WORKING_MODE_RESPONSE = 0x100003;
 	public static final int APP_UPGRADE_RESPONSE = 0x100004;
 	public static final int LOGIN_RESPONSE = 0x100005;
-	public static final int DEVICES_ACCESS_RESPONSE = 0x100005;
+
 	// 查询数据服务器地址
 	public static final int DATA_SERVER_QUERY_RESPONSE = 0x100006;
 
@@ -109,8 +106,19 @@ public class ConnectAPI {
 
 	public static final int PROJECT_QUERY_RESPONSE = 0x100027;
 	public static final int PROJECT_SELECT_RESPONSE = 0x100028;
-	
+
 	public static final int ACCOUNT_AUDIT_QUERY_RESPONSE = 0x100029;
-	
+
 	public static final int ACCOUNT_SELECT_RESPONSE = 0x100030;
+
+	// 单片机
+	public static final String MC_ERROR_RESPONSE = "00";
+	public static final String MC_SUCCESS_RESPONSE = "99";
+	// 设备接入
+	public static final String MC_DEVICES_ACCESS_COMMAND = "98";
+	public static final String MC_DEVICES_ACCESS_RESPONSE = "98";
+	// 数据上传指令
+	public static final String MC_DATA_UPLOAD_COMMAND = "01";
+	public static final String MC_DATA_UPLOAD_RESPONSE = "01";
+
 }

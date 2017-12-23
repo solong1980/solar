@@ -1,25 +1,24 @@
 package com.solar.server.commons.session;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.solar.command.message.response.ErrorResponse;
-import com.solar.common.context.ErrorCode;
-import com.solar.entity.SoAccount;
+import com.solar.entity.SoDevices;
 
 public class AppSessionManager {
 
 	public Map<String, AppSession> sessionMap = new ConcurrentHashMap<String, AppSession>();
-	private Cache<Long, List<AppSession>> custDevSessionCache;
+	public Map<String, AppSession> devSessionMap = new ConcurrentHashMap<String, AppSession>();
+	public Map<String, AppSession> devNoSessionMap = new ConcurrentHashMap<String, AppSession>();
+
+	private Cache<Long, List<AppSession>> locationDevSessionCache;
 
 	public static int topOnlineAccountCount = 0;
 
@@ -32,7 +31,7 @@ public class AppSessionManager {
 	}
 
 	private AppSessionManager() {
-		custDevSessionCache = CacheBuilder.newBuilder().initialCapacity(1000).build();
+		locationDevSessionCache = CacheBuilder.newBuilder().initialCapacity(10000).maximumSize(10000).build();
 	}
 
 	/**
@@ -49,35 +48,62 @@ public class AppSessionManager {
 	 * @param appSession
 	 * @return
 	 */
-	public boolean putGameSessionInHashMap(AppSession appSession, String useId) {
-
-		boolean result = checkSessionIsHava(useId);
-		if (result) {
-			// System.out.println("这个用户已登录了,更新session");
-			try {
-				sessionMap.get("UUID_" + useId).sendMsg(new ErrorResponse(ErrorCode.Error_000022));
-				Thread.sleep(1000);
-				sessionMap.get("UUID_" + useId).close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+	public boolean putAppSessionToHashMap(AppSession appSession) {
+		String sessionID = appSession.getSessionID();
+		boolean result = checkSessionIsHava(sessionID);
+		// if (result) {
+		// // System.out.println("这个用户已登录了,更新session");
+		// try {
+		// sessionMap.get("UUID_" + uuid).sendMsg(new
+		// ErrorResponse(ErrorCode.Error_000022));
+		// Thread.sleep(1000);
+		// sessionMap.get("UUID_" + uuid).close();
+		// } catch (IOException e) {
+		// e.printStackTrace();
+		// } catch (InterruptedException e) {
+		// e.printStackTrace();
+		// }
+		//
+		// try {
+		// Thread.sleep(3000);
+		// } catch (InterruptedException e) {
+		// e.printStackTrace();
+		// }
+		//
+		// }
+		if (!result) {
+			sessionMap.put(sessionID, appSession);
+			if (sessionMap.size() > topOnlineAccountCount) {
+				topOnlineAccountCount = sessionMap.size();
 			}
-
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-
 		}
-
-		sessionMap.put("UUID_" + useId, appSession);
-		if (sessionMap.size() > topOnlineAccountCount) {
-			topOnlineAccountCount = sessionMap.size();
-		}
-
 		return !result;
+	}
+
+	public void putDevSessionToHashMap(AppSession appSession) {
+		String sessionID = appSession.getSessionID();
+		AppSession t = devSessionMap.get(sessionID);
+		if (t == null) {
+			devSessionMap.put(sessionID, appSession);
+			if (devSessionMap.size() > topOnlineAccountCount) {
+				topOnlineAccountCount = topOnlineAccountCount + devSessionMap.size();
+			}
+
+			SoDevices enti = appSession.getEnti(SoDevices.class);
+			String devNo = enti.getDevNo();
+			devNoSessionMap.put(devNo, appSession);
+		}
+	}
+
+	public void rmDevSession(AppSession appSession) {
+		SoDevices enti = appSession.getEnti(SoDevices.class);
+		String devNo = enti.getDevNo();
+		devNoSessionMap.remove(devNo);
+		devSessionMap.remove(appSession.getSessionID());
+	}
+
+	public void rmAppSession(AppSession appSession) {
+		sessionMap.remove(appSession.getSessionID());
 	}
 
 	public int getVauleSize() {
@@ -106,33 +132,8 @@ public class AppSessionManager {
 		return result;
 	}
 
-	/**
-	 * 从缓存获取客户设备session
-	 * 
-	 * @param custId
-	 * @return
-	 * @throws ExecutionException
-	 */
-	public List<AppSession> getCustDevsSession(Long custId) throws ExecutionException {
-		List<AppSession> custDevSessions = custDevSessionCache.get(custId, new Callable<List<AppSession>>() {
-			@Override
-			public List<AppSession> call() throws Exception {
-				List<AppSession> result = null;
-				if (getVauleSize() > 0) {
-					result = new ArrayList<AppSession>(50);
-					Collection<AppSession> connection = sessionMap.values();
-					Iterator<AppSession> iterator = connection.iterator();
-					while (iterator.hasNext()) {
-						AppSession next = iterator.next();
-						SoAccount enti = next.getEnti(SoAccount.class);
-						if (custId.equals(enti.getCustId()))
-							result.add(next);
-					}
-				}
-				return result;
-			}
-		});
-		return custDevSessions;
+	public AppSession getDevsSession(String devNo) throws ExecutionException {
+		return devNoSessionMap.get(devNo);
 	}
 
 	/**
@@ -141,9 +142,9 @@ public class AppSessionManager {
 	 * @param uuid
 	 * @return
 	 */
-	private boolean checkSessionIsHava(String uuid) {
+	private boolean checkSessionIsHava(String sessionId) {
 		// 可以用来判断是否在线****等功能
-		AppSession appSession = sessionMap.get("UUID_" + uuid);
+		AppSession appSession = sessionMap.get(sessionId);
 		if (appSession != null) {
 			return true;
 		}

@@ -1,7 +1,6 @@
 package com.solar.server.mina.net;
 
 import java.net.SocketAddress;
-import java.util.UUID;
 
 import org.apache.mina.core.service.IoHandlerAdapter;
 import org.apache.mina.core.session.IoSession;
@@ -21,8 +20,7 @@ public class MinaHostMsgHandler extends IoHandlerAdapter {
 	public void sessionCreated(IoSession session) throws Exception {
 		AppSession appSession = new AppSession(session);
 		logger.info("a session create from ip {}", session.getRemoteAddress());
-		UUID randomUUID = UUID.randomUUID();
-		AppSessionManager.getInstance().putGameSessionInHashMap(appSession, randomUUID.toString());
+		AppSessionManager.getInstance().putAppSessionToHashMap(appSession);
 	}
 
 	@Override

@@ -5,11 +5,12 @@ import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.solar.controller.MccMsgDispatcher;
 import com.solar.controller.MsgDispatcher;
 import com.solar.db.InitDBServers;
 import com.solar.server.commons.context.ExecutorServiceManager;
-import com.solar.server.mina.net.MinaHostMsgHandler;
-import com.solar.server.mina.net.MinaMsgHandler;
+import com.solar.server.mina.net.MinaAppMsgHandler;
+import com.solar.server.mina.net.MinaMccMsgHandler;
 import com.solar.server.mina.net.NetManager;
 
 public class SolarServer {
@@ -17,11 +18,14 @@ public class SolarServer {
 	private static final Logger logger = LoggerFactory.getLogger(SolarServer.class);
 
 	private static int port = 10122;
+	@SuppressWarnings("unused")
 	private static int hostPort = 10123;
+	private static int mccPort = 10124;
 
 	private static SolarServer instance = new SolarServer();
 
 	public static MsgDispatcher msgDispatcher = new MsgDispatcher();;
+	public static MccMsgDispatcher mcMsgDispatcher = new MccMsgDispatcher();
 
 	private static NetManager netManager;
 
@@ -46,10 +50,15 @@ public class SolarServer {
 			InitDBServers.getInstance().initServersFun();
 			logger.info("数据库连接初始化完成");
 
-			netManager.startListner(new MinaMsgHandler(), port);// 前段监听端口
+			netManager.startListner(new MinaAppMsgHandler(), port);// 前段监听端口
 			logger.info("服务器监听端口:{}完成", port);
-			netManager.startHostListner(new MinaHostMsgHandler(), hostPort);// 后台数据链接的时候再开一个listner
-			logger.info("服务器监听端口:{}完成", hostPort);
+
+			//// 后台数据链接的时候再开一个listner
+			// netManager.startHostListner(new MinaHostMsgHandler(), hostPort);
+			// logger.info("服务器监听端口:{}完成", hostPort);
+
+			netManager.startMCListner(new MinaMccMsgHandler(), mccPort);// 单片机
+			logger.info("服务器监听端口:{}完成", mccPort);
 
 			logger.info("solar server started...");
 		} catch (Exception e) {

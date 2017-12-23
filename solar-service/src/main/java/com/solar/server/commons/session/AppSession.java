@@ -11,7 +11,7 @@ import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.solar.command.message.ResponseMsg;
+import com.solar.command.message.response.ResponseMsg;
 
 public class AppSession implements Closeable {
 
@@ -35,15 +35,18 @@ public class AppSession implements Closeable {
 	 * 记录心跳时间， 间隔，到达一定时间就表示前端断线了
 	 */
 	private int time = 0;
+
 	private Object enti;
 	private boolean isLogin = false;
 	private static final AttributeKey KEY_PLAYER_SESSION = new AttributeKey(AppSession.class, "player.session");
 
 	public AppSession(IoSession session) {
 		SocketAddress socketaddress = session.getRemoteAddress();
-		InetSocketAddress s = (InetSocketAddress) socketaddress;
-		// 存当前用户相关的服务器地址
-		address = s.getAddress().getHostAddress();
+		if (socketaddress != null) {
+			InetSocketAddress s = (InetSocketAddress) socketaddress;
+			// 存当前用户相关的服务器地址
+			address = s.getAddress().getHostAddress();
+		}
 		this.session = session;
 		this.session.setAttribute(KEY_PLAYER_SESSION, this);
 		LOGGER.debug("create session " + SessionID);
@@ -72,6 +75,19 @@ public class AppSession implements Closeable {
 			// system.out.println("session == "+session+" session.isConnected ==
 			// "+session.isConnected()+" session.isClosing =
 			// "+session.isClosing());
+			return null;
+		}
+		return session.write(msg);
+	}
+
+	/**
+	 * 回写字符串消息给客户端
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	public WriteFuture sendMsg(String msg) {
+		if (session == null || !session.isConnected() || session.isClosing()) {
 			return null;
 		}
 		return session.write(msg);
