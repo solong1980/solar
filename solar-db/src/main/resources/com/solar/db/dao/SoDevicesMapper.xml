@@ -31,7 +31,7 @@
 		select
 		<include refid="Columns" />
 		from so_devices
-		where id = #{id,jdbcType=INTEGER}
+		where id = #{id,jdbcType=BIGINT}
 	</select>
 
 	<select id="selectByProjectId" parameterType="java.lang.Long"
@@ -39,7 +39,7 @@
 		select
 		<include refid="Columns" />
 		from so_devices
-		where project_id = #{projectId,jdbcType=LONG}
+		where project_id = #{projectId,jdbcType=BIGINT}
 	</select>
 
 	<select id="allDevs" resultMap="BaseResultMap">

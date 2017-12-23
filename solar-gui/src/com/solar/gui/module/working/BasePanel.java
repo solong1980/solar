@@ -17,10 +17,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.SwingConstants;
-import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.TreePath;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -29,7 +27,6 @@ import com.solar.client.ObservableMedia;
 import com.solar.client.net.NetConf;
 import com.solar.common.context.Consts.AddrType;
 import com.solar.common.util.LocationLoader;
-import com.solar.entity.SoDevices;
 import com.solar.entity.SoProject;
 import com.solar.gui.component.model.TreeAddr;
 
@@ -38,8 +35,8 @@ public class BasePanel extends JPanel {
 	protected static final String LABEL_REFRESH = "刷新";
 	protected static final String LABEL_UPDATA = "修改";
 
-	private DataClient dataClient = new DataClient(NetConf.buildHostConf());
-
+	protected DataClient dataClient = new DataClient(NetConf.buildHostConf());
+	protected ObservableMedia instance = ObservableMedia.getInstance();
 	// 项目树
 	// JTree tree;
 
@@ -106,12 +103,11 @@ public class BasePanel extends JPanel {
 		btn.setText(text);
 		return btn;
 	}
-
-	public JPanel createTree() {
+	
+	public JPanel createTree(TreeSelectionListener listener) {
 		// 如果是管理员则加载所有地址
 		// 如果是维护或局方则查询后台,或者在登陆的时候保存管辖位置数据
 		JPanel jp = new JPanel();
-		ObservableMedia instance = ObservableMedia.getInstance();
 
 		Set<String> sunPowerFilterSet = instance.getSunPowerLocationFilterSet();
 		Set<String> smartFilterSet = instance.getSmartLocationFilterSet();
@@ -218,45 +214,7 @@ public class BasePanel extends JPanel {
 		};
 		tree.setRootVisible(false);
 		tree.setEditable(false);
-
-		tree.addTreeSelectionListener(new TreeSelectionListener() {
-			@Override
-			public void valueChanged(TreeSelectionEvent e) {
-				TreePath path = e.getPath();
-				Object lastPathComponent = path.getLastPathComponent();
-				DefaultMutableTreeNode node = (DefaultMutableTreeNode) lastPathComponent;
-				Object userObject = node.getUserObject();
-				if (userObject instanceof TreeAddr) {
-					TreeAddr ta = (TreeAddr) userObject;
-					AddrType addrType = ta.getAddrType();
-					String id = ta.getKey();
-					Object value = ta.getValue();
-					switch (addrType) {
-					case PROJECT:
-						System.out.println("PROJECT" + id);
-						// Load device
-						// node.add
-						List<SoDevices> devices = dataClient.getDeviceIn(id);
-						if (devices != null) {
-							for (SoDevices device : devices) {
-								node.add(new DefaultMutableTreeNode(
-										new TreeAddr(AddrType.DEVICE, device.getId().toString(), device, true)));
-							}
-						}
-						break;
-					case DEVICE:
-						// monitor device
-						System.out.println("DEVICE" + id);
-						// on click,get device info,
-						// query data from db include running model,runing info
-
-						break;
-					default:
-						break;
-					}
-				}
-			}
-		});
+		tree.addTreeSelectionListener(listener);
 
 		jp.setLayout(new BorderLayout());
 		jp.add(new JLabel("项目列表", SwingConstants.CENTER), BorderLayout.NORTH);

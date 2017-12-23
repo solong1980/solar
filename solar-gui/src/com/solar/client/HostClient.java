@@ -23,6 +23,7 @@ import com.solar.entity.SoDevices;
 import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
 import com.solar.entity.SoProjectWorkingMode;
+import com.solar.entity.SoRunningData;
 import com.solar.entity.SoVCode;
 
 public class HostClient extends MinaClient {
@@ -341,5 +342,11 @@ public class HostClient extends MinaClient {
 		String json = JsonUtilTool.toJson(account);
 		System.out.println(json);
 		send(ConnectAPI.ACCOUNT_UPDATE_COMMAND, json);
+	}
+
+	public void getRunningData(SoRunningData runningData) {
+		String json = JsonUtilTool.toJson(runningData);
+		System.out.println(json);
+		send(ConnectAPI.DEVICES_RUNNINGDATA_COMMAND, json);
 	}
 }

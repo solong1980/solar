@@ -1,11 +1,14 @@
 package com.solar.gui.module.working.fuc;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.CardLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -17,15 +20,26 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreePath;
 
+import com.solar.client.SoRet;
+import com.solar.common.context.ConnectAPI;
+import com.solar.common.context.Consts.AddrType;
+import com.solar.common.util.JsonUtilTool;
+import com.solar.entity.SoDevices;
+import com.solar.entity.SoRunningData;
 import com.solar.gui.component.BezierAnimationPanel;
+import com.solar.gui.component.model.TreeAddr;
 import com.solar.gui.module.working.BasePanel;
 
 /**
  * 首页
  */
 @SuppressWarnings("serial")
-public class IndexPanel extends BasePanel {
+public class IndexPanel extends BasePanel implements Observer {
 
 	JSplitPane splitPane = null;
 
@@ -41,24 +55,37 @@ public class IndexPanel extends BasePanel {
 
 	public JPanel createDashpanel() {
 		JPanel dashPanel = new JPanel();
-		dashPanel.setLayout(new BorderLayout());
+		dashPanel.setLayout(cardLayout);
 
-		JPanel northPanel = new JPanel();
-		northPanel.setLayout(new BorderLayout());
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx = 0.0;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = new Insets(1, 1, 1, 1);
-		northPanel.add(createGPSPanel(), BorderLayout.WEST);
-		gbc.gridx++;
-		northPanel.add(createStatePanel(), BorderLayout.CENTER);
+		JPanel projectPanel = new JPanel();
+		projectPanel.setLayout(new BorderLayout());
+		projectPanel.add(createGPSPanel(), BorderLayout.NORTH);
 
-		dashPanel.add(northPanel, BorderLayout.NORTH);
-		dashPanel.add(createInfoPanel(), BorderLayout.CENTER);
-		dashPanel.add(createCtrlPanel(), BorderLayout.EAST);
+		JPanel schedulePanel = new JPanel();
+		schedulePanel.setLayout(new BorderLayout());
+		JPanel checkPanel = new JPanel(new GridLayout(12, 2));
+		for (int i = 0; i < 24; i++) {
+			// 0:00-1:00
+			JCheckBox box = new JCheckBox(i + ":00-" + (i + 1) + ":00");
+			checkPanel.add(box);
+		}
+		JScrollPane scheduleCheckBoxScrollPane = new JScrollPane(checkPanel);
+		schedulePanel.add(new JLabel("定时运行配置"), BorderLayout.NORTH);
+		schedulePanel.add(scheduleCheckBoxScrollPane, BorderLayout.CENTER);
+		projectPanel.add(schedulePanel, BorderLayout.CENTER);
+		JButton updateRunMode = new JButton("设定运行模式");
+		schedulePanel.add(updateRunMode, BorderLayout.SOUTH);
 
+		JPanel empty = new JPanel();
+		JPanel devicePanel = createInfoPanel();
+
+		dashPanel.add(createInfoPanel());
+		dashPanel.add(projectPanel);
+		dashPanel.add(new JPanel());
+		
+		cardLayout.addLayoutComponent(projectPanel, "project");
+		cardLayout.addLayoutComponent(empty, "empty");
+		cardLayout.addLayoutComponent(devicePanel, "device");
 		return dashPanel;
 	}
 
@@ -66,47 +93,10 @@ public class IndexPanel extends BasePanel {
 		JPanel ctrlPanel = new JPanel();
 		ctrlPanel.setBorder(BorderFactory.createTitledBorder("控制面板"));
 		ctrlPanel.setLayout(new BorderLayout());
-
-		JPanel warnningPanel = new JPanel();
-		warnningPanel.setLayout(new GridBagLayout());
-		warnningPanel.setBorder(BorderFactory.createTitledBorder("故障报警信息"));
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.weightx = 0.0;
-		// gbc.anchor = GridBagConstraints.WEST;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = new Insets(1, 1, 1, 1);
-		warnningPanel.add(new JLabel("太阳能板故障 "), gbc);
-		gbc.gridy++;
-		warnningPanel.add(new JLabel("电池故障 "), gbc);
-		gbc.gridy++;
-		warnningPanel.add(new JLabel("风机运行故障 "), gbc);
-		gbc.gridy++;
-		warnningPanel.add(new JLabel("水泵运行故障 "), gbc);
-
-		ctrlPanel.add(warnningPanel, BorderLayout.NORTH);
-
-		JPanel schedulePanel = new JPanel();
-		schedulePanel.setLayout(new BorderLayout());
-		
-		JPanel checkPanel = new JPanel(new GridLayout(12, 2));
-		for (int i = 0; i < 24; i++) {
-			//0:00-1:00
-			JCheckBox box = new JCheckBox(i+":00-"+(i+1)+":00");
-			checkPanel.add(box);
-		}
-		JScrollPane scheduleCheckBoxScrollPane = new JScrollPane(checkPanel);
-		schedulePanel.add(new JLabel("定时运行配置"),BorderLayout.NORTH);
-		schedulePanel.add(scheduleCheckBoxScrollPane,BorderLayout.CENTER);
-		JButton updateRunMode = new JButton("设定运行模式");
-		schedulePanel.add(updateRunMode,BorderLayout.SOUTH);
-		ctrlPanel.add(schedulePanel, BorderLayout.CENTER);
-
 		JPanel runCtrlPanel = new JPanel();
 		runCtrlPanel.setLayout(new GridBagLayout());
 		runCtrlPanel.setBorder(BorderFactory.createTitledBorder("紧急启停"));
-		gbc = new GridBagConstraints();
+		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.fill = GridBagConstraints.BOTH;
@@ -152,19 +142,46 @@ public class IndexPanel extends BasePanel {
 		gbc.gridy++;
 		runCtrlPanel.add(stopBtns[3], gbc);
 
-		ctrlPanel.add(runCtrlPanel, BorderLayout.SOUTH);
+		ctrlPanel.add(runCtrlPanel, BorderLayout.CENTER);
 
 		return ctrlPanel;
 	}
+
+	CardLayout cardLayout = new CardLayout();
+	BezierAnimationPanel animationPanel;
 
 	public JPanel createInfoPanel() {
 		JPanel infoPanel = new JPanel();
 		infoPanel.setBorder(BorderFactory.createTitledBorder("运行信息"));
 
-		BezierAnimationPanel animationPanel = new BezierAnimationPanel();
-		infoPanel.setLayout(new BorderLayout());
+		JPanel statePanel = createStatePanel();
+		JPanel warnningPanel = new JPanel();
+		warnningPanel.setLayout(new GridBagLayout());
+		warnningPanel.setBorder(BorderFactory.createTitledBorder("故障报警信息"));
+		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.weightx = 0.0;
+		// gbc.anchor = GridBagConstraints.WEST;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(1, 1, 1, 1);
+		warnningPanel.add(new JLabel("太阳能板故障 "), gbc);
+		gbc.gridy++;
+		warnningPanel.add(new JLabel("电池故障 "), gbc);
+		gbc.gridy++;
+		warnningPanel.add(new JLabel("风机运行故障 "), gbc);
+		gbc.gridy++;
+		warnningPanel.add(new JLabel("水泵运行故障 "), gbc);
 
+		JPanel np = new JPanel(new GridLayout(1, 2));
+		np.add(statePanel);
+		np.add(warnningPanel);
+
+		animationPanel = new BezierAnimationPanel();
+		infoPanel.setLayout(new BorderLayout());
+		infoPanel.add(np, BorderLayout.NORTH);
 		infoPanel.add(animationPanel, BorderLayout.CENTER);
+		infoPanel.add(createCtrlPanel(), BorderLayout.EAST);
 		return infoPanel;
 	}
 
@@ -237,10 +254,10 @@ public class IndexPanel extends BasePanel {
 		gbc.gridy++;
 		gpsPanel.add(new JTextField("", 20), gbc);
 
-//		gbc.gridx++;
-//		gbc.gridy = 0;
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
-//		gpsPanel.add(new JButton("地图"), gbc);
+		// gbc.gridx++;
+		// gbc.gridy = 0;
+		// gbc.fill = GridBagConstraints.HORIZONTAL;
+		// gpsPanel.add(new JButton("地图"), gbc);
 
 		return gpsPanel;
 	}
@@ -248,16 +265,84 @@ public class IndexPanel extends BasePanel {
 	public IndexPanel() {
 		super(new BorderLayout(5, 5));
 
-		JPanel projectPanel = createTree();
+		JPanel projectTreePanel = createTree(new TreeSelectionListener() {
+			@Override
+			public void valueChanged(TreeSelectionEvent e) {
+				TreePath path = e.getPath();
+				Object lastPathComponent = path.getLastPathComponent();
+				DefaultMutableTreeNode node = (DefaultMutableTreeNode) lastPathComponent;
+				Object userObject = node.getUserObject();
+				if (userObject instanceof TreeAddr) {
+					TreeAddr ta = (TreeAddr) userObject;
+					AddrType addrType = ta.getAddrType();
+					String id = ta.getKey();
+					Object value = ta.getValue();
+					switch (addrType) {
+					case PROJECT:
+						if (node.getChildCount() > 0) {
+							return;
+						}
+						System.out.println("PROJECT " + id);
+						// Load device
+						// node.add
+						List<SoDevices> devices = dataClient.getDeviceIn(Long.parseLong(id));
+						if (devices != null) {
+							for (SoDevices device : devices) {
+								node.add(new DefaultMutableTreeNode(
+										new TreeAddr(AddrType.DEVICE, device.getId().toString(), device, true)));
+							}
+						}
+						break;
+					case DEVICE:
+						// monitor device
+						System.out.println("DEVICE " + id);
+						SoDevices device = (SoDevices) value;
+						String devNo = device.getDevNo();
+						instance.getRunningData(devNo);
+
+						// set
+						// on click,get device info,
+						// query data from db include running model,runing info
+						// query data
+						// query running
+
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		});
 		JPanel dashPanel = createDashpanel();
 		// add(projectPanel, BorderLayout.WEST);
-		//dashPanel.setBorder(BorderFactory.createLineBorder(Color.RED));
+		// dashPanel.setBorder(BorderFactory.createLineBorder(Color.RED));
 
-		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, projectPanel, dashPanel);
+		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, projectTreePanel, dashPanel);
 		splitPane.setContinuousLayout(true);
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setDividerSize(5);
 		add(splitPane, BorderLayout.CENTER);
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		if (arg instanceof SoRet) {
+			SoRet ret = (SoRet) arg;
+			int code = ret.getCode();
+			int status = ret.getStatus();
+			if (status == 0) {
+				switch (code) {
+				case ConnectAPI.DEVICES_RUNNINGDATA_RESPONSE:
+					SoRunningData runningData = JsonUtilTool.fromJson(ret.getRet(), SoRunningData.class);
+					// update dash panel
+					// animationPanel
+					break;
+				default:
+					break;
+				}
+			}
+		}
+
 	}
 
 }

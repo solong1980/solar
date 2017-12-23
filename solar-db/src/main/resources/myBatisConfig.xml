@@ -51,7 +51,7 @@
 		<mapper resource="com/solar/db/dao/SoCustomerMapper.xml" />
 		<mapper resource="com/solar/db/dao/SoDevicesMapper.xml" />
 		<mapper resource="com/solar/db/dao/SoRunningDataMapper.xml" />
-		<mapper resource="com/solar/db/dao/SoWorkingModeMapper.xml" />
+		<mapper resource="com/solar/db/dao/SoProjectWorkingModeMapper.xml" />
 		<mapper resource="com/solar/db/dao/SoAppVersionMapper.xml" />
 
 		<mapper resource="com/solar/db/dao/SoProvincesMapper.xml" />

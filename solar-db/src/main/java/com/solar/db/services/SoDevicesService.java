@@ -1,6 +1,5 @@
 package com.solar.db.services;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +34,7 @@ public class SoDevicesService {
 	}
 
 	public List<SoDevices> selectProjectDevs(Long projectId) {
-		List<SoDevices> devicesList = Collections.emptyList();
-		return devicesList;
+		return deviceDao.selectByProjectId(projectId);
 	}
 
 	/**

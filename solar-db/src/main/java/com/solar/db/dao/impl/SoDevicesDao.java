@@ -30,11 +30,11 @@ public class SoDevicesDao implements SoDevicesMapper {
 	}
 
 	@Override
-	public List<SoDevices> selectByCustId(Long custId) {
+	public List<SoDevices> selectByProjectId(Long projectId) {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
 			SoDevicesMapper mapper = sqlSession.getMapper(SoDevicesMapper.class);
-			List<SoDevices> soDevicesList = mapper.selectByCustId(custId);
+			List<SoDevices> soDevicesList = mapper.selectByProjectId(projectId);
 			return soDevicesList;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

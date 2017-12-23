@@ -54,7 +54,7 @@
 		where id = #{id,jdbcType=BIGINT}
 	</select>
 
-	<select id="selectByUUID" parameterType="java.lang.String"
+	<select id="selectLastRunntionData" parameterType="java.lang.String"
 		resultMap="BaseResultMap">
 		select
 		<include refid="Columns" />

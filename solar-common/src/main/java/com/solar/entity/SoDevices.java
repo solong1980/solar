@@ -90,4 +90,9 @@ public class SoDevices extends SoAbtAuth {
 		this.createTime = createTime;
 	}
 
+	@Override
+	public String toString() {
+		return "[" + devNo + "]";
+	}
+
 }

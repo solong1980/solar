@@ -8,7 +8,7 @@ public interface SoDevicesMapper {
 
 	SoDevices selectById(Long id);
 
-	List<SoDevices> selectByCustId(Long custId);
+	List<SoDevices> selectByProjectId(Long projectId);
 
 	List<SoDevices> allDevs();
 

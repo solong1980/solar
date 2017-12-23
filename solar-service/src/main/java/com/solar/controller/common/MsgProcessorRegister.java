@@ -11,10 +11,12 @@ import com.solar.command.processor.app.AccountUpdateCmdProcessor;
 import com.solar.command.processor.app.AppUpgradeCmdProcessor;
 import com.solar.command.processor.app.AppVersionCmdProcessor;
 import com.solar.command.processor.app.DataServerInfoCmdProcessor;
+import com.solar.command.processor.app.DevicesInProjectCmdProcessor;
+import com.solar.command.processor.app.DevicesRunningDataCmdProcessor;
 import com.solar.command.processor.app.GetAreasCmdProcessor;
 import com.solar.command.processor.app.GetCitiesCmdProcessor;
-import com.solar.command.processor.app.GetProvincesCmdProcessor;
 import com.solar.command.processor.app.GetProjectWorkingModeCmdProcessor;
+import com.solar.command.processor.app.GetProvincesCmdProcessor;
 import com.solar.command.processor.app.LoginCmdProcessor;
 import com.solar.command.processor.app.OpenAppMsgProcessor;
 import com.solar.command.processor.app.ProjectAddCmdProcessor;
@@ -61,6 +63,9 @@ public enum MsgProcessorRegister {
 	PROJECT_DELETE_COMMAND(ConnectAPI.PROJECT_DELETE_COMMAND, new ProjectDeleteCmdProcessor()),
 	PROJECT_QUERY_COMMAND(ConnectAPI.PROJECT_QUERY_COMMAND, new ProjectQueryCmdProcessor()),
 	PROJECT_SELECT_COMMAND(ConnectAPI.PROJECT_SELECT_COMMAND, new ProjectSelectCmdProcessor()),
+	
+	DEVICES_IN_PROJECT_COMMAND(ConnectAPI.DEVICES_IN_PROJECT_COMMAND, new DevicesInProjectCmdProcessor()),
+	DEVICES_RUNNINGDATA_COMMAND(ConnectAPI.DEVICES_RUNNINGDATA_COMMAND, new DevicesRunningDataCmdProcessor()),
 
 	// 内部使用，服务端通知客户端断开
 	EMPYTCOMMAND(ConnectAPI.ZERO_RESPONSE, new OpenAppMsgProcessor());

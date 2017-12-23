@@ -43,7 +43,7 @@ public class RunningReportPanel extends BasePanel {
 		btnPanel.add(new JButton("返回"));
 		jPanel.add(btnPanel, BorderLayout.SOUTH);
 
-		add(createTree(), BorderLayout.WEST);
+		add(createTree(null), BorderLayout.WEST);
 		add(jPanel, BorderLayout.CENTER);
 	}
 

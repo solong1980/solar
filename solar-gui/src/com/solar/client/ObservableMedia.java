@@ -19,6 +19,7 @@ import com.solar.entity.SoDataServerInfo;
 import com.solar.entity.SoDevices;
 import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
+import com.solar.entity.SoRunningData;
 import com.solar.entity.SoVCode;
 
 public class ObservableMedia extends Observable {
@@ -307,6 +308,13 @@ public class ObservableMedia extends Observable {
 		SoProject project = new SoProject();
 		project.setId(id);
 		hostClient.deleteProject(project);
+		setChanged();
+	}
+
+	public void getRunningData(String devNo) {
+		SoRunningData runningData = new SoRunningData();
+		runningData.setUuid(devNo);
+		hostClient.getRunningData(runningData);
 		setChanged();
 	}
 

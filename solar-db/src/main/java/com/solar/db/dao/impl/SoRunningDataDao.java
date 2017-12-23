@@ -1,5 +1,8 @@
 package com.solar.db.dao.impl;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
@@ -47,8 +50,28 @@ public class SoRunningDataDao implements SoRunningDataMapper {
 	@Override
 	public Long selectMaxId() {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
-		SoRunningDataMapper mapper = sqlSession.getMapper(SoRunningDataMapper.class);
-		return mapper.selectMaxId();
+		try {
+			SoRunningDataMapper mapper = sqlSession.getMapper(SoRunningDataMapper.class);
+			return mapper.selectMaxId();
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public List<SoRunningData> selectLastRunntionData(String devNo, int limit) {
+		List<SoRunningData> result = Collections.emptyList();
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		SoRunningDataMapper mapper = null;
+		try {
+			mapper = sqlSession.getMapper(SoRunningDataMapper.class);
+			result = mapper.selectLastRunntionData(devNo, limit);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+		return result;
 	}
 
 }

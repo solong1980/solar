@@ -74,8 +74,8 @@ public class DataClient extends ShortClient {
 				int status = input.readInt();
 				String ret = input.readUTF();
 				if (status == 0 && code == ConnectAPI.ADDR_PROVINCES_QUERY_RESPONSE
-						|| code == ConnectAPI.ADDR_CITIES_QUERY_RESPONSE
-						|| code == ConnectAPI.ADDR_AREAS_QUERY_RESPONSE) {
+						|| code == ConnectAPI.ADDR_CITIES_QUERY_RESPONSE || code == ConnectAPI.ADDR_AREAS_QUERY_RESPONSE
+						|| code == ConnectAPI.DEVICES_IN_PROJECT_RESPONSE) {
 					System.out.println(ret);
 					switch (code) {
 					case ConnectAPI.ADDR_PROVINCES_QUERY_RESPONSE:
@@ -87,6 +87,9 @@ public class DataClient extends ShortClient {
 					case ConnectAPI.ADDR_AREAS_QUERY_RESPONSE:
 						List<SoAreas> areas = JsonUtilTool.fromJsonArray(ret, SoAreas.class);
 						return (T) areas;
+					case ConnectAPI.DEVICES_IN_PROJECT_RESPONSE:
+						List<SoDevices> devices = JsonUtilTool.fromJsonArray(ret, SoDevices.class);
+						return (T) devices;
 					default:
 						break;
 					}
@@ -102,8 +105,18 @@ public class DataClient extends ShortClient {
 		return false;
 	}
 
-	public List<SoDevices> getDeviceIn(String id) {
-		return null;
+	public List<SoDevices> getDeviceIn(Long projectId) {
+		List<SoDevices> devicesList = null;
+		SoDevices devices = new SoDevices();
+		devices.setProjectId(projectId);
+		try {
+			devicesList = doSendRecv(ConnectAPI.DEVICES_IN_PROJECT_COMMAND, JsonUtilTool.toJson(devices));
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			close();
+		}
+		return devicesList;
 	}
 
 }
