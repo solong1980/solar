@@ -114,10 +114,7 @@
 	<select id="queryProjectByLocationId" parameterType="java.lang.String"
 		resultMap="BaseResultMap">
 		select
-		id,
-		project_name,
-		type,
-		location_id
+		<include refid="Columns" />
 		from so_project
 		where
 		location_id like

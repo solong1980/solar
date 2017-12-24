@@ -6,6 +6,14 @@
 		<result column="dev_no" jdbcType="VARCHAR" property="devNo" />
 		<result column="location_id" jdbcType="BIGINT" property="locationId" />
 		<result column="project_id" jdbcType="BIGINT" property="projectId" />
+		<result column="sw0" jdbcType="BIT" property="sw0" />
+		<result column="sw1" jdbcType="BIT" property="sw1" />
+		<result column="sw2" jdbcType="BIT" property="sw2" />
+		<result column="sw3" jdbcType="BIT" property="sw3" />
+		<result column="sw4" jdbcType="BIT" property="sw4" />
+		<result column="sw5" jdbcType="BIT" property="sw5" />
+		<result column="sw6" jdbcType="BIT" property="sw6" />
+		<result column="sw7" jdbcType="BIT" property="sw7" />
 		<result column="gps_info" jdbcType="VARCHAR" property="gpsInfo" />
 		<result column="ip_addr" jdbcType="VARCHAR" property="ipAddr" />
 		<result column="data_server_ip" jdbcType="VARCHAR" property="dataServerIp" />
@@ -18,6 +26,14 @@
 		dev_no,
 		location_id,
 		project_id,
+		sw0,
+		sw1,
+		sw2,
+		sw3,
+		sw4,
+		sw5,
+		sw6,
+		sw7,
 		gps_info,
 		ip_addr,
 		data_server_ip,
@@ -25,6 +41,21 @@
 		create_time
 	</sql>
 
+	<update id="update" parameterType="com.solar.entity.SoDevices">
+		update so_devices
+		set
+		location_id = #{locationId},
+		project_id = #{projectId},
+		sw0 = #{sw0},
+		sw1 = #{sw1},
+		sw2 = #{sw2},
+		sw3 = #{sw3},
+		sw4 = #{sw4},
+		sw5 = #{sw5},
+		sw6 = #{sw6},
+		sw7 = #{sw7}
+		where id = #{id}
+	</update>
 
 	<select id="selectById" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">

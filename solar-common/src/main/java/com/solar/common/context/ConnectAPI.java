@@ -61,30 +61,33 @@ public class ConnectAPI {
 
 	public static final int DEVICES_RUNNINGDATA_COMMAND = 0x000032;
 
+	public static final int DEVICES_UPDATE_COMMAND = 0x000033;
 	// 控制终端指令
 	public static final int CTRL_COMMAND = 0x999999;
 
 	/**
 	 * 响应吗
 	 */
-	// 错误
-	public static final int ZERO_RESPONSE = 0x100000;
-	// 错误信息
-	public static final int ERROR_RESPONSE = 0x100000;
 
-	public static final int FAILURE_RESPONSE = 0x100001;
+	public static final int ZERO_RESPONSE = 0x100000;
+	public static final int ERROR_RESPONSE = 0x100000;
+	public static final int FAILURE_RESPONSE = 0x100000;
+
+	public static final int LOGIN_RESPONSE = 0x100001;
 	public static final int SUCCESS_RESPONSE = 0x100002;
 
-	public static final int GET_WORKING_MODE_RESPONSE = 0x100003;
-	public static final int APP_UPGRADE_RESPONSE = 0x100004;
-	public static final int LOGIN_RESPONSE = 0x100005;
+	public static final int WORKING_MODE_UPDATE_RESPONSE = 0x100003;
+	public static final int GET_WORKING_MODE_RESPONSE = 0x100004;
+
+	// 警告信息响应
+	public static final int WARNNING_RESPONSE = 0x100005;
+
+	public static final int APP_UPGRADE_RESPONSE = 0x100006;
 
 	// 查询数据服务器地址
-	public static final int DATA_SERVER_QUERY_RESPONSE = 0x100006;
+	public static final int DATA_SERVER_QUERY_RESPONSE = 0x100007;
 
 	public static final int APP_VERSION_QUERY_RESPONSE = 0x100009;
-	// 警告信息响应
-	public static final int WARNNING_RESPONSE = 0x100004;
 
 	public static final int ADDR_PROVINCES_QUERY_RESPONSE = 0x100011;
 	public static final int ADDR_CITIES_QUERY_RESPONSE = 0x100012;
@@ -118,6 +121,8 @@ public class ConnectAPI {
 	public static final int DEVICES_IN_PROJECT_RESPONSE = 0x100031;
 
 	public static final int DEVICES_RUNNINGDATA_RESPONSE = 0x100032;
+
+	public static final int DEVICES_UPDATE_RESPONSE = 0x100033;
 	// 单片机
 	public static final String MC_ERROR_RESPONSE = "00";
 	public static final String MC_SUCCESS_RESPONSE = "99";

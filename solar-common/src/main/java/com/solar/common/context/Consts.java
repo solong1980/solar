@@ -14,6 +14,34 @@ public class Consts {
 	public static final int[] PROJECT_TYPE = { 10, 20 };
 	public static final int[] CAPS = { 5, 10, 20, 30, 50, 80, 100 };
 	public static final int[] EMISSION_STANDARDS = { 10, 20 };
+	public static final String[] emises = new String[] { "一级A", "一级B" };
+
+	public static enum EMISES {
+		A(10, emises[0]),
+		B(20, emises[1]);
+		private int type;
+		private String name;
+
+		private EMISES(int type, String name) {
+			this.type = type;
+			this.name = name;
+		}
+
+		public int getType() {
+			return type;
+		}
+
+		public static EMISES type(int type) {
+			if (type == A.type) {
+				return EMISES.A;
+			} else
+				return EMISES.B;
+		}
+
+		public String typeName() {
+			return this.name;
+		}
+	}
 
 	public static final int[] ACCOUNT_TYPE = { 20, 30 };
 

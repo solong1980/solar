@@ -20,7 +20,8 @@ public class ErrorCode {
 
 	public static String Error_000013 = "注册地区没有项目,请先添加";
 	
-	public static String Error_000014 = "房卡不足！";
+	public static String Error_000014 = "此设备未连接";
+	
 	public static String Error_000015 = "只有庄家才能开始";
 	public static String Error_000016 = "杠牌出错";
 	public static String Error_000017 = "你已经在房间，不能加入新房间";

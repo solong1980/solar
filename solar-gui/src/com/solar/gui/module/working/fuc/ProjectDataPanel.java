@@ -163,11 +163,11 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		equipmentField = new JLabel("");
 
 		// 排放标准
-		String[] emises = new String[] { "一级A", "一级B" };
+		
 		// MultiComboBox emissionStandardsField = MultiComboBox.build();
 		emissionStandardsField = new JComboBox<>();
-		for (int i = 0; i < emises.length; i++) {
-			emissionStandardsField.addItem(emises[i]);
+		for (int i = 0; i < Consts.emises.length; i++) {
+			emissionStandardsField.addItem(Consts.emises[i]);
 		}
 
 		workerNameField = new JTextField("", 30);

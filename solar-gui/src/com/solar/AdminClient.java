@@ -53,7 +53,7 @@ public class AdminClient extends JFrame {
 
 		JButton regiestBtn = new JButton("注册");
 		JButton accountFindQueryBtn = new JButton("找回申请");
-		
+
 		jPanel.add(connectButton);
 		jPanel.add(loginButton);
 		jPanel.add(upConfigButton);
@@ -102,7 +102,6 @@ public class AdminClient extends JFrame {
 		upConfigButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				media.sendUpdateConfig();
 			}
 		});
 

@@ -83,7 +83,7 @@
 
 	<insert id="insert" parameterType="com.solar.entity.SoProjectWorkingMode"
 		useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO so_working_mode
+		INSERT INTO so_project_working_mode
 		(
 		project_id,
 		h_0,
@@ -145,7 +145,7 @@
 
 
 	<update id="update" parameterType="com.solar.entity.SoProjectWorkingMode">
-		update so_working_mode
+		update so_project_working_mode
 		set 
 		h_0 = #{h_0},
 		h_1 = #{h_1},

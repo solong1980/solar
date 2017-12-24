@@ -5,14 +5,17 @@ import java.util.Date;
 
 @SuppressWarnings("serial")
 public class SoRunningData implements Serializable {
-	// rev:01,17DD5E6E,FFFFFFFF,0,6,121,0,0,0,0,18,0,0,0,0,20171223055949,67.925,30.473866
+	// rev:01,17DD5E6E,FFFFFFFF,  0, 6,121,  0,0,0,0,18,0, 0,0,0,20171223055949,67.925,      30.473866
+	// rev:01,17DD5E6E,FFFFFFFF,233, 6,225, 15,0,0,0, 0,0,17,0,0,0             ,      0,20171224080052,83.872,30.473689
 	private Long id;
 	private String uuid; // 设备号
 	private String fmid; // 固件版本
 	private String vssun; // 太阳能板电压
 	private String ichg; // 电池充电电流
 	private String vbat; // 电池电压
-	private String qbat; // 电池剩余容量
+	private String level; // 电池剩余容量
+	private String pchg; // 充电累积度数
+	private String pdis; // 放电累积度数
 	private String ild1; // 负载1电流
 	private String ild2; // 负载2电流
 	private String ild3; // 负载3电流
@@ -74,12 +77,28 @@ public class SoRunningData implements Serializable {
 		this.vbat = vbat;
 	}
 
-	public String getQbat() {
-		return qbat;
+	public String getLevel() {
+		return level;
 	}
 
-	public void setQbat(String qbat) {
-		this.qbat = qbat;
+	public void setLevel(String level) {
+		this.level = level;
+	}
+
+	public String getPchg() {
+		return pchg;
+	}
+
+	public void setPchg(String pchg) {
+		this.pchg = pchg;
+	}
+
+	public String getPdis() {
+		return pdis;
+	}
+
+	public void setPdis(String pdis) {
+		this.pdis = pdis;
 	}
 
 	public String getIld1() {

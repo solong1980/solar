@@ -16,6 +16,7 @@ public class AppSessionManager {
 
 	public Map<String, AppSession> sessionMap = new ConcurrentHashMap<String, AppSession>();
 	public Map<String, AppSession> devSessionMap = new ConcurrentHashMap<String, AppSession>();
+	
 	public Map<String, AppSession> devNoSessionMap = new ConcurrentHashMap<String, AppSession>();
 
 	private Cache<Long, List<AppSession>> locationDevSessionCache;
@@ -51,26 +52,6 @@ public class AppSessionManager {
 	public boolean putAppSessionToHashMap(AppSession appSession) {
 		String sessionID = appSession.getSessionID();
 		boolean result = checkSessionIsHava(sessionID);
-		// if (result) {
-		// // System.out.println("这个用户已登录了,更新session");
-		// try {
-		// sessionMap.get("UUID_" + uuid).sendMsg(new
-		// ErrorResponse(ErrorCode.Error_000022));
-		// Thread.sleep(1000);
-		// sessionMap.get("UUID_" + uuid).close();
-		// } catch (IOException e) {
-		// e.printStackTrace();
-		// } catch (InterruptedException e) {
-		// e.printStackTrace();
-		// }
-		//
-		// try {
-		// Thread.sleep(3000);
-		// } catch (InterruptedException e) {
-		// e.printStackTrace();
-		// }
-		//
-		// }
 		if (!result) {
 			sessionMap.put(sessionID, appSession);
 			if (sessionMap.size() > topOnlineAccountCount) {

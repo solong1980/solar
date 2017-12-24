@@ -54,4 +54,8 @@ public class SoDevicesService {
 	public SoDevices selectByDevNo(String devNo) {
 		return deviceDao.selectByDevNo(devNo);
 	}
+
+	public void update(SoDevices devices) {
+		deviceDao.update(devices);
+	}
 }

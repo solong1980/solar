@@ -8,7 +8,9 @@
 		<result column="vssun" jdbcType="VARCHAR" property="vssun" />
 		<result column="ichg" jdbcType="VARCHAR" property="ichg" />
 		<result column="vbat" jdbcType="VARCHAR" property="vbat" />
-		<result column="qbat" jdbcType="VARCHAR" property="qbat" />
+		<result column="level" jdbcType="VARCHAR" property="level" />
+		<result column="pchg" jdbcType="VARCHAR" property="pchg" />
+		<result column="pdis" jdbcType="VARCHAR" property="pdis" />
 		<result column="ild1" jdbcType="VARCHAR" property="ild1" />
 		<result column="ild2" jdbcType="VARCHAR" property="ild2" />
 		<result column="ild3" jdbcType="VARCHAR" property="ild3" />
@@ -30,7 +32,9 @@
 		vssun,
 		ichg,
 		vbat,
-		qbat,
+		level,
+		pchg,
+		pdis,
 		ild1,
 		ild2,
 		ild3,
@@ -74,7 +78,9 @@
 		vssun,
 		ichg,
 		vbat,
-		qbat,
+		level,
+		pchg,
+		pdis,
 		ild1,
 		ild2,
 		ild3,
@@ -94,7 +100,9 @@
 		#{vssun},
 		#{ichg},
 		#{vbat},
-		#{qbat},
+		#{level},
+		#{pchg},
+		#{pdis},
 		#{ild1},
 		#{ild2},
 		#{ild3},

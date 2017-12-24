@@ -19,6 +19,7 @@ import com.solar.entity.SoDataServerInfo;
 import com.solar.entity.SoDevices;
 import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
+import com.solar.entity.SoProjectWorkingMode;
 import com.solar.entity.SoRunningData;
 import com.solar.entity.SoVCode;
 
@@ -183,16 +184,6 @@ public class ObservableMedia extends Observable {
 		setChanged();
 	}
 
-	public void getRunningMode() {
-		hostClient.runningMode();
-		setChanged();
-	}
-
-	public void sendUpdateConfig() {
-		hostClient.workingModeUpdate();
-		setChanged();
-	}
-
 	public void getUpdate() {
 		hostClient.send(12, "");
 		setChanged();
@@ -315,6 +306,23 @@ public class ObservableMedia extends Observable {
 		SoRunningData runningData = new SoRunningData();
 		runningData.setUuid(devNo);
 		hostClient.getRunningData(runningData);
+		setChanged();
+	}
+
+	public void getProjectWorkingMode(Long projectId) {
+		SoProjectWorkingMode projectWorkingMode = new SoProjectWorkingMode();
+		projectWorkingMode.setProjectId(projectId);
+		hostClient.getProjectWorkingMode(projectWorkingMode);
+		setChanged();
+	}
+
+	public void updateProjectWorkingMode(SoProjectWorkingMode mode) {
+		hostClient.updateProjectWorkingMode(mode);
+		setChanged();
+	}
+
+	public void updateDevice(SoDevices device) {
+		hostClient.updateDevice(device);
 		setChanged();
 	}
 

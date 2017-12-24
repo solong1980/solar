@@ -1,6 +1,6 @@
 package com.solar.db.dao.impl;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
@@ -60,18 +60,17 @@ public class SoRunningDataDao implements SoRunningDataMapper {
 
 	@Override
 	public List<SoRunningData> selectLastRunntionData(String devNo, int limit) {
-		List<SoRunningData> result = Collections.emptyList();
+		List<SoRunningData> runningDatas = new ArrayList<>(0);
 		SqlSession sqlSession = sqlSessionFactory.openSession();
-		SoRunningDataMapper mapper = null;
 		try {
-			mapper = sqlSession.getMapper(SoRunningDataMapper.class);
-			result = mapper.selectLastRunntionData(devNo, limit);
+			SoRunningDataMapper mapper = sqlSession.getMapper(SoRunningDataMapper.class);
+			runningDatas = mapper.selectLastRunntionData(devNo, limit);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
 			sqlSession.close();
 		}
-		return result;
+		return runningDatas;
 	}
 
 }

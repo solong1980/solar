@@ -71,4 +71,18 @@ public class SoDevicesDao implements SoDevicesMapper {
 		}
 	}
 
+	@Override
+	public void update(SoDevices devices) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoDevicesMapper mapper = sqlSession.getMapper(SoDevicesMapper.class);
+			mapper.update(devices);
+			sqlSession.commit();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
 }

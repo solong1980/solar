@@ -10,6 +10,7 @@ public class SoProjectWorkingMode implements Serializable {
 	private Short h_0;
 	private Short h_1;
 	private Short h_2;
+	private Short h_3;
 	private Short h_4;
 	private Short h_5;
 	private Short h_6;
@@ -71,6 +72,14 @@ public class SoProjectWorkingMode implements Serializable {
 
 	public void setH_2(Short h_2) {
 		this.h_2 = h_2;
+	}
+
+	public Short getH_3() {
+		return h_3;
+	}
+
+	public void setH_3(Short h_3) {
+		this.h_3 = h_3;
 	}
 
 	public Short getH_4() {

@@ -1,4 +1,4 @@
-package com.solar.client.net;
+package com.solar.client;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -8,10 +8,9 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-public abstract class MinaClient {
-	private static final int SOCKET_TIMEOUT = 100000;
-	// public static final String SERVER_IP_ADDR = "123.56.76.77";// 服务器地址
-	// public static final int PORT = 10122;// 服务器端口号
+import com.solar.client.net.NetConf;
+
+public class DeviceClient {
 	private NetConf netConf;
 	private Socket socket = null;
 	protected DataInputStream input = null;
@@ -56,18 +55,6 @@ public abstract class MinaClient {
 		}
 	}
 
-	public MinaClient(NetConf netConf) {
-		this.netConf = netConf;
-		initSocket();
-		// 长连接，退出时才关闭socket等
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-			@Override
-			public void run() {
-				close();
-			}
-		}));
-	}
-
 	public void close() {
 		available = false;
 		try {
@@ -100,11 +87,39 @@ public abstract class MinaClient {
 		return this.available && !closed && connected;
 	}
 
-	public abstract void recive() throws IOException;
+	public DeviceClient(NetConf netConf) {
+		this.netConf = netConf;
+		initSocket();
+		// 长连接，退出时才关闭socket等
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			@Override
+			public void run() {
+				close();
+			}
+		}));
+	}
+
+	public String serverCallBack(DataInputStream input) throws IOException {
+		int c = 0;
+		byte[] buf = new byte[1024 * 1024 * 4];
+		for (;;) {
+			byte readByte = input.readByte();
+			buf[c] = readByte;
+			if (readByte == '\n') {
+				break;
+			}
+			c++;
+		}
+		return new String(buf, 0, c);
+	}
 
 	public boolean countinueTry() {
-		tryCount = tryCount - 1;
-		return (tryCount > 0) ? true : false;
+		return false;
+	}
+
+	public void recive() throws IOException {
+		String ret = serverCallBack(input);
+		System.out.println(ret);
 	}
 
 }

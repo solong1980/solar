@@ -702,7 +702,8 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 								tabName = " 首页";
 								IndexPanel indexPanel = new IndexPanel();
 								tabbedpane.add(tabName, indexPanel);
-
+								observableMedia.addObserver(indexPanel);
+								
 								ProjectDataPanel projectDataPanel = new ProjectDataPanel();
 								tabbedpane.add("项目信息", projectDataPanel);
 								observableMedia.addObserver(projectDataPanel);

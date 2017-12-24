@@ -5,19 +5,19 @@ import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
-import com.solar.client.ObservableMedia;
-import com.solar.entity.SoDevices;
+import com.solar.client.DeviceClient;
+import com.solar.client.net.NetConf;
 
 @SuppressWarnings("serial")
 public class EndpotClient extends JFrame {
 
-	ObservableMedia media;
+	DeviceClient deviceClient;
 
 	public EndpotClient() {
 		super();
@@ -28,17 +28,13 @@ public class EndpotClient extends JFrame {
 		jPanel.setLayout(new FlowLayout());
 		JButton connectButton = new JButton("连接服务器");
 
-		JButton accessButton = new JButton("接入");
-
-		JButton runningModeButton = new JButton("获取运行模式");
-
 		JButton sendDataButton = new JButton("发送数据");
+		JButton receiveButton = new JButton("接受数据");
 		JButton closeButton = new JButton("关闭");
 
 		jPanel.add(connectButton);
-		jPanel.add(accessButton);
-		jPanel.add(runningModeButton);
 		jPanel.add(sendDataButton);
+		jPanel.add(receiveButton);
 		jPanel.add(closeButton);
 
 		getContentPane().add(jPanel);
@@ -48,60 +44,45 @@ public class EndpotClient extends JFrame {
 		connectButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (media == null) {
-					try {
-						media = ObservableMedia.getInstance();
-					} catch (Exception ee) {
-						ee.printStackTrace();
-						JOptionPane.showMessageDialog(EndpotClient.this, "连接失败");
-					}
-				}
-			}
-		});
-
-		accessButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				SoDevices devices = new SoDevices();
-				devices.setDevNo("00000000");
-				media.deviceAccess(devices);
-			}
-		});
-
-		runningModeButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				media.getRunningMode();
+				NetConf netConf = NetConf.buildHostConf();
+				netConf.setDataServerPort(10124);
+				deviceClient = new DeviceClient(netConf);
+				connectButton.setEnabled(false);
 			}
 		});
 
 		sendDataButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Thread t = new Thread(new Runnable() {
-
+				String data = "01,17DD5E6E,FFFFFFFF,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,83.872,30.473689\n";
+				try {
+					deviceClient.send(data.getBytes());
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		receiveButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						while (true) {
-							System.out.println("EndpotClient");
-							media.sendData();
+						while (deviceClient.isAvailable()) {
 							try {
-								Thread.sleep(60000);
-							} catch (InterruptedException e) {
+								deviceClient.recive();
+							} catch (IOException e) {
+								e.printStackTrace();
 							}
 						}
 					}
-				});
-				sendDataButton.setEnabled(false);
-				t.start();
+				}).start();
 			}
 		});
-
 		closeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (media != null)
-					media.close();
+				deviceClient.close();
 				System.exit(0);
 			}
 		});

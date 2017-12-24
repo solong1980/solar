@@ -12,9 +12,13 @@ import com.solar.entity.SoRunningData;
  * @author long liang hua
  */
 public class SoRunningDataService {
+	private static SoRunningDataService soRunningDataService = new SoRunningDataService();
+
 	private SoRunningDataMapper runningDataDao;
 
-	private static SoRunningDataService soRunningDataService = new SoRunningDataService();
+	public SoRunningDataService() {
+		super();
+	}
 
 	public static SoRunningDataService getInstance() {
 		return soRunningDataService;
@@ -39,8 +43,8 @@ public class SoRunningDataService {
 		return runningDataDao.insert(runningData);
 	}
 
-	public List<SoRunningData> getLastRunningData(String devNo,int count) {
+	public List<SoRunningData> getLastRunningData(String devNo, int count) {
 		return runningDataDao.selectLastRunntionData(devNo, count);
 	}
-	
+
 }

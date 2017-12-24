@@ -132,9 +132,6 @@ public class HostClient extends MinaClient {
 				int port = dataServerInfo.getPort();
 				dataServerNetConf = new NetConf(serverIP, port);
 				break;
-			case ConnectAPI.GET_WORKING_MODE_RESPONSE:
-				workingMode = JsonUtilTool.fromJson(ret, SoProjectWorkingMode.class);
-				break;
 			case ConnectAPI.APP_VERSION_QUERY_RESPONSE:
 				SoAppVersion appVersion = JsonUtilTool.fromJson(ret, SoAppVersion.class);
 				if (appVersion.getRetCode() == 0) {
@@ -223,13 +220,7 @@ public class HostClient extends MinaClient {
 
 	@Override
 	public void recive() throws IOException {
-		serverCallBack(input);
-	}
-
-	public void workingModeUpdate() {
-		SoProjectWorkingMode workingMode = new SoProjectWorkingMode();
-		String json = JsonUtilTool.toJson(workingMode);
-		send(ConnectAPI.WORKING_MODE_UPDATE_COMMAND, json);
+			serverCallBack(input);
 	}
 
 	public void login(SoAccount account) {
@@ -240,7 +231,7 @@ public class HostClient extends MinaClient {
 
 	public void deviceAccess(SoDevices devices) {
 		String json = JsonUtilTool.toJson(devices);
-		//send(ConnectAPI.DEVICE_ACCESS_COMMAND, json);
+		// send(ConnectAPI.DEVICE_ACCESS_COMMAND, json);
 	}
 
 	public void getDataServerInfo(SoDataServerInfo dataServerInfo) {
@@ -348,5 +339,23 @@ public class HostClient extends MinaClient {
 		String json = JsonUtilTool.toJson(runningData);
 		System.out.println(json);
 		send(ConnectAPI.DEVICES_RUNNINGDATA_COMMAND, json);
+	}
+
+	public void getProjectWorkingMode(SoProjectWorkingMode projectWorkingMode) {
+		String json = JsonUtilTool.toJson(projectWorkingMode);
+		System.out.println(json);
+		send(ConnectAPI.GET_WORKING_MODE_COMMAND, json);
+	}
+
+	public void updateProjectWorkingMode(SoProjectWorkingMode mode) {
+		String json = JsonUtilTool.toJson(mode);
+		System.out.println(json);
+		send(ConnectAPI.WORKING_MODE_UPDATE_COMMAND, json);
+	}
+
+	public void updateDevice(SoDevices device) {
+		String json = JsonUtilTool.toJson(device);
+		System.out.println(json);
+		send(ConnectAPI.DEVICES_UPDATE_COMMAND, json);
 	}
 }

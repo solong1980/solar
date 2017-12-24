@@ -12,6 +12,15 @@ public class SoDevices extends SoAbtAuth {
 	private String locationId;
 	private Long projectId;
 
+	private Short sw0;
+	private Short sw1;
+	private Short sw2;
+	private Short sw3;
+	private Short sw4;
+	private Short sw5;
+	private Short sw6;
+	private Short sw7;
+
 	private String gpsInfo;
 	private String ipAddr;
 	private String dataServerIp;
@@ -48,6 +57,70 @@ public class SoDevices extends SoAbtAuth {
 
 	public void setProjectId(Long projectId) {
 		this.projectId = projectId;
+	}
+
+	public Short getSw0() {
+		return sw0;
+	}
+
+	public void setSw0(Short sw0) {
+		this.sw0 = sw0;
+	}
+
+	public Short getSw1() {
+		return sw1;
+	}
+
+	public void setSw1(Short sw1) {
+		this.sw1 = sw1;
+	}
+
+	public Short getSw2() {
+		return sw2;
+	}
+
+	public void setSw2(Short sw2) {
+		this.sw2 = sw2;
+	}
+
+	public Short getSw3() {
+		return sw3;
+	}
+
+	public void setSw3(Short sw3) {
+		this.sw3 = sw3;
+	}
+
+	public Short getSw4() {
+		return sw4;
+	}
+
+	public void setSw4(Short sw4) {
+		this.sw4 = sw4;
+	}
+
+	public Short getSw5() {
+		return sw5;
+	}
+
+	public void setSw5(Short sw5) {
+		this.sw5 = sw5;
+	}
+
+	public Short getSw6() {
+		return sw6;
+	}
+
+	public void setSw6(Short sw6) {
+		this.sw6 = sw6;
+	}
+
+	public Short getSw7() {
+		return sw7;
+	}
+
+	public void setSw7(Short sw7) {
+		this.sw7 = sw7;
 	}
 
 	public String getGpsInfo() {
@@ -95,4 +168,8 @@ public class SoDevices extends SoAbtAuth {
 		return "[" + devNo + "]";
 	}
 
+	public String buildMmcMsg() {
+		return this.sw0 + "," + this.sw1 + "," + this.sw2 + "," + this.sw3 + "," + this.sw4 + "," + this.sw5 + ","
+				+ this.sw7 + "," + this.sw7;
+	}
 }

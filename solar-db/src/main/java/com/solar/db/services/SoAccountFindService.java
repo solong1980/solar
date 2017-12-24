@@ -47,12 +47,10 @@ public class SoAccountFindService {
 	}
 
 	public void addAccountFind(SoAccountFind accountFind) {
-		logger.error("add account findback");
 		accountFindDao.addAccountFind(accountFind);
 	}
 
 	public List<SoAccountFind> queryAccountFind(SoAccountFind accountFind) {
-		logger.error("query account findback");
 		return accountFindDao.queryAccountFind(accountFind);
 	}
 

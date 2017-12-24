@@ -14,4 +14,6 @@ public interface SoDevicesMapper {
 
 	SoDevices selectByDevNo(String devNo);
 
+	void update(SoDevices devices);
+
 }

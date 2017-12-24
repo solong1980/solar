@@ -43,7 +43,8 @@ public class SolarCache {
 		SoProjectWorkingMode value = guavaWorkingModeCache.get(projectId, new Callable<SoProjectWorkingMode>() {
 			@Override
 			public SoProjectWorkingMode call() throws Exception {
-				return workingModeService.selectByProjectId(projectId);
+				SoProjectWorkingMode mode = workingModeService.selectByProjectId(projectId);
+				return mode;
 			}
 		});
 		return value;
@@ -61,7 +62,7 @@ public class SolarCache {
 
 	public void updateWorkingMode(Long projectId) {
 		guavaWorkingModeCache.invalidate(projectId);
-		// SoWorkingMode workingMode = workingModeService.selectLastOne();
+		// SoWorkingMode workingMode
 		// guavaWorkingModeCache.put(custId, workingMode);
 	}
 

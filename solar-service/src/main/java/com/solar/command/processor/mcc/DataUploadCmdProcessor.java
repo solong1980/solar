@@ -74,23 +74,27 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 				}
 			}
 		}
+		//01,17DD5E6E,FFFFFFFF,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,83.872,30.473689
 		runningData.setUuid(uuid);
 		runningData.setFmid(reqs[2]); // 固件版本
 		runningData.setVssun(reqs[3]); // 太阳能板电压
 		runningData.setIchg(reqs[4]); // 电池充电电流
 		runningData.setVbat(reqs[5]); // 电池电压
-		runningData.setQbat(reqs[6]); // 电池剩余容量
-		runningData.setIld1(reqs[7]); // 负载1电流
-		runningData.setIld2(reqs[8]); // 负载2电流
-		runningData.setIld3(reqs[9]); // 负载3电流
-		runningData.setTemp(reqs[10]); // 环境温度
-		runningData.setAin1(reqs[11]); // 第1路4-20mA
-		runningData.setAin2(reqs[12]); // 第2路4-20mA
-		runningData.setAin3(reqs[13]); // 第3路4-20mA
-		runningData.setStat(reqs[14]); // 控制器状态
-		runningData.setUtcTime(reqs[15]);// GPS时间
-		runningData.setAltitude(reqs[16]);// GPS纬度
-		runningData.setLongitude(reqs[17]);// GPS经度
+		runningData.setLevel(reqs[6]); // 电池剩余容量
+		runningData.setPchg(reqs[7]); // 电池剩余容量
+		runningData.setPdis(reqs[8]); // 电池剩余容量
+		
+		runningData.setIld1(reqs[9]); // 负载1电流
+		runningData.setIld2(reqs[10]); // 负载2电流
+		runningData.setIld3(reqs[11]); // 负载3电流
+		runningData.setTemp(reqs[12]); // 环境温度
+		runningData.setAin1(reqs[13]); // 第1路4-20mA
+		runningData.setAin2(reqs[14]); // 第2路4-20mA
+		runningData.setAin3(reqs[15]); // 第3路4-20mA
+		runningData.setStat(reqs[16]); // 控制器状态
+		runningData.setUtcTime(reqs[17]);// GPS时间
+		runningData.setAltitude(reqs[18]);// GPS纬度
+		runningData.setLongitude(reqs[19]);// GPS经度
 		runningDataService.insertRunningData(wf.get());
 		runningData = null;
 		// 02,分机1控制,分机2控制,水泵1控制,水泵2控制,继电器1控制,继电器2控制,继电器3控制,继电器4控制
