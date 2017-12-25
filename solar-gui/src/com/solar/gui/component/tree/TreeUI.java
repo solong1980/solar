@@ -281,7 +281,8 @@ public class TreeUI {
 		JPanel panel = new JPanel();
 		panel.setLayout(new BorderLayout());
 		panel.add(new JLabel(title), BorderLayout.NORTH);
-		panel.add(multiSeletedProjectTree, BorderLayout.CENTER);
+		JScrollPane projectScrollPane = new JScrollPane(multiSeletedProjectTree);
+		panel.add(projectScrollPane, BorderLayout.CENTER);
 		return panel;
 	}
 
