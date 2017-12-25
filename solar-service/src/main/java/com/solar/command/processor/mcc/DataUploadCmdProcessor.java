@@ -43,9 +43,9 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 				logger.info("device UUID=" + devNo + " is not found");
 			} else {
 				appSession.setEnti(devices);
-				appSession.setLogin(true);
 				// add to session map
 				AppSessionManager.getInstance().putDevSessionToHashMap(appSession);
+				appSession.setLogin(true);
 				return true;
 			}
 		} else {

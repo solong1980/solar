@@ -16,7 +16,7 @@ public class AppSessionManager {
 
 	public Map<String, AppSession> sessionMap = new ConcurrentHashMap<String, AppSession>();
 	public Map<String, AppSession> devSessionMap = new ConcurrentHashMap<String, AppSession>();
-	
+
 	public Map<String, AppSession> devNoSessionMap = new ConcurrentHashMap<String, AppSession>();
 
 	private Cache<Long, List<AppSession>> locationDevSessionCache;
@@ -77,10 +77,12 @@ public class AppSessionManager {
 	}
 
 	public void rmDevSession(AppSession appSession) {
-		SoDevices enti = appSession.getEnti(SoDevices.class);
-		String devNo = enti.getDevNo();
-		devNoSessionMap.remove(devNo);
-		devSessionMap.remove(appSession.getSessionID());
+		if (appSession.isLogin()) {
+			SoDevices enti = appSession.getEnti(SoDevices.class);
+			String devNo = enti.getDevNo();
+			devNoSessionMap.remove(devNo);
+			devSessionMap.remove(appSession.getSessionID());
+		}
 	}
 
 	public void rmAppSession(AppSession appSession) {
