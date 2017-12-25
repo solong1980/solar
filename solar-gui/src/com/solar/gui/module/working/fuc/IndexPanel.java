@@ -19,6 +19,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -26,25 +27,28 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import com.alibaba.fastjson.TypeReference;
+import com.solar.client.ObservableMedia;
 import com.solar.client.SoRet;
 import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.Consts;
 import com.solar.common.context.Consts.AddrType;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.common.util.LocationLoader;
-import com.solar.entity.SoAbt;
 import com.solar.entity.SoAbtAuth;
 import com.solar.entity.SoDevices;
 import com.solar.entity.SoProject;
 import com.solar.entity.SoProjectWorkingMode;
 import com.solar.entity.SoRunningData;
 import com.solar.gui.component.BezierAnimationPanel;
+import com.solar.gui.component.formate.InputState;
+import com.solar.gui.component.formate.JFieldBuilder;
 import com.solar.gui.component.model.TreeAddr;
 import com.solar.gui.module.working.BasePanel;
 
@@ -67,6 +71,107 @@ public class IndexPanel extends BasePanel implements Observer {
 	JPanel dashPanel = new JPanel();
 
 	List<JCheckBox> workingTimeCheckBoxs = new ArrayList<>();
+
+	public void createDeviceDialog() {
+		JLabel deviceNoLabel = new JLabel(getBoldHTML("设备号"));
+		JComponent regiestPanel = new JPanel(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.anchor = GridBagConstraints.WEST;
+		gbc.fill = GridBagConstraints.NONE;
+		gbc.insets = new Insets(5, 5, 5, 5);
+		regiestPanel.add(deviceNoLabel, gbc);
+
+		InputState inputState = new InputState();
+		
+		JTextField devNoField = JFieldBuilder.createNoEmptyField(this, inputState, "", 30, "设备号必填", 50);
+		devNoField.requestFocus();
+		
+		gbc.gridx++;
+		gbc.gridwidth = 2;
+		gbc.gridy = 0;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		regiestPanel.add(devNoField, gbc);
+
+		gbc.gridx = 0;
+		gbc.gridwidth = 1;
+		gbc.gridy++;
+		regiestPanel.add(new JLabel("分机1控制 "), gbc);
+		gbc.gridy++;
+		regiestPanel.add(new JLabel("分机2控制 "), gbc);
+		gbc.gridy++;
+		regiestPanel.add(new JLabel("水泵1控制 "), gbc);
+		gbc.gridy++;
+		regiestPanel.add(new JLabel("水泵2控制"), gbc);
+		gbc.gridy++;
+		regiestPanel.add(new JLabel("继电器1控制"), gbc);
+		gbc.gridy++;
+		regiestPanel.add(new JLabel("继电器2控制"), gbc);
+		gbc.gridy++;
+		regiestPanel.add(new JLabel("继电器3控制"), gbc);
+		gbc.gridy++;
+		regiestPanel.add(new JLabel("继电器4控制"), gbc);
+
+		gbc.gridwidth = 1;
+		gbc.gridy = 1;
+		JRadioButton[] startBtns = new JRadioButton[8];
+		JRadioButton[] stopBtns = new JRadioButton[8];
+		ButtonGroup[] buttonGroups = new ButtonGroup[8];
+		for (int i = 0; i < 8; i++) {
+			buttonGroups[i] = new ButtonGroup();
+			startBtns[i] = new JRadioButton("启动");
+			startBtns[i].setSelected(true);
+			stopBtns[i] = new JRadioButton("停止");
+
+			buttonGroups[i].add(startBtns[i]);
+			buttonGroups[i].add(stopBtns[i]);
+			gbc.gridx = 1;
+			regiestPanel.add(startBtns[i], gbc);
+			gbc.gridx = 2;
+			regiestPanel.add(stopBtns[i], gbc);
+			gbc.gridy++;
+		}
+
+		JComponent[] message = new JComponent[1];
+		message[0] = regiestPanel;
+		String[] options = { "提交", "取消" };
+		int result = JOptionPane.showOptionDialog(this, message, "新增设备", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
+		switch (result) {
+		case 0: // yes
+			String devNo = devNoField.getText();
+			if (devNo == null || devNo.trim().isEmpty()) {
+				JOptionPane.showMessageDialog(this, "设备号不能为空");
+				return;
+			} else {
+				if (project == null) {
+					JOptionPane.showMessageDialog(this, "未选择项目");
+					return;
+				}
+				SoDevices devices = new SoDevices();
+				devices.setDevNo(devNo);
+				devices.setProjectId(projectId);
+				devices.setLocationId(project.getLocationId());
+				devices.setSw0((short) (startBtns[0].isSelected() ? 1 : 0));
+				devices.setSw1((short) (startBtns[1].isSelected() ? 1 : 0));
+				devices.setSw2((short) (startBtns[2].isSelected() ? 1 : 0));
+				devices.setSw3((short) (startBtns[3].isSelected() ? 1 : 0));
+				devices.setSw4((short) (startBtns[4].isSelected() ? 1 : 0));
+				devices.setSw5((short) (startBtns[5].isSelected() ? 1 : 0));
+				devices.setSw6((short) (startBtns[6].isSelected() ? 1 : 0));
+				devices.setSw7((short) (startBtns[7].isSelected() ? 1 : 0));
+				ObservableMedia.getInstance().addDevice(devices);
+
+			}
+			break;
+		case 1: // no
+			break;
+		default:
+			break;
+		}
+	}
 
 	public void createDashpanel() {
 		dashPanel.setLayout(cardLayout);
@@ -319,8 +424,11 @@ public class IndexPanel extends BasePanel implements Observer {
 	}
 
 	private Long projectId = null;
+	private SoProject project = null;
 	private SoProjectWorkingMode workingMode = null;
 	private SoDevices device = null;
+	private DefaultMutableTreeNode selectedNode = null;
+
 	JTextField projectNameField = new JTextField("", 20);
 	JTextField locationField = new JTextField("", 20);
 	JTextField cabField = new JTextField("", 20);
@@ -367,6 +475,18 @@ public class IndexPanel extends BasePanel implements Observer {
 		gbc.gridy++;
 		gpsPanel.add(solarEnergyPowerField, gbc);
 
+		gbc.gridx = 0;
+		gbc.gridy++;
+		gbc.gridwidth = 2;
+		JButton addDeviceBtn = new JButton("添加设备");
+		addDeviceBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				createDeviceDialog();
+			}
+		});
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gpsPanel.add(addDeviceBtn, gbc);
 		// gbc.gridx++;
 		// gbc.gridy = 0;
 		// gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -384,6 +504,7 @@ public class IndexPanel extends BasePanel implements Observer {
 				TreePath path = e.getPath();
 				Object lastPathComponent = path.getLastPathComponent();
 				DefaultMutableTreeNode node = (DefaultMutableTreeNode) lastPathComponent;
+				IndexPanel.this.selectedNode = node;
 				Object userObject = node.getUserObject();
 				if (userObject instanceof TreeAddr) {
 					TreeAddr ta = (TreeAddr) userObject;
@@ -425,6 +546,8 @@ public class IndexPanel extends BasePanel implements Observer {
 						cardLayout.show(dashPanel, EMPTY);
 						break;
 					}
+				} else {
+					IndexPanel.this.selectedNode = null;
 				}
 			}
 
@@ -452,6 +575,7 @@ public class IndexPanel extends BasePanel implements Observer {
 
 			private void updateProjectPanelInfo(SoProject project) {
 				IndexPanel.this.projectId = project.getId();
+				IndexPanel.this.project = project;
 				instance.getProjectWorkingMode(project.getId());
 				projectNameField.setText(project.getProjectName());
 				locationField.setText(LocationLoader.getInstance().getLocationFullName(project.getLocationId()));
@@ -486,10 +610,18 @@ public class IndexPanel extends BasePanel implements Observer {
 							});
 					// updateDeviceRunningPanelData(runningData);
 					break;
+				case ConnectAPI.DEVICES_ADD_RESPONSE:
+					SoDevices devices = JsonUtilTool.fromJson(ret.getRet(), SoDevices.class);
+					selectedNode.add(new DefaultMutableTreeNode(
+							new TreeAddr(AddrType.DEVICE, devices.getId().toString(), devices, true)));
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							IndexPanel.this.deviceTree.updateUI();
+						}
+					});
 				case ConnectAPI.WORKING_MODE_UPDATE_RESPONSE:
-					SoAbtAuth soAbt = JsonUtilTool.fromJson(ret.getRet(), SoAbtAuth.class);
 				case ConnectAPI.DEVICES_UPDATE_RESPONSE:
-					soAbt = JsonUtilTool.fromJson(ret.getRet(), SoAbtAuth.class);
+					SoAbtAuth soAbt = JsonUtilTool.fromJson(ret.getRet(), SoAbtAuth.class);
 					JOptionPane.showMessageDialog(this, soAbt.getMsg());
 					break;
 				case ConnectAPI.GET_WORKING_MODE_RESPONSE:

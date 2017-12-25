@@ -2,6 +2,7 @@ package com.solar.gui.module.working;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.GridBagConstraints;
@@ -190,7 +191,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 
 		InputState inputState = new InputState();
 
-		JTextField nameField = JFieldBuilder.createNoEmptyField(this, inputState, "", 30);
+		JTextField nameField = JFieldBuilder.createNoEmptyField(this, inputState, "", 30, "请输入申请人姓名", 60);
 
 		JTextField oldPhoneField = JFieldBuilder.createPhoneField(this, inputState, true);
 		JTextField newPhoneField = JFieldBuilder.createPhoneField(this, inputState, true);
@@ -398,7 +399,6 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int selectedIndex = userTypeField.getSelectedIndex();
-				System.out.println("selectedIndex" + selectedIndex);
 				if (selectedIndex == 0) {
 					projectAddr1Label.setEnabled(true);
 					projectAddr1Field.setEnabled(true);
@@ -656,10 +656,10 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		if (arg instanceof SoRet) {
 			SoRet ret = (SoRet) arg;
 			int code = ret.getCode();
-			switch (code) {
-			case ConnectAPI.LOGIN_RESPONSE:
-				int status = ret.getStatus();
-				if (status == 0) {
+			int status = ret.getStatus();
+			if (status == 0) {
+				switch (code) {
+				case ConnectAPI.LOGIN_RESPONSE:
 					SoAccount account = JsonUtilTool.fromJson(ret.getRet(), SoAccount.class);
 					// 保存会话信息
 					ObservableMedia.getInstance().setSessionAccount(account);
@@ -703,7 +703,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 								IndexPanel indexPanel = new IndexPanel();
 								tabbedpane.add(tabName, indexPanel);
 								observableMedia.addObserver(indexPanel);
-								
+
 								ProjectDataPanel projectDataPanel = new ProjectDataPanel();
 								tabbedpane.add("项目信息", projectDataPanel);
 								observableMedia.addObserver(projectDataPanel);
@@ -756,26 +756,35 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 
 						}
 					});
-				} else {
+					break;
+				case ConnectAPI.ACCOUNT_ADD_RESPONSE:
+					account = JsonUtilTool.fromJson(ret.getRet(), SoAccount.class);
+					JOptionPane.showMessageDialog(this, account.getMsg());
+					break;
+				case ConnectAPI.ACCOUNT_FINDBACK_RESPONSE:
+					SoAccountFind accountFind = JsonUtilTool.fromJson(ret.getRet(), SoAccountFind.class);
+					JOptionPane.showMessageDialog(this, accountFind.getMsg());
+					break;
+				default:
+					break;
+				}
+			}
+			if (status == 1) {
+				switch (code) {
+				case ConnectAPI.LOGIN_RESPONSE:
 					JOptionPane.showMessageDialog(this, "登陆失败");
+					break;
+				case ConnectAPI.CONNECTLOST_RESPONSE:
+					// 连接丢失,disable所有,弹出提示
+					int componentCount = this.getComponentCount();
+					for (int i = 0; i < componentCount; i++) {
+						Component component2 = this.getComponent(i);
+						this.remove(component2);
+					}
+					repaint();
+				default:
+					JOptionPane.showMessageDialog(this, ret.getRet());
 				}
-				break;
-			case ConnectAPI.ACCOUNT_ADD_RESPONSE:
-				status = ret.getStatus();
-				if (status == 0) {
-					SoAccount account = JsonUtilTool.fromJson(ret.getRet(), SoAccount.class);
-					JOptionPane.showMessageDialog(this, account.getMsg());
-				}
-				break;
-			case ConnectAPI.ACCOUNT_FINDBACK_RESPONSE:
-				status = ret.getStatus();
-				if (status == 0) {
-					SoAccountFind account = JsonUtilTool.fromJson(ret.getRet(), SoAccountFind.class);
-					JOptionPane.showMessageDialog(this, account.getMsg());
-				}
-				break;
-			default:
-				break;
 			}
 		}
 	}

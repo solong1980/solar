@@ -10,18 +10,8 @@ public class SoProject extends SoAbtAuth {
 	public static final int PROJ_TYPE_SMART = 20;
 
 	// 设计处理量 (5,10,20,30,50,100)吨
-	public static final int PROJ_CAP_05 = 5;
-	public static final int PROJ_CAP_10 = 10;
-	public static final int PROJ_CAP_20 = 20;
-	public static final int PROJ_CAP_30 = 30;
-	public static final int PROJ_CAP_50 = 50;
-	public static final int PROJ_CAP_100 = 100;
-
 	// 设备种配置(10.风机 20.水泵 30.控制器 40.太阳能板 50.电池)
 	// 排放标准 10.一级 A, 20.一级 B
-	public static final int ES_A = 10;
-	public static final int ES_B = 20;
-
 	private Long id;
 	private String projectName;
 	private int type;
@@ -33,6 +23,8 @@ public class SoProject extends SoAbtAuth {
 	private String workerName;
 	private String workerPhone;
 	private String createTime;
+
+	private SoProjectWorkingMode projectWorkingMode;
 
 	private int state;
 
@@ -130,6 +122,14 @@ public class SoProject extends SoAbtAuth {
 
 	public void setState(int state) {
 		this.state = state;
+	}
+
+	public SoProjectWorkingMode getProjectWorkingMode() {
+		return projectWorkingMode;
+	}
+
+	public void setProjectWorkingMode(SoProjectWorkingMode projectWorkingMode) {
+		this.projectWorkingMode = projectWorkingMode;
 	}
 
 	@Override

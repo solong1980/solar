@@ -104,6 +104,7 @@ public class BasePanel extends JPanel {
 		return btn;
 	}
 	
+	protected JTree deviceTree;
 	public JPanel createTree(TreeSelectionListener listener) {
 		// 如果是管理员则加载所有地址
 		// 如果是维护或局方则查询后台,或者在登陆的时候保存管辖位置数据
@@ -207,18 +208,18 @@ public class BasePanel extends JPanel {
 			}
 		}
 
-		JTree tree = new JTree(root) {
+		deviceTree = new JTree(root) {
 			public Insets getInsets() {
 				return new Insets(5, 5, 5, 5);
 			}
 		};
-		tree.setRootVisible(false);
-		tree.setEditable(false);
-		tree.addTreeSelectionListener(listener);
+		deviceTree.setRootVisible(false);
+		deviceTree.setEditable(false);
+		deviceTree.addTreeSelectionListener(listener);
 
 		jp.setLayout(new BorderLayout());
 		jp.add(new JLabel("项目列表", SwingConstants.CENTER), BorderLayout.NORTH);
-		jp.add(new JScrollPane(tree), BorderLayout.CENTER);
+		jp.add(new JScrollPane(deviceTree), BorderLayout.CENTER);
 		return jp;
 	}
 

@@ -37,6 +37,8 @@ public class HostClient extends MinaClient {
 				try {
 					recive();
 				} catch (IOException e) {
+					if(running)
+						observableMedia.connectLost();
 					running = false;
 				}
 				System.out.println("host client get msg " + (System.currentTimeMillis() - t));
@@ -220,7 +222,7 @@ public class HostClient extends MinaClient {
 
 	@Override
 	public void recive() throws IOException {
-			serverCallBack(input);
+		serverCallBack(input);
 	}
 
 	public void login(SoAccount account) {
@@ -357,5 +359,11 @@ public class HostClient extends MinaClient {
 		String json = JsonUtilTool.toJson(device);
 		System.out.println(json);
 		send(ConnectAPI.DEVICES_UPDATE_COMMAND, json);
+	}
+
+	public void addDevice(SoDevices device) {
+		String json = JsonUtilTool.toJson(device);
+		System.out.println(json);
+		send(ConnectAPI.DEVICES_ADD_COMMAND, json);
 	}
 }

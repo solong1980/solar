@@ -10,8 +10,10 @@ import java.util.Observable;
 import java.util.Set;
 
 import com.solar.client.net.NetConf;
+import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.Consts.AuditResult;
 import com.solar.common.context.Consts.ProjectType;
+import com.solar.common.context.ErrorCode;
 import com.solar.entity.SoAccount;
 import com.solar.entity.SoAccountFind;
 import com.solar.entity.SoAppVersion;
@@ -321,9 +323,24 @@ public class ObservableMedia extends Observable {
 		setChanged();
 	}
 
+	public void addDevice(SoDevices device) {
+		hostClient.addDevice(device);
+		setChanged();
+	}
+
 	public void updateDevice(SoDevices device) {
 		hostClient.updateDevice(device);
 		setChanged();
+	}
+
+	public void connectLost() {
+		super.setChanged();
+		SoRet soRet = new SoRet();
+		soRet.setCode(ConnectAPI.CONNECTLOST_RESPONSE);
+		soRet.setLen(0);
+		soRet.setStatus(1);
+		soRet.setRet(ErrorCode.Error_000000);
+		notifyObservers(soRet);
 	}
 
 }

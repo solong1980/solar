@@ -58,4 +58,8 @@ public class SoDevicesService {
 	public void update(SoDevices devices) {
 		deviceDao.update(devices);
 	}
+
+	public void insert(SoDevices devices) {
+		deviceDao.insert(devices);
+	}
 }

@@ -7,9 +7,12 @@ import java.util.List;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.solar.db.dao.SoProjectMapper;
+import com.solar.db.dao.SoProjectWorkingModeMapper;
 import com.solar.db.dao.impl.SoProjectDao;
+import com.solar.db.dao.impl.SoProjectWorkingModeDao;
 import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
+import com.solar.entity.SoProjectWorkingMode;
 
 /**
  * @author long liang hua
@@ -17,6 +20,7 @@ import com.solar.entity.SoProject;
 public class SoProjectService {
 	private static SoProjectService devicesService = new SoProjectService();
 	private SoProjectMapper projectDao;
+	private SoProjectWorkingModeMapper projectWorkingModeDao;
 
 	public SoProjectService() {
 		super();
@@ -28,10 +32,15 @@ public class SoProjectService {
 
 	public void initSetSession(SqlSessionFactory sqlSessionFactory) {
 		projectDao = new SoProjectDao(sqlSessionFactory);
+		projectWorkingModeDao = new SoProjectWorkingModeDao(sqlSessionFactory);
 	}
 
 	public SoProject selectById(Long id) {
-		return projectDao.selectById(id);
+		SoProject project = projectDao.selectById(id);
+		Long projectId = project.getId();
+		SoProjectWorkingMode mode = projectWorkingModeDao.selectByProjectId(projectId);
+		project.setProjectWorkingMode(mode);
+		return project;
 	}
 
 	public void addProject(SoProject project) {

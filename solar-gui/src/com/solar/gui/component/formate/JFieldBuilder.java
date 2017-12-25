@@ -10,8 +10,37 @@ import javax.swing.JTextField;
 import com.solar.common.util.RegExpValidatorUtils;
 
 public class JFieldBuilder {
-	//NJTextField
-	public static JTextField createNoEmptyField(JComponent co, InputState inputState, String c, Integer column) {
+
+	// NJTextField
+	public static JTextField createNoEmptyField(JComponent co, InputState inputState, String c, Integer column,
+			String msg, int maxLen) {
+		JTextField field = new NJTextField(column,maxLen);
+		field.setText(c);
+		field.addFocusListener(new FocusListener() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				if (inputState.isClean) {
+					String text = field.getText();
+					if (text == null || text.trim().isEmpty()) {
+						inputState.isClean = false;
+						JOptionPane.showMessageDialog(co, msg);
+						field.requestFocus();
+						inputState.isClean = true;
+					}
+				}
+			}
+
+			@Override
+			public void focusGained(FocusEvent e) {
+
+			}
+		});
+		return field;
+	}
+
+	// NJTextField
+	public static JTextField createNoEmptyField(JComponent co, InputState inputState, String c, Integer column,
+			String msg) {
 		JTextField field = new JTextField(c, column);
 		field.addFocusListener(new FocusListener() {
 			@Override
@@ -20,8 +49,8 @@ public class JFieldBuilder {
 					String text = field.getText();
 					if (text == null || text.trim().isEmpty()) {
 						inputState.isClean = false;
+						JOptionPane.showMessageDialog(co, msg);
 						field.requestFocus();
-						JOptionPane.showMessageDialog(co, "该项必填");
 						inputState.isClean = true;
 					}
 				}

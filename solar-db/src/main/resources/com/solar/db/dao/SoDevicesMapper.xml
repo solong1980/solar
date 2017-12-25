@@ -52,10 +52,40 @@
 		sw3 = #{sw3},
 		sw4 = #{sw4},
 		sw5 = #{sw5},
-		sw6 = #{sw6},
+		sw6 =
+		#{sw6},
 		sw7 = #{sw7}
 		where id = #{id}
 	</update>
+
+	<insert id="insert" parameterType="com.solar.entity.SoDevices"
+		keyProperty="id" useGeneratedKeys="true">
+		insert into so_devices (
+		dev_no,
+		location_id,
+		project_id,
+		sw0,
+		sw1,
+		sw2,
+		sw3,
+		sw4,
+		sw5,
+		sw6,
+		sw7
+		) values(
+		#{devNo},
+		#{locationId},
+		#{projectId},
+		#{sw0},
+		#{sw1},
+		#{sw2},
+		#{sw3},
+		#{sw4},
+		#{sw5},
+		#{sw6},
+		#{sw7}
+		)
+	</insert>
 
 	<select id="selectById" parameterType="java.lang.Long"
 		resultMap="BaseResultMap">

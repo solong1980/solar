@@ -1,6 +1,8 @@
 package com.solar.common.context;
 
 public class ErrorCode {
+	public static String Error_000000 = "连接中断,稍后请重器程序重新登陆!";
+	
 	public static String Error_000001 = "消息为空,请不要乱发";
 	
 	public static String Error_000002 = "还没有登录/接入";

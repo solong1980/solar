@@ -62,6 +62,7 @@ public class ConnectAPI {
 	public static final int DEVICES_RUNNINGDATA_COMMAND = 0x000032;
 
 	public static final int DEVICES_UPDATE_COMMAND = 0x000033;
+	public static final int DEVICES_ADD_COMMAND = 0x000034;
 	// 控制终端指令
 	public static final int CTRL_COMMAND = 0x999999;
 
@@ -69,6 +70,7 @@ public class ConnectAPI {
 	 * 响应吗
 	 */
 
+	public static final int CONNECTLOST_RESPONSE = -0x100000;
 	public static final int ZERO_RESPONSE = 0x100000;
 	public static final int ERROR_RESPONSE = 0x100000;
 	public static final int FAILURE_RESPONSE = 0x100000;
@@ -123,6 +125,7 @@ public class ConnectAPI {
 	public static final int DEVICES_RUNNINGDATA_RESPONSE = 0x100032;
 
 	public static final int DEVICES_UPDATE_RESPONSE = 0x100033;
+	public static final int DEVICES_ADD_RESPONSE = 0x100034;
 	// 单片机
 	public static final String MC_ERROR_RESPONSE = "00";
 	public static final String MC_SUCCESS_RESPONSE = "99";

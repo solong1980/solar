@@ -579,8 +579,6 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 				default:
 					break;
 				}
-			} else {
-				JOptionPane.showMessageDialog(this, ret.getRet());
 			}
 		}
 	}

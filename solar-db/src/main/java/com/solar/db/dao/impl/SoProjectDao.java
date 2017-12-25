@@ -6,8 +6,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.solar.db.dao.SoProjectMapper;
+import com.solar.db.dao.SoProjectWorkingModeMapper;
 import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
+import com.solar.entity.SoProjectWorkingMode;
 
 public class SoProjectDao implements SoProjectMapper {
 	private SqlSessionFactory sqlSessionFactory;
@@ -32,10 +34,19 @@ public class SoProjectDao implements SoProjectMapper {
 
 	@Override
 	public void addProject(SoProject project) {
-		SqlSession sqlSession = sqlSessionFactory.openSession(true);
+		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
 			SoProjectMapper mapper = sqlSession.getMapper(SoProjectMapper.class);
+			SoProjectWorkingModeMapper projectWorkingModeMapper = sqlSession
+					.getMapper(SoProjectWorkingModeMapper.class);
 			mapper.addProject(project);
+
+			SoProjectWorkingMode mode = project.getProjectWorkingMode();
+			if (mode != null) {
+				mode.setProjectId(project.getId());
+				projectWorkingModeMapper.insert(mode);
+			}
+			sqlSession.commit();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
@@ -45,10 +56,18 @@ public class SoProjectDao implements SoProjectMapper {
 
 	@Override
 	public void updateProject(SoProject project) {
-		SqlSession sqlSession = sqlSessionFactory.openSession(true);
+		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
 			SoProjectMapper mapper = sqlSession.getMapper(SoProjectMapper.class);
+			SoProjectWorkingModeMapper projectWorkingModeMapper = sqlSession
+					.getMapper(SoProjectWorkingModeMapper.class);
 			mapper.updateProject(project);
+			SoProjectWorkingMode mode = project.getProjectWorkingMode();
+			if (mode != null) {
+				mode.setProjectId(project.getId());
+				projectWorkingModeMapper.update(mode);
+			}
+			sqlSession.commit();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {

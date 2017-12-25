@@ -16,6 +16,8 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +38,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
@@ -54,7 +57,10 @@ import com.solar.common.util.LocationLoader;
 import com.solar.entity.SoDevConfig;
 import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
+import com.solar.entity.SoProjectWorkingMode;
 import com.solar.gui.component.AddressTreeField;
+import com.solar.gui.component.formate.InputState;
+import com.solar.gui.component.formate.JFieldBuilder;
 import com.solar.gui.component.model.TreeAddr;
 import com.solar.gui.module.working.BasePanel;
 
@@ -79,6 +85,8 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 	private JTextField workerNameField;
 	private JTextField workerContactField;
 
+	List<JCheckBox> workingTimeCheckBoxs = new ArrayList<>();
+
 	public JPanel createEditor() {
 		//
 		titleLable = new JLabel(getBoldHTML("项目信息更改"), JLabel.CENTER);
@@ -95,7 +103,9 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		JLabel workerNameLabel = new JLabel(getBoldHTML("运维人员姓名"));
 		JLabel workerContactLabel = new JLabel(getBoldHTML("运维人员联系方式"));
 
-		JPanel editorPanel = new JPanel(new GridBagLayout());
+		JPanel editPanel = new JPanel(new BorderLayout());
+
+		JPanel projectInfoPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		gbc.gridx = 0;
@@ -104,29 +114,33 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		gbc.anchor = GridBagConstraints.NORTH;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets = new Insets(5, 5, 5, 5);
-		editorPanel.add(titleLable, gbc);
+		projectInfoPanel.add(titleLable, gbc);
 
 		gbc.gridwidth = 1;
 		gbc.gridy++;
-		editorPanel.add(nameLabel, gbc);
+		projectInfoPanel.add(nameLabel, gbc);
 		gbc.gridy++;
-		editorPanel.add(projectTypeLabel, gbc);
+		projectInfoPanel.add(projectTypeLabel, gbc);
 		gbc.gridy++;
-		editorPanel.add(addrLabel, gbc);
+		projectInfoPanel.add(addrLabel, gbc);
 		gbc.gridy++;
-		editorPanel.add(streetLabel, gbc);
+		projectInfoPanel.add(streetLabel, gbc);
 		gbc.gridy++;
-		editorPanel.add(capabilityLabel, gbc);
+		projectInfoPanel.add(capabilityLabel, gbc);
 		gbc.gridy++;
-		editorPanel.add(equipmentLabel, gbc);
+		projectInfoPanel.add(equipmentLabel, gbc);
 		gbc.gridy++;
-		editorPanel.add(emissionStandardsLabel, gbc);
+		projectInfoPanel.add(emissionStandardsLabel, gbc);
 		gbc.gridy++;
-		editorPanel.add(workerNameLabel, gbc);
+		projectInfoPanel.add(workerNameLabel, gbc);
 		gbc.gridy++;
-		editorPanel.add(workerContactLabel, gbc);
+		projectInfoPanel.add(workerContactLabel, gbc);
 
-		nameField = new JTextField("");
+		InputState inputState = new InputState();
+
+		nameField = JFieldBuilder.createNoEmptyField(this, inputState, "", 30, "项目名称必填", 150);
+		nameField.requestFocus();
+
 		// 设计处理量
 		projectTypeField = new JComboBox<>();
 		String[] projectTypes = new String[] { "太阳能污水处理系统", "智能运维系统" };
@@ -163,7 +177,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		equipmentField = new JLabel("");
 
 		// 排放标准
-		
+
 		// MultiComboBox emissionStandardsField = MultiComboBox.build();
 		emissionStandardsField = new JComboBox<>();
 		for (int i = 0; i < Consts.emises.length; i++) {
@@ -176,30 +190,30 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		gbc.gridx++;
 		gbc.gridy = 1;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		editorPanel.add(nameField, gbc);
+		projectInfoPanel.add(nameField, gbc);
 		gbc.gridy++;
-		editorPanel.add(projectTypeField, gbc);
+		projectInfoPanel.add(projectTypeField, gbc);
 
 		gbc.gridy++;
-		editorPanel.add(addressField, gbc);
+		projectInfoPanel.add(addressField, gbc);
 		gbc.gridy++;
-		editorPanel.add(streetField, gbc);
+		projectInfoPanel.add(streetField, gbc);
 		gbc.gridy++;
-		editorPanel.add(capabilityField, gbc);
+		projectInfoPanel.add(capabilityField, gbc);
 		gbc.gridy++;
-		editorPanel.add(equipmentField, gbc);
+		projectInfoPanel.add(equipmentField, gbc);
 		gbc.gridy++;
-		editorPanel.add(emissionStandardsField, gbc);
+		projectInfoPanel.add(emissionStandardsField, gbc);
 		gbc.gridy++;
-		editorPanel.add(workerNameField, gbc);
+		projectInfoPanel.add(workerNameField, gbc);
 		gbc.gridy++;
-		editorPanel.add(workerContactField, gbc);
+		projectInfoPanel.add(workerContactField, gbc);
 
-//		gbc.gridx++;
-//		int tmp = gbc.gridy;
-//		gbc.gridy = 3;
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
-//		editorPanel.add(new JButton("地图"), gbc);
+		// gbc.gridx++;
+		// int tmp = gbc.gridy;
+		// gbc.gridy = 3;
+		// gbc.fill = GridBagConstraints.HORIZONTAL;
+		// editorPanel.add(new JButton("地图"), gbc);
 
 		JPanel jPanel = new JPanel();
 		jPanel.setLayout(new GridBagLayout());
@@ -217,11 +231,37 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		jPanel.add(cancelBtn, gpc);
 
 		gbc.gridx = 0;
-		gbc.gridy ++;
+		gbc.gridy++;
 		gbc.gridwidth = 2;
-		editorPanel.add(jPanel, gbc);
+		projectInfoPanel.add(jPanel, gbc);
 
-		return editorPanel;
+		JPanel schedulePanel = new JPanel();
+		schedulePanel.setLayout(new BorderLayout());
+		JPanel checkPanel = new JPanel(new GridLayout(12, 2));
+		for (int i = 0; i < 24; i++) {
+			// 0:00-1:00
+			JCheckBox box = new JCheckBox(i + ":00-" + (i + 1) + ":00");
+			workingTimeCheckBoxs.add(box);
+			checkPanel.add(box);
+		}
+		JScrollPane scheduleCheckBoxScrollPane = new JScrollPane(checkPanel);
+		schedulePanel.add(new JLabel("项目运行模式设置", SwingConstants.CENTER), BorderLayout.NORTH);
+		schedulePanel.add(scheduleCheckBoxScrollPane, BorderLayout.CENTER);
+		
+		JCheckBox chooseAllBox = new JCheckBox("全选");
+		schedulePanel.add(chooseAllBox, BorderLayout.SOUTH);
+		chooseAllBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				for (JCheckBox box : workingTimeCheckBoxs) {
+					box.setSelected(chooseAllBox.isSelected());
+				}
+			}
+		});
+		editPanel.add(projectInfoPanel, BorderLayout.CENTER);
+		editPanel.add(schedulePanel, BorderLayout.EAST);
+
+		return editPanel;
 	}
 
 	DefaultTableModel dataModel;
@@ -418,7 +458,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		};
 		projectTable.setFont(new Font("Menu.font", Font.PLAIN, 15));
 		projectTable.setRowHeight(INITIAL_ROWHEIGHT);
-		
+
 		final int tableFirstColumn = 0;
 		final JTableHeader tableHeader = projectTable.getTableHeader();
 		final JCheckBox selectBox = new JCheckBox(dataModel.getColumnName(tableFirstColumn));
@@ -574,7 +614,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 				equipmentField.setText("");
 				workerNameField.setText("");
 				workerContactField.setText("");
-				soProject = new SoProject();
+				soProject = null;
 				cardLayout.show(ProjectDataPanel.this, "edit");
 				break;
 			case PROJECT_REFRESH:
@@ -592,6 +632,11 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 				workerNameField.setText("");
 				workerContactField.setText("");
 				soProject = new SoProject();
+
+				for (JCheckBox jCheckBox : workingTimeCheckBoxs) {
+					jCheckBox.setSelected(false);
+				}
+
 				cardLayout.show(ProjectDataPanel.this, "list");
 				break;
 			case PROJECT_UPDATE_SUBMIT:
@@ -599,9 +644,17 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 					showWarningDailog("未选择项目", "警告");
 					return;
 				}
+
 			case PROJECT_NEW_SUBMIT:
+
 				String name = nameField.getText();
 				int typeIndex = projectTypeField.getSelectedIndex();
+				if (typeIndex == -1) {
+					showWarningDailog("输入错误", "未选择 项目类型");
+					projectTypeField.setBorder(BorderFactory.createLineBorder(Color.RED));
+					projectTypeField.grabFocus();
+					return;
+				}
 				int projectType = Consts.PROJECT_TYPE[typeIndex];
 
 				List<TreeAddr> selectedAddress = addressField.getSelectedKeys();
@@ -613,8 +666,16 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 				}
 				TreeAddr treeAddr = selectedAddress.get(0);
 				String locationId = treeAddr.getKey();
+
 				String street = streetField.getText();
+
 				int emissionStandardIdx = emissionStandardsField.getSelectedIndex();
+				if (emissionStandardIdx == -1) {
+					showWarningDailog("输入错误", "未选择 排放标准");
+					emissionStandardsField.setBorder(BorderFactory.createLineBorder(Color.RED));
+					emissionStandardsField.grabFocus();
+					return;
+				}
 				int emissionStandard = Consts.EMISSION_STANDARDS[emissionStandardIdx];
 
 				int capabilityIdx = capabilityField.getSelectedIndex();
@@ -631,8 +692,10 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 				String workerName = workerNameField.getText();
 				String workerPhone = workerContactField.getText();
 				// if update the soProject should not null
-				if (soProject == null)
+				if (soProject == null) {
 					soProject = new SoProject();
+				}
+
 				soProject.setProjectName(name);
 				soProject.setType(projectType);
 				soProject.setLocationId(locationId);
@@ -642,6 +705,25 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 				soProject.setDevConfiures(devConfigs);
 				soProject.setWorkerName(workerName);
 				soProject.setWorkerPhone(workerPhone);
+				SoProjectWorkingMode mode = soProject.getProjectWorkingMode();
+				if (mode == null) {
+					mode = new SoProjectWorkingMode();
+					mode.setProjectId(soProject.getId());
+					soProject.setProjectWorkingMode(mode);
+				}
+
+				for (int i = 0; i < workingTimeCheckBoxs.size(); i++) {
+					JCheckBox hCheckBox = workingTimeCheckBoxs.get(i);
+					Method method;
+					try {
+						method = SoProjectWorkingMode.class.getMethod("setH_" + i, Short.class);
+						method.invoke(mode, hCheckBox.isSelected() ? (short) 1 : (short) 0);
+					} catch (NoSuchMethodException | SecurityException | IllegalAccessException
+							| IllegalArgumentException | InvocationTargetException e1) {
+						e1.printStackTrace();
+					}
+				}
+
 				media.saveProject(soProject);
 				break;
 			default:
@@ -765,14 +847,28 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 					workerNameField.setText(project.getWorkerName());
 					workerContactField.setText(project.getWorkerPhone());
 
+					SoProjectWorkingMode mode = project.getProjectWorkingMode();
+					if (mode != null) {
+						for (int i = 0; i < workingTimeCheckBoxs.size(); i++) {
+							JCheckBox hCheckBox = workingTimeCheckBoxs.get(i);
+							Method method;
+							try {
+								method = SoProjectWorkingMode.class.getMethod("getH_" + i);
+								Object v = method.invoke(mode);
+								Short h = (Short) v;
+								hCheckBox.setSelected((h == 1) ? true : false);
+							} catch (NoSuchMethodException | SecurityException | IllegalAccessException
+									| IllegalArgumentException | InvocationTargetException e1) {
+								e1.printStackTrace();
+							}
+						}
+					}
 					// update table
 					cardLayout.show(this, "edit");
 					break;
 				default:
 					break;
 				}
-			} else {
-				JOptionPane.showMessageDialog(this, ret.getRet());
 			}
 		}
 	}

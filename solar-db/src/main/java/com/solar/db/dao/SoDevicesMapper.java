@@ -16,4 +16,6 @@ public interface SoDevicesMapper {
 
 	void update(SoDevices devices);
 
+	void insert(SoDevices devices);
+
 }
