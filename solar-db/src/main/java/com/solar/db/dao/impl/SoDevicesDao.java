@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.solar.db.dao.SoDevicesMapper;
 import com.solar.entity.SoDevices;
+import com.solar.entity.SoPage;
 
 public class SoDevicesDao implements SoDevicesMapper {
 	private SqlSessionFactory sqlSessionFactory;
@@ -92,6 +93,20 @@ public class SoDevicesDao implements SoDevicesMapper {
 			SoDevicesMapper mapper = sqlSession.getMapper(SoDevicesMapper.class);
 			mapper.insert(devices);
 			sqlSession.commit();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public List<SoDevices> queryDevices(SoPage<SoDevices, List<SoDevices>> page) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoDevicesMapper mapper = sqlSession.getMapper(SoDevicesMapper.class);
+			List<SoDevices> devices = mapper.queryDevices(page);
+			return devices;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {

@@ -6,7 +6,6 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.solar.command.message.response.mcc.ServerMccResponse;
 import com.solar.controller.common.INotAuthProcessor;
 import com.solar.controller.common.MccMsgProcessor;
 import com.solar.db.services.SoDevicesService;
@@ -46,6 +45,17 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 				// add to session map
 				AppSessionManager.getInstance().putDevSessionToHashMap(appSession);
 				appSession.setLogin(true);
+
+				devices.setSw0((short) 1);
+				devices.setSw1((short) 1);
+				devices.setSw2((short) 1);
+				devices.setSw3((short) 1);
+				devices.setSw4((short) 1);
+				devices.setSw5((short) 1);
+				devices.setSw6((short) 1);
+				devices.setSw7((short) 1);
+				
+				appSession.sendMsg("02," + devices.buildMmcMsg());
 				return true;
 			}
 		} else {
@@ -61,49 +71,57 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 		if (logger.isDebugEnabled()) {
 			logger.debug("Data update : {}", Arrays.toString(reqs));
 		}
-		SoRunningData runningData = new SoRunningData();
-		WeakReference<SoRunningData> wf = new WeakReference<SoRunningData>(runningData);
-		String uuid = reqs[1];
-		// 如果设备未登陆,择登陆
-		if (!appSession.isLogin()) {
-			synchronized (appSession) {
-				if (!appSession.isLogin()) {
-					boolean access = access(appSession, uuid);
-					if (!access)
-						return;
+		try {
+			SoRunningData runningData = new SoRunningData();
+			WeakReference<SoRunningData> wf = new WeakReference<SoRunningData>(runningData);
+			String uuid = reqs[1];
+			// 如果设备未登陆,择登陆
+			if (!appSession.isLogin()) {
+				synchronized (appSession) {
+					if (!appSession.isLogin()) {
+						boolean access = access(appSession, uuid);
+						if (!access)
+							return;
+					}
 				}
 			}
-		}
-		//01,17DD5E6E,FFFFFFFF,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,83.872,30.473689
-		runningData.setUuid(uuid);
-		runningData.setFmid(reqs[2]); // 固件版本
-		runningData.setVssun(reqs[3]); // 太阳能板电压
-		runningData.setIchg(reqs[4]); // 电池充电电流
-		runningData.setVbat(reqs[5]); // 电池电压
-		runningData.setLevel(reqs[6]); // 电池剩余容量
-		runningData.setPchg(reqs[7]); // 电池剩余容量
-		runningData.setPdis(reqs[8]); // 电池剩余容量
-		
-		runningData.setIld1(reqs[9]); // 负载1电流
-		runningData.setIld2(reqs[10]); // 负载2电流
-		runningData.setIld3(reqs[11]); // 负载3电流
-		runningData.setTemp(reqs[12]); // 环境温度
-		runningData.setAin1(reqs[13]); // 第1路4-20mA
-		runningData.setAin2(reqs[14]); // 第2路4-20mA
-		runningData.setAin3(reqs[15]); // 第3路4-20mA
-		runningData.setStat(reqs[16]); // 控制器状态
-		runningData.setUtcTime(reqs[17]);// GPS时间
-		runningData.setAltitude(reqs[18]);// GPS纬度
-		runningData.setLongitude(reqs[19]);// GPS经度
-		runningDataService.insertRunningData(wf.get());
-		runningData = null;
-		// 02,分机1控制,分机2控制,水泵1控制,水泵2控制,继电器1控制,继电器2控制,继电器3控制,继电器4控制
-		java.util.Random random = new java.util.Random();
+			if (reqs.length < 20) {
+				logger.error("data len is not enought");
+				return;
+			}
+			// 01,17DD5E6E,FFFFFFFF,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,83.872,30.473689
+			runningData.setUuid(uuid);
+			runningData.setFmid(reqs[2]); // 固件版本
+			runningData.setVssun(reqs[3]); // 太阳能板电压
+			runningData.setIchg(reqs[4]); // 电池充电电流
+			runningData.setVbat(reqs[5]); // 电池电压
+			runningData.setLevel(reqs[6]); // 电池剩余容量
+			runningData.setPchg(reqs[7]); // 电池剩余容量
+			runningData.setPdis(reqs[8]); // 电池剩余容量
 
-		int nextInt = random.nextInt(20);
-		if (nextInt % 2 == 0)
-			appSession.sendMsg(ServerMccResponse.build("02", "1,1,1,1,1,1,1,1"));
-		if (nextInt % 2 == 1)
-			appSession.sendMsg(ServerMccResponse.build("02", "0,0,0,0,0,0,0,0"));
+			runningData.setIld1(reqs[9]); // 负载1电流
+			runningData.setIld2(reqs[10]); // 负载2电流
+			runningData.setIld3(reqs[11]); // 负载3电流
+			runningData.setTemp(reqs[12]); // 环境温度
+			runningData.setAin1(reqs[13]); // 第1路4-20mA
+			runningData.setAin2(reqs[14]); // 第2路4-20mA
+			runningData.setAin3(reqs[15]); // 第3路4-20mA
+			runningData.setStat(reqs[16]); // 控制器状态
+			runningData.setUtcTime(reqs[17]);// GPS时间
+			runningData.setAltitude(reqs[18]);// GPS纬度
+			runningData.setLongitude(reqs[19]);// GPS经度
+			runningDataService.insertRunningData(wf.get());
+			runningData = null;
+		} catch (Exception e) {
+			logger.error("add running data failure", e);
+		}
+		// // 02,分机1控制,分机2控制,水泵1控制,水泵2控制,继电器1控制,继电器2控制,继电器3控制,继电器4控制
+		// java.util.Random random = new java.util.Random();
+		//
+		// int nextInt = random.nextInt(20);
+		// if (nextInt % 2 == 0)
+		// appSession.sendMsg(ServerMccResponse.build("02", "1,1,1,1,1,1,1,1"));
+		// if (nextInt % 2 == 1)
+		// appSession.sendMsg(ServerMccResponse.build("02", "0,0,0,0,0,0,0,0"));
 	}
 }

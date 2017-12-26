@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import com.solar.db.dao.SoDevicesMapper;
 import com.solar.db.dao.impl.SoDevicesDao;
 import com.solar.entity.SoDevices;
+import com.solar.entity.SoPage;
 
 /**
  * @author long liang hua
@@ -61,5 +62,11 @@ public class SoDevicesService {
 
 	public void insert(SoDevices devices) {
 		deviceDao.insert(devices);
+	}
+
+	public SoPage<SoDevices, List<SoDevices>> queryDevices(SoPage<SoDevices, List<SoDevices>> page) {
+		List<SoDevices> devices = deviceDao.queryDevices(page);
+		page.setT(devices);
+		return page;
 	}
 }

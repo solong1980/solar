@@ -28,6 +28,7 @@
 		<taglibs-version>1.1.2</taglibs-version>
 		<freemarker-version>2.3.23</freemarker-version>
 		<guava.version>20.0</guava.version>
+		<quartz-version>2.3.0</quartz-version>
 	</properties>
 
 	<dependencies>
@@ -53,7 +54,7 @@
 			<version>${servlet-version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
@@ -130,7 +131,7 @@
 			<artifactId>commons-configuration</artifactId>
 			<version>${commons-configuration-version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.apache.shiro</groupId>
 			<artifactId>shiro-core</artifactId>
@@ -141,7 +142,7 @@
 			<artifactId>shiro-spring</artifactId>
 			<version>${shiro-version}</version>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>com.github.axet</groupId>
 			<artifactId>kaptcha</artifactId>
@@ -152,7 +153,7 @@
 			<artifactId>guava</artifactId>
 			<version>${guava.version}</version>
 		</dependency>
-		
+
 		<!-- Velocity视图所需jar -->
 		<dependency>
 			<artifactId>velocity</artifactId>
@@ -224,6 +225,18 @@
 			<version>${freemarker-version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>${quartz-version}</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>c3p0</artifactId>
+					<groupId>c3p0</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
 	</dependencies>
 
 	<build>

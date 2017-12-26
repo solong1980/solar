@@ -9,6 +9,7 @@
 
 	<modules>
 		<module>solar-common</module>
+		<module>solar-3p</module>
 		<module>solar-db</module>
 		<module>solar-service</module>		
 		<module>solar-web</module>

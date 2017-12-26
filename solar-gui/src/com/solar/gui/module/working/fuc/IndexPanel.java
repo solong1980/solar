@@ -51,6 +51,7 @@ import com.solar.gui.component.formate.InputState;
 import com.solar.gui.component.formate.JFieldBuilder;
 import com.solar.gui.component.model.TreeAddr;
 import com.solar.gui.module.working.BasePanel;
+import com.solar.timer.RunningDataCron;
 
 /**
  * 首页
@@ -72,6 +73,8 @@ public class IndexPanel extends BasePanel implements Observer {
 
 	List<JCheckBox> workingTimeCheckBoxs = new ArrayList<>();
 
+	RunningDataCron runningDataCron = new RunningDataCron();
+
 	public void createDeviceDialog() {
 		JLabel deviceNoLabel = new JLabel(getBoldHTML("设备号"));
 		JComponent regiestPanel = new JPanel(new GridBagLayout());
@@ -85,10 +88,10 @@ public class IndexPanel extends BasePanel implements Observer {
 		regiestPanel.add(deviceNoLabel, gbc);
 
 		InputState inputState = new InputState();
-		
+
 		JTextField devNoField = JFieldBuilder.createNoEmptyField(this, inputState, "", 30, "设备号必填", 50);
 		devNoField.requestFocus();
-		
+
 		gbc.gridx++;
 		gbc.gridwidth = 2;
 		gbc.gridy = 0;
@@ -497,7 +500,9 @@ public class IndexPanel extends BasePanel implements Observer {
 
 	public IndexPanel() {
 		super(new BorderLayout(5, 5));
-
+		
+		runningDataCron.startFetchRunningData();
+		
 		JPanel projectTreePanel = createTree(new TreeSelectionListener() {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
@@ -513,6 +518,7 @@ public class IndexPanel extends BasePanel implements Observer {
 					Object value = ta.getValue();
 					switch (addrType) {
 					case PROJECT:
+						runningDataCron.setRunning(false);
 						SoProject project = (SoProject) value;
 						updateProjectPanelInfo(project);
 						if (node.getChildCount() > 0) {
@@ -535,14 +541,11 @@ public class IndexPanel extends BasePanel implements Observer {
 						String devNo = device.getDevNo();
 						instance.getRunningData(devNo);
 						updateDevicePanelInfo(device);
-						// set
-						// on click,get device info,
-						// query data from db include running model,runing info
-						// query data
-						// query running
-
+						runningDataCron.setDevNo(devNo);
+						runningDataCron.setRunning(true);
 						break;
 					default:
+						runningDataCron.setRunning(false);
 						cardLayout.show(dashPanel, EMPTY);
 						break;
 					}

@@ -109,6 +109,7 @@
 		<if test="page.c.capability!=null and page.c.capability>0">
 			and capability = #{page.c.capability,jdbcType=INTEGER}
 		</if>
+		limit #{page.start},#{page.count}
 	</select>
 
 	<select id="queryProjectByLocationId" parameterType="java.lang.String"

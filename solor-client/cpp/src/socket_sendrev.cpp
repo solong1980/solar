@@ -130,7 +130,7 @@ namespace NetSend {
 		connect(sockClient,(SOCKADDR*)&addrSrv,sizeof(SOCKADDR));
 
 
-		char *data= "01,17DD5E6E,FFFFFFFF,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,83.872,30.473689";
+		char *data= "01,17DD5E6E,FFFFFFFF,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
 		char *d ="\r\n";
 		char deli  = '\n';
 		data = G2U(data);

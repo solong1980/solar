@@ -117,4 +117,11 @@
 		where dev_no = #{devNo,jdbcType=VARCHAR}
 	</select>
 
+	<select id="queryDevices" resultMap="BaseResultMap"
+		parameterType="com.solar.entity.SoDevices">
+		select
+		<include refid="Columns" />
+		from so_devices
+		limit #{start},#{count}
+	</select>
 </mapper>

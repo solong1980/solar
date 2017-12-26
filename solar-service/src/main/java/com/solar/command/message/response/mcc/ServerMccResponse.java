@@ -1,14 +1,11 @@
 package com.solar.command.message.response.mcc;
 
-import java.io.IOException;
-
 import org.apache.mina.core.buffer.IoBuffer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.solar.command.message.MsgBodyWrap;
 import com.solar.command.message.response.ResponseMsg;
-import com.solar.common.context.ConnectAPI;
 
 public class ServerMccResponse implements ResponseMsg {
 
@@ -52,50 +49,15 @@ public class ServerMccResponse implements ResponseMsg {
 		output = null;
 	}
 
-	/**
-	 * 构造一个通用的响应
-	 * 
-	 * @param status
-	 *            状态 0 正常 1异常
-	 * @param rmd
-	 *            响应指令
-	 * @param json
-	 *            对象json字符串
-	 * @return
-	 */
 	public static String build(String msgCode, String msg) {
-		// ServerMccResponse mcResponse = new ServerMccResponse(msg);
-		// try {
-		// mcResponse.output.writeBytes(msg.getBytes());
-		// } catch (IOException e) {
-		// logger.error("output write RESPONSE:" + msgCode + " fail", e);
-		// } finally {
-		// mcResponse.output.close();
-		// }
 		return msgCode + "," + msg;
 	}
 
-	public static ServerMccResponse buildError() {
-		ServerMccResponse mcResponse = new ServerMccResponse(ConnectAPI.MC_ERROR_RESPONSE);
-		try {
-			mcResponse.output.writeBytes("ERROR".getBytes());
-		} catch (IOException e) {
-			logger.error("output write RESPONSE:" + ConnectAPI.MC_ERROR_RESPONSE + " fail", e);
-		} finally {
-			mcResponse.output.close();
-		}
-		return mcResponse;
+	public static String buildError() {
+		return "ERROR";
 	}
 
-	public static ServerMccResponse buildSuccess() {
-		ServerMccResponse mcResponse = new ServerMccResponse(ConnectAPI.MC_SUCCESS_RESPONSE);
-		try {
-			mcResponse.output.writeBytes("SUCCESS".getBytes());
-		} catch (IOException e) {
-			logger.error("output write RESPONSE:" + ConnectAPI.MC_SUCCESS_RESPONSE + " fail", e);
-		} finally {
-			mcResponse.output.close();
-		}
-		return mcResponse;
+	public static String buildSuccess() {
+		return "SUCCESS";
 	}
 }

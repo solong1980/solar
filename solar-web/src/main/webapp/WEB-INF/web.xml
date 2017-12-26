@@ -10,6 +10,7 @@
 			classpath:spring-shiro.xml
 			classpath:spring-shiro-cache.xml
 			classpath:spring-mvc.xml
+			classpath:spring-scheduler.xml
 		</param-value>
 	</context-param>
 	
