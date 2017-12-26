@@ -119,19 +119,14 @@ public class ProjectRunningModeCtrlTask {
 									soDevices.setSw6((short) 0);
 									soDevices.setSw7((short) 0);
 								} else {
-									// Short sw0 = soDevices.getSw0();
-									// if(sw0==1) {
-									// soDevices.setSw0((short) 1);
-									// }else {
-									//
-									// }
-									// soDevices.setSw1((short) 1);
-									// soDevices.setSw2((short) 1);
-									// soDevices.setSw3((short) 1);
-									// soDevices.setSw4((short) 1);
-									// soDevices.setSw5((short) 1);
-									// soDevices.setSw6((short) 1);
-									// soDevices.setSw7((short) 1);
+									soDevices.setSw0((short) 1);
+									soDevices.setSw1((short) 1);
+									soDevices.setSw2((short) 1);
+									soDevices.setSw3((short) 1);
+									soDevices.setSw4((short) 1);
+									soDevices.setSw5((short) 1);
+									soDevices.setSw6((short) 1);
+									soDevices.setSw7((short) 1);
 								}
 							}
 						}
