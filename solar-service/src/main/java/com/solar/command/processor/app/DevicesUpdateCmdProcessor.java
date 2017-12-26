@@ -38,7 +38,7 @@ public class DevicesUpdateCmdProcessor extends MsgProcessor implements INotAuthP
 		AppSession deviceSession = AppSessionManager.getInstance().devNoSessionMap.get(devNo);
 		SoDevices returnO = new SoDevices();
 		if (deviceSession == null) {
-			returnO.setRole(1);
+			returnO.setRetCode(1);
 			returnO.setMsg(ErrorCode.Error_000014);
 		} else {
 			deviceSession.sendMsg("02," + devices.buildMmcMsg());
