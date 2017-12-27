@@ -58,6 +58,10 @@
 	        	/captcha.jpg=anon
 	        	/router/rop = anon
 	        	/file/download/**=anon
+	        	/swagger**=anon
+	        	/swagger*/**=anon
+	        	/v2/**=anon
+	        	/webjars/**=anon
 	        	/**=authc
 	        </value>
 	    </property>

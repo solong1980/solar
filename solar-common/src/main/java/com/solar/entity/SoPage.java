@@ -5,7 +5,7 @@ public class SoPage<C, R> extends SoAbt {
 	private Integer start = 0;
 	private Integer pageNum = 1;
 	private Integer count = 10;
-	private Integer totel;
+	private Integer totel = 0;
 
 	private C c;// 条件
 	private R t;// 结果

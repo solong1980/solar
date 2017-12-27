@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +22,6 @@ import com.solar.db.services.SoDevicesService;
 import com.solar.db.services.SoProjectWorkingModeService;
 import com.solar.entity.SoDevices;
 import com.solar.entity.SoPage;
-import com.solar.entity.SoProject;
 import com.solar.entity.SoProjectWorkingMode;
 import com.solar.web.net.HostClient;
 
@@ -110,15 +110,9 @@ public class ProjectRunningModeCtrlTask {
 								Object v = method.invoke(projectWorkingMode);
 								short f = (Short) v;
 								if (f == 0) {
-									soDevices.setSw0((short) 0);
-									soDevices.setSw1((short) 0);
-									soDevices.setSw2((short) 0);
-									soDevices.setSw3((short) 0);
-									soDevices.setSw4((short) 0);
-									soDevices.setSw5((short) 0);
-									soDevices.setSw6((short) 0);
-									soDevices.setSw7((short) 0);
+									// 按照设备启停设置走
 								} else {
+									// 全部开始
 									soDevices.setSw0((short) 1);
 									soDevices.setSw1((short) 1);
 									soDevices.setSw2((short) 1);
@@ -132,7 +126,7 @@ public class ProjectRunningModeCtrlTask {
 						}
 					}
 
-					logger.info("start send");
+					logger.info("start send:" + Arrays.toString(t.toArray(new SoDevices[0])));
 					send(ConnectAPI.DEVICES_SCHEDULE_COMMAND, JsonUtilTool.toJson(t));
 					logger.info("end send");
 					start++;

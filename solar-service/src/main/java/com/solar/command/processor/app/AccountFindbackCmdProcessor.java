@@ -76,7 +76,7 @@ public class AccountFindbackCmdProcessor extends MsgProcessor implements INotAut
 				accountFindService.addAccountFind(accountFind);
 				accountFind = new SoAccountFind();
 				accountFind.setRetCode(SoAccount.SUCCESS);
-				accountFind.setMsg(SuccessCode.Sucess_000001);
+				accountFind.setMsg(SuccessCode.Sucess_000002);
 				appSession.sendMsg(new AccountAddResponse(JsonUtilTool.toJson(accountFind)));
 				sessionContext.remove(Consts.REGIEST_VCODE_KEY);
 			}
