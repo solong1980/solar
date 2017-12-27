@@ -527,38 +527,58 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		}
 	}
 
+	String accLabelStr = "帐 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号";
+	String pwdLabelStr = "密  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;码";
+
 	public void loginGUI() {
-		JLabel accountLabel = new JLabel(getBoldHTML("帐号"));
-		JLabel passwdLabel = new JLabel(getBoldHTML("密码"));
-		JLabel savePwdLabel = new JLabel(getBoldHTML(""));
+		JLabel accountLabel = new JLabel(getBoldHTML(accLabelStr));
+		JLabel passwdLabel = new JLabel(getBoldHTML(pwdLabelStr));
+		// JLabel savePwdLabel = new JLabel(getBoldHTML(""));
 
 		JComponent loginPanel = new JPanel(new GridBagLayout());
+		loginPanel.setPreferredSize(new Dimension(300, 100));
 		GridBagConstraints gbc = new GridBagConstraints();
+
+		JTextField accountField = new JTextField("admin");
+		JTextField passwordField = new JPasswordField("123456", 10);
+		JCheckBox phoneLoginCheckBox = new JCheckBox(getBoldHTML("手机号登录"));
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(5, 5, 5, 5);
+
+		gbc.gridwidth = 3;
+		loginPanel.add(phoneLoginCheckBox, gbc);
+
+		gbc.gridwidth = 1;
+		gbc.gridy++;
 		loginPanel.add(accountLabel, gbc);
 		gbc.gridy++;
 		loginPanel.add(passwdLabel, gbc);
-		gbc.gridy++;
-		loginPanel.add(savePwdLabel, gbc);
-
-		// admin,operator,cust_1,cust_2
-		JTextField accountField = new JTextField("admin");
-		JTextField passwordField = new JPasswordField("123456", 10);
-		JCheckBox savePwdCheckBox = new JCheckBox("记录密码");
+		// gbc.gridy++;
+		// loginPanel.add(savePwdLabel, gbc);
 
 		gbc.gridx++;
-		gbc.gridy = 0;
+		gbc.gridy = 1;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
+		gbc.gridwidth = 2;
 		loginPanel.add(accountField, gbc);
 		gbc.gridy++;
+		gbc.gridwidth = 2;
 		loginPanel.add(passwordField, gbc);
-		gbc.gridy++;
-		loginPanel.add(savePwdCheckBox, gbc);
+
+		phoneLoginCheckBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (phoneLoginCheckBox.isSelected()) {
+					accountLabel.setText(getBoldHTML("手机号码"));
+				} else {
+					accountLabel.setText(getBoldHTML(accLabelStr));
+				}
+			}
+		});
 
 		JComponent[] message = new JComponent[4];
 		message[0] = loginPanel;
@@ -574,9 +594,12 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 						String acc = accountField.getText();
 						String passwd = passwordField.getText();
 						account = new SoAccount();
-						account.setAccount(acc);
+						if (phoneLoginCheckBox.isSelected())
+							account.setPhone(acc);
+						else
+							account.setAccount(acc);
 						account.setPassword(passwd);
-						account.setSavePwd(savePwdCheckBox.isSelected());
+						account.setSavePwd(phoneLoginCheckBox.isSelected());
 						observableMedia.login(account);
 					} catch (Exception e) {
 						JOptionPane.showMessageDialog(AdaWorkingPanel.this, "连接后台失败");
