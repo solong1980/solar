@@ -137,5 +137,10 @@ public class ConnectAPI {
 	// 数据上传指令
 	public static final String MC_DATA_UPLOAD_COMMAND = "01";
 	public static final String MC_DATA_UPLOAD_RESPONSE = "01";
+	
+	public static final String MC_DEVICES_RUNNING_CTRL_RESPONSE = "02";
+	
+	public static final String MC_UPDATE_WARE_BLOCK_RESPONE = "03";
+	public static final String MC_UPDATE_WARE_BLOCK_COMMAND = "04";
 
 }

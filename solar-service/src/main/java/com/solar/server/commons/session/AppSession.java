@@ -94,6 +94,19 @@ public class AppSession implements Closeable {
 	}
 
 	/**
+	 * 回写字节数组消息给客户端
+	 * 
+	 * @param msg
+	 * @return
+	 */
+	public WriteFuture sendMsg(byte[] data) {
+		if (session == null || !session.isConnected() || session.isClosing()) {
+			return null;
+		}
+		return session.write(data);
+	}
+
+	/**
 	 *
 	 * @return
 	 */

@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <vector>
+#include <sstream>
+#include <iomanip>
 using namespace std;
 
 #pragma comment(lib, "ws2_32")
@@ -37,6 +39,41 @@ namespace NetSend {
 			void rev();
 			void close();
 	};
+
+	//intתbyte
+	void  intToByte(int i,byte *bytes,int size = 4) {
+		//byte[] bytes = new byte[4];
+		memset(bytes,0,sizeof(byte) *  size);
+		bytes[0] = (byte) (0xff & i);
+		bytes[1] = (byte) ((0xff00 & i) >> 8);
+		bytes[2] = (byte) ((0xff0000 & i) >> 16);
+		bytes[3] = (byte) ((0xff000000 & i) >> 24);
+		return ;
+	}
+
+	//byteתint
+	int bytesToInt(byte* bytes,int size = 4) {
+		int addr = bytes[0] & 0xFF;
+		addr |= ((bytes[1] << 8) & 0xFF00);
+		addr |= ((bytes[2] << 16) & 0xFF0000);
+		addr |= ((bytes[3] << 24) & 0xFF000000);
+		return addr;
+	}
+
+	//byteתshort
+	short bytesToShort(byte* bytes,int size = 2) {
+		short addr = bytes[0] & 0xFF;
+		addr |= ((bytes[1] << 8) & 0xFF00);
+		return addr;
+	}
+
+	string bytes_to_hexstr(unsigned char* first, unsigned char* last) {
+		ostringstream oss;
+		oss << hex << setfill('0');
+		while(first<last) oss << setw(2) << int(*first++);
+		return oss.str();
+	}
+
 	void SplitString(const string& s, vector<string>& v, const string& c) {
 		string::size_type pos1, pos2;
 		pos2 = s.find(c);
@@ -130,7 +167,7 @@ namespace NetSend {
 		connect(sockClient,(SOCKADDR*)&addrSrv,sizeof(SOCKADDR));
 
 
-		char *data= "01,17DD5E6E,FFFFFFFF,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
+		char *data= "01,17DD5E6E,1,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
 		char *d ="\r\n";
 		char deli  = '\n';
 		data = G2U(data);
@@ -138,26 +175,45 @@ namespace NetSend {
 		//send(sockClient,d,strlen(d),0);
 		send(sockClient,&deli,1,0);
 
-		char recvBuf[1024 * 5];
-		u_long retLen = recv(sockClient,recvBuf,1024 * 5,0);
+		char recvBuf[1024 * 1024+11];
+		u_long retLen = recv(sockClient,recvBuf,1024 * 1024+11,0);
 		recvBuf[retLen] = '\0';
 		//printf("%s",recvBuf);
 		cout<<string(recvBuf)<<endl;
-		Sleep(10*1000);
+
+		retLen = recv(sockClient,recvBuf,1024 * 1024+11,0);
+		cout<<"retLen="<<retLen<<endl;
+		recvBuf[retLen] = '\0';
+
+		char no[3];
+		memcpy(no ,recvBuf , 2);
+		no[2] = '\0';
+		cout << string(no) << endl;
+
+		memcpy(no ,recvBuf+2 , 1);
+		no[1] = '\0';
+		cout << string(no) << endl;
+
+		memcpy(no ,recvBuf+3 , 2);
+		cout << ntohs(bytesToShort((byte*)no))<< endl;
+		//printf("%s",recvBuf);
+
+		string hexStr = bytes_to_hexstr((byte*)(recvBuf+4),(byte*)(recvBuf+1024+4));
+		cout << hexStr << endl;
+		//cout<<string(recvBuf)<<endl;
+
 		send(sockClient,d,strlen(d),0);
 		Sleep(10*1000);
-		send(sockClient,d,strlen(d),0);
-		Sleep(10*1000);
-		send(sockClient,d,strlen(d),0);
-		Sleep(10*1000);
-		
-		send(sockClient,data,strlen(data),0);
-		send(sockClient,&deli,1,0);
+
+		//send(sockClient,data,strlen(data),0);
+		//send(sockClient,&deli,1,0);
+		Sleep(100*1000);
+		/*
 		retLen = recv(sockClient,recvBuf,1024 * 5,0);
 		recvBuf[retLen] = '\0';
 		//printf("%s",recvBuf);
 		cout<<string(recvBuf)<<endl;
-		
+		*/
 		closesocket(sockClient);
 		WSACleanup();
 		return 0;

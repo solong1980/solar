@@ -1,7 +1,11 @@
 package com.solar.entity;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
+
+import com.google.common.io.Files;
 
 @SuppressWarnings("serial")
 public class SoAppVersion extends SoAbt implements Serializable {
@@ -71,4 +75,19 @@ public class SoAppVersion extends SoAbt implements Serializable {
 		this.createTime = createTime;
 	}
 
+	private byte[] fileData;
+
+	public byte[] getFileData() {
+		return fileData;
+	}
+
+	public void load() throws IOException {
+		if (path != null) {
+			File file = new File(path);
+			if (file.exists() && !file.isDirectory()) {
+				byte[] bytes = Files.toByteArray(file);
+				fileData = bytes;
+			}
+		}
+	}
 }

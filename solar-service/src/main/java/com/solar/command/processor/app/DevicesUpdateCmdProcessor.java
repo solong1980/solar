@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import com.solar.command.message.request.ClientRequest;
 import com.solar.command.message.response.app.DevicesUpdateResponse;
+import com.solar.command.message.response.mcc.ServerMccResponse;
 import com.solar.common.annotation.ProcessCMD;
 import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.ErrorCode;
@@ -41,7 +42,8 @@ public class DevicesUpdateCmdProcessor extends MsgProcessor implements INotAuthP
 			returnO.setRetCode(1);
 			returnO.setMsg(ErrorCode.Error_000014);
 		} else {
-			deviceSession.sendMsg("02," + devices.buildMmcMsg());
+			deviceSession.sendMsg(
+					ServerMccResponse.build(ConnectAPI.MC_DEVICES_RUNNING_CTRL_RESPONSE, devices.buildMmcMsg()));
 		}
 		appSession.sendMsg(new DevicesUpdateResponse(JsonUtilTool.toJson(returnO)));
 	}

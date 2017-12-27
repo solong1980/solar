@@ -1,4 +1,5 @@
 -injars 'E:\tools\proguard5.3.3\applications\dist\solar-common.jar'
+-injars 'E:\tools\proguard5.3.3\applications\dist\solar-3p.jar'
 -injars 'E:\tools\proguard5.3.3\applications\dist\solar-db.jar'
 -injars 'E:\tools\proguard5.3.3\applications\dist\solar-service.jar'
 -outjars 'E:\tools\proguard5.3.3\applications\solar-guard\solar_out.jar'

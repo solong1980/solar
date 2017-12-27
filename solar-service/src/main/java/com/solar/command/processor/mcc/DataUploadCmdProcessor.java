@@ -6,6 +6,9 @@ import java.util.Arrays;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.solar.cache.SolarCache;
+import com.solar.command.message.response.mcc.ServerMccResponse;
+import com.solar.common.context.ConnectAPI;
 import com.solar.controller.common.INotAuthProcessor;
 import com.solar.controller.common.MccMsgProcessor;
 import com.solar.db.services.SoDevicesService;
@@ -42,9 +45,10 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 				logger.info("device UUID=" + devNo + " is not found");
 			} else {
 				appSession.setEnti(devices);
-				// add to session map
-				AppSessionManager.getInstance().putDevSessionToHashMap(appSession);
 				appSession.setLogin(true);
+				// add to session map
+				logger.info("add device UUID=" + devNo + " to device session");
+				AppSessionManager.getInstance().putDevSessionToHashMap(appSession);
 
 				devices.setSw0((short) 1);
 				devices.setSw1((short) 1);
@@ -54,14 +58,12 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 				devices.setSw5((short) 1);
 				devices.setSw6((short) 1);
 				devices.setSw7((short) 1);
-				
-				appSession.sendMsg("02," + devices.buildMmcMsg());
+				appSession.sendMsg(
+						ServerMccResponse.build(ConnectAPI.MC_DEVICES_RUNNING_CTRL_RESPONSE, devices.buildMmcMsg()));
 				return true;
 			}
 		} else {
-			if (logger.isInfoEnabled()) {
-				logger.info("device no is null");
-			}
+			logger.info("device no is null");
 		}
 		return false;
 	}
@@ -71,24 +73,33 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 		if (logger.isDebugEnabled()) {
 			logger.debug("Data update : {}", Arrays.toString(reqs));
 		}
+		String uuid = reqs[1];
+		// 如果设备未登陆,择登陆
+		if (!appSession.isLogin()) {
+			synchronized (appSession) {
+				if (!appSession.isLogin()) {
+					boolean access = access(appSession, uuid);
+					if (!access)
+						return;
+				}
+			}
+		}
+
+		String ver = reqs[2];
+		int verInt = Integer.parseInt(ver);
+		int deviceWareVerion = SolarCache.getInstance().getDeviceWareVerion();
+		if (deviceWareVerion > verInt) {
+			// doSendData
+			sendUpdataWareData(appSession, 1);
+		}
+
+		if (reqs.length < 20) {
+			logger.error("data len is not enought");
+			return;
+		}
 		try {
 			SoRunningData runningData = new SoRunningData();
 			WeakReference<SoRunningData> wf = new WeakReference<SoRunningData>(runningData);
-			String uuid = reqs[1];
-			// 如果设备未登陆,择登陆
-			if (!appSession.isLogin()) {
-				synchronized (appSession) {
-					if (!appSession.isLogin()) {
-						boolean access = access(appSession, uuid);
-						if (!access)
-							return;
-					}
-				}
-			}
-			if (reqs.length < 20) {
-				logger.error("data len is not enought");
-				return;
-			}
 			// 01,17DD5E6E,FFFFFFFF,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,83.872,30.473689
 			runningData.setUuid(uuid);
 			runningData.setFmid(reqs[2]); // 固件版本

@@ -2,11 +2,13 @@ package com.solar.controller.common;
 
 import com.solar.command.processor.mcc.DataUploadCmdProcessor;
 import com.solar.command.processor.mcc.DeviceAccessCmdProcessor;
+import com.solar.command.processor.mcc.DeviceWareBlockCmdProcessor;
 import com.solar.common.context.ConnectAPI;
 
 public enum MccMsgProcessorRegister {
 	DEVICES_ACCESS_COMMAND(ConnectAPI.MC_DEVICES_ACCESS_COMMAND, new DeviceAccessCmdProcessor()),
-	DATA_UPLOAD(ConnectAPI.MC_DATA_UPLOAD_COMMAND, new DataUploadCmdProcessor());
+	DATA_UPLOAD(ConnectAPI.MC_DATA_UPLOAD_COMMAND, new DataUploadCmdProcessor()),
+	MC_UPDATE_WARE_BLOCK_COMMAND(ConnectAPI.MC_UPDATE_WARE_BLOCK_COMMAND, new DeviceWareBlockCmdProcessor());
 
 	private String msgCode;
 	private MccMsgProcessor processor;

@@ -8,18 +8,18 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.solar.entity.SoDevices;
 
 public class AppSessionManager {
+	private static final Logger logger = LoggerFactory.getLogger(AppSessionManager.class);
 
 	public Map<String, AppSession> sessionMap = new ConcurrentHashMap<String, AppSession>();
 	public Map<String, AppSession> devSessionMap = new ConcurrentHashMap<String, AppSession>();
 
 	public Map<String, AppSession> devNoSessionMap = new ConcurrentHashMap<String, AppSession>();
-
-	private Cache<Long, List<AppSession>> locationDevSessionCache;
 
 	public static int topOnlineAccountCount = 0;
 
@@ -32,7 +32,6 @@ public class AppSessionManager {
 	}
 
 	private AppSessionManager() {
-		locationDevSessionCache = CacheBuilder.newBuilder().initialCapacity(10000).maximumSize(10000).build();
 	}
 
 	/**
@@ -63,25 +62,33 @@ public class AppSessionManager {
 
 	public void putDevSessionToHashMap(AppSession appSession) {
 		String sessionID = appSession.getSessionID();
+		logger.info("add device session sessionId=" + sessionID);
 		AppSession t = devSessionMap.get(sessionID);
 		if (t == null) {
 			devSessionMap.put(sessionID, appSession);
 			if (devSessionMap.size() > topOnlineAccountCount) {
 				topOnlineAccountCount = topOnlineAccountCount + devSessionMap.size();
 			}
-
-			SoDevices enti = appSession.getEnti(SoDevices.class);
+		}
+		SoDevices enti = appSession.getEnti(SoDevices.class);
+		if (enti == null) {
+			logger.error("device session has no device info object");
+		} else {
 			String devNo = enti.getDevNo();
 			devNoSessionMap.put(devNo, appSession);
 		}
 	}
 
 	public void rmDevSession(AppSession appSession) {
+		logger.error("remove device session sessionId=" + appSession.getSessionID());
 		if (appSession.isLogin()) {
 			SoDevices enti = appSession.getEnti(SoDevices.class);
-			String devNo = enti.getDevNo();
-			devNoSessionMap.remove(devNo);
-			devSessionMap.remove(appSession.getSessionID());
+			if (enti != null) {
+				String devNo = enti.getDevNo();
+				logger.error("remove device session devNo=" + devNo);
+				devNoSessionMap.remove(devNo);
+				devSessionMap.remove(appSession.getSessionID());
+			}
 		}
 	}
 

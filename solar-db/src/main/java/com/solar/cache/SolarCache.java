@@ -9,8 +9,11 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.solar.common.context.AppType;
+import com.solar.db.services.SoAppVersionService;
 import com.solar.db.services.SoDevicesService;
 import com.solar.db.services.SoProjectWorkingModeService;
+import com.solar.entity.SoAppVersion;
 import com.solar.entity.SoDevices;
 import com.solar.entity.SoProjectWorkingMode;
 
@@ -22,8 +25,14 @@ public class SolarCache {
 	private Cache<Long, List<SoDevices>> guavaDevicesCache;
 	private Cache<String, Map<String, Object>> guavaAppSersionCache;
 
+	private Cache<AppType, SoAppVersion> deviceWareVersionCache;
+	private Cache<Integer, byte[]> deviceWareDataBlockCache;
+
 	private SoProjectWorkingModeService workingModeService;
 	private SoDevicesService devicesService;
+	private SoAppVersionService appVersionService;
+
+	private int k = 1024;
 
 	public static SolarCache getInstance() {
 		return solarCache;
@@ -33,10 +42,17 @@ public class SolarCache {
 		guavaWorkingModeCache = CacheBuilder.newBuilder().initialCapacity(1000).build();
 		guavaDevicesCache = CacheBuilder.newBuilder().initialCapacity(1000).build();
 
+		deviceWareVersionCache = CacheBuilder.newBuilder().initialCapacity(1).expireAfterAccess(1, TimeUnit.DAYS)
+				.build();
+		deviceWareDataBlockCache = CacheBuilder.newBuilder().initialCapacity(1000).expireAfterAccess(1, TimeUnit.DAYS)
+				.build();
+
 		guavaAppSersionCache = CacheBuilder.newBuilder().initialCapacity(30).expireAfterAccess(30, TimeUnit.MINUTES)
 				.build();
+
 		workingModeService = SoProjectWorkingModeService.getInstance();
 		devicesService = SoDevicesService.getInstance();
+		appVersionService = SoAppVersionService.getInstance();
 	}
 
 	public SoProjectWorkingMode getWorkingMode(Long projectId) throws ExecutionException {
@@ -60,10 +76,54 @@ public class SolarCache {
 		return devs;
 	}
 
+	public byte[] getDeviceWareDataBlock(int dataBlockNo) throws ExecutionException {
+		SoAppVersion appVersion = deviceWareVersionCache.getIfPresent(AppType.RPM);
+		if (appVersion != null) {
+			byte[] bs = deviceWareDataBlockCache.get(dataBlockNo, new Callable<byte[]>() {
+				@Override
+				public byte[] call() throws Exception {
+					byte[] fileData = appVersion.getFileData();
+					if (fileData == null || fileData.length == 0)
+						return new byte[0];
+					int dLen = fileData.length;
+					int pos = k * dataBlockNo;
+					if (pos <= dLen) {
+						byte[] cd = new byte[k];
+						System.arraycopy(fileData, k * (dataBlockNo - 1), cd, 0, k);
+						return cd;
+					} else {
+						byte[] cd = new byte[pos];
+						System.arraycopy(fileData, k * (dataBlockNo - 1), cd, 0, dLen - k * (dataBlockNo - 1));
+						return cd;
+					}
+				}
+			});
+			return bs;
+		} else {
+			return new byte[0];
+		}
+	}
+
+	public int getDeviceWareVerion() throws ExecutionException {
+		SoAppVersion deviceWareVersion = deviceWareVersionCache.get(AppType.RPM, new Callable<SoAppVersion>() {
+			@Override
+			public SoAppVersion call() throws Exception {
+				SoAppVersion deviceWareVersion = appVersionService.selectLastAppVersion(AppType.RPM.type());
+				if (deviceWareVersion == null) {
+					SoAppVersion appVersion = new SoAppVersion();
+					appVersion.setVerNo(0);
+					return appVersion;
+				}
+				// load file to memory
+				deviceWareVersion.load();
+				return deviceWareVersion;
+			}
+		});
+		return deviceWareVersion.getVerNo();
+	}
+
 	public void updateWorkingMode(Long projectId) {
 		guavaWorkingModeCache.invalidate(projectId);
-		// SoWorkingMode workingMode
-		// guavaWorkingModeCache.put(custId, workingMode);
 	}
 
 	public void updateProjectDevs(Long projectId) {
@@ -82,4 +142,5 @@ public class SolarCache {
 	public void removeSessionContext(String sessionId) throws ExecutionException {
 		guavaAppSersionCache.invalidate(sessionId);
 	}
+
 }

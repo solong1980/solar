@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.TypeReference;
 import com.solar.command.message.request.ClientRequest;
+import com.solar.command.message.response.mcc.ServerMccResponse;
 import com.solar.common.annotation.ProcessCMD;
 import com.solar.common.context.ConnectAPI;
 import com.solar.common.util.JsonUtilTool;
@@ -39,7 +40,8 @@ public class DevicesScheduleCmdProcessor extends MsgProcessor implements INotAut
 					logger.error("device uuid=" + devNo + " not connect");
 					continue;
 				} else {
-					deviceSession.sendMsg("02," + device.buildMmcMsg());
+					deviceSession.sendMsg(
+							ServerMccResponse.build(ConnectAPI.MC_DEVICES_RUNNING_CTRL_RESPONSE, device.buildMmcMsg()));
 				}
 			}
 		} else {
