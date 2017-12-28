@@ -36,6 +36,11 @@ public class AppSession implements Closeable {
 	 */
 	private int time = 0;
 
+	/**
+	 * 失败次数
+	 */
+	private int blockFailTime = 0;
+
 	private Object enti;
 	private boolean isLogin = false;
 	private static final AttributeKey KEY_PLAYER_SESSION = new AttributeKey(AppSession.class, "player.session");
@@ -168,4 +173,16 @@ public class AppSession implements Closeable {
 		}
 	}
 
+	public void addBlockFailTime(int i) {
+		if (i == 0) {
+			this.blockFailTime = i;
+		} else {
+			this.blockFailTime = this.blockFailTime + i;
+		}
+	}
+
+	public int getBlockFailTime() {
+		return blockFailTime;
+	}
+	
 }

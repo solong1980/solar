@@ -64,6 +64,8 @@ public class ConnectAPI {
 	public static final int DEVICES_UPDATE_COMMAND = 0x000033;
 	public static final int DEVICES_ADD_COMMAND = 0x000034;
 	public static final int DEVICES_SCHEDULE_COMMAND = 0x000035;
+	public static final int DEVICES_UPGRADECTR_COMMAND = 0x000036;
+
 	// 控制终端指令
 	public static final int CTRL_COMMAND = 0x999999;
 
@@ -128,6 +130,7 @@ public class ConnectAPI {
 	public static final int DEVICES_UPDATE_RESPONSE = 0x100033;
 	public static final int DEVICES_ADD_RESPONSE = 0x100034;
 	public static final int DEVICES_SCHEDULE_RESPONSE = 0x100035;
+	public static final int DEVICES_UPGRADECTR_RESPONSE = 0x100036;
 	// 单片机
 	public static final String MC_ERROR_RESPONSE = "00";
 	public static final String MC_SUCCESS_RESPONSE = "99";
@@ -137,9 +140,9 @@ public class ConnectAPI {
 	// 数据上传指令
 	public static final String MC_DATA_UPLOAD_COMMAND = "01";
 	public static final String MC_DATA_UPLOAD_RESPONSE = "01";
-	
+
 	public static final String MC_DEVICES_RUNNING_CTRL_RESPONSE = "02";
-	
+
 	public static final String MC_UPDATE_WARE_BLOCK_RESPONE = "03";
 	public static final String MC_UPDATE_WARE_BLOCK_COMMAND = "04";
 

@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.solar.command.message.request.ClientRequest;
-import com.solar.command.message.response.app.DevicesInProjectResponse;
 import com.solar.command.message.response.app.DevicesRunningDataResponse;
 import com.solar.common.annotation.ProcessCMD;
 import com.solar.common.context.ConnectAPI;

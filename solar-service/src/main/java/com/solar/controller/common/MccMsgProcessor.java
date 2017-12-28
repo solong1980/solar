@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 import com.solar.cache.SolarCache;
 import com.solar.command.message.response.mcc.ServerMccResponse;
 import com.solar.common.context.ConnectAPI;
+import com.solar.entity.SoAppVersion;
 import com.solar.server.commons.session.AppSession;
 
 public abstract class MccMsgProcessor {
@@ -29,6 +30,12 @@ public abstract class MccMsgProcessor {
 	public abstract void process(AppSession appSession, String msgCode, String[] reqs) throws Exception;
 
 	public void sendUpdataWareData(AppSession appSession, int blockNo) throws ExecutionException, IOException {
+		SoAppVersion deviceWareVerion = SolarCache.getInstance().getDeviceWareVerion();
+		int blockCount = deviceWareVerion.getBlockCount();
+		if (blockNo >= blockCount + 2) {
+			logger.error("blockNo toooo large");
+			return;
+		}
 		byte[] block = SolarCache.getInstance().getDeviceWareDataBlock(blockNo);
 		if (block.length > 0) {
 			ByteArrayOutputStream byteStream = null;
@@ -38,7 +45,10 @@ public abstract class MccMsgProcessor {
 				dataStream = new DataOutputStream(byteStream);
 				dataStream.writeBytes(ConnectAPI.MC_UPDATE_WARE_BLOCK_RESPONE);
 				dataStream.writeBytes(",");
-				dataStream.writeShort(blockNo);
+				if (blockCount + 1 == blockNo) {
+					dataStream.writeShort(0xFFFF);
+				} else
+					dataStream.writeShort(blockNo);
 				dataStream.write(block);
 				dataStream.flush();
 				byte[] byteArray = byteStream.toByteArray();

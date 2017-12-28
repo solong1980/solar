@@ -46,10 +46,6 @@ public class AppVersionCmdProcessor extends MsgProcessor implements INotAuthProc
 		if (lastAppVersion == null) {
 			lastAppVersion = new SoAppVersion();
 			lastAppVersion.setRetCode(SoAbt.FAILURE);
-		} else {
-			lastAppVersion.setFileName("");
-			lastAppVersion.setPath("");
-			lastAppVersion.setInfo("");
 		}
 		AppVersionResponse appVersionResponse = new AppVersionResponse(JsonUtilTool.toJson(lastAppVersion));
 		appSession.sendMsg(appVersionResponse);

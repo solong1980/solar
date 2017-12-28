@@ -37,7 +37,7 @@ public class HostClient extends MinaClient {
 				try {
 					recive();
 				} catch (IOException e) {
-					if(running)
+					if (running)
 						observableMedia.connectLost();
 					running = false;
 				}
@@ -365,5 +365,9 @@ public class HostClient extends MinaClient {
 		String json = JsonUtilTool.toJson(device);
 		System.out.println(json);
 		send(ConnectAPI.DEVICES_ADD_COMMAND, json);
+	}
+
+	public void devUpFileBlockCacheClean() {
+		send(ConnectAPI.DEVICES_UPGRADECTR_COMMAND, "");
 	}
 }

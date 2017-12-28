@@ -330,6 +330,11 @@ public class ObservableMedia extends Observable {
 		setChanged();
 	}
 
+	public void devUpFileBlockCacheClean() {
+		hostClient.devUpFileBlockCacheClean();
+		setChanged();
+	}
+
 	public void connectLost() {
 		super.setChanged();
 		SoRet soRet = new SoRet();

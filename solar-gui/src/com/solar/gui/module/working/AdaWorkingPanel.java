@@ -56,6 +56,7 @@ import com.solar.gui.component.formate.InputState;
 import com.solar.gui.component.formate.JFieldBuilder;
 import com.solar.gui.component.model.TreeAddr;
 import com.solar.gui.module.working.fuc.AccountAuditPanel;
+import com.solar.gui.module.working.fuc.DeviceUpgradeManagerPanel;
 import com.solar.gui.module.working.fuc.IndexPanel;
 import com.solar.gui.module.working.fuc.ProjectDataPanel;
 import com.solar.gui.module.working.fuc.RunningReportPanel;
@@ -639,6 +640,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 			singleFrame();
 	}
 
+	@SuppressWarnings("unused")
 	private void addTabLayoutCtrlPanel() {
 		JPanel tabControls = new JPanel();
 		tabControls.add(new JLabel("Tab位置"));
@@ -737,9 +739,16 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 
 								RunningReportPanel reportPanel = new RunningReportPanel();
 								tabbedpane.add("运行信息查询", reportPanel);
+								
 								AccountAuditPanel accountAuditPanel = new AccountAuditPanel();
 								observableMedia.addObserver(accountAuditPanel);
 								tabbedpane.add("注册找回信息审核", accountAuditPanel);
+								
+								
+								DeviceUpgradeManagerPanel deviceUpgradeManagerPanel = new DeviceUpgradeManagerPanel();
+								observableMedia.addObserver(deviceUpgradeManagerPanel);
+								tabbedpane.add("升级块缓存", deviceUpgradeManagerPanel);
+								
 								// 用户管理
 								// tabName = " 用户管理";
 								// UserManagerPanel userManagerPanel = new UserManagerPanel();

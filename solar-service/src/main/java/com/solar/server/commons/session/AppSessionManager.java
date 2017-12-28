@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.solar.cache.SolarCache;
 import com.solar.entity.SoDevices;
 
 public class AppSessionManager {
@@ -75,25 +76,35 @@ public class AppSessionManager {
 			logger.error("device session has no device info object");
 		} else {
 			String devNo = enti.getDevNo();
-			devNoSessionMap.put(devNo, appSession);
+			synchronized (devNoSessionMap) {
+				devNoSessionMap.put(devNo, appSession);
+			}
 		}
 	}
 
 	public void rmDevSession(AppSession appSession) {
 		logger.error("remove device session sessionId=" + appSession.getSessionID());
+		devSessionMap.remove(appSession.getSessionID());
 		if (appSession.isLogin()) {
 			SoDevices enti = appSession.getEnti(SoDevices.class);
 			if (enti != null) {
 				String devNo = enti.getDevNo();
-				logger.error("remove device session devNo=" + devNo);
-				devNoSessionMap.remove(devNo);
-				devSessionMap.remove(appSession.getSessionID());
+				synchronized (devNoSessionMap) {
+					AppSession devNoSession = devNoSessionMap.get(devNo);
+					if (devNoSession == appSession) {
+						logger.error("remove device session devNo=" + devNo);
+						devNoSessionMap.remove(devNo);
+					} else {
+						logger.error("device devNo=" + devNo + "'s session has been replaced,no need to be removed");
+					}
+				}
 			}
 		}
 	}
 
 	public void rmAppSession(AppSession appSession) {
 		sessionMap.remove(appSession.getSessionID());
+		SolarCache.getInstance().removeSessionContext(appSession.getSessionID());
 	}
 
 	public int getVauleSize() {

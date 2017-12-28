@@ -16,6 +16,7 @@ import com.solar.command.processor.app.DevicesInProjectCmdProcessor;
 import com.solar.command.processor.app.DevicesRunningDataCmdProcessor;
 import com.solar.command.processor.app.DevicesScheduleCmdProcessor;
 import com.solar.command.processor.app.DevicesUpdateCmdProcessor;
+import com.solar.command.processor.app.DevicesUpgradeCtrCmdProcessor;
 import com.solar.command.processor.app.GetAreasCmdProcessor;
 import com.solar.command.processor.app.GetCitiesCmdProcessor;
 import com.solar.command.processor.app.GetProjectWorkingModeCmdProcessor;
@@ -73,6 +74,7 @@ public enum MsgProcessorRegister {
 	DEVICES_UPDATE_COMMAND(ConnectAPI.DEVICES_UPDATE_COMMAND, new DevicesUpdateCmdProcessor()),
 	DEVICES_ADD_COMMAND(ConnectAPI.DEVICES_ADD_COMMAND, new DevicesAddCmdProcessor()),
 	DEVICES_SCHEDULE_COMMAND(ConnectAPI.DEVICES_SCHEDULE_COMMAND, new DevicesScheduleCmdProcessor()),
+	DEVICES_UPGRADECTR_COMMAND(ConnectAPI.DEVICES_UPGRADECTR_COMMAND, new DevicesUpgradeCtrCmdProcessor()),
 
 	// 内部使用，服务端通知客户端断开
 	EMPYTCOMMAND(ConnectAPI.ZERO_RESPONSE, new OpenAppMsgProcessor());

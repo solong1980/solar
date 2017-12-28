@@ -75,10 +75,16 @@ public class SoAppVersion extends SoAbt implements Serializable {
 		this.createTime = createTime;
 	}
 
+	private int blockCount = 0;
+
 	private byte[] fileData;
 
 	public byte[] getFileData() {
 		return fileData;
+	}
+
+	public int getBlockCount() {
+		return blockCount;
 	}
 
 	public void load() throws IOException {
@@ -87,6 +93,13 @@ public class SoAppVersion extends SoAbt implements Serializable {
 			if (file.exists() && !file.isDirectory()) {
 				byte[] bytes = Files.toByteArray(file);
 				fileData = bytes;
+				int length = fileData.length;
+				int c = length / 1024;
+				if (length % 1024 == 0) {
+					blockCount = c;
+				} else {
+					blockCount = c + 1;
+				}
 			}
 		}
 	}

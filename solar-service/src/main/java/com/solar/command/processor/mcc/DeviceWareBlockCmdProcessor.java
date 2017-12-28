@@ -25,10 +25,21 @@ public class DeviceWareBlockCmdProcessor extends MccMsgProcessor implements INot
 		// doSendData
 		if (logger.isDebugEnabled())
 			logger.info("device ware block req," + Arrays.toString(reqs));
-		if (reqs.length < 2)
+		if (reqs.length < 3)
 			return;
-		String bno = reqs[1];
-		int blockNo = Integer.parseInt(bno);
+		String lastPackageNo = reqs[1];
+		String state = reqs[2];
+		int blockNo = Integer.parseInt(lastPackageNo);
+		if (state.equals("01")) {
+			appSession.addBlockFailTime(0);
+			blockNo = blockNo + 1;
+		} else if (state.equals("00")) {
+			appSession.addBlockFailTime(1);
+			if (appSession.getBlockFailTime() >= 3) {
+				appSession.addBlockFailTime(0);
+				return;
+			}
+		}
 		sendUpdataWareData(appSession, blockNo);
 		/**
 		 * byte[] block = SolarCache.getInstance().getDeviceWareDataBlock(bno); if

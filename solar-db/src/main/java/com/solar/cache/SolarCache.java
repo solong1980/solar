@@ -1,11 +1,17 @@
 package com.solar.cache;
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -18,6 +24,7 @@ import com.solar.entity.SoDevices;
 import com.solar.entity.SoProjectWorkingMode;
 
 public class SolarCache {
+	private static final Logger logger = LoggerFactory.getLogger(SolarCache.class);
 
 	private static SolarCache solarCache = new SolarCache();
 
@@ -32,7 +39,7 @@ public class SolarCache {
 	private SoDevicesService devicesService;
 	private SoAppVersionService appVersionService;
 
-	private int k = 1024;
+	private final int k = 1024;
 
 	public static SolarCache getInstance() {
 		return solarCache;
@@ -47,7 +54,7 @@ public class SolarCache {
 		deviceWareDataBlockCache = CacheBuilder.newBuilder().initialCapacity(1000).expireAfterAccess(1, TimeUnit.DAYS)
 				.build();
 
-		guavaAppSersionCache = CacheBuilder.newBuilder().initialCapacity(30).expireAfterAccess(30, TimeUnit.MINUTES)
+		guavaAppSersionCache = CacheBuilder.newBuilder().initialCapacity(30).expireAfterAccess(10, TimeUnit.MINUTES)
 				.build();
 
 		workingModeService = SoProjectWorkingModeService.getInstance();
@@ -76,35 +83,7 @@ public class SolarCache {
 		return devs;
 	}
 
-	public byte[] getDeviceWareDataBlock(int dataBlockNo) throws ExecutionException {
-		SoAppVersion appVersion = deviceWareVersionCache.getIfPresent(AppType.RPM);
-		if (appVersion != null) {
-			byte[] bs = deviceWareDataBlockCache.get(dataBlockNo, new Callable<byte[]>() {
-				@Override
-				public byte[] call() throws Exception {
-					byte[] fileData = appVersion.getFileData();
-					if (fileData == null || fileData.length == 0)
-						return new byte[0];
-					int dLen = fileData.length;
-					int pos = k * dataBlockNo;
-					if (pos <= dLen) {
-						byte[] cd = new byte[k];
-						System.arraycopy(fileData, k * (dataBlockNo - 1), cd, 0, k);
-						return cd;
-					} else {
-						byte[] cd = new byte[pos];
-						System.arraycopy(fileData, k * (dataBlockNo - 1), cd, 0, dLen - k * (dataBlockNo - 1));
-						return cd;
-					}
-				}
-			});
-			return bs;
-		} else {
-			return new byte[0];
-		}
-	}
-
-	public int getDeviceWareVerion() throws ExecutionException {
+	public SoAppVersion getDeviceWareVerion() throws ExecutionException {
 		SoAppVersion deviceWareVersion = deviceWareVersionCache.get(AppType.RPM, new Callable<SoAppVersion>() {
 			@Override
 			public SoAppVersion call() throws Exception {
@@ -119,11 +98,92 @@ public class SolarCache {
 				return deviceWareVersion;
 			}
 		});
+		return deviceWareVersion;
+	}
+
+	public byte[] getDeviceWareDataBlock(int dataBlockNo) throws ExecutionException {
+		SoAppVersion appVersion = getDeviceWareVerion();
+		if (appVersion != null && appVersion.getVerNo() > 0) {
+			if (dataBlockNo == appVersion.getBlockCount() + 1) {
+				// write end
+				String fileName = appVersion.getFileName();
+				String[] fileInfos = fileName.split("-");
+				try {
+					String crc = fileInfos[1];
+					String ver = fileInfos[2];
+					ByteArrayOutputStream bStream = new ByteArrayOutputStream(8);
+					DataOutputStream dStream = new DataOutputStream(bStream);
+					dStream.writeInt(Integer.parseInt(ver));
+					dStream.writeInt(Integer.parseInt(crc));
+					dStream.flush();
+					return bStream.toByteArray();
+				} catch (Exception e) {
+					logger.error("create block data end flag data error", e);
+					String crc = "1233566";
+					String ver = "1";
+					ByteArrayOutputStream bStream = new ByteArrayOutputStream(8);
+					DataOutputStream dStream = new DataOutputStream(bStream);
+					try {
+						dStream.writeInt(Integer.parseInt(ver));
+						dStream.writeInt(Integer.parseInt(crc));
+						dStream.flush();
+						return bStream.toByteArray();
+					} catch (NumberFormatException | IOException e1) {
+						e1.printStackTrace();
+					} finally {
+						try {
+							bStream.close();
+							dStream.close();
+						} catch (IOException e1) {
+						}
+					}
+				}
+			}
+
+			if (dataBlockNo >= appVersion.getBlockCount() + 2)
+				return new byte[0];
+			byte[] bs = deviceWareDataBlockCache.get(dataBlockNo, new Callable<byte[]>() {
+				@Override
+				public byte[] call() throws Exception {
+					byte[] fileData = appVersion.getFileData();
+					if (fileData == null || fileData.length == 0)
+						return new byte[0];
+					int dLen = fileData.length;
+					int pos = k * dataBlockNo;
+					if (pos <= dLen) {
+						byte[] cd = new byte[k];
+						System.arraycopy(fileData, k * (dataBlockNo - 1), cd, 0, k);
+						return cd;
+					} else if ((pos - k) < dLen && pos > dLen) {
+						byte[] cd = new byte[dLen - (pos - k)];
+						System.arraycopy(fileData, pos - k, cd, 0, dLen - (pos - k));
+						return cd;
+					} else {
+						return new byte[0];
+					}
+				}
+			});
+			return bs;
+		} else {
+			return new byte[0];
+		}
+	}
+
+	public int getDeviceWareVerionNo() throws ExecutionException {
+		SoAppVersion deviceWareVersion = getDeviceWareVerion();
 		return deviceWareVersion.getVerNo();
 	}
 
 	public void updateWorkingMode(Long projectId) {
 		guavaWorkingModeCache.invalidate(projectId);
+	}
+
+	public void updateDeviceWareVerion() {
+		deviceWareVersionCache.invalidate(AppType.RPM);
+	}
+
+	public void updateDeviceWareDataBlock() {
+		deviceWareDataBlockCache.invalidateAll();
 	}
 
 	public void updateProjectDevs(Long projectId) {
@@ -139,7 +199,7 @@ public class SolarCache {
 		});
 	}
 
-	public void removeSessionContext(String sessionId) throws ExecutionException {
+	public void removeSessionContext(String sessionId) {
 		guavaAppSersionCache.invalidate(sessionId);
 	}
 

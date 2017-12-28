@@ -139,6 +139,117 @@ namespace NetSend {
 		return str;
 	}
 
+	FILE* create_file() {
+		FILE *fp = fopen("testBin.jpg","wb");   //二进制模式
+		return fp;
+	}
+
+	void write_file(FILE* fp,char* buf,int len) {
+		int successCont=fwrite(buf,sizeof(char),len,fp);
+		if(successCont!=len)
+			cout<<"error"<<endl;
+	}
+
+	void close_file(FILE* fp) {
+		fclose(fp);
+	}
+
+	string receive_block_data(SOCKET& sockClient,FILE* fp) {
+		char recvBuf[1024*4];
+		int retLen = recv(sockClient,recvBuf,1024 * 4,0);
+		cout<<"retLen="<<retLen<<endl;
+		if(retLen <= 0) {
+			return "";
+		}
+		recvBuf[retLen] = '\0';
+
+		//响应码
+		char no[3];
+		memcpy(no ,recvBuf , 2);
+		no[2] = '\0';
+		cout << "msgCode:"<<string(no) << endl;
+		//逗号
+		memcpy(no ,recvBuf+2 , 1);
+		no[1] = '\0';
+		cout << "dot:"<<string(no) << endl;
+		//包号
+		memcpy(no ,recvBuf+3 , 2);
+		no[2] = '\0';
+		short blockNo = ntohs(bytesToShort((byte*)no));
+
+		cout <<"package no:"<< blockNo<< endl;
+		if(blockNo==(short)0xFFFF) {
+			string hexStr = bytes_to_hexstr((byte*)(recvBuf+5),(byte*)(recvBuf+retLen));
+			cout << hexStr << endl;
+			return "";
+		} else {
+			string hexStr = bytes_to_hexstr((byte*)(recvBuf+5),(byte*)(recvBuf+retLen));
+			cout << hexStr << endl;
+			write_file(fp,recvBuf+5,retLen-5);
+		}
+
+		return to_string(blockNo);
+	}
+
+	int send_data() {
+		WORD wVersionRequested;
+		WSADATA wsaData;
+		int err;
+		wVersionRequested = MAKEWORD(1,1);
+		err = WSAStartup(wVersionRequested,&wsaData);
+		cout<<"startup: "+err<<endl;
+		if ( err != 0 ) {
+			return 1;
+		}
+		if ( LOBYTE( wsaData.wVersion ) != 1 ||
+		        HIBYTE( wsaData.wVersion ) != 1 ) {
+			WSACleanup( );
+			return 1;
+		}
+		SOCKET sockClient=socket(AF_INET,SOCK_STREAM,0);
+		SOCKADDR_IN addrSrv;
+
+		addrSrv.sin_addr.S_un.S_addr=inet_addr("127.0.0.1");
+		addrSrv.sin_family=AF_INET;
+
+		addrSrv.sin_port=htons(10124);
+		connect(sockClient,(SOCKADDR*)&addrSrv,sizeof(SOCKADDR));
+
+		char* res="04,0,01";
+		char deli  = '\n';
+		send(sockClient,res,strlen(res),0);
+		send(sockClient,&deli,1,0);
+
+		FILE* fp = create_file();
+		string packageNo = receive_block_data(sockClient,fp);
+		int c = 0;
+		while(!packageNo.empty()) {
+			//cout<<"package no:"<<a<<endl;
+//			c++;
+//			if(c==22) {
+//				break;
+//			}
+
+			string resp= "04,"+packageNo+",01";
+//			if( 20<=c&&c<=22) {
+//				resp = "04,"+packageNo+",00";
+//			}
+
+			cout<<"resp:"<<resp<<endl;
+			send(sockClient,resp.data(),resp.length(),0);
+			send(sockClient,&deli,1,0);
+			cout<<"rev-----start"<<endl;
+			packageNo = receive_block_data(sockClient,fp);
+			cout<<"rev-----end"<<endl;
+		}
+		close_file(fp);
+
+		cout<<"close-----"<<endl;
+		closesocket(sockClient);
+		WSACleanup();
+		return 0;
+	}
+
 	int sendmsg() {
 		WORD wVersionRequested;
 		WSADATA wsaData;
@@ -168,7 +279,6 @@ namespace NetSend {
 
 
 		char *data= "01,17DD5E6E,1,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
-		char *d ="\r\n";
 		char deli  = '\n';
 		data = G2U(data);
 		send(sockClient,data,strlen(data),0);
@@ -188,25 +298,25 @@ namespace NetSend {
 		char no[3];
 		memcpy(no ,recvBuf , 2);
 		no[2] = '\0';
+		//响应码
 		cout << string(no) << endl;
-
+		//包号
 		memcpy(no ,recvBuf+2 , 1);
 		no[1] = '\0';
 		cout << string(no) << endl;
 
 		memcpy(no ,recvBuf+3 , 2);
 		cout << ntohs(bytesToShort((byte*)no))<< endl;
+		no[2] = '\0';
 		//printf("%s",recvBuf);
 
-		string hexStr = bytes_to_hexstr((byte*)(recvBuf+4),(byte*)(recvBuf+1024+4));
+		string hexStr = bytes_to_hexstr((byte*)(recvBuf+5),(byte*)(recvBuf+1024+5));
 		cout << hexStr << endl;
-		//cout<<string(recvBuf)<<endl;
 
-		send(sockClient,d,strlen(d),0);
 		Sleep(10*1000);
 
-		//send(sockClient,data,strlen(data),0);
-		//send(sockClient,&deli,1,0);
+		send(sockClient,data,strlen(data),0);
+		send(sockClient,&deli,1,0);
 		Sleep(100*1000);
 		/*
 		retLen = recv(sockClient,recvBuf,1024 * 5,0);
@@ -239,7 +349,7 @@ namespace NetSend {
 		}
 		SOCKET sockClient=socket(AF_INET,SOCK_STREAM,0);
 		SOCKADDR_IN addrSrv;
-		addrSrv.sin_addr.S_un.S_addr=inet_addr("127.0.0.1");
+		addrSrv.sin_addr.S_un.S_addr=inet_addr("123.56.76.77");
 		addrSrv.sin_family=AF_INET;
 		addrSrv.sin_port=htons(10122);
 		connect(sockClient,(SOCKADDR*)&addrSrv,sizeof(SOCKADDR));

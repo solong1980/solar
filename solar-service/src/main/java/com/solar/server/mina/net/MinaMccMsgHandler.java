@@ -65,7 +65,7 @@ public class MinaMccMsgHandler extends IoHandlerAdapter {
 	 */
 	@Override
 	public void sessionClosed(IoSession session) throws Exception {
-		// logger.info("a session closed ip:{}", session.getRemoteAddress());
+		logger.info("a session closed ip:{}", session.getRemoteAddress());
 		AppSession appSession = AppSession.getInstance(session);
 		if (appSession != null) {
 			AppSessionManager.getInstance().rmDevSession(appSession);
@@ -84,9 +84,7 @@ public class MinaMccMsgHandler extends IoHandlerAdapter {
 		}
 		appSession.addTime(1);
 		if (appSession.getTime() > 10) {
-			AppSessionManager.getInstance().rmDevSession(appSession);
 			appSession.close();
-			session.closeNow();
 			return;
 		}
 	}
