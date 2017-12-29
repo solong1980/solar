@@ -342,9 +342,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 
 		JLabel emailLabel = new JLabel(getBoldHTML("邮箱地址"));
 		JLabel userTypeLabel = new JLabel(getBoldHTML("用户类型"));
-		JLabel projectAddr1Label = new JLabel(getBoldHTML("项目地址1"));
-		JLabel projectAddr2Label = new JLabel(getBoldHTML("项目地址2"));
-		JLabel projectAddr3Label = new JLabel(getBoldHTML("项目地址3"));
+		JLabel projectAddr1Label = new JLabel(getBoldHTML("项目地址"));
 		JLabel envAddrLabel = new JLabel(getBoldHTML("环保局地址"));
 		JComponent regiestPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
@@ -372,10 +370,6 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		gbc.gridy++;
 		regiestPanel.add(projectAddr1Label, gbc);
 		gbc.gridy++;
-		regiestPanel.add(projectAddr2Label, gbc);
-		gbc.gridy++;
-		regiestPanel.add(projectAddr3Label, gbc);
-		gbc.gridy++;
 		regiestPanel.add(envAddrLabel, gbc);
 
 		JTextField accountField = new JTextField("");
@@ -389,8 +383,6 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		userTypeField.addItem("运维");
 		userTypeField.addItem("局方 ");
 		MultiAddressTreeField projectAddr1Field = MultiAddressTreeField.build();
-		MultiComboBox projectAddr2Field = MultiComboBox.build();
-		MultiComboBox projectAddr3Field = MultiComboBox.build();
 		AddressTreeField envAddrField = AddressTreeField.buildFoldLeaf();
 
 		envAddrLabel.setEnabled(false);
@@ -441,10 +433,6 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		regiestPanel.add(userTypeField, gbc);
 		gbc.gridy++;
 		regiestPanel.add(projectAddr1Field, gbc);
-		gbc.gridy++;
-		regiestPanel.add(projectAddr2Field, gbc);
-		gbc.gridy++;
-		regiestPanel.add(projectAddr3Field, gbc);
 		gbc.gridy++;
 		regiestPanel.add(envAddrField, gbc);
 

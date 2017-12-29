@@ -1,15 +1,14 @@
 package com.solar.common.util;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.google.common.base.Charsets;
-import com.google.common.io.Files;
 
 public class LocationLoader {
 
@@ -72,10 +71,24 @@ public class LocationLoader {
 		if (fromJson == null) {
 			try {
 				URL resource = Thread.currentThread().getContextClassLoader().getResource("locations");
-				String file = resource.getPath();
-				String read = Files.asCharSource(new File(file), Charsets.UTF_8).read();
+				InputStream openStream = resource.openStream();
+
+				BufferedReader bi = new BufferedReader(new InputStreamReader(openStream, "UTF-8"));
+				String line = bi.readLine();
+				StringBuilder ser = new StringBuilder();
+				while (line != null) {
+					ser.append(line);
+					line = bi.readLine();
+				}
+				// BufferedReader bufferedReader = new BufferedReader(new FileReader(new
+				// File(resource.toURI())));
+				// CharSource source = Files.asCharSource(new File(resource.toURI()),
+				// Charset.defaultCharset());
+				// String file = resource.getPath();
+				// String read = Files.asCharSource(new File(file), Charsets.UTF_8).read();
+				String read = ser.toString();
 				fromJson = JsonUtilTool.fromJson(read, JSONObject.class);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		}
