@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.DelayQueue;
+import java.util.concurrent.Delayed;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -203,4 +206,82 @@ public class SolarCache {
 		guavaAppSersionCache.invalidate(sessionId);
 	}
 
+	private DelayQueue<DevValveFlag> devBlockDownloadValve = new DelayQueue<>();
+	private Map<String, DevValveFlag> devValveMap = new ConcurrentHashMap<>();
+
+	public void devBlockValueCheck() {
+		Thread t = new Thread() {
+			@Override
+			public void run() {
+				while (true) {
+					DevValveFlag delayedItem = devBlockDownloadValve.poll();
+					if (delayedItem != null) {
+						delayedItem.run();
+						continue;
+					}
+					try {
+						Thread.sleep(1000);
+					} catch (Exception e) {
+					}
+				}
+			}
+		};
+		t.setDaemon(true);
+		t.start();
+	}
+
+	public boolean accessDownload(String devNo) {
+		if (devNo == null)
+			return false;
+
+		boolean isDevIn = devValveMap.containsKey(devNo);
+		if (isDevIn)
+			return false;
+		if (devValveMap.size() > 50)
+			return false;
+
+		devBlockDownloadValve.put(new DevValveFlag(devNo, 5));
+
+		return true;
+	}
+
+	private class DevValveFlag implements Delayed, Runnable {
+		private String devNo;
+		private long workTime;
+		private long submitTime;
+
+		public DevValveFlag(String devNo, long workTime) {
+			super();
+			this.devNo = devNo;
+			this.workTime = workTime;
+			this.submitTime = TimeUnit.NANOSECONDS.convert(workTime, TimeUnit.MINUTES) + System.nanoTime();
+		}
+
+		@Override
+		public int compareTo(Delayed o) {
+			if (o == null || !(o instanceof DevValveFlag))
+				return 1;
+			if (o == this)
+				return 0;
+			DevValveFlag s = (DevValveFlag) o;
+			if (this.workTime > s.workTime) {
+				return 1;
+			} else if (this.workTime == s.workTime) {
+				return 0;
+			} else {
+				return -1;
+			}
+		}
+
+		@Override
+		public long getDelay(TimeUnit unit) {
+			return unit.convert(submitTime - System.nanoTime(), TimeUnit.NANOSECONDS);
+		}
+
+		@Override
+		public void run() {
+			devValveMap.remove(this.devNo);
+		}
+
+	}
 }
