@@ -83,7 +83,7 @@ public class MinaMccMsgHandler extends IoHandlerAdapter {
 			return;
 		}
 		appSession.addTime(1);
-		if (appSession.getTime() > 10) {
+		if (appSession.getTime() > 2) {
 			appSession.close();
 			return;
 		}
