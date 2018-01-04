@@ -63,6 +63,8 @@ public class SolarCache {
 		workingModeService = SoProjectWorkingModeService.getInstance();
 		devicesService = SoDevicesService.getInstance();
 		appVersionService = SoAppVersionService.getInstance();
+		
+		devBlockValueCheck();
 	}
 
 	public SoProjectWorkingMode getWorkingMode(Long projectId) throws ExecutionException {
@@ -231,17 +233,17 @@ public class SolarCache {
 	}
 
 	public boolean accessDownload(String devNo) {
+		if (devValveMap.size() > 2)
+			return false;
 		if (devNo == null)
 			return false;
 
 		boolean isDevIn = devValveMap.containsKey(devNo);
 		if (isDevIn)
 			return false;
-		if (devValveMap.size() > 50)
-			return false;
-
-		devBlockDownloadValve.put(new DevValveFlag(devNo, 5));
-
+		DevValveFlag devValveFlag = new DevValveFlag(devNo, 5);
+		devValveMap.put(devNo, devValveFlag);
+		devBlockDownloadValve.put(devValveFlag);
 		return true;
 	}
 

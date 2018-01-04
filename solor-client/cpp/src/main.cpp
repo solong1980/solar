@@ -15,6 +15,7 @@ namespace NetSend {
 	void sendrev();
 	void sendmsg();
 	void send_data();
+	void send_upgrade();
 }
 
 void splitStr() {

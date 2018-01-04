@@ -73,6 +73,10 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 		if (logger.isDebugEnabled()) {
 			logger.debug("Data update : {}", Arrays.toString(reqs));
 		}
+		if (reqs.length < 20) {
+			logger.error("data len is not enought");
+			return;
+		}
 		String uuid = reqs[1];
 		// 如果设备未登陆,择登陆
 		if (!appSession.isLogin()) {
@@ -88,15 +92,12 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 		String ver = reqs[2];
 		long verInt = Long.valueOf(ver, 16);
 		int deviceWareVerion = SolarCache.getInstance().getDeviceWareVerionNo();
-		if (deviceWareVerion > verInt) {
+		if (SolarCache.getInstance().accessDownload(uuid) && deviceWareVerion > verInt) {
 			// doSendData
+			logger.debug("send update data blockNo=1 for devNo=" + uuid);
 			sendUpdataWareData(appSession, 1);
 		}
 
-		if (reqs.length < 20) {
-			logger.error("data len is not enought");
-			return;
-		}
 		try {
 			SoRunningData runningData = new SoRunningData();
 			WeakReference<SoRunningData> wf = new WeakReference<SoRunningData>(runningData);

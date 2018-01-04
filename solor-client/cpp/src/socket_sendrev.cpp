@@ -190,8 +190,10 @@ namespace NetSend {
 
 		return to_string(blockNo);
 	}
-
-	int send_data() {
+	/**
+	* 循环发送数据
+	*/
+	int send_upgrade() {
 		WORD wVersionRequested;
 		WSADATA wsaData;
 		int err;
@@ -245,6 +247,59 @@ namespace NetSend {
 		close_file(fp);
 
 		cout<<"close-----"<<endl;
+		closesocket(sockClient);
+		WSACleanup();
+		return 0;
+	}
+
+	int dataupload(SOCKET& sockClient,const char *data) {
+		char deli  = '\n';
+		data = G2U(data);
+		send(sockClient,data,strlen(data),0);
+		send(sockClient,&deli,1,0);
+	}
+
+	int send_data() {
+		WORD wVersionRequested;
+		WSADATA wsaData;
+		int err;
+
+		wVersionRequested = MAKEWORD(1,1);
+		err = WSAStartup(wVersionRequested,&wsaData);
+
+		cout<<"startup:"+err<<endl;
+
+		if ( err != 0 ) {
+			return 1;
+		}
+		if ( LOBYTE( wsaData.wVersion ) != 1 ||
+		        HIBYTE( wsaData.wVersion ) != 1 ) {
+			WSACleanup( );
+			return 1;
+		}
+		SOCKET sockClient=socket(AF_INET,SOCK_STREAM,0);
+		SOCKADDR_IN addrSrv;
+
+		addrSrv.sin_addr.S_un.S_addr=inet_addr("127.0.0.1");
+		addrSrv.sin_family=AF_INET;
+
+		addrSrv.sin_port=htons(10124);
+		connect(sockClient,(SOCKADDR*)&addrSrv,sizeof(SOCKADDR));
+
+
+		char *data= "01,17DD5E6E,1,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
+	 	dataupload(sockClient,data);
+		Sleep(10*1000);
+		//data= "01,17DD5E6E,1,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
+		dataupload(sockClient,data);
+		Sleep(10*1000);
+		//data= "01,17DD5E6E,1,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
+		dataupload(sockClient,data);
+		Sleep(10*1000);
+		//data= "01,17DD5E6E,1,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
+		dataupload(sockClient,data);
+		
+		Sleep(10*1000);
 		closesocket(sockClient);
 		WSACleanup();
 		return 0;

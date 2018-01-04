@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.solar.controller.common.INotAuthProcessor;
 import com.solar.controller.common.MccMsgProcessor;
+import com.solar.entity.SoDevices;
 import com.solar.server.commons.session.AppSession;
 
 /**
@@ -40,6 +41,9 @@ public class DeviceWareBlockCmdProcessor extends MccMsgProcessor implements INot
 				return;
 			}
 		}
+		if (logger.isDebugEnabled())
+			logger.debug("send update data blockNo=" + blockNo + " for devNo="
+					+ appSession.getEnti(SoDevices.class).getDevNo());
 		sendUpdataWareData(appSession, blockNo);
 		/**
 		 * byte[] block = SolarCache.getInstance().getDeviceWareDataBlock(bno); if
