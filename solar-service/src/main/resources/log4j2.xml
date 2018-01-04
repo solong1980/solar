@@ -7,8 +7,6 @@
 			<PatternLayout pattern="%d (%F:%L) %-5p %c - %m%n" />
 			<Filters>
 				<ThresholdFilter level="DEBUG" />
-				<ThresholdFilter level="INFO" onMatch="DENY"
-					onMismatch="NEUTRAL" />
 			</Filters>
 		</console>
 		<RollingFile name="RollingFileDebug" fileName="${sys:user.home}/logs/alisvc/debug.log"

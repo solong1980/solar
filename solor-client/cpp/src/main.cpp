@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <vector>
+#include <thread>
 #pragma comment(lib, "json/json_reader.o")
 
 using namespace std;
@@ -29,10 +30,17 @@ void splitStr() {
 		cout<<v[i]<<endl;
 	}
 }
+
+void hello(){
+    std::cout << "Hello from thread " << std::endl;
+}
+
 int main(int argc, char** argv) {
 	//JsonCall::readFromFile();
-
-	NetSend::send_data();
+	std::thread t1(hello);
+	t1.join();
+	std::thread t2(NetSend::send_data);
+	t2.join();
 	cout<<"--"<<endl;
 	return 0;
 }

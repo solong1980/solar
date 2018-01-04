@@ -7,6 +7,7 @@
 #include <vector>
 #include <sstream>
 #include <iomanip>
+#include <thread>
 using namespace std;
 
 #pragma comment(lib, "ws2_32")
@@ -15,6 +16,8 @@ using namespace std;
 
 
 namespace NetSend {
+	int count=0;
+
 	class NetWork {
 		private:
 			string ip;
@@ -251,10 +254,16 @@ namespace NetSend {
 	}
 
 	int dataupload(SOCKET& sockClient,const char *data) {
+		NetSend::count++;
+		cout<<"send data"<<NetSend::count<<endl;
 		char deli  = '\n';
 		data = G2U(data);
 		send(sockClient,data,strlen(data),0);
 		send(sockClient,&deli,1,0);
+		return 1;
+	}
+	int dataupload1(SOCKET& sockClient) {
+		return 1;
 	}
 	/**
 	* 循环发送数据
@@ -288,17 +297,27 @@ namespace NetSend {
 
 
 		char *data= "01,17DD5E6E,1,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
-	 	dataupload(sockClient,data);
-		Sleep(10*1000);
-		//data= "01,17DD5E6E,1,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
-		dataupload(sockClient,data);
-		Sleep(10*1000);
-		//data= "01,17DD5E6E,1,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
-		dataupload(sockClient,data);
-		Sleep(10*1000);
-		//data= "01,17DD5E6E,1,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
-		dataupload(sockClient,data);
+
+		std::thread t1(dataupload,std::ref(sockClient),data);
+		std::thread t2(dataupload,std::ref(sockClient),data);
+		std::thread t3(dataupload,std::ref(sockClient),data);
 		
+		std::thread t4(dataupload,std::ref(sockClient),data);
+		std::thread t5(dataupload,std::ref(sockClient),data);
+		std::thread t6(dataupload,std::ref(sockClient),data);
+		
+		
+		/**
+		Sleep(10*1000);
+		//data= "01,17DD5E6E,1,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
+		dataupload(sockClient,data);
+		Sleep(10*1000);
+		//data= "01,17DD5E6E,1,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
+		dataupload(sockClient,data);
+		Sleep(10*1000);
+		//data= "01,17DD5E6E,1,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
+		dataupload(sockClient,data);
+		*/
 		Sleep(10*1000);
 		closesocket(sockClient);
 		WSACleanup();
