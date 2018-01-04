@@ -190,9 +190,7 @@ namespace NetSend {
 
 		return to_string(blockNo);
 	}
-	/**
-	* 循环发送数据
-	*/
+
 	int send_upgrade() {
 		WORD wVersionRequested;
 		WSADATA wsaData;
@@ -258,7 +256,9 @@ namespace NetSend {
 		send(sockClient,data,strlen(data),0);
 		send(sockClient,&deli,1,0);
 	}
-
+	/**
+	* 循环发送数据
+	*/
 	int send_data() {
 		WORD wVersionRequested;
 		WSADATA wsaData;

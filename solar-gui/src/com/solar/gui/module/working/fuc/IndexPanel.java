@@ -47,6 +47,7 @@ import com.solar.entity.SoProject;
 import com.solar.entity.SoProjectWorkingMode;
 import com.solar.entity.SoRunningData;
 import com.solar.gui.component.BezierAnimationPanel;
+import com.solar.gui.component.formate.ButtonUI;
 import com.solar.gui.component.formate.InputState;
 import com.solar.gui.component.formate.JFieldBuilder;
 import com.solar.gui.component.model.TreeAddr;
@@ -124,9 +125,9 @@ public class IndexPanel extends BasePanel implements Observer {
 		ButtonGroup[] buttonGroups = new ButtonGroup[8];
 		for (int i = 0; i < 8; i++) {
 			buttonGroups[i] = new ButtonGroup();
-			startBtns[i] = new JRadioButton("启动");
-			startBtns[i].setSelected(true);
-			stopBtns[i] = new JRadioButton("停止");
+			startBtns[i] = ButtonUI.makeRadioBtn("持续运行", "");
+			stopBtns[i] = ButtonUI.makeRadioBtn("定时运行", "");
+			stopBtns[i].setSelected(true);
 
 			buttonGroups[i].add(startBtns[i]);
 			buttonGroups[i].add(stopBtns[i]);
@@ -274,9 +275,9 @@ public class IndexPanel extends BasePanel implements Observer {
 		ButtonGroup[] buttonGroups = new ButtonGroup[8];
 		for (int i = 0; i < 8; i++) {
 			buttonGroups[i] = new ButtonGroup();
-			startBtns[i] = new JRadioButton("启动");
-			stopBtns[i] = new JRadioButton("停止");
-
+			startBtns[i] = ButtonUI.makeRadioBtn("启动","");
+			stopBtns[i] = ButtonUI.makeRadioBtn("停止","");
+			
 			buttonGroups[i].add(startBtns[i]);
 			buttonGroups[i].add(stopBtns[i]);
 		}
@@ -500,9 +501,9 @@ public class IndexPanel extends BasePanel implements Observer {
 
 	public IndexPanel() {
 		super(new BorderLayout(5, 5));
-		
+
 		runningDataCron.startFetchRunningData();
-		
+
 		JPanel projectTreePanel = createTree(new TreeSelectionListener() {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
