@@ -233,7 +233,7 @@ public class SolarCache {
 	}
 
 	public boolean accessDownload(String devNo) {
-		if (devValveMap.size() > 2)
+		if (devValveMap.size() > 30)
 			return false;
 		if (devNo == null)
 			return false;
@@ -241,7 +241,7 @@ public class SolarCache {
 		boolean isDevIn = devValveMap.containsKey(devNo);
 		if (isDevIn)
 			return false;
-		DevValveFlag devValveFlag = new DevValveFlag(devNo, 5);
+		DevValveFlag devValveFlag = new DevValveFlag(devNo, 1);
 		devValveMap.put(devNo, devValveFlag);
 		devBlockDownloadValve.put(devValveFlag);
 		return true;
