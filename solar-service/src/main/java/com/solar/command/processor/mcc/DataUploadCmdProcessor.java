@@ -90,12 +90,12 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 		}
 
 		String ver = reqs[2];
-		long verInt = Long.valueOf(ver, 16);
+		long verInt = Long.parseLong(ver, 16);
 		int deviceWareVerion = SolarCache.getInstance().getDeviceWareVerionNo();
 		if (SolarCache.getInstance().accessDownload(uuid) && deviceWareVerion > verInt) {
-			// doSendData
-			logger.debug("send update data blockNo=1 for devNo=" + uuid);
-			sendUpdataWareData(appSession, 1);
+			// doSendUpgradeData
+			logger.debug("send update data blockNo=0 for devNo=" + uuid);
+			sendUpdataWareData(appSession, 0);
 		}
 
 		try {

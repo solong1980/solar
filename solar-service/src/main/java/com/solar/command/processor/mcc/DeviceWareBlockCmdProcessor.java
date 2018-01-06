@@ -28,23 +28,42 @@ public class DeviceWareBlockCmdProcessor extends MccMsgProcessor implements INot
 			logger.info("device ware block req," + Arrays.toString(reqs));
 		if (reqs.length < 3)
 			return;
-		String lastPackageNo = reqs[1];
-		String state = reqs[2];
-		int blockNo = Integer.parseInt(lastPackageNo);
-		if (state.equals("01")) {
-			appSession.addBlockFailTime(0);
-			blockNo = blockNo + 1;
-		} else if (state.equals("00")) {
-			appSession.addBlockFailTime(1);
-			if (appSession.getBlockFailTime() >= 3) {
+		String devNo = "";
+		try {
+			devNo = appSession.getEnti(SoDevices.class).getDevNo();
+		} catch (Exception e) {
+		}
+		try {
+			String state = reqs[1];
+			String lastPackageNo = reqs[2];
+			int blockNo = Integer.parseInt(lastPackageNo);
+			if (state.equals("01")) {
 				appSession.addBlockFailTime(0);
+				blockNo = blockNo + 1;
+				if (blockNo < 0) {
+					if (logger.isDebugEnabled())
+						logger.debug("device ware block, blockNo=" + blockNo + " error, blockNo(- [1,)");
+					return;
+				}
+			} else if (state.equals("00")) {
+				appSession.addBlockFailTime(1);
+				if (appSession.getBlockFailTime() >= 3) {
+					appSession.addBlockFailTime(0);
+					return;
+				}
+			} else {
+				if (logger.isDebugEnabled())
+					logger.debug("unknow state=" + state + " for devNo=" + devNo);
 				return;
 			}
+			if (logger.isDebugEnabled())
+				logger.debug("send update data blockNo=" + blockNo + " for devNo=" + devNo);
+			sendUpdataWareData(appSession, blockNo);
+		} catch (Exception e) {
+			appSession.addBlockFailTime(1);
+			logger.error("send update error", e);
 		}
-		if (logger.isDebugEnabled())
-			logger.debug("send update data blockNo=" + blockNo + " for devNo="
-					+ appSession.getEnti(SoDevices.class).getDevNo());
-		sendUpdataWareData(appSession, blockNo);
+
 		/**
 		 * byte[] block = SolarCache.getInstance().getDeviceWareDataBlock(bno); if
 		 * (block.length > 0) { ByteArrayOutputStream byteStream = null;

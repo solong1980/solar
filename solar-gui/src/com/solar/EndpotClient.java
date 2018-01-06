@@ -91,7 +91,12 @@ public class EndpotClient extends JFrame {
 	public static void main(String[] args) {
 		int maxValue = Integer.MAX_VALUE;
 		System.out.println(Integer.toHexString(maxValue));
+
+		long parseLong = Long.parseLong("40bbd96d",16);
 		
+		String ver = "V01".replaceAll("V|v", "");
+		System.out.println(ver);
+		System.out.println(parseLong);
 		long parseInt = Long.valueOf("FFFFFFFF",16);
 		System.out.println(parseInt);
 

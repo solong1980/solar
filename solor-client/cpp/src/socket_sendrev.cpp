@@ -181,7 +181,7 @@ namespace NetSend {
 		short blockNo = ntohs(bytesToShort((byte*)no));
 
 		cout <<"package no:"<< blockNo<< endl;
-		if(blockNo==(short)0xFFFF) {
+		if(blockNo==(short)0x7FFF) {
 			string hexStr = bytes_to_hexstr((byte*)(recvBuf+5),(byte*)(recvBuf+retLen));
 			cout << hexStr << endl;
 			return "";
@@ -218,7 +218,8 @@ namespace NetSend {
 		addrSrv.sin_port=htons(10124);
 		connect(sockClient,(SOCKADDR*)&addrSrv,sizeof(SOCKADDR));
 
-		char* res="04,0,01";
+		char* res="04,01,-1";
+		//res = "04,01,0";
 		char deli  = '\n';
 		send(sockClient,res,strlen(res),0);
 		send(sockClient,&deli,1,0);
@@ -233,7 +234,7 @@ namespace NetSend {
 //				break;
 //			}
 
-			string resp= "04,"+packageNo+",01";
+			string resp= "04,01,"+packageNo;
 //			if( 20<=c&&c<=22) {
 //				resp = "04,"+packageNo+",00";
 //			}
@@ -296,15 +297,15 @@ namespace NetSend {
 		connect(sockClient,(SOCKADDR*)&addrSrv,sizeof(SOCKADDR));
 
 
-		char *data= "01,17DD5E6E,1,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
+		char *data= "01,17DD5E6E,1001,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
 
 		std::thread t1(dataupload,std::ref(sockClient),data);
-		std::thread t2(dataupload,std::ref(sockClient),data);
-		std::thread t3(dataupload,std::ref(sockClient),data);
+	//  std::thread t2(dataupload,std::ref(sockClient),data);
+	//	std::thread t3(dataupload,std::ref(sockClient),data);
 		
-		std::thread t4(dataupload,std::ref(sockClient),data);
-		std::thread t5(dataupload,std::ref(sockClient),data);
-		std::thread t6(dataupload,std::ref(sockClient),data);
+	//	std::thread t4(dataupload,std::ref(sockClient),data);
+	//	std::thread t5(dataupload,std::ref(sockClient),data);
+	//	std::thread t6(dataupload,std::ref(sockClient),data);
 		
 		
 		/**

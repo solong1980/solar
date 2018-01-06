@@ -63,7 +63,7 @@ public class SolarCache {
 		workingModeService = SoProjectWorkingModeService.getInstance();
 		devicesService = SoDevicesService.getInstance();
 		appVersionService = SoAppVersionService.getInstance();
-		
+
 		devBlockValueCheck();
 	}
 
@@ -109,28 +109,31 @@ public class SolarCache {
 	public byte[] getDeviceWareDataBlock(int dataBlockNo) throws ExecutionException {
 		SoAppVersion appVersion = getDeviceWareVerion();
 		if (appVersion != null && appVersion.getVerNo() > 0) {
-			if (dataBlockNo == appVersion.getBlockCount() + 1) {
+			if (dataBlockNo == appVersion.getBlockCount()) {
 				// write end
 				String fileName = appVersion.getFileName();
-				String[] fileInfos = fileName.split("-");
+				String[] fileInfos = fileName.split("_|\\.");
 				try {
 					String crc = fileInfos[1];
 					String ver = fileInfos[2];
+
+					ver = ver.replaceAll("V|v", "");
+
 					ByteArrayOutputStream bStream = new ByteArrayOutputStream(8);
 					DataOutputStream dStream = new DataOutputStream(bStream);
 					dStream.writeInt(Integer.parseInt(ver));
-					dStream.writeInt(Integer.parseInt(crc));
+					dStream.writeInt(Integer.parseInt(crc, 16));
 					dStream.flush();
 					return bStream.toByteArray();
 				} catch (Exception e) {
 					logger.error("create block data end flag data error", e);
-					String crc = "1233566";
-					String ver = "1";
+					String crc = "00000000";
+					String ver = "0";
 					ByteArrayOutputStream bStream = new ByteArrayOutputStream(8);
 					DataOutputStream dStream = new DataOutputStream(bStream);
 					try {
 						dStream.writeInt(Integer.parseInt(ver));
-						dStream.writeInt(Integer.parseInt(crc));
+						dStream.writeInt(Integer.parseInt(crc, 16));
 						dStream.flush();
 						return bStream.toByteArray();
 					} catch (NumberFormatException | IOException e1) {
@@ -145,7 +148,7 @@ public class SolarCache {
 				}
 			}
 
-			if (dataBlockNo >= appVersion.getBlockCount() + 2)
+			if (dataBlockNo >= appVersion.getBlockCount() + 1)
 				return new byte[0];
 			byte[] bs = deviceWareDataBlockCache.get(dataBlockNo, new Callable<byte[]>() {
 				@Override
@@ -154,10 +157,10 @@ public class SolarCache {
 					if (fileData == null || fileData.length == 0)
 						return new byte[0];
 					int dLen = fileData.length;
-					int pos = k * dataBlockNo;
+					int pos = k * (dataBlockNo + 1);
 					if (pos <= dLen) {
 						byte[] cd = new byte[k];
-						System.arraycopy(fileData, k * (dataBlockNo - 1), cd, 0, k);
+						System.arraycopy(fileData, k * dataBlockNo, cd, 0, k);
 						return cd;
 					} else if ((pos - k) < dLen && pos > dLen) {
 						byte[] cd = new byte[dLen - (pos - k)];
@@ -241,7 +244,7 @@ public class SolarCache {
 		boolean isDevIn = devValveMap.containsKey(devNo);
 		if (isDevIn)
 			return false;
-		DevValveFlag devValveFlag = new DevValveFlag(devNo, 1);
+		DevValveFlag devValveFlag = new DevValveFlag(devNo, 3);
 		devValveMap.put(devNo, devValveFlag);
 		devBlockDownloadValve.put(devValveFlag);
 		return true;

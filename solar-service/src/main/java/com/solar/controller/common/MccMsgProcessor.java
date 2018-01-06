@@ -32,7 +32,7 @@ public abstract class MccMsgProcessor {
 	public void sendUpdataWareData(AppSession appSession, int blockNo) throws ExecutionException, IOException {
 		SoAppVersion deviceWareVerion = SolarCache.getInstance().getDeviceWareVerion();
 		int blockCount = deviceWareVerion.getBlockCount();
-		if (blockNo >= blockCount + 2) {
+		if (blockNo >= blockCount + 1) {
 			logger.error("blockNo toooo large");
 			return;
 		}
@@ -45,8 +45,8 @@ public abstract class MccMsgProcessor {
 				dataStream = new DataOutputStream(byteStream);
 				dataStream.writeBytes(ConnectAPI.MC_UPDATE_WARE_BLOCK_RESPONE);
 				dataStream.writeBytes(",");
-				if (blockCount + 1 == blockNo) {
-					dataStream.writeShort(0xFFFF);
+				if (blockCount == blockNo) {
+					dataStream.writeShort(0x7FFF);
 				} else
 					dataStream.writeShort(blockNo);
 				dataStream.write(block);
