@@ -244,7 +244,7 @@ public class SolarCache {
 		boolean isDevIn = devValveMap.containsKey(devNo);
 		if (isDevIn)
 			return false;
-		DevValveFlag devValveFlag = new DevValveFlag(devNo, 3);
+		DevValveFlag devValveFlag = new DevValveFlag(devNo, 30);
 		devValveMap.put(devNo, devValveFlag);
 		devBlockDownloadValve.put(devValveFlag);
 		return true;
@@ -259,7 +259,7 @@ public class SolarCache {
 			super();
 			this.devNo = devNo;
 			this.workTime = workTime;
-			this.submitTime = TimeUnit.NANOSECONDS.convert(workTime, TimeUnit.MINUTES) + System.nanoTime();
+			this.submitTime = TimeUnit.NANOSECONDS.convert(workTime, TimeUnit.SECONDS) + System.nanoTime();
 		}
 
 		@Override
