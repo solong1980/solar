@@ -122,6 +122,7 @@ public class SolarCache {
 					ByteArrayOutputStream bStream = new ByteArrayOutputStream(8);
 					DataOutputStream dStream = new DataOutputStream(bStream);
 					dStream.writeInt(Integer.parseInt(ver));
+					// dStream.writeInt((int)appVersion.getSize());
 					dStream.writeInt(Integer.parseInt(crc, 16));
 					dStream.flush();
 					return bStream.toByteArray();
@@ -133,6 +134,7 @@ public class SolarCache {
 					DataOutputStream dStream = new DataOutputStream(bStream);
 					try {
 						dStream.writeInt(Integer.parseInt(ver));
+						// dStream.writeInt(0);
 						dStream.writeInt(Integer.parseInt(crc, 16));
 						dStream.flush();
 						return bStream.toByteArray();
