@@ -31,6 +31,30 @@ public class SoProjectWorkingMode implements Serializable {
 	private Short h_21;
 	private Short h_22;
 	private Short h_23;
+	private Short h_24;
+	private Short h_25;
+	private Short h_26;
+	private Short h_27;
+	private Short h_28;
+	private Short h_29;
+	private Short h_30;
+	private Short h_31;
+	private Short h_32;
+	private Short h_33;
+	private Short h_34;
+	private Short h_35;
+	private Short h_36;
+	private Short h_37;
+	private Short h_38;
+	private Short h_39;
+	private Short h_40;
+	private Short h_41;
+	private Short h_42;
+	private Short h_43;
+	private Short h_44;
+	private Short h_45;
+	private Short h_46;
+	private Short h_47;
 	private Long createBy;
 	private String updateTime;
 
@@ -240,6 +264,198 @@ public class SoProjectWorkingMode implements Serializable {
 
 	public void setH_23(Short h_23) {
 		this.h_23 = h_23;
+	}
+
+	public Short getH_24() {
+		return h_24;
+	}
+
+	public void setH_24(Short h_24) {
+		this.h_24 = h_24;
+	}
+
+	public Short getH_25() {
+		return h_25;
+	}
+
+	public void setH_25(Short h_25) {
+		this.h_25 = h_25;
+	}
+
+	public Short getH_26() {
+		return h_26;
+	}
+
+	public void setH_26(Short h_26) {
+		this.h_26 = h_26;
+	}
+
+	public Short getH_27() {
+		return h_27;
+	}
+
+	public void setH_27(Short h_27) {
+		this.h_27 = h_27;
+	}
+
+	public Short getH_28() {
+		return h_28;
+	}
+
+	public void setH_28(Short h_28) {
+		this.h_28 = h_28;
+	}
+
+	public Short getH_29() {
+		return h_29;
+	}
+
+	public void setH_29(Short h_29) {
+		this.h_29 = h_29;
+	}
+
+	public Short getH_30() {
+		return h_30;
+	}
+
+	public void setH_30(Short h_30) {
+		this.h_30 = h_30;
+	}
+
+	public Short getH_31() {
+		return h_31;
+	}
+
+	public void setH_31(Short h_31) {
+		this.h_31 = h_31;
+	}
+
+	public Short getH_32() {
+		return h_32;
+	}
+
+	public void setH_32(Short h_32) {
+		this.h_32 = h_32;
+	}
+
+	public Short getH_33() {
+		return h_33;
+	}
+
+	public void setH_33(Short h_33) {
+		this.h_33 = h_33;
+	}
+
+	public Short getH_34() {
+		return h_34;
+	}
+
+	public void setH_34(Short h_34) {
+		this.h_34 = h_34;
+	}
+
+	public Short getH_35() {
+		return h_35;
+	}
+
+	public void setH_35(Short h_35) {
+		this.h_35 = h_35;
+	}
+
+	public Short getH_36() {
+		return h_36;
+	}
+
+	public void setH_36(Short h_36) {
+		this.h_36 = h_36;
+	}
+
+	public Short getH_37() {
+		return h_37;
+	}
+
+	public void setH_37(Short h_37) {
+		this.h_37 = h_37;
+	}
+
+	public Short getH_38() {
+		return h_38;
+	}
+
+	public void setH_38(Short h_38) {
+		this.h_38 = h_38;
+	}
+
+	public Short getH_39() {
+		return h_39;
+	}
+
+	public void setH_39(Short h_39) {
+		this.h_39 = h_39;
+	}
+
+	public Short getH_40() {
+		return h_40;
+	}
+
+	public void setH_40(Short h_40) {
+		this.h_40 = h_40;
+	}
+
+	public Short getH_41() {
+		return h_41;
+	}
+
+	public void setH_41(Short h_41) {
+		this.h_41 = h_41;
+	}
+
+	public Short getH_42() {
+		return h_42;
+	}
+
+	public void setH_42(Short h_42) {
+		this.h_42 = h_42;
+	}
+
+	public Short getH_43() {
+		return h_43;
+	}
+
+	public void setH_43(Short h_43) {
+		this.h_43 = h_43;
+	}
+
+	public Short getH_44() {
+		return h_44;
+	}
+
+	public void setH_44(Short h_44) {
+		this.h_44 = h_44;
+	}
+
+	public Short getH_45() {
+		return h_45;
+	}
+
+	public void setH_45(Short h_45) {
+		this.h_45 = h_45;
+	}
+
+	public Short getH_46() {
+		return h_46;
+	}
+
+	public void setH_46(Short h_46) {
+		this.h_46 = h_46;
+	}
+
+	public Short getH_47() {
+		return h_47;
+	}
+
+	public void setH_47(Short h_47) {
+		this.h_47 = h_47;
 	}
 
 	public Long getCreateBy() {

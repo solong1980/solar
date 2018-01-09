@@ -92,6 +92,10 @@ public class ProjectRunningModeCtrlTask {
 				t = page.getT();
 				if (t != null && !t.isEmpty()) {
 					logger.info("get from page" + start + ",return " + t.size());
+					Calendar calendar = Calendar.getInstance();
+					int h = calendar.get(Calendar.HOUR_OF_DAY);
+					int m = calendar.get(Calendar.MINUTE);
+					int n = ((h * 2) + (m < 30 ? 0 : 1));
 					for (SoDevices soDevices : t) {
 						Long projectId = soDevices.getProjectId();
 						// getmode
@@ -102,15 +106,22 @@ public class ProjectRunningModeCtrlTask {
 						}
 
 						if (projectWorkingMode != null) {
-							Calendar calendar = Calendar.getInstance();
-							int h = calendar.get(Calendar.HOUR);
 
-							Method method = SoProjectWorkingMode.class.getMethod("getH_" + h);
+							Method method = SoProjectWorkingMode.class.getMethod("getH_" + n);
 							if (method != null) {
 								Object v = method.invoke(projectWorkingMode);
 								short f = (Short) v;
 								if (f == 0) {
 									// 按照设备启停设置走
+									// Short sw0 = soDevices.getSw0();
+									// Short sw1 = soDevices.getSw1();
+									// Short sw2 = soDevices.getSw2();
+									// Short sw3 = soDevices.getSw3();
+									// Short sw4 = soDevices.getSw4();
+									// Short sw5 = soDevices.getSw5();
+									// Short sw6 = soDevices.getSw6();
+									// Short sw7 = soDevices.getSw7();
+									// 直接发送设备配置,如果是1就继续,如果是0就是停止
 								} else {
 									// 全部开始
 									soDevices.setSw0((short) 1);

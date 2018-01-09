@@ -51,7 +51,6 @@ import com.solar.entity.SoAccountLocation;
 import com.solar.entity.SoVCode;
 import com.solar.gui.component.AddressTreeField;
 import com.solar.gui.component.MultiAddressTreeField;
-import com.solar.gui.component.MultiComboBox;
 import com.solar.gui.component.formate.InputState;
 import com.solar.gui.component.formate.JFieldBuilder;
 import com.solar.gui.component.model.TreeAddr;

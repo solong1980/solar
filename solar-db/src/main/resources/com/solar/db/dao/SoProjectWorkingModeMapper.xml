@@ -28,6 +28,32 @@
 		<result column="h_21" jdbcType="BIT" property="h_21" />
 		<result column="h_22" jdbcType="BIT" property="h_22" />
 		<result column="h_23" jdbcType="BIT" property="h_23" />
+		
+		<result column="h_24" jdbcType="BIT" property="h_24" />
+		<result column="h_25" jdbcType="BIT" property="h_25" />
+		<result column="h_26" jdbcType="BIT" property="h_26" />
+		<result column="h_27" jdbcType="BIT" property="h_27" />
+		<result column="h_28" jdbcType="BIT" property="h_28" />
+		<result column="h_29" jdbcType="BIT" property="h_29" />
+		<result column="h_30" jdbcType="BIT" property="h_30" />
+		<result column="h_31" jdbcType="BIT" property="h_31" />
+		<result column="h_32" jdbcType="BIT" property="h_32" />
+		<result column="h_33" jdbcType="BIT" property="h_33" />
+		<result column="h_34" jdbcType="BIT" property="h_34" />
+		<result column="h_35" jdbcType="BIT" property="h_35" />
+		<result column="h_36" jdbcType="BIT" property="h_36" />
+		<result column="h_37" jdbcType="BIT" property="h_37" />
+		<result column="h_38" jdbcType="BIT" property="h_38" />
+		<result column="h_39" jdbcType="BIT" property="h_39" />
+		<result column="h_40" jdbcType="BIT" property="h_40" />
+		<result column="h_41" jdbcType="BIT" property="h_41" />
+		<result column="h_42" jdbcType="BIT" property="h_42" />
+		<result column="h_43" jdbcType="BIT" property="h_43" />
+		<result column="h_44" jdbcType="BIT" property="h_44" />
+		<result column="h_45" jdbcType="BIT" property="h_45" />
+		<result column="h_46" jdbcType="BIT" property="h_46" />
+		<result column="h_47" jdbcType="BIT" property="h_47" />
+		
 		<result column="create_by" jdbcType="BIGINT" property="createBy" />
 		<result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
 	</resultMap>
@@ -59,6 +85,30 @@
 		h_21,
 		h_22,
 		h_23,
+		h_24,
+		h_25,
+		h_26,
+		h_27,
+		h_28,
+		h_29,
+		h_30,
+		h_31,
+		h_32,
+		h_33,
+		h_34,
+		h_35,
+		h_36,
+		h_37,
+		h_38,
+		h_39,
+		h_40,
+		h_41,
+		h_42,
+		h_43,
+		h_44,
+		h_45,
+		h_46,
+		h_47,
 		create_by,
 		update_time
 	</sql>
@@ -110,6 +160,30 @@
 		h_21,
 		h_22,
 		h_23,
+		h_24,
+		h_25,
+		h_26,
+		h_27,
+		h_28,
+		h_29,
+		h_30,
+		h_31,
+		h_32,
+		h_33,
+		h_34,
+		h_35,
+		h_36,
+		h_37,
+		h_38,
+		h_39,
+		h_40,
+		h_41,
+		h_42,
+		h_43,
+		h_44,
+		h_45,
+		h_46,
+		h_47,
 		create_by
 		)
 		VALUES
@@ -139,6 +213,30 @@
 		#{h_21},
 		#{h_22},
 		#{h_23},
+		#{h_24},
+		#{h_25},
+		#{h_26},
+		#{h_27},
+		#{h_28},
+		#{h_29},
+		#{h_30},
+		#{h_31},
+		#{h_32},
+		#{h_33},
+		#{h_34},
+		#{h_35},
+		#{h_36},
+		#{h_37},
+		#{h_38},
+		#{h_39},
+		#{h_40},
+		#{h_41},
+		#{h_42},
+		#{h_43},
+		#{h_44},
+		#{h_45},
+		#{h_46},
+		#{h_47},
 		#{createBy}
 		)
 	</insert>
@@ -170,7 +268,31 @@
 		h_20 = #{h_20},
 		h_21 = #{h_21},
 		h_22 = #{h_22},
-		h_23 = #{h_23}
+		h_23 = #{h_23},
+		h_24=#{h_24},
+		h_25=#{h_25},
+		h_26=#{h_26},
+		h_27=#{h_27},
+		h_28=#{h_28},
+		h_29=#{h_29},
+		h_30=#{h_30},
+		h_31=#{h_31},
+		h_32=#{h_32},
+		h_33=#{h_33},
+		h_34=#{h_34},
+		h_35=#{h_35},
+		h_36=#{h_36},
+		h_37=#{h_37},
+		h_38=#{h_38},
+		h_39=#{h_39},
+		h_40=#{h_40},
+		h_41=#{h_41},
+		h_42=#{h_42},
+		h_43=#{h_43},
+		h_44=#{h_44},
+		h_45=#{h_45},
+		h_46=#{h_46},
+		h_47=#{h_47}
 		where
 		project_id=#{projectId}
 	</update>

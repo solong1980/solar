@@ -186,12 +186,18 @@ public class IndexPanel extends BasePanel implements Observer {
 
 		JPanel schedulePanel = new JPanel();
 		schedulePanel.setLayout(new BorderLayout());
-		JPanel checkPanel = new JPanel(new GridLayout(12, 2));
-		for (int i = 0; i < 24; i++) {
-			// 0:00-1:00
-			JCheckBox box = new JCheckBox(i + ":00-" + (i + 1) + ":00");
+		JPanel checkPanel = new JPanel(new GridLayout(12, 4));
+		for (int i = 0; i < 48; i++) {
+			JPanel jPanel = new JPanel(new BorderLayout());
+			// 0:00-0:30
+			JCheckBox box = new JCheckBox((30 * i / 60) + ":" + String.format("%02d", (30 * i % 60)) + "-"
+					+ (30 * (i + 1) / 60) + ":" + String.format("%02d", (30 * (i + 1) % 60)));
+
+			jPanel.add(new JLabel(String.format("%02d", i + 1) + "."), BorderLayout.WEST);
+			jPanel.add(box, BorderLayout.CENTER);
+
 			workingTimeCheckBoxs.add(box);
-			checkPanel.add(box);
+			checkPanel.add(jPanel);
 		}
 		JScrollPane scheduleCheckBoxScrollPane = new JScrollPane(checkPanel);
 		schedulePanel.add(new JLabel("定时运行配置"), BorderLayout.NORTH);
@@ -275,9 +281,9 @@ public class IndexPanel extends BasePanel implements Observer {
 		ButtonGroup[] buttonGroups = new ButtonGroup[8];
 		for (int i = 0; i < 8; i++) {
 			buttonGroups[i] = new ButtonGroup();
-			startBtns[i] = ButtonUI.makeRadioBtn("启动","");
-			stopBtns[i] = ButtonUI.makeRadioBtn("停止","");
-			
+			startBtns[i] = ButtonUI.makeRadioBtn("启动", "");
+			stopBtns[i] = ButtonUI.makeRadioBtn("停止", "");
+
 			buttonGroups[i].add(startBtns[i]);
 			buttonGroups[i].add(stopBtns[i]);
 		}
