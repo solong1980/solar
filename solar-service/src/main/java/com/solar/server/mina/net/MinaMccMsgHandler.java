@@ -8,6 +8,7 @@ import org.apache.mina.core.session.IoSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.solar.entity.SoDevices;
 import com.solar.server.commons.session.AppSession;
 import com.solar.server.commons.session.AppSessionManager;
 import com.solar.server.mina.bootstrap.SolarServer;
@@ -32,12 +33,13 @@ public class MinaMccMsgHandler extends IoHandlerAdapter {
 		if (logger.isDebugEnabled())
 			logger.info("mc_rev:" + msg);
 
+		AppSession appSession = AppSession.getInstance(session);
 		if (msg == null || msg.trim().isEmpty()) {
+			if (appSession != null) {
+				appSession.addTime(0);
+			}
 			return;
 		} else {
-			String[] split = msg.split(",");
-			String msgCode = split[0];
-			AppSession appSession = AppSession.getInstance(session);
 			if (appSession == null) {
 				synchronized (session) {
 					appSession = AppSession.getInstance(session);
@@ -46,6 +48,8 @@ public class MinaMccMsgHandler extends IoHandlerAdapter {
 				}
 			}
 			appSession.addTime(0);
+			String[] split = msg.split(",");
+			String msgCode = split[0];
 			SolarServer.mcMsgDispatcher.dispatchMsg(appSession, msgCode, split);
 		}
 	}
@@ -83,7 +87,8 @@ public class MinaMccMsgHandler extends IoHandlerAdapter {
 			return;
 		}
 		appSession.addTime(1);
-		if (appSession.getTime() > 2) {
+		if (appSession.getTime() > 6) {
+			logger.info("a session idle timeout :{}", appSession.getEnti(SoDevices.class));
 			appSession.close();
 			return;
 		}
