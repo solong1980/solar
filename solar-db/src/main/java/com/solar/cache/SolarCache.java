@@ -123,7 +123,16 @@ public class SolarCache {
 					DataOutputStream dStream = new DataOutputStream(bStream);
 					dStream.writeInt(Integer.parseInt(ver));
 					// dStream.writeInt((int)appVersion.getSize());
-					dStream.writeInt(Integer.parseInt(crc, 16));
+					long parseLong = Long.parseLong(crc, 16);
+					int a = (int) (parseLong & 0xFF);
+					int b = (int) ((parseLong & 0xFF00) >> 8);
+					int c = (int) ((parseLong & 0xFF0000) >> 16);
+					int d = (int) ((parseLong & 0xFF000000) >> 24);
+					dStream.writeByte(d);
+					dStream.writeByte(c);
+					dStream.writeByte(b);
+					dStream.writeByte(a);
+					// dStream.writeInt(Integer.parseInt(crc, 16));
 					dStream.flush();
 					return bStream.toByteArray();
 				} catch (Exception e) {
