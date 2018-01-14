@@ -237,13 +237,17 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 
 		JPanel schedulePanel = new JPanel();
 		schedulePanel.setLayout(new BorderLayout());
-		JPanel checkPanel = new JPanel(new GridLayout(12, 2));
-		for (int i = 0; i < 24; i++) {
+		JPanel checkPanel = new JPanel(new GridLayout(12, 4));
+		
+		for (int i = 0; i < 48; i++) {
 			// 0:00-1:00
-			JCheckBox box = new JCheckBox(i + ":00-" + (i + 1) + ":00");
+			//JCheckBox box = new JCheckBox(i + ":00-" + (i + 1) + ":00");
+			JCheckBox box = new JCheckBox((30 * i / 60) + ":" + String.format("%02d", (30 * i % 60)) + "-"
+					+ (30 * (i + 1) / 60) + ":" + String.format("%02d", (30 * (i + 1) % 60)));
 			workingTimeCheckBoxs.add(box);
 			checkPanel.add(box);
 		}
+		
 		JScrollPane scheduleCheckBoxScrollPane = new JScrollPane(checkPanel);
 		schedulePanel.add(new JLabel("项目运行模式设置", SwingConstants.CENTER), BorderLayout.NORTH);
 		schedulePanel.add(scheduleCheckBoxScrollPane, BorderLayout.CENTER);
