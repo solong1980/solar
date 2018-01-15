@@ -5,9 +5,12 @@ import java.util.Date;
 
 @SuppressWarnings("serial")
 public class SoRunningData implements Serializable {
-	// rev:01,17DD5E6E,FFFFFFFF,  0, 6,121,  0,0,0,0,18,0, 0,0,0,20171223055949,67.925,      30.473866
-	// rev:01,17DD5E6E,FFFFFFFF,233, 6,225, 15,0,0,0, 0,0,17,0,0,0             ,      0,20171224080052,83.872,30.473689
+	// rev:01,17DD5E6E,FFFFFFFF, 0, 6,121, 0,0,0,0,18,0,
+	// 0,0,0,20171223055949,67.925, 30.473866
+	// rev:01,17DD5E6E,FFFFFFFF,233, 6,225, 15,0,0,0, 0,0,17,0,0,0 ,
+	// 0,20171224080052,83.872,30.473689
 	private Long id;
+	private String req;
 	private String uuid; // 设备号
 	private String fmid; // 固件版本
 	private String vssun; // 太阳能板电压
@@ -19,6 +22,7 @@ public class SoRunningData implements Serializable {
 	private String ild1; // 负载1电流
 	private String ild2; // 负载2电流
 	private String ild3; // 负载3电流
+	private String ild4; // 负载3电流
 	private String temp; // 环境温度
 	private String ain1; // 第1路4-20mA
 	private String ain2; // 第2路4-20mA
@@ -35,6 +39,14 @@ public class SoRunningData implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public String getReq() {
+		return req;
+	}
+
+	public void setReq(String req) {
+		this.req = req;
 	}
 
 	public String getUuid() {
@@ -123,6 +135,14 @@ public class SoRunningData implements Serializable {
 
 	public void setIld3(String ild3) {
 		this.ild3 = ild3;
+	}
+
+	public String getIld4() {
+		return ild4;
+	}
+
+	public void setIld4(String ild4) {
+		this.ild4 = ild4;
 	}
 
 	public String getTemp() {

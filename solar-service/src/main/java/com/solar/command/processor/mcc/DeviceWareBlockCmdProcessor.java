@@ -22,7 +22,7 @@ public class DeviceWareBlockCmdProcessor extends MccMsgProcessor implements INot
 	}
 
 	@Override
-	public void process(AppSession appSession, String msgCode, String[] reqs) throws Exception {
+	public void process(AppSession appSession, String msgCode, String msg, String[] reqs) throws Exception {
 		// doSendData
 		if (logger.isDebugEnabled())
 			logger.info("device ware block req," + Arrays.toString(reqs));

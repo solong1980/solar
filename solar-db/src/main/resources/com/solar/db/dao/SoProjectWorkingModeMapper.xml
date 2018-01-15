@@ -128,7 +128,7 @@
 		<include refid="Columns" />
 		from so_project_working_mode
 		where project_id =
-		#{projectId,jdbcType=BIGINT}
+		#{projectId,jdbcType=BIGINT} limit 1
 	</select>
 
 	<insert id="insert" parameterType="com.solar.entity.SoProjectWorkingMode"

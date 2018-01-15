@@ -48,13 +48,13 @@ public class MccMsgDispatcher {
 	 * @param appSession
 	 * @param clientRequest
 	 */
-	public void dispatchMsg(AppSession appSession, String msgCode, String[] mcMsg) {
+	public void dispatchMsg(AppSession appSession, String msgCode, String msg, String[] mcMsg) {
 		MccMsgProcessor processor = getMsgProcessor(msgCode);
 		if (appSession == null || processor == null) {
 			logger.warn("none processer for msgcode:" + msgCode);
 			return;
 		} else if (appSession.isLogin() || processor instanceof INotAuthProcessor) {
-			processor.handle(appSession, msgCode, mcMsg);
+			processor.handle(appSession, msgCode, msg, mcMsg);
 		} else {
 			logger.warn("device not login msg:" + Arrays.toString(mcMsg));
 			appSession.sendMsg(ServerMccResponse.buildError());

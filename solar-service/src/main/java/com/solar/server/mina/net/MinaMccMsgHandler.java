@@ -50,7 +50,7 @@ public class MinaMccMsgHandler extends IoHandlerAdapter {
 			appSession.addTime(0);
 			String[] split = msg.split(",");
 			String msgCode = split[0];
-			SolarServer.mcMsgDispatcher.dispatchMsg(appSession, msgCode, split);
+			SolarServer.mcMsgDispatcher.dispatchMsg(appSession, msgCode,msg, split);
 		}
 	}
 

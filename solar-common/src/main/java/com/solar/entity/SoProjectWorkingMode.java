@@ -1,6 +1,8 @@
 package com.solar.entity;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 @SuppressWarnings("serial")
 public class SoProjectWorkingMode implements Serializable {
@@ -472,6 +474,22 @@ public class SoProjectWorkingMode implements Serializable {
 
 	public void setUpdateTime(String updateTime) {
 		this.updateTime = updateTime;
+	}
+
+	public String buildMmcMsg() {
+		CharSequence[] hs = new CharSequence[48];
+		for (int i = 0; i < 48; i++) {
+			Method method;
+			try {
+				method = SoProjectWorkingMode.class.getMethod("getH_" + i);
+				Object v = method.invoke(this);
+				hs[i] = v.toString();
+			} catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException
+					| InvocationTargetException e1) {
+				throw new RuntimeException(e1.getMessage());
+			}
+		}
+		return String.join(",", hs);
 	}
 
 }

@@ -69,7 +69,7 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 	}
 
 	@Override
-	public void process(AppSession appSession, String msgCode, String[] reqs) throws Exception {
+	public void process(AppSession appSession, String msgCode, String msg, String[] reqs) throws Exception {
 		if (logger.isDebugEnabled()) {
 			logger.debug("Data update : {}", Arrays.toString(reqs));
 		}
@@ -102,7 +102,9 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 			SoRunningData runningData = new SoRunningData();
 			WeakReference<SoRunningData> wf = new WeakReference<SoRunningData>(runningData);
 			// 01,17DD5E6E,FFFFFFFF,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,83.872,30.473689
+
 			runningData.setUuid(uuid);
+			runningData.setReq(msg);
 			runningData.setFmid(reqs[2]); // 固件版本
 			runningData.setVssun(reqs[3]); // 太阳能板电压
 			runningData.setIchg(reqs[4]); // 电池充电电流
@@ -114,14 +116,18 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 			runningData.setIld1(reqs[9]); // 负载1电流
 			runningData.setIld2(reqs[10]); // 负载2电流
 			runningData.setIld3(reqs[11]); // 负载3电流
-			runningData.setTemp(reqs[12]); // 环境温度
-			runningData.setAin1(reqs[13]); // 第1路4-20mA
-			runningData.setAin2(reqs[14]); // 第2路4-20mA
-			runningData.setAin3(reqs[15]); // 第3路4-20mA
-			runningData.setStat(reqs[16]); // 控制器状态
-			runningData.setUtcTime(reqs[17]);// GPS时间
-			runningData.setAltitude(reqs[18]);// GPS纬度
-			runningData.setLongitude(reqs[19]);// GPS经度
+			runningData.setIld4(reqs[12]); // 负载4电流
+			
+			runningData.setTemp(reqs[13]); // 环境温度
+			
+			runningData.setAin1(reqs[14]); // 第1路4-20mA
+			runningData.setAin2(reqs[15]); // 第2路4-20mA
+			runningData.setAin3(reqs[16]); // 第3路4-20mA
+			
+			runningData.setStat(reqs[17]); // 控制器状态
+			runningData.setUtcTime(reqs[18]);// GPS时间
+			runningData.setAltitude(reqs[19]);// GPS纬度
+			runningData.setLongitude(reqs[20]);// GPS经度
 			runningDataService.insertRunningData(wf.get());
 			runningData = null;
 		} catch (Exception e) {

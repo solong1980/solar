@@ -298,7 +298,7 @@ namespace NetSend {
 
 
 		char *data= "01,17DD5E6E,1001,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
-
+        data="01,199E804C,03,0,5,224,14,55236,0,0,0,0,0,19,0,0,0,C000,20180115022957,30.477093,114.414081";
 		std::thread t1(dataupload,std::ref(sockClient),data);
 	//  std::thread t2(dataupload,std::ref(sockClient),data);
 	//	std::thread t3(dataupload,std::ref(sockClient),data);
@@ -319,7 +319,7 @@ namespace NetSend {
 		//data= "01,17DD5E6E,1,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
 		dataupload(sockClient,data);
 		*/
-		Sleep(10*1000);
+		Sleep(1000);
 		closesocket(sockClient);
 		WSACleanup();
 		return 0;

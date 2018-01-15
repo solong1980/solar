@@ -29,7 +29,7 @@ public class DeviceAccessCmdProcessor extends MccMsgProcessor implements INotAut
 	}
 
 	@Override
-	public void process(AppSession appSession, String msgCode, String[] reqs) throws Exception {
+	public void process(AppSession appSession, String msgCode, String msg, String[] reqs) throws Exception {
 		if (logger.isDebugEnabled()) {
 			logger.debug("device access : {}", Arrays.toString(reqs));
 		}
@@ -41,15 +41,15 @@ public class DeviceAccessCmdProcessor extends MccMsgProcessor implements INotAut
 			if (devices == null) {
 				devices = new SoDevices();
 				devices.setDevNo(devNo);
-				//insert device
+				// insert device
 			} else {
 				devices = new SoDevices();
 				devices.setMsg(Consts.SUCCESS);
 				appSession.setEnti(devices);
 				appSession.setLogin(true);
-				//add to session map
+				// add to session map
 				AppSessionManager.getInstance().putDevSessionToHashMap(appSession);
-				
+
 			}
 			appSession.sendMsg(ServerMccResponse.buildSuccess());
 		} else {

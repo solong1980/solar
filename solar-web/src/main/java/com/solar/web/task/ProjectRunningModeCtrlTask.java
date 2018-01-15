@@ -99,12 +99,12 @@ public class ProjectRunningModeCtrlTask {
 					for (SoDevices soDevices : t) {
 						Long projectId = soDevices.getProjectId();
 						// getmode
-						SoProjectWorkingMode projectWorkingMode = map.get(projectId);
-						if (projectWorkingMode == null) {
-							projectWorkingMode = projectWorkingModeService.selectByProjectId(projectId);
-							map.put(projectId, projectWorkingMode);
-						}
+ 						SoProjectWorkingMode projectWorkingMode = map.get(projectId);
+//						if (projectWorkingMode == null) {
+//							map.put(projectId, projectWorkingMode);
+//						}
 
+						projectWorkingMode = projectWorkingModeService.selectByProjectId(projectId);
 						if (projectWorkingMode != null) {
 
 							Method method = SoProjectWorkingMode.class.getMethod("getH_" + n);

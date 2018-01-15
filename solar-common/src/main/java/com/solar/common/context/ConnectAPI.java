@@ -145,5 +145,7 @@ public class ConnectAPI {
 
 	public static final String MC_UPDATE_WARE_BLOCK_RESPONE = "03";
 	public static final String MC_UPDATE_WARE_BLOCK_COMMAND = "04";
+	
+	public static final String MC_PROJECT_RUNNINGMODE_RESPONSE = "05";
 
 }

@@ -18,16 +18,16 @@ public abstract class MccMsgProcessor {
 
 	private static final Logger logger = LoggerFactory.getLogger(MccMsgProcessor.class);
 
-	public void handle(AppSession appSession, String msgCode, String[] reqs) {
+	public void handle(AppSession appSession, String msgCode, String msg, String[] reqs) {
 		try {
-			process(appSession, msgCode, reqs);
+			process(appSession, msgCode,msg, reqs);
 		} catch (Exception e) {
 			logger.error("消息处理出错，msg code:" + msgCode, e);
 			appSession.sendMsg(ServerMccResponse.buildError());
 		}
 	}
 
-	public abstract void process(AppSession appSession, String msgCode, String[] reqs) throws Exception;
+	public abstract void process(AppSession appSession, String msgCode, String msg,String[] reqs) throws Exception;
 
 	public void sendUpdataWareData(AppSession appSession, int blockNo) throws ExecutionException, IOException {
 		SoAppVersion deviceWareVerion = SolarCache.getInstance().getDeviceWareVerion();

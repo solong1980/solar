@@ -37,7 +37,8 @@ void hello(){
 
 int main(int argc, char** argv) {
 	//JsonCall::readFromFile();
-	NetSend::send_upgrade();
+//	NetSend::send_upgrade();
+	NetSend::send_data();		
 	/**
 	std::thread t1(hello);
 	t1.join();
