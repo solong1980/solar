@@ -58,6 +58,6 @@ public class RunningDataCron {
 					LOGGER.error("schedule running data error", e);
 				}
 			}
-		}, 1, 60, TimeUnit.SECONDS);
+		}, 1, 10, TimeUnit.SECONDS);
 	}
 }

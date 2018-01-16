@@ -122,12 +122,14 @@ public class IndexPanel extends BasePanel implements Observer {
 		gbc.gridy = 1;
 		JRadioButton[] startBtns = new JRadioButton[8];
 		JRadioButton[] stopBtns = new JRadioButton[8];
+		JRadioButton[] autoBtns = new JRadioButton[8];
 		ButtonGroup[] buttonGroups = new ButtonGroup[8];
 		for (int i = 0; i < 8; i++) {
 			buttonGroups[i] = new ButtonGroup();
 			startBtns[i] = ButtonUI.makeRadioBtn("持续运行", "");
-			stopBtns[i] = ButtonUI.makeRadioBtn("定时运行", "");
-			stopBtns[i].setSelected(true);
+			stopBtns[i] = ButtonUI.makeRadioBtn("停止运行", "");
+			autoBtns[i] = ButtonUI.makeRadioBtn("自动控制", "");
+			autoBtns[i].setSelected(true);
 
 			buttonGroups[i].add(startBtns[i]);
 			buttonGroups[i].add(stopBtns[i]);
@@ -135,6 +137,8 @@ public class IndexPanel extends BasePanel implements Observer {
 			regiestPanel.add(startBtns[i], gbc);
 			gbc.gridx = 2;
 			regiestPanel.add(stopBtns[i], gbc);
+			gbc.gridx = 3;
+			regiestPanel.add(autoBtns[i], gbc);
 			gbc.gridy++;
 		}
 
@@ -158,14 +162,14 @@ public class IndexPanel extends BasePanel implements Observer {
 				devices.setDevNo(devNo);
 				devices.setProjectId(projectId);
 				devices.setLocationId(project.getLocationId());
-				devices.setSw0((short) (startBtns[0].isSelected() ? 1 : 0));
-				devices.setSw1((short) (startBtns[1].isSelected() ? 1 : 0));
-				devices.setSw2((short) (startBtns[2].isSelected() ? 1 : 0));
-				devices.setSw3((short) (startBtns[3].isSelected() ? 1 : 0));
-				devices.setSw4((short) (startBtns[4].isSelected() ? 1 : 0));
-				devices.setSw5((short) (startBtns[5].isSelected() ? 1 : 0));
-				devices.setSw6((short) (startBtns[6].isSelected() ? 1 : 0));
-				devices.setSw7((short) (startBtns[7].isSelected() ? 1 : 0));
+				devices.setSw0((short) (startBtns[0].isSelected() ? 1 : (stopBtns[0].isSelected() ? 0 : 2)));
+				devices.setSw1((short) (startBtns[1].isSelected() ? 1 : (stopBtns[1].isSelected() ? 0 : 2)));
+				devices.setSw2((short) (startBtns[2].isSelected() ? 1 : (stopBtns[2].isSelected() ? 0 : 2)));
+				devices.setSw3((short) (startBtns[3].isSelected() ? 1 : (stopBtns[3].isSelected() ? 0 : 2)));
+				devices.setSw4((short) (startBtns[4].isSelected() ? 1 : (stopBtns[4].isSelected() ? 0 : 2)));
+				devices.setSw5((short) (startBtns[5].isSelected() ? 1 : (stopBtns[5].isSelected() ? 0 : 2)));
+				devices.setSw6((short) (startBtns[6].isSelected() ? 1 : (stopBtns[6].isSelected() ? 0 : 2)));
+				devices.setSw7((short) (startBtns[7].isSelected() ? 1 : (stopBtns[7].isSelected() ? 0 : 2)));
 				ObservableMedia.getInstance().addDevice(devices);
 
 			}
@@ -246,6 +250,7 @@ public class IndexPanel extends BasePanel implements Observer {
 
 	JRadioButton[] startBtns = new JRadioButton[8];
 	JRadioButton[] stopBtns = new JRadioButton[8];
+	JRadioButton[] autoBtns = new JRadioButton[8];
 
 	public JPanel createCtrlPanel() {
 		// JPanel ctrlPanel = new JPanel();
@@ -283,9 +288,11 @@ public class IndexPanel extends BasePanel implements Observer {
 			buttonGroups[i] = new ButtonGroup();
 			startBtns[i] = ButtonUI.makeRadioBtn("启动", "");
 			stopBtns[i] = ButtonUI.makeRadioBtn("停止", "");
-
+			autoBtns[i] = ButtonUI.makeRadioBtn("自动", "");
+			autoBtns[i].setSelected(true);
 			buttonGroups[i].add(startBtns[i]);
 			buttonGroups[i].add(stopBtns[i]);
+			buttonGroups[i].add(autoBtns[i]);
 		}
 
 		runCtrlPanel.add(startBtns[0], gbc);
@@ -322,6 +329,24 @@ public class IndexPanel extends BasePanel implements Observer {
 		gbc.gridy++;
 		runCtrlPanel.add(stopBtns[7], gbc);
 
+		gbc.gridx++;
+		gbc.gridy = 0;
+		runCtrlPanel.add(autoBtns[0], gbc);
+		gbc.gridy++;
+		runCtrlPanel.add(autoBtns[1], gbc);
+		gbc.gridy++;
+		runCtrlPanel.add(autoBtns[2], gbc);
+		gbc.gridy++;
+		runCtrlPanel.add(autoBtns[3], gbc);
+		gbc.gridy++;
+		runCtrlPanel.add(autoBtns[4], gbc);
+		gbc.gridy++;
+		runCtrlPanel.add(autoBtns[5], gbc);
+		gbc.gridy++;
+		runCtrlPanel.add(autoBtns[6], gbc);
+		gbc.gridy++;
+		runCtrlPanel.add(autoBtns[7], gbc);
+
 		gbc.gridx = 0;
 		gbc.gridy++;
 		gbc.weightx = 3;
@@ -348,11 +373,15 @@ public class IndexPanel extends BasePanel implements Observer {
 				for (int j = 0; j < buttonGroups.length; j++) {
 					JRadioButton start = startBtns[j];
 					JRadioButton stop = stopBtns[j];
+					JRadioButton auto = autoBtns[j];
 					if (start.isSelected()) {
 						setV(j, (short) 1);
 					}
 					if (stop.isSelected()) {
 						setV(j, (short) 0);
+					}
+					if (auto.isSelected()) {
+						setV(j, (short) 2);
 					}
 				}
 				instance.updateDevice(IndexPanel.this.device);
@@ -573,8 +602,11 @@ public class IndexPanel extends BasePanel implements Observer {
 							Short f = (Short) v;
 							if (f == (short) 1) {
 								startBtns[Integer.parseInt(no)].setSelected(true);
-							} else
+							} else if (f == (short) 0) {
 								stopBtns[Integer.parseInt(no)].setSelected(true);
+							} else {
+								autoBtns[Integer.parseInt(no)].setSelected(true);
+							}
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 							e.printStackTrace();
 						}

@@ -1,9 +1,7 @@
 package com.solar.command.processor.app;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +15,6 @@ import com.solar.common.context.ConnectAPI;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.INotAuthProcessor;
 import com.solar.controller.common.MsgProcessor;
-import com.solar.db.services.SoProjectWorkingModeService;
 import com.solar.entity.SoDevices;
 import com.solar.entity.SoProjectWorkingMode;
 import com.solar.server.commons.session.AppSession;
@@ -52,6 +49,7 @@ public class DevicesScheduleCmdProcessor extends MsgProcessor implements INotAut
 						logger.error("device uuid=" + devNo + " not connect");
 						continue;
 					} else {
+						logger.error("device uuid=" + devNo + " update running mode:" + mmcMsg);
 						deviceSession
 								.sendMsg(ServerMccResponse.build(ConnectAPI.MC_PROJECT_RUNNINGMODE_RESPONSE, mmcMsg));
 					}

@@ -7,8 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.solar.cache.SolarCache;
-import com.solar.command.message.response.mcc.ServerMccResponse;
-import com.solar.common.context.ConnectAPI;
 import com.solar.controller.common.INotAuthProcessor;
 import com.solar.controller.common.MccMsgProcessor;
 import com.solar.db.services.SoDevicesService;
@@ -49,17 +47,14 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 				// add to session map
 				logger.info("add device UUID=" + devNo + " to device session");
 				AppSessionManager.getInstance().putDevSessionToHashMap(appSession);
-
-				devices.setSw0((short) 1);
-				devices.setSw1((short) 1);
-				devices.setSw2((short) 1);
-				devices.setSw3((short) 1);
-				devices.setSw4((short) 1);
-				devices.setSw5((short) 1);
-				devices.setSw6((short) 1);
-				devices.setSw7((short) 1);
-				appSession.sendMsg(
-						ServerMccResponse.build(ConnectAPI.MC_DEVICES_RUNNING_CTRL_RESPONSE, devices.buildMmcMsg()));
+				/**
+				 * devices.setSw0((short) 1); devices.setSw1((short) 1); devices.setSw2((short)
+				 * 1); devices.setSw3((short) 1); devices.setSw4((short) 1);
+				 * devices.setSw5((short) 1); devices.setSw6((short) 1); devices.setSw7((short)
+				 * 1); appSession.sendMsg(
+				 * ServerMccResponse.build(ConnectAPI.MC_DEVICES_RUNNING_CTRL_RESPONSE,
+				 * devices.buildMmcMsg()));
+				 */
 				return true;
 			}
 		} else {
@@ -117,13 +112,13 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 			runningData.setIld2(reqs[10]); // 负载2电流
 			runningData.setIld3(reqs[11]); // 负载3电流
 			runningData.setIld4(reqs[12]); // 负载4电流
-			
+
 			runningData.setTemp(reqs[13]); // 环境温度
-			
+
 			runningData.setAin1(reqs[14]); // 第1路4-20mA
 			runningData.setAin2(reqs[15]); // 第2路4-20mA
 			runningData.setAin3(reqs[16]); // 第3路4-20mA
-			
+
 			runningData.setStat(reqs[17]); // 控制器状态
 			runningData.setUtcTime(reqs[18]);// GPS时间
 			runningData.setAltitude(reqs[19]);// GPS纬度
