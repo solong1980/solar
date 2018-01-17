@@ -130,4 +130,18 @@ public class SoProjectDao implements SoProjectMapper {
 		}
 	}
 
+	@Override
+	public Integer queryProjectCount(SoPage<SoProject, List<SoProject>> page) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoProjectMapper mapper = sqlSession.getMapper(SoProjectMapper.class);
+			Integer total = mapper.queryProjectCount(page);
+			return total;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
 }

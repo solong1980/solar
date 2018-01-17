@@ -34,5 +34,7 @@ public interface SoProjectMapper {
 	List<SoProject> queryProjectByLocationIds(@Param("locationIds") List<String> locationIds);
 
 	List<SoProject> queryProjects(@Param("page") SoPage<SoProject, List<SoProject>> page);
+	
+	Integer queryProjectCount(@Param("page") SoPage<SoProject, List<SoProject>> page);
 
 }

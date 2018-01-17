@@ -18,14 +18,13 @@ import com.solar.client.ObservableMedia;
 import com.solar.client.net.NetConf;
 import com.solar.common.context.AppType;
 import com.solar.common.context.Consts;
-import com.solar.common.context.Consts.AddrType;
 import com.solar.entity.SoAccount;
 import com.solar.entity.SoAccountFind;
 import com.solar.entity.SoAccountLocation;
 import com.solar.entity.SoAreas;
 import com.solar.entity.SoCities;
+import com.solar.entity.SoPage;
 import com.solar.entity.SoProvinces;
-import com.solar.gui.component.model.TreeAddr;
 
 public class AdminClient extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -71,7 +70,9 @@ public class AdminClient extends JFrame {
 		accountFindQueryBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				media.accountFindQuery(new SoAccountFind());
+				SoAccountFind soAccountFind = new SoAccountFind();
+				SoPage<SoAccountFind, List<SoAccountFind>> page = new SoPage<>(soAccountFind);
+				media.accountFindQuery(page);
 			}
 		});
 		connectButton.addActionListener(new ActionListener() {

@@ -1,8 +1,5 @@
 package com.solar.command.processor.app;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.solar.command.message.request.ClientRequest;
 import com.solar.command.message.response.app.AccountFindQueryResponse;
 import com.solar.common.annotation.ProcessCMD;
@@ -15,7 +12,7 @@ import com.solar.db.services.SoAccountFindService;
 import com.solar.entity.SoAccountFind;
 import com.solar.server.commons.session.AppSession;
 
-@ProcessCMD(API_CODE = ConnectAPI.ACCOUNT_FINDBACK_QUERY_COMMAND)
+@ProcessCMD(API_CODE = ConnectAPI.ACCOUNT_FINDBACK_AUDIT_COMMAND)
 public class AccountFindAuditCmdProcessor extends MsgProcessor {
 	private SoAccountFindService accountFindService;
 

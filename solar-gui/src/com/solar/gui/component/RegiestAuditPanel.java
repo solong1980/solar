@@ -5,16 +5,22 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
+import java.util.List;
 import java.util.Observer;
 
+import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -23,7 +29,14 @@ import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 
+import com.alibaba.fastjson.TypeReference;
+import com.solar.client.JsonUtilTool;
+import com.solar.client.SoRet;
+import com.solar.common.context.ConnectAPI;
+import com.solar.entity.SoAccount;
+import com.solar.entity.SoPage;
 import com.solar.gui.module.working.BasePanel;
+import com.solar.gui.module.working.fuc.AccountAuditPanel;
 import com.solar.gui.module.working.fuc.AccountAuditPanel.AuditAction;
 
 @SuppressWarnings("serial")
@@ -36,7 +49,6 @@ public class RegiestAuditPanel extends JPanel implements Observer {
 		RegiestAuditPanel comp = new RegiestAuditPanel();
 		frame.getContentPane().add(comp);
 		frame.setVisible(true);
-
 	}
 
 	final int INITIAL_ROWHEIGHT = 33;
@@ -45,16 +57,20 @@ public class RegiestAuditPanel extends JPanel implements Observer {
 	String[] optItems = new String[] { "审核通过", "审核不通过" };
 	DefaultTableModel dataModel;
 
+	JTextField totalField = new JTextField(3);
+	JTextField pageNumField = new JTextField(3);
 	AuditAction agreeAction;
 	AuditAction rejectAction;
+	AccountAuditPanel auditPanel;
 
 	public RegiestAuditPanel() {
 		regiestAuditPanel();
 	}
 
-	public RegiestAuditPanel(AuditAction agreeAction, AuditAction rejectAction) {
+	public RegiestAuditPanel(AccountAuditPanel auditPanel, AuditAction agreeAction, AuditAction rejectAction) {
 		this.agreeAction = agreeAction;
 		this.rejectAction = rejectAction;
+		this.auditPanel = auditPanel;
 		regiestAuditPanel();
 	}
 
@@ -132,12 +148,54 @@ public class RegiestAuditPanel extends JPanel implements Observer {
 		setLayout(new BorderLayout());
 		JScrollPane scrollTablePanel = createTable(new Object[0][0]);
 		add(scrollTablePanel, BorderLayout.CENTER);
+		
 		JPanel pagionationPanel = new JPanel();
 		pagionationPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
-		JButton comp = new JButton("上一页");
-		JButton comp2 = new JButton("下一页");
-		pagionationPanel.add(comp);
-		pagionationPanel.add(comp2);
+		JButton preBtn = new JButton("上一页");
+
+		if (auditPanel.getRegistPageNum() == 1)
+			preBtn.setEnabled(false);
+
+		preBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Integer registPageNum = auditPanel.getRegistPageNum();
+				if ((auditPanel.getRegistPageNum() - 1) < 1) {
+					preBtn.setEnabled(false);
+					return;
+				} else if ((auditPanel.getRegistPageNum() - 1) == 1) {
+					preBtn.setEnabled(false);
+					auditPanel.queryAccount(registPageNum - 1);
+				} else {
+					auditPanel.queryAccount(registPageNum - 1);
+				}
+			}
+		});
+		JButton nextBtn = new JButton("下一页");
+		nextBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Integer registPageNum = auditPanel.getRegistPageNum();
+				auditPanel.queryAccount(registPageNum + 1);
+				preBtn.setEnabled(true);
+			}
+		});
+		JLabel gongLabel = new JLabel("共");
+		totalField.setEnabled(false);
+		JLabel tiaoLabel = new JLabel("条");
+
+		pagionationPanel.add(preBtn);
+		pagionationPanel.add(nextBtn);
+
+		pageNumField.setEditable(false);
+		pageNumField.setText("第" + auditPanel.getRegistPageNum() + "页");
+
+		pagionationPanel.add(pageNumField);
+		pagionationPanel.add(Box.createHorizontalGlue());
+		pagionationPanel.add(gongLabel);
+		pagionationPanel.add(totalField);
+		pagionationPanel.add(tiaoLabel);
+
 		add(pagionationPanel, BorderLayout.SOUTH);
 	}
 
@@ -241,7 +299,26 @@ public class RegiestAuditPanel extends JPanel implements Observer {
 
 	@Override
 	public void update(java.util.Observable o, Object arg) {
-
+		if (arg instanceof SoRet) {
+			SoRet ret = (SoRet) arg;
+			int code = ret.getCode();
+			int status = ret.getStatus();
+			if (status == 0) {
+				switch (code) {
+				case ConnectAPI.ACCOUNT_AUDIT_QUERY_RESPONSE:
+					SoPage<SoAccount, List<SoAccount>> accountPage = JsonUtilTool.fromJson(ret.getRet(),
+							new TypeReference<SoPage<SoAccount, List<SoAccount>>>() {
+							});
+					Integer totel = accountPage.getTotal();
+					Integer pageNum = accountPage.getPageNum();
+					totalField.setText(totel.toString());
+					pageNumField.setText("第" + pageNum + "页");
+					break;
+				default:
+					break;
+				}
+			}
+		}
 	}
-	
+
 }

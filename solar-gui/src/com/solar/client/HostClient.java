@@ -276,8 +276,8 @@ public class HostClient extends MinaClient {
 		send(ConnectAPI.ACCOUNT_FINDBACK_COMMAND, json);
 	}
 
-	public void accountFindQuery(SoAccountFind soAccountFind) {
-		String json = JsonUtilTool.toJson(soAccountFind);
+	public void accountFindQuery(SoPage<SoAccountFind, List<SoAccountFind>> page) {
+		String json = JsonUtilTool.toJson(page);
 		System.out.println(json);
 		send(ConnectAPI.ACCOUNT_FINDBACK_QUERY_COMMAND, json);
 	}

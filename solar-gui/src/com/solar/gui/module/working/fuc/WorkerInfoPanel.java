@@ -4,12 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
@@ -23,6 +25,7 @@ import java.util.Observer;
 import java.util.Set;
 
 import javax.swing.AbstractAction;
+import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -139,11 +142,11 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 		gbc.gridx = 1;
 		editorPanel.add(emailField, gbc);
 
-//		gbc.gridy++;
-//		gbc.gridx = 0;
-//		gbc.gridwidth = 2;
-//		gbc.fill = GridBagConstraints.HORIZONTAL;
-//		editorPanel.add(new JButton("地图"), gbc);
+		// gbc.gridy++;
+		// gbc.gridx = 0;
+		// gbc.gridwidth = 2;
+		// gbc.fill = GridBagConstraints.HORIZONTAL;
+		// editorPanel.add(new JButton("地图"), gbc);
 		return editorPanel;
 	}
 
@@ -395,6 +398,10 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 		return scrollPane;
 	}
 
+	private Integer pageNum = 1;
+	JTextField totalField = new JTextField(3);
+	JTextField pageNumField = new JTextField(3);
+
 	public JPanel createListPanel() {
 		// prefer form panel
 		JPanel listPanel = new JPanel();
@@ -405,12 +412,68 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 		// create table
 		JScrollPane tablePanel = createWorkerListPanel(Collections.emptyList());
 		// page panel
-		JPanel pagePanel = new JPanel();
 		listPanel.add(createToolBar(), BorderLayout.PAGE_START);
 		listPanel.add(formPanel, BorderLayout.NORTH);
 		listPanel.add(tablePanel, BorderLayout.CENTER);
-		listPanel.add(pagePanel, BorderLayout.SOUTH);
+
+		// page panel
+		JPanel pagionationPanel = new JPanel();
+		pagionationPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		JButton preBtn = new JButton("上一页");
+
+		if (getPageNum() == 1)
+			preBtn.setEnabled(false);
+
+		preBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Integer pageNum = getPageNum();
+				if ((pageNum - 1) < 1) {
+					preBtn.setEnabled(false);
+					return;
+				} else if ((pageNum - 1) == 1) {
+					preBtn.setEnabled(false);
+					queryWorker(pageNum - 1);
+				} else {
+					queryWorker(pageNum - 1);
+				}
+			}
+		});
+		JButton nextBtn = new JButton("下一页");
+		nextBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Integer pageNum = getPageNum();
+				queryWorker(pageNum + 1);
+				preBtn.setEnabled(true);
+			}
+		});
+		JLabel gongLabel = new JLabel("共");
+		totalField.setEnabled(false);
+		JLabel tiaoLabel = new JLabel("条");
+
+		pagionationPanel.add(preBtn);
+		pagionationPanel.add(nextBtn);
+
+		pageNumField.setEditable(false);
+		pageNumField.setText("第" + getPageNum() + "页");
+
+		pagionationPanel.add(pageNumField);
+		pagionationPanel.add(Box.createHorizontalGlue());
+		pagionationPanel.add(gongLabel);
+		pagionationPanel.add(totalField);
+		pagionationPanel.add(tiaoLabel);
+		listPanel.add(pagionationPanel, BorderLayout.SOUTH);
+
 		return listPanel;
+	}
+
+	private int getPageNum() {
+		return pageNum;
+	}
+
+	public void setPageNum(Integer pageNum) {
+		this.pageNum = pageNum;
 	}
 
 	CardLayout cardLayout = new CardLayout();
@@ -426,15 +489,17 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 		add(workerListPanel);
 		add(editorPanel);
 
-		sendRefresh();
+		queryWorker(1);
 	}
 
-	private void sendRefresh() {
+	private void queryWorker(Integer pageNum) {
+		setPageNum(pageNum);
 		// send query
 		SoPage<SoAccount, List<SoAccount>> soPage = new SoPage<>();
 		SoAccount soAccount = new SoAccount();
 		soAccount.setStatus(AuditResult.AGREE.getStatus());
 		soPage.setC(soAccount);
+		soPage.setPageNum(pageNum);
 		ObservableMedia.getInstance().accountQuery(soPage);
 	}
 
@@ -458,7 +523,7 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 		public void actionPerformed(ActionEvent e) {
 			switch (operate) {
 			case WORKER_REFRESH:
-				sendRefresh();
+				queryWorker(getPageNum());
 				break;
 			case WORKER_UPDATE:
 				// query by id
@@ -519,11 +584,11 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 			if (status == 0) {
 				switch (code) {
 				case ConnectAPI.ACCOUNT_QUERY_RESPONSE:
-					SoPage<SoAccount, List<SoAccount>> accountPage = JsonUtilTool.fromJson(ret.getRet(),
+					SoPage<SoAccount, List<SoAccount>> page = JsonUtilTool.fromJson(ret.getRet(),
 							new TypeReference<SoPage<SoAccount, List<SoAccount>>>() {
 							});
 
-					List<SoAccount> accounts = accountPage.getT();
+					List<SoAccount> accounts = page.getT();
 					Object[][] data = new Object[accounts.size()][7];
 					for (int i = 0; i < accounts.size(); i++) {
 						SoAccount account = accounts.get(i);
@@ -537,13 +602,18 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 						data[i][6] = account.getId();
 					}
 					updateData(data);
+					
+					Integer totel = page.getTotal();
+					Integer pageNum = page.getPageNum();
+					totalField.setText(totel.toString());
+					pageNumField.setText("第" + pageNum + "页");
 					break;
 				case ConnectAPI.ACCOUNT_UPDATE_RESPONSE:
 					account = JsonUtilTool.fromJson(ret.getRet(), SoAccount.class);
 					JOptionPane.showMessageDialog(this, account.getMsg());
-					
+
 					cardLayout.show(this, "list");
-					sendRefresh();
+					queryWorker(getPageNum());
 					break;
 				case ConnectAPI.ACCOUNT_SELECT_RESPONSE:
 					account = JsonUtilTool.fromJson(ret.getRet(), SoAccount.class);

@@ -220,11 +220,15 @@ public class ObservableMedia extends Observable {
 		setChanged();
 	}
 
-	public void accountFindQuery(SoAccountFind soAccountFind) {
-		hostClient.accountFindQuery(soAccountFind);
+//	public void accountFindQuery(SoAccountFind soAccountFind) {
+//		hostClient.accountFindQuery(soAccountFind);
+//		setChanged();
+//	}
+	
+	public void accountFindQuery(SoPage<SoAccountFind, List<SoAccountFind>> page) {
+		hostClient.accountFindQuery(page);
 		setChanged();
 	}
-
 	public void accountFindAgree(Long id) {
 		SoAccountFind accountFind = new SoAccountFind();
 		accountFind.setId(id);

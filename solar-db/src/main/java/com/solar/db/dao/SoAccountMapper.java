@@ -25,7 +25,9 @@ public interface SoAccountMapper {
 	List<SoAccount> selectBySoAccount(SoAccount account);
 
 	List<SoAccount> queryAccount(@Param("page") SoPage<SoAccount,List<SoAccount>> accountPage);
-
+	
+	Integer queryAccountCount(@Param("page") SoPage<SoAccount,List<SoAccount>> accountPage);
+	
 	void agreeOperatorAccount(SoAccount account, List<SoPrivilege> privileges);
 
 	void updateStatus(SoAccount account);

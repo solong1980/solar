@@ -25,12 +25,27 @@
 	</sql>
 
 	<select id="queryAccountFind" resultMap="BaseResultMap"
-		parameterType="com.solar.entity.SoAccountFind">
+		parameterType="com.solar.entity.SoPage">
 		select
 		<include refid="Columns"></include>
 		from so_account_find
 		where status = 10
+		<if test="page.start!=null and page.count!=null">
+			limit #{page.start},#{page.count}
+		</if>
+		<if test="page.count!=null and page.start==null">
+			limit #{page.count}
+		</if>
 	</select>
+
+	<select id="queryAccountFindCount" resultType="java.lang.Integer"
+		parameterType="com.solar.entity.SoPage">
+		select
+		count(*)
+		from so_account_find
+		where status = 10
+	</select>
+
 
 	<select id="getAccountFindById" resultMap="BaseResultMap"
 		parameterType="java.lang.Integer">

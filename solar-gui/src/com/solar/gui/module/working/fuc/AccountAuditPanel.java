@@ -51,8 +51,6 @@ import com.solar.gui.module.working.BasePanel;
 @SuppressWarnings("serial")
 public class AccountAuditPanel extends BasePanel implements Observer {
 
-	private SoProject soProject;
-
 	RegiestAuditPanel regiestAuditPanel;
 	FindbackAuditPanel findbackAuditPanel;
 
@@ -60,6 +58,25 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 	AuditAction regiestAuditRejectAction;
 	AuditAction accountFindbackAgreeAction;
 	AuditAction accountFindbackRejectAction;
+
+	private Integer registPageNum = 1;
+	private Integer findbackPageNum = 1;
+
+	public Integer getRegistPageNum() {
+		return registPageNum;
+	}
+
+	public void setRegistPageNum(Integer registPageNum) {
+		this.registPageNum = registPageNum;
+	}
+
+	public Integer getFindbackPageNum() {
+		return findbackPageNum;
+	}
+
+	public void setFindbackPageNum(Integer findbackPageNum) {
+		this.findbackPageNum = findbackPageNum;
+	}
 
 	public JTabbedPane createEditor() {
 		JTabbedPane auditPanel = new JTabbedPane();
@@ -69,44 +86,54 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 		accountFindbackAgreeAction = new AuditAction(ActionType.ACCOUNT_FINDBACK_ADUIT_AGREE, this);
 		accountFindbackRejectAction = new AuditAction(ActionType.ACCOUNT_FINDBACK_ADUIT_REJECT, this);
 
-		regiestAuditPanel = new RegiestAuditPanel(regiestAuditAgreeAction, regiestAuditRejectAction);
-		findbackAuditPanel = new FindbackAuditPanel(accountFindbackAgreeAction, accountFindbackRejectAction);
+		regiestAuditPanel = new RegiestAuditPanel(this, regiestAuditAgreeAction, regiestAuditRejectAction);
+		findbackAuditPanel = new FindbackAuditPanel(this, accountFindbackAgreeAction, accountFindbackRejectAction);
+
+		ObservableMedia.getInstance().addObserver(regiestAuditPanel);
+		ObservableMedia.getInstance().addObserver(findbackAuditPanel);
 
 		auditPanel.add("注册信息", regiestAuditPanel);
 		auditPanel.add("找回信息", findbackAuditPanel);
-		queryAccount();
+
+		queryAccount(registPageNum);
+
 		auditPanel.addChangeListener(new ChangeListener() {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				if (auditPanel.getSelectedIndex() == 1) {
-					queryAccountFind();
+					queryAccountFind(findbackPageNum);
 				}
 				if (auditPanel.getSelectedIndex() == 0) {
-					queryAccount();
+					queryAccount(registPageNum);
 				}
 			}
 		});
 		return auditPanel;
 	}
 
-	private void queryAccountFind() {
+	public void queryAccountFind(Integer pageNum) {
+		this.findbackPageNum = pageNum;
 		SoAccountFind soAccountFind = new SoAccountFind();
-		ObservableMedia.getInstance().accountFindQuery(soAccountFind);
+		SoPage<SoAccountFind, List<SoAccountFind>> page = new SoPage<>(soAccountFind);
+		page.setPageNum(pageNum);
+		ObservableMedia.getInstance().accountFindQuery(page);
 	}
 
-	private void queryAccount() {
+	public void queryAccount(Integer pageNum) {
+		this.registPageNum = pageNum;
 		SoAccount soAccount = new SoAccount();
 		soAccount.setStatus(AuditResult.WAIT_FOR_AUDIT.getStatus());
 		SoPage<SoAccount, List<SoAccount>> page = new SoPage<>(soAccount);
+		page.setPageNum(pageNum);
 		ObservableMedia.getInstance().accountQuery(page);
 	}
 
 	public AccountAuditPanel() {
 		super();
-		//JPanel projectPanel = createTree();
+		// JPanel projectPanel = createTree();
 		setLayout(new BorderLayout());
 		add(createToolBar(), BorderLayout.PAGE_START);
-		//add(projectPanel, BorderLayout.WEST);
+		// add(projectPanel, BorderLayout.WEST);
 		add(createEditor(), BorderLayout.CENTER);
 	}
 
@@ -365,7 +392,10 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 			if (status == 0) {
 				switch (code) {
 				case ConnectAPI.ACCOUNT_FINDBACK_QUERY_RESPONSE:
-					List<SoAccountFind> accountFinds = JsonUtilTool.fromJsonArray(ret.getRet(), SoAccountFind.class);
+					SoPage<SoAccountFind, List<SoAccountFind>> findbackPage = JsonUtilTool.fromJson(ret.getRet(),
+							new TypeReference<SoPage<SoAccountFind, List<SoAccountFind>>>() {
+							});
+					List<SoAccountFind> accountFinds = findbackPage.getT();
 
 					Object[][] data = new Object[accountFinds.size()][9];
 					for (int i = 0; i < accountFinds.size(); i++) {
@@ -407,7 +437,7 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 				case ConnectAPI.ACCOUNT_FINDBACK_AUDIT_RESPONSE:
 					SoAccountFind accountFind = JsonUtilTool.fromJson(ret.getRet(), SoAccountFind.class);
 					JOptionPane.showMessageDialog(this, accountFind.getMsg());
-					queryAccountFind();
+					queryAccountFind(findbackPageNum);
 					break;
 				case ConnectAPI.ACCOUNT_AUDIT_QUERY_RESPONSE:
 					SoPage<SoAccount, List<SoAccount>> accountPage = JsonUtilTool.fromJson(ret.getRet(),
@@ -466,7 +496,7 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 				case ConnectAPI.ACCOUNT_AUDIT_RESPONSE:
 					account = JsonUtilTool.fromJson(ret.getRet(), SoAccount.class);
 					JOptionPane.showMessageDialog(this, account.getMsg());
-					queryAccount();
+					queryAccount(registPageNum);
 					break;
 				// case ConnectAPI.ACCOUNT_ADD_NEXTPAGE_RESPONSE:
 				// break;

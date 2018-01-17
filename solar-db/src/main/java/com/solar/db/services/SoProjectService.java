@@ -131,7 +131,9 @@ public class SoProjectService {
 		}
 		c.setLocationId(locationId);
 		List<SoProject> projects = projectDao.queryProjects(page);
+		Integer total = projectDao.queryProjectCount(page);
 		page.setT(projects);
+		page.setTotal(total);
 		return page;
 	}
 }

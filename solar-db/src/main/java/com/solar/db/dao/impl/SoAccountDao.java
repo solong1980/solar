@@ -192,4 +192,18 @@ public class SoAccountDao implements SoAccountMapper {
 		
 	}
 
+	@Override
+	public Integer queryAccountCount(SoPage<SoAccount, List<SoAccount>> accountPage) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoAccountMapper mapper = sqlSession.getMapper(SoAccountMapper.class);
+			Integer total = mapper.queryAccountCount(accountPage);
+			return total;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
 }

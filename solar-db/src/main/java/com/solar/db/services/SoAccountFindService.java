@@ -19,6 +19,7 @@ import com.solar.db.dao.impl.SoAccountDao;
 import com.solar.db.dao.impl.SoAccountFindDao;
 import com.solar.entity.SoAccount;
 import com.solar.entity.SoAccountFind;
+import com.solar.entity.SoPage;
 import com.solar.mns.email.MailServer;
 
 /**
@@ -50,8 +51,12 @@ public class SoAccountFindService {
 		accountFindDao.addAccountFind(accountFind);
 	}
 
-	public List<SoAccountFind> queryAccountFind(SoAccountFind accountFind) {
-		return accountFindDao.queryAccountFind(accountFind);
+	public SoPage<SoAccountFind, List<SoAccountFind>> queryAccountFind(SoPage<SoAccountFind, List<SoAccountFind>> accountFindPage) {
+		List<SoAccountFind> accountFinds = accountFindDao.queryAccountFind(accountFindPage);
+		Integer total = accountFindDao.queryAccountFindCount(accountFindPage);
+		accountFindPage.setT(accountFinds);
+		accountFindPage.setTotal(total);
+		return accountFindPage;
 	}
 
 	public String genVcode() {

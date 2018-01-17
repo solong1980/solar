@@ -95,8 +95,10 @@ public class SoAccountService {
 	}
 
 	public SoPage<SoAccount, List<SoAccount>> queryAccount(SoPage<SoAccount, List<SoAccount>> accountPage) {
+		Integer total = accountDao.queryAccountCount(accountPage);
 		List<SoAccount> accounts = accountDao.queryAccount(accountPage);
 		accountPage.setT(accounts);
+		accountPage.setTotal(total);
 		return accountPage;
 	}
 

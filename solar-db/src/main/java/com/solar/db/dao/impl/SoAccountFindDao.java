@@ -9,6 +9,7 @@ import com.solar.db.dao.SoAccountFindMapper;
 import com.solar.db.dao.SoAccountMapper;
 import com.solar.entity.SoAccount;
 import com.solar.entity.SoAccountFind;
+import com.solar.entity.SoPage;
 
 public class SoAccountFindDao implements SoAccountFindMapper {
 	private SqlSessionFactory sqlSessionFactory;
@@ -32,12 +33,26 @@ public class SoAccountFindDao implements SoAccountFindMapper {
 	}
 
 	@Override
-	public List<SoAccountFind> queryAccountFind(SoAccountFind accountFind) {
+	public List<SoAccountFind> queryAccountFind(SoPage<SoAccountFind, List<SoAccountFind>> page) {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
 			SoAccountFindMapper mapper = sqlSession.getMapper(SoAccountFindMapper.class);
-			List<SoAccountFind> accountFinds = mapper.queryAccountFind(accountFind);
+			List<SoAccountFind> accountFinds = mapper.queryAccountFind(page);
 			return accountFinds;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public Integer queryAccountFindCount(SoPage<SoAccountFind, List<SoAccountFind>> accountFindPage) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoAccountFindMapper mapper = sqlSession.getMapper(SoAccountFindMapper.class);
+			Integer total = mapper.queryAccountFindCount(accountFindPage);
+			return total;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {

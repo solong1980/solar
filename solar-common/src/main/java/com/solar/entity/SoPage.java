@@ -5,7 +5,7 @@ public class SoPage<C, R> extends SoAbt {
 	private Integer start = 0;
 	private Integer pageNum = 1;
 	private Integer count = 10;
-	private Integer totel = 0;
+	private Integer total = 0;
 
 	private C c;// 条件
 	private R t;// 结果
@@ -51,12 +51,12 @@ public class SoPage<C, R> extends SoAbt {
 		this.count = count;
 	}
 
-	public Integer getTotel() {
-		return totel;
+	public Integer getTotal() {
+		return total;
 	}
 
-	public void setTotel(Integer totel) {
-		this.totel = totel;
+	public void setTotal(Integer total) {
+		this.total = total;
 	}
 
 	public C getC() {

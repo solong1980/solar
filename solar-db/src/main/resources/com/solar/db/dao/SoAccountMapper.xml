@@ -150,4 +150,26 @@
 			limit #{page.count}
 		</if>
 	</select>
+	
+	<select id="queryAccountCount" parameterType="com.solar.entity.SoPage"
+		resultType="java.lang.Integer">
+		select count(*)	from so_account sac,(
+		select
+		acc.id,group_concat(acl.location_id) as
+		locationIds from so_account acc
+		left join so_account_location acl on
+		acc.id=acl.account_id
+		group by
+		acc.id) acl
+		where sac.id=acl.id
+		<if test="page.c.status!=null">
+			and sac.status=#{page.c.status}
+		</if>
+		<if test="page.c.status == null">
+			and sac.status=50
+		</if>
+		<if test="page.c.account!=null">
+			and sac.account=#{page.c.account}
+		</if>
+	</select>
 </mapper>

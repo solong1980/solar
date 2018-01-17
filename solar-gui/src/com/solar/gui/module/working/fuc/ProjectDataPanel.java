@@ -5,6 +5,7 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -25,6 +26,7 @@ import java.util.Observer;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -238,20 +240,20 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		JPanel schedulePanel = new JPanel();
 		schedulePanel.setLayout(new BorderLayout());
 		JPanel checkPanel = new JPanel(new GridLayout(12, 4));
-		
+
 		for (int i = 0; i < 48; i++) {
 			// 0:00-1:00
-			//JCheckBox box = new JCheckBox(i + ":00-" + (i + 1) + ":00");
+			// JCheckBox box = new JCheckBox(i + ":00-" + (i + 1) + ":00");
 			JCheckBox box = new JCheckBox((30 * i / 60) + ":" + String.format("%02d", (30 * i % 60)) + "-"
 					+ (30 * (i + 1) / 60) + ":" + String.format("%02d", (30 * (i + 1) % 60)));
 			workingTimeCheckBoxs.add(box);
 			checkPanel.add(box);
 		}
-		
+
 		JScrollPane scheduleCheckBoxScrollPane = new JScrollPane(checkPanel);
 		schedulePanel.add(new JLabel("项目运行模式设置", SwingConstants.CENTER), BorderLayout.NORTH);
 		schedulePanel.add(scheduleCheckBoxScrollPane, BorderLayout.CENTER);
-		
+
 		JCheckBox chooseAllBox = new JCheckBox("全选");
 		schedulePanel.add(chooseAllBox, BorderLayout.SOUTH);
 		chooseAllBox.addActionListener(new ActionListener() {
@@ -527,6 +529,10 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		return scrollPane;
 	}
 
+	JTextField totalField = new JTextField(3);
+	JTextField pageNumField = new JTextField(3);
+	private Integer pageNum = 1;
+
 	public JPanel createListPanel() {
 		// prefer form panel
 		JPanel listPanel = new JPanel();
@@ -537,15 +543,78 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		// create table
 		JScrollPane tablePanel = projectListTable(Collections.emptyList());
 		// page panel
-		JPanel pagePanel = new JPanel();
+		JPanel pagionationPanel = new JPanel();
+		pagionationPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
+		JButton preBtn = new JButton("上一页");
+
+		if (getPageNum() == 1)
+			preBtn.setEnabled(false);
+
+		preBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Integer pageNum = getPageNum();
+				if ((pageNum - 1) < 1) {
+					preBtn.setEnabled(false);
+					return;
+				} else if ((pageNum - 1) == 1) {
+					preBtn.setEnabled(false);
+					queryProjects(pageNum - 1);
+				} else {
+					queryProjects(pageNum - 1);
+				}
+			}
+		});
+		JButton nextBtn = new JButton("下一页");
+		nextBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Integer pageNum = getPageNum();
+				queryProjects(pageNum + 1);
+				preBtn.setEnabled(true);
+			}
+		});
+		JLabel gongLabel = new JLabel("共");
+		totalField.setEnabled(false);
+		JLabel tiaoLabel = new JLabel("条");
+
+		pagionationPanel.add(preBtn);
+		pagionationPanel.add(nextBtn);
+
+		pageNumField.setEditable(false);
+		pageNumField.setText("第" + getPageNum() + "页");
+
+		pagionationPanel.add(pageNumField);
+		pagionationPanel.add(Box.createHorizontalGlue());
+		pagionationPanel.add(gongLabel);
+		pagionationPanel.add(totalField);
+		pagionationPanel.add(tiaoLabel);
+
 		listPanel.add(createToolBar(), BorderLayout.PAGE_START);
 		listPanel.add(formPanel, BorderLayout.NORTH);
 		listPanel.add(tablePanel, BorderLayout.CENTER);
-		listPanel.add(pagePanel, BorderLayout.SOUTH);
+		listPanel.add(pagionationPanel, BorderLayout.SOUTH);
 		return listPanel;
 	}
 
+	private int getPageNum() {
+		return pageNum;
+	}
+
+	public void setPageNum(Integer pageNum) {
+		this.pageNum = pageNum;
+	}
+
 	CardLayout cardLayout = new CardLayout();
+
+	public void queryProjects(Integer pageNum) {
+		setPageNum(pageNum);
+		// send query
+		SoPage<SoProject, List<SoProject>> soPage = new SoPage<>();
+		soPage.setC(new SoProject());
+		soPage.setPageNum(pageNum);
+		ObservableMedia.getInstance().queryProjects(soPage);
+	}
 
 	public ProjectDataPanel() {
 		super();
@@ -558,10 +627,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		// JPanel projectPanel = createTree();
 		add(projectListPanel);
 		add(projectEditPanel);
-		// send query
-		SoPage<SoProject, List<SoProject>> soPage = new SoPage<>();
-		soPage.setC(new SoProject());
-		ObservableMedia.getInstance().queryProjects(soPage);
+		queryProjects(1);
 	}
 
 	public JMenuBar createToolBar() {
@@ -790,6 +856,12 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 						data[i][9] = project.getId();
 					}
 					updateData(data);
+					
+					Integer totel = page.getTotal();
+					Integer pageNum = page.getPageNum();
+					totalField.setText(totel.toString());
+					pageNumField.setText("第" + pageNum + "页");
+					
 					cardLayout.show(this, "list");
 					break;
 				case ConnectAPI.PROJECT_SELECT_RESPONSE:

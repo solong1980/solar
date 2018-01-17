@@ -89,7 +89,7 @@
 		so_project where id = #{id,jdbcType=BIGINT} </delete> -->
 
 	<select id="queryProjects" resultMap="BaseResultMap"
-		parameterType="com.solar.entity.SoProject">
+		parameterType="com.solar.entity.SoPage">
 		select
 		<include refid="Columns" />
 		from so_project
@@ -110,6 +110,29 @@
 			and capability = #{page.c.capability,jdbcType=INTEGER}
 		</if>
 		limit #{page.start},#{page.count}
+	</select>
+
+	<select id="queryProjectCount" resultType="java.lang.Integer"
+		parameterType="com.solar.entity.SoPage">
+		select
+		count(*)
+		from so_project
+		where
+		state = 0
+		<if test="page.c.locationId!=null">
+			and location_id like
+			concat(#{page.c.locationId,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="page.c.projectName!=null">
+			and project_name like
+			concat(#{page.c.projectName,jdbcType=VARCHAR},'%')
+		</if>
+		<if test="page.c.type!=null and page.c.type>0">
+			and type = #{page.c.type,jdbcType=INTEGER}
+		</if>
+		<if test="page.c.capability!=null and page.c.capability>0">
+			and capability = #{page.c.capability,jdbcType=INTEGER}
+		</if>
 	</select>
 
 	<select id="queryProjectByLocationId" parameterType="java.lang.String"
