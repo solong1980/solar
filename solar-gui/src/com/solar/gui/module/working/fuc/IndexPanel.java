@@ -78,7 +78,7 @@ public class IndexPanel extends BasePanel implements Observer {
 
 	public void createDeviceDialog() {
 		JLabel deviceNoLabel = new JLabel(getBoldHTML("设备号"));
-		JComponent regiestPanel = new JPanel(new GridBagLayout());
+		JComponent devicePanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 
 		gbc.gridx = 0;
@@ -86,7 +86,7 @@ public class IndexPanel extends BasePanel implements Observer {
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(5, 5, 5, 5);
-		regiestPanel.add(deviceNoLabel, gbc);
+		devicePanel.add(deviceNoLabel, gbc);
 
 		InputState inputState = new InputState();
 
@@ -97,32 +97,116 @@ public class IndexPanel extends BasePanel implements Observer {
 		gbc.gridwidth = 2;
 		gbc.gridy = 0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		regiestPanel.add(devNoField, gbc);
+		devicePanel.add(devNoField, gbc);
 
 		gbc.gridx = 0;
 		gbc.gridwidth = 1;
 		gbc.gridy++;
-		regiestPanel.add(new JLabel("分机1控制 "), gbc);
-		gbc.gridy++;
-		regiestPanel.add(new JLabel("分机2控制 "), gbc);
-		gbc.gridy++;
-		regiestPanel.add(new JLabel("水泵1控制 "), gbc);
-		gbc.gridy++;
-		regiestPanel.add(new JLabel("水泵2控制"), gbc);
-		gbc.gridy++;
-		regiestPanel.add(new JLabel("继电器1控制"), gbc);
-		gbc.gridy++;
-		regiestPanel.add(new JLabel("继电器2控制"), gbc);
-		gbc.gridy++;
-		regiestPanel.add(new JLabel("继电器3控制"), gbc);
-		gbc.gridy++;
-		regiestPanel.add(new JLabel("继电器4控制"), gbc);
+		devicePanel.add(new JLabel("模式 "), gbc);
 
+		gbc.gridx = 0;
 		gbc.gridwidth = 1;
-		gbc.gridy = 1;
+		gbc.gridy++;
+		devicePanel.add(new JLabel("分机1控制 "), gbc);
+		gbc.gridy++;
+		devicePanel.add(new JLabel("分机2控制 "), gbc);
+		gbc.gridy++;
+		devicePanel.add(new JLabel("水泵1控制 "), gbc);
+		gbc.gridy++;
+		devicePanel.add(new JLabel("水泵2控制"), gbc);
+		gbc.gridy++;
+		devicePanel.add(new JLabel("继电器1控制"), gbc);
+		gbc.gridy++;
+		devicePanel.add(new JLabel("继电器2控制"), gbc);
+		gbc.gridy++;
+		devicePanel.add(new JLabel("继电器3控制"), gbc);
+		gbc.gridy++;
+		devicePanel.add(new JLabel("继电器4控制"), gbc);
+
 		JRadioButton[] startBtns = new JRadioButton[8];
 		JRadioButton[] stopBtns = new JRadioButton[8];
 		JRadioButton[] autoBtns = new JRadioButton[8];
+
+		ButtonGroup tg = new ButtonGroup();
+		JRadioButton handModeBtn = ButtonUI.makeRadioBtn("手动模式", "");
+		JRadioButton autoModeBtn = ButtonUI.makeRadioBtn("自动模式", "");
+
+		gbc.gridy = 1;
+		gbc.gridx = 1;
+		gbc.gridwidth = 2;
+		tg.add(handModeBtn);
+		tg.add(autoModeBtn);
+		devicePanel.add(handModeBtn, gbc);
+		handModeBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (handModeBtn.isSelected()) {
+					for (JRadioButton bt : startBtns) {
+						bt.setSelected(true);
+						bt.setEnabled(true);
+					}
+					for (JRadioButton bt : stopBtns) {
+						bt.setEnabled(true);
+					}
+					for (JRadioButton bt : autoBtns) {
+						bt.setEnabled(false);
+						bt.setSelected(false);
+					}
+				} else {
+					for (JRadioButton bt : startBtns) {
+						bt.setSelected(false);
+						bt.setEnabled(false);
+					}
+					for (JRadioButton bt : stopBtns) {
+						bt.setEnabled(false);
+						bt.setSelected(false);
+					}
+					for (JRadioButton bt : autoBtns) {
+						bt.setEnabled(true);
+					}
+				}
+
+			}
+		});
+
+		gbc.gridx = 3;
+		gbc.gridwidth = 1;
+		devicePanel.add(autoModeBtn, gbc);
+		autoModeBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (autoModeBtn.isSelected()) {
+					for (JRadioButton bt : startBtns) {
+						bt.setSelected(false);
+						bt.setEnabled(false);
+					}
+					for (JRadioButton bt : stopBtns) {
+						bt.setEnabled(false);
+						bt.setSelected(false);
+					}
+					for (JRadioButton bt : autoBtns) {
+						bt.setEnabled(true);
+						bt.setSelected(true);
+					}
+				} else {
+					for (JRadioButton bt : startBtns) {
+						bt.setEnabled(true);
+					}
+					for (JRadioButton bt : stopBtns) {
+						bt.setEnabled(true);
+					}
+					for (JRadioButton bt : autoBtns) {
+						bt.setSelected(false);
+						bt.setEnabled(false);
+					}
+				}
+			}
+		});
+		autoModeBtn.setSelected(true);
+
+		gbc.gridwidth = 1;
+		gbc.gridy = 2;
+
 		ButtonGroup[] buttonGroups = new ButtonGroup[8];
 		for (int i = 0; i < 8; i++) {
 			buttonGroups[i] = new ButtonGroup();
@@ -130,20 +214,22 @@ public class IndexPanel extends BasePanel implements Observer {
 			stopBtns[i] = ButtonUI.makeRadioBtn("停止运行", "");
 			autoBtns[i] = ButtonUI.makeRadioBtn("自动控制", "");
 			autoBtns[i].setSelected(true);
-
+			startBtns[i].setEnabled(false);
+			stopBtns[i].setEnabled(false);
 			buttonGroups[i].add(startBtns[i]);
 			buttonGroups[i].add(stopBtns[i]);
+			buttonGroups[i].add(autoBtns[i]);
 			gbc.gridx = 1;
-			regiestPanel.add(startBtns[i], gbc);
+			devicePanel.add(startBtns[i], gbc);
 			gbc.gridx = 2;
-			regiestPanel.add(stopBtns[i], gbc);
+			devicePanel.add(stopBtns[i], gbc);
 			gbc.gridx = 3;
-			regiestPanel.add(autoBtns[i], gbc);
+			devicePanel.add(autoBtns[i], gbc);
 			gbc.gridy++;
 		}
 
 		JComponent[] message = new JComponent[1];
-		message[0] = regiestPanel;
+		message[0] = devicePanel;
 		String[] options = { "提交", "取消" };
 		int result = JOptionPane.showOptionDialog(this, message, "新增设备", JOptionPane.DEFAULT_OPTION,
 				JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
@@ -251,6 +337,8 @@ public class IndexPanel extends BasePanel implements Observer {
 	JRadioButton[] startBtns = new JRadioButton[8];
 	JRadioButton[] stopBtns = new JRadioButton[8];
 	JRadioButton[] autoBtns = new JRadioButton[8];
+	JRadioButton handModeBtn = ButtonUI.makeRadioBtn("手动模式", "");
+	JRadioButton autoModeBtn = ButtonUI.makeRadioBtn("自动模式", "");
 
 	public JPanel createCtrlPanel() {
 		// JPanel ctrlPanel = new JPanel();
@@ -264,6 +352,10 @@ public class IndexPanel extends BasePanel implements Observer {
 		gbc.gridy = 0;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets = new Insets(1, 1, 1, 1);
+
+		runCtrlPanel.add(new JLabel("模式 "), gbc);
+
+		gbc.gridy++;
 		runCtrlPanel.add(new JLabel("分机1控制 "), gbc);
 		gbc.gridy++;
 		runCtrlPanel.add(new JLabel("分机2控制 "), gbc);
@@ -280,9 +372,6 @@ public class IndexPanel extends BasePanel implements Observer {
 		gbc.gridy++;
 		runCtrlPanel.add(new JLabel("继电器4控制"), gbc);
 
-		gbc.gridx++;
-		gbc.gridy = 0;
-
 		ButtonGroup[] buttonGroups = new ButtonGroup[8];
 		for (int i = 0; i < 8; i++) {
 			buttonGroups[i] = new ButtonGroup();
@@ -295,6 +384,28 @@ public class IndexPanel extends BasePanel implements Observer {
 			buttonGroups[i].add(autoBtns[i]);
 		}
 
+		ButtonGroup tg = new ButtonGroup();
+		tg.add(handModeBtn);
+		tg.add(autoModeBtn);
+		handModeBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				handBtnSet();
+			}
+
+		});
+		autoModeBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				autoButtonSet();
+			}
+		});
+		gbc.gridx = 1;
+		gbc.gridy = 0;
+		gbc.gridwidth = 2;
+		runCtrlPanel.add(handModeBtn, gbc);
+		gbc.gridwidth = 1;
+		gbc.gridy++;
 		runCtrlPanel.add(startBtns[0], gbc);
 		gbc.gridy++;
 		runCtrlPanel.add(startBtns[1], gbc);
@@ -311,8 +422,10 @@ public class IndexPanel extends BasePanel implements Observer {
 		gbc.gridy++;
 		runCtrlPanel.add(startBtns[7], gbc);
 
-		gbc.gridx++;
+		gbc.gridx = 2;
 		gbc.gridy = 0;
+
+		gbc.gridy++;
 		runCtrlPanel.add(stopBtns[0], gbc);
 		gbc.gridy++;
 		runCtrlPanel.add(stopBtns[1], gbc);
@@ -329,8 +442,10 @@ public class IndexPanel extends BasePanel implements Observer {
 		gbc.gridy++;
 		runCtrlPanel.add(stopBtns[7], gbc);
 
-		gbc.gridx++;
+		gbc.gridx = 3;
 		gbc.gridy = 0;
+		runCtrlPanel.add(autoModeBtn, gbc);
+		gbc.gridy++;
 		runCtrlPanel.add(autoBtns[0], gbc);
 		gbc.gridy++;
 		runCtrlPanel.add(autoBtns[1], gbc);
@@ -395,6 +510,35 @@ public class IndexPanel extends BasePanel implements Observer {
 
 	CardLayout cardLayout = new CardLayout();
 	BezierAnimationPanel animationPanel;
+
+	private void handBtnSet() {
+		if (handModeBtn.isSelected()) {
+			for (JRadioButton bt : startBtns) {
+				bt.setEnabled(true);
+			}
+			for (JRadioButton bt : stopBtns) {
+				bt.setEnabled(true);
+			}
+			for (JRadioButton bt : autoBtns) {
+				bt.setEnabled(false);
+			}
+		}
+
+	}
+
+	private void autoButtonSet() {
+		if (autoModeBtn.isSelected()) {
+			for (JRadioButton bt : startBtns) {
+				bt.setEnabled(false);
+			}
+			for (JRadioButton bt : stopBtns) {
+				bt.setEnabled(false);
+			}
+			for (JRadioButton bt : autoBtns) {
+				bt.setEnabled(true);
+			}
+		}
+	}
 
 	public JPanel createInfoPanel() {
 		JPanel infoPanel = new JPanel();
@@ -602,14 +746,41 @@ public class IndexPanel extends BasePanel implements Observer {
 							Short f = (Short) v;
 							if (f == (short) 1) {
 								startBtns[Integer.parseInt(no)].setSelected(true);
+								handModeBtn.setSelected(true);
 							} else if (f == (short) 0) {
 								stopBtns[Integer.parseInt(no)].setSelected(true);
+								handModeBtn.setSelected(true);
 							} else {
 								autoBtns[Integer.parseInt(no)].setSelected(true);
+								autoModeBtn.setSelected(true);
 							}
 						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
 							e.printStackTrace();
 						}
+					}
+				}
+				if (handModeBtn.isSelected()) {
+					for (JRadioButton bt : autoBtns) {
+						bt.setSelected(false);
+						bt.setEnabled(false);
+					}
+					for (JRadioButton bt : startBtns) {
+						bt.setEnabled(true);
+					}
+					for (JRadioButton bt : stopBtns) {
+						bt.setEnabled(true);
+					}
+				} else if (autoModeBtn.isSelected()) {
+					for (JRadioButton bt : autoBtns) {
+						bt.setEnabled(true);
+					}
+					for (JRadioButton bt : startBtns) {
+						bt.setSelected(false);
+						bt.setEnabled(false);
+					}
+					for (JRadioButton bt : stopBtns) {
+						bt.setSelected(false);
+						bt.setEnabled(false);
 					}
 				}
 				cardLayout.show(dashPanel, DEVICE);
