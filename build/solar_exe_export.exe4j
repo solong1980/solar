@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <exe4j version="5.1" transformSequenceNumber="2">
-  <directoryPresets config="E:/tools/proguard5.3.3/gui/dist" />
-  <application name="fis" distributionSourceDir="C:/Users/Travelsky/Desktop/smart-solar/exe">
+  <directoryPresets config="E:/tools/proguard5.3.3" />
+  <application name="fis" distributionSourceDir="E:/tools/proguard5.3.3/gui">
     <languages>
       <principalLanguage id="en" customLocalizationFile="" />
     </languages>
   </application>
-  <executable name="kehuduan" type="2" iconSet="false" iconFile="" executableDir="." redirectStderr="true" stderrFile="error.log" stderrMode="overwrite" redirectStdout="false" stdoutFile="output.log" stdoutMode="overwrite" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="false" globalSingleInstance="false" singleInstanceActivate="true" dpiAware="false" amd64="true">
+  <executable name="kehuduan" type="2" iconSet="false" iconFile="" executableDir="." redirectStderr="true" stderrFile="error.log" stderrMode="overwrite" redirectStdout="false" stdoutFile="output.log" stdoutMode="overwrite" failOnStderrOutput="true" executableMode="1" changeWorkingDirectory="true" workingDirectory="." singleInstance="false" serviceStartType="2" serviceDependencies="" serviceDescription="" jreLocation="" executionLevel="asInvoker" checkConsoleParameter="true" globalSingleInstance="false" singleInstanceActivate="true" dpiAware="false" amd64="true">
     <messageSet />
     <versionInfo include="false" fileVersion="" fileDescription="" legalCopyright="" internalName="" productName="" companyName="" productVersion="" />
   </executable>
@@ -16,10 +16,9 @@
       <versionLine x="20" y="40" text="version %VERSION%" fontSize="8" fontColor="0,0,0" bold="false" />
     </text>
   </splashScreen>
-  <java mainClass="com.solar.gui.module.working.AdaWorkingPanel" vmParameters="-XX:-UseSplitVerifier" arguments="" allowVMPassthroughParameters="true" preferredVM="client" bundleRuntime="true" minVersion="1.8" maxVersion="" allowBetaVM="false" jdkOnly="true">
+  <java mainClass="com.solar.gui.module.working.AdaWorkingPanel" vmParameters="-XX:-UseSplitVerifier" arguments="" allowVMPassthroughParameters="true" preferredVM="" bundleRuntime="true" minVersion="1.8" maxVersion="" allowBetaVM="false" jdkOnly="true">
     <searchSequence>
-      <directory location="E:/tools/Java/jdk1.8.0_131/jre" />
-      <registry />
+      <directory location="./jdk" />
     </searchSequence>
     <classPath>
       <archive location="E:/tools/proguard5.3.3/gui/solar/velocity-1.7.jar" failOnError="false" />
@@ -47,7 +46,7 @@
       <archive location="E:/tools/proguard5.3.3/gui/solar/httpclient-4.5.3.jar" failOnError="false" />
       <archive location="E:/tools/proguard5.3.3/gui/solar/commons-logging-1.2.jar" failOnError="false" />
       <archive location="E:/tools/proguard5.3.3/gui/dist/solar-common.jar" failOnError="false" />
-      <archive location="E:/tools/proguard5.3.3/gui/dist/SolarGUI.jar" failOnError="false" />
+      <archive location="E:/tools/proguard5.3.3/gui/SolarGUI.jar" failOnError="false" />
     </classPath>
     <nativeLibraryDirectories />
     <vmOptions />
