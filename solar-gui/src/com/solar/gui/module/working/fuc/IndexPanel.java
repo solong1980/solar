@@ -48,8 +48,7 @@ import com.solar.entity.SoProjectWorkingMode;
 import com.solar.entity.SoRunningData;
 import com.solar.gui.component.BezierAnimationPanel;
 import com.solar.gui.component.formate.ButtonUI;
-import com.solar.gui.component.formate.InputState;
-import com.solar.gui.component.formate.JFieldBuilder;
+import com.solar.gui.component.formate.JTextFieldLimit;
 import com.solar.gui.component.model.TreeAddr;
 import com.solar.gui.module.working.BasePanel;
 import com.solar.timer.RunningDataCron;
@@ -88,9 +87,8 @@ public class IndexPanel extends BasePanel implements Observer {
 		gbc.insets = new Insets(5, 5, 5, 5);
 		devicePanel.add(deviceNoLabel, gbc);
 
-		InputState inputState = new InputState();
-
-		JTextField devNoField = JFieldBuilder.createNoEmptyField(this, inputState, "", 30, "设备号必填", 50);
+		JTextField devNoField =new JTextField(30);
+		devNoField.setDocument(new JTextFieldLimit(8));
 		devNoField.requestFocus();
 
 		gbc.gridx++;
@@ -237,6 +235,7 @@ public class IndexPanel extends BasePanel implements Observer {
 		case 0: // yes
 			String devNo = devNoField.getText();
 			if (devNo == null || devNo.trim().isEmpty()) {
+				//"设备号必填"
 				JOptionPane.showMessageDialog(this, "设备号不能为空");
 				return;
 			} else {
