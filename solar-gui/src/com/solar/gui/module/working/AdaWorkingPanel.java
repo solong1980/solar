@@ -36,6 +36,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.MYJOptionPane;
+import javax.swing.MYJOptionPane.FormChecker;
 
 import com.solar.client.JsonUtilTool;
 import com.solar.client.ObservableMedia;
@@ -51,7 +52,6 @@ import com.solar.entity.SoAccountLocation;
 import com.solar.entity.SoVCode;
 import com.solar.gui.component.AddressTreeField;
 import com.solar.gui.component.MultiAddressTreeField;
-import com.solar.gui.component.formate.InputState;
 import com.solar.gui.component.formate.JFieldBuilder;
 import com.solar.gui.component.model.TreeAddr;
 import com.solar.gui.module.working.fuc.AccountAuditPanel;
@@ -168,12 +168,19 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		JLabel vcodeLabel = new JLabel(getBoldHTML("验证码"));
 		JComponent findBackPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-
-		gbc.gridx = 0;
-		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(5, 5, 5, 5);
+
+		JLabel msgLabel = new JLabel("校验结果:");
+
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridwidth = 3;
+		findBackPanel.add(msgLabel, gbc);
+
+		gbc.gridwidth = 1;
+		gbc.gridy++;
 		findBackPanel.add(nameLabel, gbc);
 		gbc.gridy++;
 		findBackPanel.add(oldPhoneLabel, gbc);
@@ -189,12 +196,12 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		gbc.gridy++;
 		findBackPanel.add(envAddrLabel, gbc);
 
-		InputState inputState = new InputState();
+		// InputState inputState = new InputState();
+		JTextField nameField = new JTextField(60);
 
-		JTextField nameField = JFieldBuilder.createNoEmptyField(this, inputState, "", 30, "请输入申请人姓名", 60);
+		JTextField oldPhoneField = new JTextField();
+		JTextField newPhoneField = new JTextField();
 
-		JTextField oldPhoneField = JFieldBuilder.createPhoneField(this, inputState, true);
-		JTextField newPhoneField = JFieldBuilder.createPhoneField(this, inputState, true);
 		// JTextField emailField = new JTextField("");
 		JComboBox<String> userTypeField = new JComboBox<>();
 		userTypeField.addItem("运维");
@@ -224,7 +231,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		});
 
 		gbc.gridx++;
-		gbc.gridy = 0;
+		gbc.gridy = 1;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		findBackPanel.add(nameField, gbc);
 		gbc.gridy++;
@@ -282,7 +289,39 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		String[] options = { "提交审核", "取消" };
 
 		int result = MYJOptionPane.showOptionDialog(this, message, "用  户  找  回(需审核)", JOptionPane.DEFAULT_OPTION,
-				JOptionPane.PLAIN_MESSAGE, null, options, options[1], (int) screenSize.getWidth() / 2, 100);
+				JOptionPane.PLAIN_MESSAGE, null, options, options[1], (int) screenSize.getWidth() / 2, 100,
+				new FormChecker() {
+					public boolean isvalide(Object btnLabel) {
+						if (options[1].equals(btnLabel))
+							return true;
+						else {
+							try {
+								JFieldBuilder.noEmpty(msgLabel, "请输入申请人姓名", nameField);
+
+								JFieldBuilder.noEmpty(msgLabel, "请输入原手机号码", oldPhoneField);
+								JFieldBuilder.isPhone(msgLabel, "请输入手机号码", oldPhoneField);
+
+								JFieldBuilder.noEmpty(msgLabel, "请输入原手机号码", newPhoneField);
+								JFieldBuilder.isPhone(msgLabel, "请输入手机号码", newPhoneField);
+
+								JFieldBuilder.noEmpty(msgLabel, "请输入校验码", vcodeField);
+
+								int typeIndex = userTypeField.getSelectedIndex();
+								if (typeIndex == 0) {
+									List<TreeAddr> workerAddrs = projectAddr1Field.getSelectedKeys();
+									JFieldBuilder.noEmpty(msgLabel, "请输入项目地址", workerAddrs, projectAddr1Field);
+								} else if (typeIndex == 1) {
+									List<TreeAddr> envAddrs = envAddrField.getSelectedKeys();
+									JFieldBuilder.noEmpty(msgLabel, "请输入环保局地址", envAddrs, envAddrField);
+								}
+
+							} catch (Exception e) {
+								return false;
+							}
+							return true;
+						}
+					}
+				});
 
 		timer.cancel();
 		switch (result) {
@@ -291,6 +330,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 			String name = nameField.getText();
 			String oldPhone = oldPhoneField.getText();
 			String newPhone = newPhoneField.getText();
+
 			String vcode = vcodeField.getText();
 			accountFind.setName(name);
 			accountFind.setOldPhone(oldPhone);
@@ -726,16 +766,15 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 
 								RunningReportPanel reportPanel = new RunningReportPanel();
 								tabbedpane.add("运行信息查询", reportPanel);
-								
+
 								AccountAuditPanel accountAuditPanel = new AccountAuditPanel();
 								observableMedia.addObserver(accountAuditPanel);
 								tabbedpane.add("注册找回信息审核", accountAuditPanel);
-								
-								
+
 								DeviceUpgradeManagerPanel deviceUpgradeManagerPanel = new DeviceUpgradeManagerPanel();
 								observableMedia.addObserver(deviceUpgradeManagerPanel);
 								tabbedpane.add("升级块缓存", deviceUpgradeManagerPanel);
-								
+
 								// 用户管理
 								// tabName = " 用户管理";
 								// UserManagerPanel userManagerPanel = new UserManagerPanel();
