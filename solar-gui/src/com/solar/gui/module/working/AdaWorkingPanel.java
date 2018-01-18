@@ -524,7 +524,7 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		message[0] = regiestPanel;
 		String[] options = { "提交审核", "取消" };
 		int result = MYJOptionPane.showOptionDialog(this, message, "注册新用户(需审核)", JOptionPane.DEFAULT_OPTION,
-				JOptionPane.PLAIN_MESSAGE, null, options, options[1], (int) screenSize.getWidth() / 2, 100,
+				JOptionPane.PLAIN_MESSAGE, null, options, options[1], (int) screenSize.getWidth() / 2, 30,
 				new FormChecker() {
 					@Override
 					public boolean isvalide(Object btnLabel) {
@@ -699,9 +699,11 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		frame.getContentPane().setLayout(new BorderLayout());
 		frame.getContentPane().add(this, BorderLayout.CENTER);
 		this.setBackground(Color.DARK_GRAY);
-		// this.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
-		frame.setMinimumSize(new Dimension(800, 600));
+		//frame.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		frame.setMinimumSize(new Dimension((int) screenSize.getWidth()-200, (int) screenSize.getHeight()-200));
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		//frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
