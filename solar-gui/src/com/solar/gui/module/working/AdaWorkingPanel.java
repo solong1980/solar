@@ -53,6 +53,7 @@ import com.solar.entity.SoVCode;
 import com.solar.gui.component.AddressTreeField;
 import com.solar.gui.component.MultiAddressTreeField;
 import com.solar.gui.component.formate.JFieldBuilder;
+import com.solar.gui.component.formate.JTextFieldLimit;
 import com.solar.gui.component.model.TreeAddr;
 import com.solar.gui.module.working.fuc.AccountAuditPanel;
 import com.solar.gui.module.working.fuc.DeviceUpgradeManagerPanel;
@@ -158,14 +159,14 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 	}
 
 	private void findBackGUI() {
-		JLabel nameLabel = new JLabel(getBoldHTML("用户姓名"));
-		JLabel oldPhoneLabel = new JLabel(getBoldHTML("输入原号码"));
-		JLabel newPhoneLabel = new JLabel(getBoldHTML("输入新号码"));
+		JLabel nameLabel = new JLabel(getBoldHTML("用户姓名*"));
+		JLabel oldPhoneLabel = new JLabel(getBoldHTML("输入原号码*"));
+		JLabel newPhoneLabel = new JLabel(getBoldHTML("输入新号码*"));
 		// JLabel emailLabel = new JLabel(getBoldHTML("邮箱地址"));
-		JLabel userTypeLabel = new JLabel(getBoldHTML("用户类型"));
-		JLabel projectAddr1Label = new JLabel(getBoldHTML("项目地址"));
-		JLabel envAddrLabel = new JLabel(getBoldHTML("环保局地址"));
-		JLabel vcodeLabel = new JLabel(getBoldHTML("验证码"));
+		JLabel userTypeLabel = new JLabel(getBoldHTML("用户类型*"));
+		JLabel projectAddr1Label = new JLabel(getBoldHTML("项目地址*"));
+		JLabel envAddrLabel = new JLabel(getBoldHTML("环保局地址*"));
+		JLabel vcodeLabel = new JLabel(getBoldHTML("验证码*"));
 		JComponent findBackPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.anchor = GridBagConstraints.WEST;
@@ -372,34 +373,39 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		 * 省市（地区）区（县市）街道（镇）
 		 */
 		JLabel accountLabel = new JLabel(getBoldHTML("账       号"));
-		JLabel passwordLabel = new JLabel(getBoldHTML("密      码"));
-		JLabel rePasswordLabel = new JLabel(getBoldHTML("确认密 码"));
+		JLabel passwordLabel = new JLabel(getBoldHTML("密      码*"));
+		JLabel rePasswordLabel = new JLabel(getBoldHTML("确认密 码*"));
 
-		JLabel nameLabel = new JLabel(getBoldHTML("用户姓名"));
-		JLabel phoneLabel = new JLabel(getBoldHTML("手机号码"));
-		JLabel vcodeLabel = new JLabel(getBoldHTML("验证码"));
+		JLabel nameLabel = new JLabel(getBoldHTML("用户姓名*"));
+		JLabel phoneLabel = new JLabel(getBoldHTML("手机号码*"));
+		JLabel vcodeLabel = new JLabel(getBoldHTML("验证码*"));
 
-		JLabel emailLabel = new JLabel(getBoldHTML("邮箱地址"));
-		JLabel userTypeLabel = new JLabel(getBoldHTML("用户类型"));
-		JLabel projectAddr1Label = new JLabel(getBoldHTML("项目地址"));
-		JLabel envAddrLabel = new JLabel(getBoldHTML("环保局地址"));
+		JLabel emailLabel = new JLabel(getBoldHTML("邮箱地址*"));
+		JLabel userTypeLabel = new JLabel(getBoldHTML("用户类型*"));
+		JLabel projectAddr1Label = new JLabel(getBoldHTML("项目地址*"));
+		JLabel envAddrLabel = new JLabel(getBoldHTML("环保局地址*"));
 		JComponent regiestPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
-
-		gbc.gridx = 0;
-		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(5, 5, 5, 5);
+
+		JLabel msgLabel = new JLabel("校验结果:");
+		gbc.gridx = 0;
+		gbc.gridy = 0;
+		gbc.gridwidth = 2;
+		regiestPanel.add(msgLabel, gbc);
+		gbc.gridwidth = 1;
+		gbc.gridy++;
 		regiestPanel.add(accountLabel, gbc);
+		gbc.gridy++;
+		regiestPanel.add(phoneLabel, gbc);
 		gbc.gridy++;
 		regiestPanel.add(passwordLabel, gbc);
 		gbc.gridy++;
 		regiestPanel.add(rePasswordLabel, gbc);
 		gbc.gridy++;
 		regiestPanel.add(nameLabel, gbc);
-		gbc.gridy++;
-		regiestPanel.add(phoneLabel, gbc);
 		gbc.gridy++;
 		regiestPanel.add(vcodeLabel, gbc);
 		gbc.gridy++;
@@ -412,12 +418,20 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		regiestPanel.add(envAddrLabel, gbc);
 
 		JTextField accountField = new JTextField("");
+		accountField.setDocument(new JTextFieldLimit(30));
+		
 		JPasswordField passwordField = new JPasswordField();
 		JPasswordField rePasswordField = new JPasswordField();
+		
 		JTextField nameField = new JTextField("");
+		nameField.setDocument(new JTextFieldLimit(50));
+		
 		JTextField phoneField = new JTextField("", 30);
 		JTextField vcodeField = new JTextField("");
+		
 		JTextField emailField = new JTextField("");
+		emailField.setDocument(new JTextFieldLimit(50));
+		
 		JComboBox<String> userTypeField = new JComboBox<>();
 		userTypeField.addItem("运维");
 		userTypeField.addItem("局方 ");
@@ -447,17 +461,17 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		});
 
 		gbc.gridx++;
-		gbc.gridy = 0;
+		gbc.gridy = 1;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		regiestPanel.add(accountField, gbc);
+		gbc.gridy++;
+		regiestPanel.add(phoneField, gbc);
 		gbc.gridy++;
 		regiestPanel.add(passwordField, gbc);
 		gbc.gridy++;
 		regiestPanel.add(rePasswordField, gbc);
 		gbc.gridy++;
 		regiestPanel.add(nameField, gbc);
-		gbc.gridy++;
-		regiestPanel.add(phoneField, gbc);
 		gbc.gridy++;
 		regiestPanel.add(vcodeField, gbc);
 
@@ -509,8 +523,41 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		JComponent[] message = new JComponent[4];
 		message[0] = regiestPanel;
 		String[] options = { "提交审核", "取消" };
-		int result = JOptionPane.showOptionDialog(this, message, "注册新用户(需审核)", JOptionPane.DEFAULT_OPTION,
-				JOptionPane.PLAIN_MESSAGE, null, options, options[1]);
+		int result = MYJOptionPane.showOptionDialog(this, message, "注册新用户(需审核)", JOptionPane.DEFAULT_OPTION,
+				JOptionPane.PLAIN_MESSAGE, null, options, options[1], (int) screenSize.getWidth() / 2, 100,
+				new FormChecker() {
+					@Override
+					public boolean isvalide(Object btnLabel) {
+						if (btnLabel.equals(options[0])) {
+							try {
+								JFieldBuilder.noEmpty(msgLabel, "请输入申请人姓名", nameField);
+								JFieldBuilder.noEmpty(msgLabel, "请输入手机号码", phoneField);
+								JFieldBuilder.isPhone(msgLabel, "请输入手机号码", phoneField);
+
+								JFieldBuilder.noEmpty(msgLabel, "请输入密码", passwordField);
+								JFieldBuilder.noEmpty(msgLabel, "请重复输入密码", rePasswordField);
+
+								JFieldBuilder.noEmpty(msgLabel, "请输入校验码", vcodeField);
+
+								JFieldBuilder.isEmail(msgLabel, "请输入邮箱地址", emailField);
+
+
+								int typeIndex = userTypeField.getSelectedIndex();
+								if (typeIndex == 0) {
+									List<TreeAddr> workerAddrs = projectAddr1Field.getSelectedKeys();
+									JFieldBuilder.noEmpty(msgLabel, "请输入项目地址", workerAddrs, projectAddr1Field);
+								} else if (typeIndex == 1) {
+									List<TreeAddr> envAddrs = envAddrField.getSelectedKeys();
+									JFieldBuilder.noEmpty(msgLabel, "请输入环保局地址", envAddrs, envAddrField);
+								}
+							} catch (Exception e) {
+								return false;
+							}
+							return true;
+						} else
+							return true;
+					}
+				});
 
 		timer.cancel();
 

@@ -13,15 +13,24 @@ import javax.swing.text.JTextComponent;
 import com.solar.common.util.RegExpValidatorUtils;
 
 public class JFieldBuilder {
-	
-	public static void noEmpty(JLabel show, String msg, List<?> arr,JComponent comp) {
-		if(arr==null||arr.isEmpty()) {
+
+	public static void isEmail(JLabel show, String msg, JTextComponent textComponent) {
+		String text = textComponent.getText();
+		if (text != null && !RegExpValidatorUtils.isEmail(text)) {
+			showMsg(show, msg);
+			textComponent.requestFocus();
+			throw new RuntimeException("Is not email formate");
+		}
+	}
+
+	public static void noEmpty(JLabel show, String msg, List<?> arr, JComponent comp) {
+		if (arr == null || arr.isEmpty()) {
 			showMsg(show, msg);
 			comp.requestFocus();
 			throw new RuntimeException("Empty list");
 		}
 	}
-	
+
 	public static void noEmpty(JLabel show, String msg, JTextComponent textComponent) {
 		String text = textComponent.getText();
 		if (text == null || text.trim().isEmpty()) {
