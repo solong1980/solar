@@ -61,8 +61,8 @@ import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
 import com.solar.entity.SoProjectWorkingMode;
 import com.solar.gui.component.AddressTreeField;
-import com.solar.gui.component.formate.InputState;
 import com.solar.gui.component.formate.JFieldBuilder;
+import com.solar.gui.component.formate.JTextFieldLimit;
 import com.solar.gui.component.model.TreeAddr;
 import com.solar.gui.module.working.BasePanel;
 
@@ -73,6 +73,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 
 	private SoProject soProject = null;
 	JLabel titleLable;
+	JLabel msgLabel = new JLabel("校验结果:");
 
 	private JTextField nameField;
 	private JComboBox<String> projectTypeField;
@@ -109,14 +110,18 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 
 		JPanel projectInfoPanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.NORTH;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(5, 5, 5, 5);
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.gridwidth = 2;
-		gbc.anchor = GridBagConstraints.NORTH;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = new Insets(5, 5, 5, 5);
 		projectInfoPanel.add(titleLable, gbc);
+
+		gbc.gridy++;
+		gbc.gridwidth = 2;
+		projectInfoPanel.add(msgLabel, gbc);
 
 		gbc.gridwidth = 1;
 		gbc.gridy++;
@@ -138,13 +143,14 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		gbc.gridy++;
 		projectInfoPanel.add(workerContactLabel, gbc);
 
-		InputState inputState = new InputState();
-
-		nameField = JFieldBuilder.createNoEmptyField(this, inputState, "", 30, "项目名称必填", 150);
+		// "项目名称必填"
+		nameField = new JTextField(30);
+		nameField.setDocument(new JTextFieldLimit(150));
 		nameField.requestFocus();
 
 		// 设计处理量
 		projectTypeField = new JComboBox<>();
+
 		String[] projectTypes = new String[] { "太阳能污水处理系统", "智能运维系统" };
 		for (int i = 0; i < projectTypes.length; i++) {
 			projectTypeField.addItem(projectTypes[i]);
@@ -152,6 +158,8 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 
 		addressField = AddressTreeField.buildLeafOnly();
 		streetField = new JTextField();
+		streetField.setDocument(new JTextFieldLimit(512));
+
 		// 设计处理量
 		capabilityField = new JComboBox<>();
 		String[] cabs = new String[] { "", "5D/T", "10D/T", "20D/T", "30D/T", "50D/T", "80D/T", "100D/T" };
@@ -187,15 +195,17 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		}
 
 		workerNameField = new JTextField("", 30);
+		workerNameField.setDocument(new JTextFieldLimit(50));
+
 		workerContactField = new JTextField("", 30);
+		workerContactField.setDocument(new JTextFieldLimit(50));
 
 		gbc.gridx++;
-		gbc.gridy = 1;
+		gbc.gridy = 2;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
 		projectInfoPanel.add(nameField, gbc);
 		gbc.gridy++;
 		projectInfoPanel.add(projectTypeField, gbc);
-
 		gbc.gridy++;
 		projectInfoPanel.add(addressField, gbc);
 		gbc.gridy++;
@@ -642,6 +652,23 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 		return menuBar;
 	}
 
+	public boolean isvalid() {
+		try {
+			JFieldBuilder.noEmpty(msgLabel, "项目名称必填", nameField);
+			JFieldBuilder.noneChoose(msgLabel, "未选择 项目类型", projectTypeField);
+			JFieldBuilder.noEmpty(msgLabel, "未选项目地址", addressField.getSelectedKeys(), addressField);
+			JFieldBuilder.noneChoose(msgLabel, "未选择 排放标准", emissionStandardsField);
+
+			JFieldBuilder.noneChoose(msgLabel, "未选择 排放标准", capabilityField, 0);
+
+			JFieldBuilder.noEmpty(msgLabel, "维护人员", workerNameField);
+			JFieldBuilder.noEmpty(msgLabel, "联系方式", workerContactField);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
 	class EditorAction extends AbstractAction {
 		private static final long serialVersionUID = -6048630218852730717L;
 		private ActionType operate;
@@ -716,85 +743,62 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 				}
 
 			case PROJECT_NEW_SUBMIT:
+				if (isvalid()) {
+					String name = nameField.getText();
+					int typeIndex = projectTypeField.getSelectedIndex();
+					int projectType = Consts.PROJECT_TYPE[typeIndex];
+					List<TreeAddr> selectedAddress = addressField.getSelectedKeys();
+					TreeAddr treeAddr = selectedAddress.get(0);
+					String locationId = treeAddr.getKey();
+					String street = streetField.getText();
+					int emissionStandardIdx = emissionStandardsField.getSelectedIndex();
+					int emissionStandard = Consts.EMISSION_STANDARDS[emissionStandardIdx];
 
-				String name = nameField.getText();
-				int typeIndex = projectTypeField.getSelectedIndex();
-				if (typeIndex == -1) {
-					showWarningDailog("输入错误", "未选择 项目类型");
-					projectTypeField.setBorder(BorderFactory.createLineBorder(Color.RED));
-					projectTypeField.grabFocus();
-					return;
-				}
-				int projectType = Consts.PROJECT_TYPE[typeIndex];
+					int capabilityIdx = capabilityField.getSelectedIndex();
+					int cap = Consts.CAPS[capabilityIdx - 1];
 
-				List<TreeAddr> selectedAddress = addressField.getSelectedKeys();
-				if (selectedAddress == null || selectedAddress.isEmpty()) {
-					showWarningDailog("输入错误", "未选项目地址");
-					addressField.setBorder(BorderFactory.createLineBorder(Color.RED));
-					addressField.grabFocus();
-					return;
-				}
-				TreeAddr treeAddr = selectedAddress.get(0);
-				String locationId = treeAddr.getKey();
+					List<SoDevConfig> devConfigs = Collections.emptyList();
 
-				String street = streetField.getText();
-
-				int emissionStandardIdx = emissionStandardsField.getSelectedIndex();
-				if (emissionStandardIdx == -1) {
-					showWarningDailog("输入错误", "未选择 排放标准");
-					emissionStandardsField.setBorder(BorderFactory.createLineBorder(Color.RED));
-					emissionStandardsField.grabFocus();
-					return;
-				}
-				int emissionStandard = Consts.EMISSION_STANDARDS[emissionStandardIdx];
-
-				int capabilityIdx = capabilityField.getSelectedIndex();
-				if (capabilityIdx == 0) {
-					showWarningDailog("输入错误", "未选择处理量");
-					capabilityField.setBorder(BorderFactory.createLineBorder(Color.RED));
-					capabilityField.grabFocus();
-					return;
-				}
-				int cap = Consts.CAPS[capabilityIdx - 1];
-
-				List<SoDevConfig> devConfigs = Collections.emptyList();
-
-				String workerName = workerNameField.getText();
-				String workerPhone = workerContactField.getText();
-				// if update the soProject should not null
-				if (soProject == null) {
-					soProject = new SoProject();
-				}
-
-				soProject.setProjectName(name);
-				soProject.setType(projectType);
-				soProject.setLocationId(locationId);
-				soProject.setStreet(street);
-				soProject.setEmissionStandards(emissionStandard);
-				soProject.setCapability(cap);
-				soProject.setDevConfiures(devConfigs);
-				soProject.setWorkerName(workerName);
-				soProject.setWorkerPhone(workerPhone);
-				SoProjectWorkingMode mode = soProject.getProjectWorkingMode();
-				if (mode == null) {
-					mode = new SoProjectWorkingMode();
-					mode.setProjectId(soProject.getId());
-					soProject.setProjectWorkingMode(mode);
-				}
-
-				for (int i = 0; i < workingTimeCheckBoxs.size(); i++) {
-					JCheckBox hCheckBox = workingTimeCheckBoxs.get(i);
-					Method method;
-					try {
-						method = SoProjectWorkingMode.class.getMethod("setH_" + i, Short.class);
-						method.invoke(mode, hCheckBox.isSelected() ? (short) 1 : (short) 0);
-					} catch (NoSuchMethodException | SecurityException | IllegalAccessException
-							| IllegalArgumentException | InvocationTargetException e1) {
-						e1.printStackTrace();
+					String workerName = workerNameField.getText();
+					String workerPhone = workerContactField.getText();
+					// if update the soProject should not null
+					if (soProject == null) {
+						soProject = new SoProject();
 					}
+
+					soProject.setProjectName(name);
+					soProject.setType(projectType);
+					soProject.setLocationId(locationId);
+					soProject.setStreet(street);
+					soProject.setEmissionStandards(emissionStandard);
+					soProject.setCapability(cap);
+					soProject.setDevConfiures(devConfigs);
+					soProject.setWorkerName(workerName);
+					soProject.setWorkerPhone(workerPhone);
+					SoProjectWorkingMode mode = soProject.getProjectWorkingMode();
+					if (mode == null) {
+						mode = new SoProjectWorkingMode();
+						mode.setProjectId(soProject.getId());
+						soProject.setProjectWorkingMode(mode);
+					}
+
+					for (int i = 0; i < workingTimeCheckBoxs.size(); i++) {
+						JCheckBox hCheckBox = workingTimeCheckBoxs.get(i);
+						Method method;
+						try {
+							method = SoProjectWorkingMode.class.getMethod("setH_" + i, Short.class);
+							method.invoke(mode, hCheckBox.isSelected() ? (short) 1 : (short) 0);
+						} catch (NoSuchMethodException | SecurityException | IllegalAccessException
+								| IllegalArgumentException | InvocationTargetException e1) {
+							e1.printStackTrace();
+						}
+					}
+
+					media.saveProject(soProject);
+				} else {
+					return;
 				}
 
-				media.saveProject(soProject);
 				break;
 			default:
 				break;
@@ -856,12 +860,12 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 						data[i][9] = project.getId();
 					}
 					updateData(data);
-					
+
 					Integer totel = page.getTotal();
 					Integer pageNum = page.getPageNum();
 					totalField.setText(totel.toString());
 					pageNumField.setText("第" + pageNum + "页");
-					
+
 					cardLayout.show(this, "list");
 					break;
 				case ConnectAPI.PROJECT_SELECT_RESPONSE:

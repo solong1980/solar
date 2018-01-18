@@ -5,6 +5,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.List;
 
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -13,6 +14,23 @@ import javax.swing.text.JTextComponent;
 import com.solar.common.util.RegExpValidatorUtils;
 
 public class JFieldBuilder {
+	public static void noneChoose(JLabel show, String msg, JComboBox<?> comp) {
+		int index = comp.getSelectedIndex();
+		if (index == -1) {
+			showMsg(show, msg);
+			comp.grabFocus();
+			throw new RuntimeException("None choose");
+		}
+	}
+
+	public static void noneChoose(JLabel show, String msg, JComboBox<?> comp, int f) {
+		int index = comp.getSelectedIndex();
+		if (index == f) {
+			showMsg(show, msg);
+			comp.grabFocus();
+			throw new RuntimeException("None choose");
+		}
+	}
 
 	public static void isEmail(JLabel show, String msg, JTextComponent textComponent) {
 		String text = textComponent.getText();
