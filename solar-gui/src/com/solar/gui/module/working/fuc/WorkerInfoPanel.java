@@ -56,6 +56,8 @@ import com.solar.entity.SoAccountLocation;
 import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
 import com.solar.gui.component.checkable.multi.CheckBoxTreeNode;
+import com.solar.gui.component.formate.JFieldBuilder;
+import com.solar.gui.component.formate.JTextFieldLimit;
 import com.solar.gui.component.model.TreeAddr;
 import com.solar.gui.component.tree.TreeUI;
 import com.solar.gui.module.working.BasePanel;
@@ -65,6 +67,8 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 
 	private static final int INITIAL_ROWHEIGHT = 33;
 	SoAccount account = null;
+
+	JLabel msgLabel = new JLabel("校验结果:");
 
 	JTextField nameField = new JTextField("", 30);
 	JTextField phoneField = new JTextField("", 30);
@@ -115,38 +119,36 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 		JLabel phoneLabel = new JLabel(getBoldHTML("联系方式"));
 		JLabel emailLabel = new JLabel(getBoldHTML("邮箱"));
 		GridBagConstraints gbc = new GridBagConstraints();
+		gbc.anchor = GridBagConstraints.NORTH;
+		gbc.fill = GridBagConstraints.BOTH;
+		gbc.insets = new Insets(5, 5, 5, 5);
 
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.gridwidth = 2;
-		gbc.anchor = GridBagConstraints.NORTH;
-		gbc.fill = GridBagConstraints.BOTH;
-		gbc.insets = new Insets(5, 5, 5, 5);
 		editorPanel.add(titleLable, gbc);
+		gbc.gridy = 1;
+		editorPanel.add(msgLabel, gbc);
 
 		gbc.gridwidth = 1;
-		gbc.gridy = 1;
+		gbc.gridy = 2;
 		editorPanel.add(nameLabel, gbc);
 		gbc.gridx = 1;
 		editorPanel.add(nameField, gbc);
-
+		nameField.setDocument(new JTextFieldLimit(60));
 		gbc.gridy++;
 		gbc.gridx = 0;
 		editorPanel.add(phoneLabel, gbc);
 		gbc.gridx = 1;
 		editorPanel.add(phoneField, gbc);
+		phoneField.setDocument(new JTextFieldLimit(15));
 
 		gbc.gridy++;
 		gbc.gridx = 0;
 		editorPanel.add(emailLabel, gbc);
 		gbc.gridx = 1;
 		editorPanel.add(emailField, gbc);
-
-		// gbc.gridy++;
-		// gbc.gridx = 0;
-		// gbc.gridwidth = 2;
-		// gbc.fill = GridBagConstraints.HORIZONTAL;
-		// editorPanel.add(new JButton("地图"), gbc);
+		emailField.setDocument(new JTextFieldLimit(50));
 		return editorPanel;
 	}
 
@@ -503,6 +505,20 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 		ObservableMedia.getInstance().accountQuery(soPage);
 	}
 
+	public boolean isvalid() {
+		try {
+			JFieldBuilder.noEmpty(msgLabel, "姓名必填", nameField);
+			JFieldBuilder.noEmpty(msgLabel, "电话号码必填", phoneField);
+			JFieldBuilder.isPhone(msgLabel, "电话号码格式错误", phoneField);
+			JFieldBuilder.noEmpty(msgLabel, "邮箱必填", emailField);
+			JFieldBuilder.isEmail(msgLabel, "邮箱格式错误", emailField);
+		} catch (Exception e) {
+			return false;
+		}
+		
+		return true;
+	}
+
 	class WorkerAction extends AbstractAction {
 		private static final long serialVersionUID = -6048630218852730717L;
 		private ActionType operate;
@@ -541,6 +557,9 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 				cardLayout.show(parent, "list");
 				break;
 			case WORKER_UPDATE_SUBMIT:
+				if (!isvalid()) {
+					return;
+				}
 				id = account.getId();
 				account.setName(nameField.getText());
 				account.setPhone(phoneField.getText());
@@ -602,7 +621,7 @@ public class WorkerInfoPanel extends BasePanel implements Observer {
 						data[i][6] = account.getId();
 					}
 					updateData(data);
-					
+
 					Integer totel = page.getTotal();
 					Integer pageNum = page.getPageNum();
 					totalField.setText(totel.toString());
