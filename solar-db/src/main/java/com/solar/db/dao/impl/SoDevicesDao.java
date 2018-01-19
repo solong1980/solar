@@ -91,7 +91,13 @@ public class SoDevicesDao implements SoDevicesMapper {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
 			SoDevicesMapper mapper = sqlSession.getMapper(SoDevicesMapper.class);
-			mapper.insert(devices);
+			SoDevices existDevNo = mapper.selectByDevNo(devices.getDevNo());
+			if(existDevNo!=null) {
+				devices.setId(existDevNo.getId());
+				mapper.update(devices);
+			}else {
+				mapper.insert(devices);
+			}
 			sqlSession.commit();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
