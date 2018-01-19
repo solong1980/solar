@@ -8,6 +8,9 @@ import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.InputEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -21,8 +24,10 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -87,7 +92,7 @@ public class IndexPanel extends BasePanel implements Observer {
 		gbc.insets = new Insets(5, 5, 5, 5);
 		devicePanel.add(deviceNoLabel, gbc);
 
-		JTextField devNoField =new JTextField(30);
+		JTextField devNoField = new JTextField(30);
 		devNoField.setDocument(new JTextFieldLimit(8));
 		devNoField.requestFocus();
 
@@ -235,7 +240,7 @@ public class IndexPanel extends BasePanel implements Observer {
 		case 0: // yes
 			String devNo = devNoField.getText();
 			if (devNo == null || devNo.trim().isEmpty()) {
-				//"设备号必填"
+				// "设备号必填"
 				JOptionPane.showMessageDialog(this, "设备号不能为空");
 				return;
 			} else {
@@ -677,11 +682,21 @@ public class IndexPanel extends BasePanel implements Observer {
 		return gpsPanel;
 	}
 
+	JPopupMenu devTreePopmenu = new JPopupMenu();
+	JMenuItem rmDevFromProj = new JMenuItem("从项目移除");
+	JMenuItem addDevToProj = new JMenuItem("添加到项目");
+
+	public void showmenu(int x, int y) {
+		// devTreePopmenu.show(deviceTree, x, y);
+	}
+
 	public IndexPanel() {
 		super(new BorderLayout(5, 5));
 
-		runningDataCron.startFetchRunningData();
+		devTreePopmenu.add(rmDevFromProj);
+		devTreePopmenu.add(addDevToProj);
 
+		runningDataCron.startFetchRunningData();
 		JPanel projectTreePanel = createTree(new TreeSelectionListener() {
 			@Override
 			public void valueChanged(TreeSelectionEvent e) {
@@ -800,6 +815,47 @@ public class IndexPanel extends BasePanel implements Observer {
 				cardLayout.show(dashPanel, PROJECT);
 			}
 		});
+
+		deviceTree.add(devTreePopmenu);
+		deviceTree.addMouseListener(new MouseAdapter() {
+			// final TreePath visiblePath = new
+			// TreePath(((DefaultTreeModel)deviceTree.getModel()).getPathToRoot(null));
+			public void mousePressed(MouseEvent event) {
+				// int selRow = deviceTree.getRowForLocation(event.getX(), event.getY());
+				TreePath selPath = deviceTree.getPathForLocation(event.getX(), event.getY());
+				if (selPath != null) {
+					if (((event.getModifiers() & InputEvent.BUTTON3_MASK) != 0)
+							&& (deviceTree.getSelectionCount() > 0)) {
+
+						Object lp = selPath.getLastPathComponent();
+						if (lp instanceof DefaultMutableTreeNode) {
+							DefaultMutableTreeNode n = (DefaultMutableTreeNode) lp;
+							Object uo = n.getUserObject();
+							if (uo instanceof TreeAddr) {
+								TreeAddr t = (TreeAddr) uo;
+								AddrType addrType = t.getAddrType();
+								switch (addrType) {
+								case PROJECT:
+									addDevToProj.setEnabled(true);
+									rmDevFromProj.setEnabled(false);
+									showmenu(event.getX(), event.getY());
+									break;
+								case DEVICE:
+									addDevToProj.setEnabled(false);
+									rmDevFromProj.setEnabled(true);
+									showmenu(event.getX(), event.getY());
+									break;
+								default:
+									break;
+								}
+
+							}
+						}
+					}
+				}
+			}
+		});
+
 		createDashpanel();
 		splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, projectTreePanel, dashPanel);
 		splitPane.setContinuousLayout(true);
