@@ -1,5 +1,7 @@
 package com.solar.command.processor.app;
 
+import java.util.List;
+
 import com.solar.command.message.request.ClientRequest;
 import com.solar.command.message.response.app.AccountFindQueryResponse;
 import com.solar.common.annotation.ProcessCMD;
@@ -9,16 +11,20 @@ import com.solar.common.context.SuccessCode;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.MsgProcessor;
 import com.solar.db.services.SoAccountService;
+import com.solar.db.services.SoProjectService;
 import com.solar.entity.SoAccount;
+import com.solar.entity.SoProject;
 import com.solar.server.commons.session.AppSession;
 
 @ProcessCMD(API_CODE = ConnectAPI.ACCOUNT_AUDIT_COMMAND)
 public class AccountAuditCmdProcessor extends MsgProcessor {
 	private SoAccountService accountService;
+	private SoProjectService projectService;
 
 	public AccountAuditCmdProcessor() {
 		super();
 		accountService = SoAccountService.getInstance();
+		projectService = SoProjectService.getInstance();
 	}
 
 	@Override
@@ -30,6 +36,11 @@ public class AccountAuditCmdProcessor extends MsgProcessor {
 		AuditResult auditResult = AuditResult.status(status);
 		switch (auditResult) {
 		case AGREE:
+			// query
+			Long id = account.getId();
+			List<String> locationIds = accountService.queryGovernmentLocationIds(id);
+			List<SoProject> projectInGovLocationIds = projectService.queryProjectByLocationIds(locationIds);
+			account.setProjects(projectInGovLocationIds);
 			accountService.auditAgree(account);
 			break;
 		case REJECT:

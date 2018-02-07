@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Charsets;
 import com.google.common.hash.Hashing;
-import com.solar.common.context.ErrorCode;
 import com.solar.common.context.RoleType;
 import com.solar.common.util.VCodeUtil;
 import com.solar.db.dao.SoAccountLocationMapper;
@@ -32,7 +31,6 @@ public class SoAccountService {
 	private static SoAccountService accountService = new SoAccountService();
 	private SoAccountMapper accountDao;
 	private SoAccountLocationMapper accountLocationDao;
-	private SoProjectService projectService;
 
 	private AtomicLong SEED_LINE = new AtomicLong(System.currentTimeMillis());
 
@@ -47,7 +45,6 @@ public class SoAccountService {
 	public void initSetSession(SqlSessionFactory sqlSessionFactory) {
 		accountDao = new SoAccountDao(sqlSessionFactory);
 		accountLocationDao = new SoAccountLocationDao(sqlSessionFactory);
-		projectService = SoProjectService.getInstance();
 	}
 
 	public SoAccount selectById(Long id) {
@@ -122,25 +119,23 @@ public class SoAccountService {
 			// for (SoAccountLocation soAccountLocation : accountLocations) {
 			// locationIds.add(soAccountLocation.getLocationId());
 			// }
-			
+
 			// store projects chooses by administrator,this time no use
 			List<SoProject> projectsInLocations = account.getProjects();
-			
 			// query projects in the locations
 			// List<SoProject> projectsInLocations =
 			// projectService.queryProjectByLocationIds(locationIds);
-			
-			if (projectsInLocations == null || projectsInLocations.isEmpty()) {
-				throw new RuntimeException(ErrorCode.Error_000013);
-			}
-			// if operator add relation to privilege and update status
+
 			List<SoPrivilege> privileges = new ArrayList<>();
-			for (SoProject soProject : projectsInLocations) {
-				SoPrivilege privilege = new SoPrivilege();
-				privilege.setAccountId(id);
-				privilege.setLocationId(soProject.getLocationId());
-				privilege.setProjectId(soProject.getId());
-				privileges.add(privilege);
+			if (projectsInLocations != null && !projectsInLocations.isEmpty()) {
+				// if operator add relation to privilege and update status
+				for (SoProject soProject : projectsInLocations) {
+					SoPrivilege privilege = new SoPrivilege();
+					privilege.setAccountId(id);
+					privilege.setLocationId(soProject.getLocationId());
+					privilege.setProjectId(soProject.getId());
+					privileges.add(privilege);
+				}
 			}
 			accountDao.agreeOperatorAccount(account, privileges);
 			break;

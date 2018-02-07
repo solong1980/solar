@@ -162,7 +162,8 @@ public class SoAccountDao implements SoAccountMapper {
 			SoAccountMapper accountMapper = sqlSession.getMapper(SoAccountMapper.class);
 			SoPrivilegeMapper privilegeMapper = sqlSession.getMapper(SoPrivilegeMapper.class);
 			accountMapper.updateStatus(account);
-			privilegeMapper.addPrivilege(privileges);
+			if(!privileges.isEmpty())
+				privilegeMapper.addPrivilege(privileges);
 			sqlSession.commit();
 		} catch (Exception e) {
 			sqlSession.rollback();

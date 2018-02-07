@@ -293,12 +293,12 @@ namespace NetSend {
 		addrSrv.sin_addr.S_un.S_addr=inet_addr("127.0.0.1");
 		addrSrv.sin_family=AF_INET;
 
-		addrSrv.sin_port=htons(10124);
+		addrSrv.sin_port=htons(11222);
 		connect(sockClient,(SOCKADDR*)&addrSrv,sizeof(SOCKADDR));
 
 
 		char *data= "01,17DD5E6E,1001,233,6,225,15,0,0,0,0,0,17,0,0,0,0,20171224080052,a,b";
-        data="01,199E804C,03,0,5,224,14,55236,0,0,0,0,0,19,0,0,0,C000,20180115022957,30.477093,114.414081";
+        data="01,199E804C,12,0,5,224,14,55236,0,0,0,0,0,19,0,0,0,C000,20180115022957,30.477093,114.414081";
 		std::thread t1(dataupload,std::ref(sockClient),data);
 	//  std::thread t2(dataupload,std::ref(sockClient),data);
 	//	std::thread t3(dataupload,std::ref(sockClient),data);
@@ -424,7 +424,7 @@ namespace NetSend {
 		}
 		SOCKET sockClient=socket(AF_INET,SOCK_STREAM,0);
 		SOCKADDR_IN addrSrv;
-		addrSrv.sin_addr.S_un.S_addr=inet_addr("123.56.76.77");
+		addrSrv.sin_addr.S_un.S_addr=inet_addr("39.107.24.81");
 		addrSrv.sin_family=AF_INET;
 		addrSrv.sin_port=htons(10122);
 		connect(sockClient,(SOCKADDR*)&addrSrv,sizeof(SOCKADDR));

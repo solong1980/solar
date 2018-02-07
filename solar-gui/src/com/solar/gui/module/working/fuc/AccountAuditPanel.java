@@ -183,8 +183,10 @@ public class AccountAuditPanel extends BasePanel implements Observer {
 					// send for check type with projects return
 					// create panel to choose project
 					// send agree
-					instance.checkAccountProject(id);
-					// instance.regiestAgree(id);
+					//instance.checkAccountProject(id);
+					SoAccount account = new SoAccount();
+					account.setId(id);
+				    instance.regiestAgree(account);
 				}
 				break;
 			case REGIEST_ADUIT_REJECT:
