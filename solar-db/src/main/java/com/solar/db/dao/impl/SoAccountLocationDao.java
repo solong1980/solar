@@ -47,4 +47,18 @@ public class SoAccountLocationDao implements SoAccountLocationMapper {
 
 	}
 
+	@Override
+	public List<SoAccountLocation> selectAccountByLocats(List<String> locats) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoAccountLocationMapper mapper = sqlSession.getMapper(SoAccountLocationMapper.class);
+			List<SoAccountLocation> accountLocations = mapper.selectAccountByLocats(locats);
+			return accountLocations;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
 }

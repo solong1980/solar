@@ -72,7 +72,20 @@ public class SoPrivilegeDao implements SoPrivilegeMapper {
 
 	@Override
 	public void deleteByAccountId(Long accountId) {
-		
+
+	}
+
+	@Override
+	public void deleteBy(Long projectId) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoPrivilegeMapper mapper = sqlSession.getMapper(SoPrivilegeMapper.class);
+			mapper.deleteBy(projectId);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
 	}
 
 }

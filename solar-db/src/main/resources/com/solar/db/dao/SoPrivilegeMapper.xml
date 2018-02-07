@@ -63,4 +63,8 @@
 	<delete id="deleteByAccountId">
 		delete from so_privilege where account_id = #{id}
 	</delete>
+	
+	<delete id="deleteBy">
+		delete from so_privilege where project_id = #{id}
+	</delete>
 </mapper>

@@ -207,4 +207,20 @@ public class SoAccountDao implements SoAccountMapper {
 		}
 	}
 
+	@Override
+	public void addPrivilege(List<SoPrivilege> privileges) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoPrivilegeMapper privilegeMapper = sqlSession.getMapper(SoPrivilegeMapper.class);
+			if(!privileges.isEmpty())
+				privilegeMapper.addPrivilege(privileges);
+			sqlSession.commit();
+		} catch (Exception e) {
+			sqlSession.rollback();
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
 }

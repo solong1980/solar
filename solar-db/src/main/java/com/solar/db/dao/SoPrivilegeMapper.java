@@ -19,4 +19,6 @@ public interface SoPrivilegeMapper {
 
 	void deleteByAccountId(Long accountId);
 
+	void deleteBy(Long projectId);
+
 }

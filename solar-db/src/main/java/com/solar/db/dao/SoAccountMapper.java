@@ -31,4 +31,6 @@ public interface SoAccountMapper {
 	void agreeOperatorAccount(SoAccount account, List<SoPrivilege> privileges);
 
 	void updateStatus(SoAccount account);
+
+	void addPrivilege(List<SoPrivilege> privileges);
 }

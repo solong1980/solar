@@ -1,6 +1,7 @@
 package com.solar.db.services;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -91,6 +92,24 @@ public class SoAccountService {
 		return locationIds;
 	}
 
+	/**
+	 * query account who maintian this location
+	 * 
+	 * @param locationId
+	 * @return
+	 */
+	public List<SoAccountLocation> queryGovernmentAccount(String locationId) {
+		if (locationId == null || locationId.length() < 6)
+			return Collections.emptyList();
+		// include ####00,##0000
+		List<String> locats = new ArrayList<>();
+		locats.add(locationId);
+		locats.add(locationId.substring(0, 4) + "00");
+		locats.add(locationId.substring(0, 2) + "0000");
+		List<SoAccountLocation> accountLocations = accountLocationDao.selectAccountByLocats(locats);
+		return accountLocations;
+	}
+
 	public SoPage<SoAccount, List<SoAccount>> queryAccount(SoPage<SoAccount, List<SoAccount>> accountPage) {
 		Integer total = accountDao.queryAccountCount(accountPage);
 		List<SoAccount> accounts = accountDao.queryAccount(accountPage);
@@ -153,5 +172,20 @@ public class SoAccountService {
 
 	public void updateAccount(SoAccount account) {
 		accountDao.updateAccount(account);
+	}
+
+	public void addPrivilege(Long projectId, String locationId, List<SoAccountLocation> accountLocations) {
+		List<SoPrivilege> privileges = new ArrayList<>();
+		if (accountLocations != null && !accountLocations.isEmpty()) {
+			// if operator add relation to privilege and update status
+			for (SoAccountLocation accountLocation : accountLocations) {
+				SoPrivilege privilege = new SoPrivilege();
+				privilege.setAccountId(accountLocation.getAccountId());
+				privilege.setLocationId(locationId);
+				privilege.setProjectId(projectId);
+				privileges.add(privilege);
+			}
+		}
+		accountDao.addPrivilege(privileges);
 	}
 }

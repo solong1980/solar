@@ -39,7 +39,12 @@ public class SoPrivilegeService {
 	public List<String> queryOwnerLocationIds(Long accountId) {
 		return privilegeDao.selectOwnerLocations(accountId);
 	}
+
 	public List<SoProject> queryOwnerProjects(Long accountId) {
 		return privilegeDao.queryOwnerProjects(accountId);
+	}
+
+	public void deleteBy(Long projectId) {
+		privilegeDao.deleteBy(projectId);
 	}
 }

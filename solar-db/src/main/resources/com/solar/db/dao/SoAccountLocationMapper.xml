@@ -3,8 +3,8 @@
 <mapper namespace="com.solar.db.dao.SoAccountLocationMapper">
 	<resultMap id="BaseResultMap" type="com.solar.entity.SoAccountLocation">
 		<id column="id" jdbcType="BIGINT" property="id" />
-		<result column="accountId" jdbcType="VARCHAR" property="account" />
-		<result column="locationId" jdbcType="VARCHAR" property="name" />
+		<result column="account_id" jdbcType="VARCHAR" property="accountId" />
+		<result column="location_id" jdbcType="VARCHAR" property="locationId" />
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 	</resultMap>
 
@@ -42,4 +42,20 @@
 		delete from
 		so_account_location where account_id = #{id}
 	</delete>
+	
+	<select id="selectAccountByLocats"
+		resultMap="BaseResultMap">
+		select DISTINCT
+			al.id,
+			al.account_id as accountId,
+			al.location_id as locationId,
+			al.create_time as createTime
+		from so_account a,so_account_location al where a.id = al.account_id
+		and al.location_id in (
+		<foreach collection="locations" item="locationId" separator=",">
+			#{locationId,jdbcType=VARCHAR}
+		</foreach>
+		)
+	</select>
+	
 </mapper>

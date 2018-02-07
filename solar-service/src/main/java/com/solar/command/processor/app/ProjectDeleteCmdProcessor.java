@@ -10,6 +10,7 @@ import com.solar.common.context.ConnectAPI;
 import com.solar.common.context.Consts;
 import com.solar.common.util.JsonUtilTool;
 import com.solar.controller.common.MsgProcessor;
+import com.solar.db.services.SoPrivilegeService;
 import com.solar.db.services.SoProjectService;
 import com.solar.entity.SoProject;
 import com.solar.server.commons.session.AppSession;
@@ -18,9 +19,11 @@ import com.solar.server.commons.session.AppSession;
 public class ProjectDeleteCmdProcessor extends MsgProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(ProjectDeleteCmdProcessor.class);
 	private SoProjectService projectService;
-
+	private SoPrivilegeService privilegeService;
+	
 	public ProjectDeleteCmdProcessor() {
 		projectService = SoProjectService.getInstance();
+		privilegeService = SoPrivilegeService.getInstance();
 	}
 
 	@Override
@@ -30,6 +33,8 @@ public class ProjectDeleteCmdProcessor extends MsgProcessor {
 		SoProject project = JsonUtilTool.fromJson(json, SoProject.class);
 		Long id = project.getId();
 		projectService.deleteProject(id);
+		//delete privilege
+		privilegeService.deleteBy(id);
 		project.setMsg(Consts.SUCCESS);
 		appSession.sendMsg(new ProjectDeleteResponse(JsonUtilTool.toJson(project)));
 	}
