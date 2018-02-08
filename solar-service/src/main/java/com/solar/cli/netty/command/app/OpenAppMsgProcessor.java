@@ -1,4 +1,4 @@
-package com.solar.cli.netty.command;
+package com.solar.cli.netty.command.app;
 
 import com.solar.cli.netty.controller.MsgProcessor;
 import com.solar.cli.netty.session.ISession;

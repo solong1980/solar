@@ -3,33 +3,41 @@ package com.solar.cli.netty.net;
 import com.solar.cli.netty.bootstrap.NettyServer;
 import com.solar.cli.netty.session.AppExtSessionManager;
 import com.solar.cli.netty.session.NettySession;
-import com.solar.command.message.request.ClientRequest;
-import com.solar.command.message.response.ServerResponse;
-import com.solar.command.message.response.app.ErrorResponse;
-import com.solar.command.message.response.app.FailureResponse;
-import com.solar.common.context.ConnectAPI;
-import com.solar.common.context.ErrorCode;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.Attribute;
 
-public class SolarAPPClientHandler extends ChannelInboundHandlerAdapter {
+public class SolarDevClientHandler extends ChannelInboundHandlerAdapter {
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) {
 		NettySession session = new NettySession(ctx);
-		AppExtSessionManager.getInstance().putNettySessionToHashMap(session);
+		AppExtSessionManager.getInstance().putDevSessionToHashMap(session);
 	}
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		ClientRequest clientRequest = (ClientRequest) msg;
+		String m = (String) msg;
 		NettySession session = NettySession.getInstance(ctx);
-		if (session == null) {
-			NettyServer.msgDispatcher.returnCloseMsg(ctx);
-		} else
-			NettyServer.msgDispatcher.dispatchMsg(session, clientRequest);
+		if (m == null || m.trim().isEmpty()) {
+			if (session != null) {
+				session.addTime(0);
+			}
+			return;
+		} else {
+			if (session == null) {
+				synchronized (session) {
+					session = NettySession.getInstance(ctx);
+					if (session == null)
+						session = new NettySession(ctx);
+				}
+			}
+			session.addTime(0);
+			String[] split = m.split(",");
+			String msgCode = split[0];
+			NettyServer.msgDispatcher.dispatchMsg(session, msgCode, m, split);
+		}
 	}
 
 	@Override
@@ -45,8 +53,7 @@ public class SolarAPPClientHandler extends ChannelInboundHandlerAdapter {
 		cause.printStackTrace();
 		Attribute<NettySession> attr = ctx.channel().attr(NettySession.NETTY_CHANNEL_SESSION_KEY);
 		NettySession session = attr.get();
-		ServerResponse error = ErrorResponse.build(1, ConnectAPI.ERROR_RESPONSE, ErrorCode.Error_000002);
-		session.sendMsg(FailureResponse.failure(cause.getMessage()));
+		session.sendMsg("");
 	}
 
 }

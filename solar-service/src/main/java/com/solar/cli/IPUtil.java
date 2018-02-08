@@ -20,8 +20,12 @@ public class IPUtil {
 	            // 在所有的接口下再遍历IP
 	            for (Enumeration<InetAddress> inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements(); ) {
 	                InetAddress inetAddr = (InetAddress) inetAddrs.nextElement();
-	                System.out.println(inetAddr.getHostAddress());
-	                System.out.println(inetAddr.getCanonicalHostName());
+	                boolean linkLocalAddress = inetAddr.isLinkLocalAddress();
+	                boolean loopbackAddress = inetAddr.isLoopbackAddress();
+	                System.out.println("linkLocalAddress="+linkLocalAddress);
+	                System.out.println("loopbackAddress="+loopbackAddress);
+	                System.out.println("getHostAddress="+inetAddr.getHostAddress());
+	                System.out.println("getCanonicalHostName="+inetAddr.getCanonicalHostName());
 	                if (!inetAddr.isLoopbackAddress()) {
 	                	// 排除loopback类型地址
 	                    if (inetAddr.isSiteLocalAddress()) {

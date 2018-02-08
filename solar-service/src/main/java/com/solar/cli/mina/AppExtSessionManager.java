@@ -1,4 +1,4 @@
-package com.solar.cli.netty.session;
+package com.solar.cli.mina;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,14 +15,15 @@ import com.solar.cache.SolarCache;
 import com.solar.cli.ServerContext;
 import com.solar.cli.redis.SolarJedis;
 import com.solar.entity.SoDevices;
+import com.solar.server.commons.session.AppSession;
 
 public class AppExtSessionManager {
 	private static final Logger logger = LoggerFactory.getLogger(AppExtSessionManager.class);
 
-	public Map<String, NettySession> sessionMap = new ConcurrentHashMap<String, NettySession>();
-	public Map<String, NettySession> devSessionMap = new ConcurrentHashMap<String, NettySession>();
+	public Map<String, AppSession> sessionMap = new ConcurrentHashMap<String, AppSession>();
+	public Map<String, AppSession> devSessionMap = new ConcurrentHashMap<String, AppSession>();
 
-	public Map<String, NettySession> devNoSessionMap = new ConcurrentHashMap<String, NettySession>();
+	public Map<String, AppSession> devNoSessionMap = new ConcurrentHashMap<String, AppSession>();
 
 	public static int topOnlineAccountCount = 0;
 
@@ -59,14 +60,14 @@ public class AppExtSessionManager {
 	/**
 	 * 存放NettySession
 	 * 
-	 * @param NettySession
+	 * @param session
 	 * @return
 	 */
-	public boolean putAppSessionToHashMap(NettySession NettySession) {
-		String sessionID = NettySession.getSessionID();
+	public boolean putNettySessionToHashMap(AppSession session) {
+		String sessionID = session.getSessionID();
 		boolean result = checkSessionIsHava(sessionID);
 		if (!result) {
-			sessionMap.put(sessionID, NettySession);
+			sessionMap.put(sessionID, session);
 			if (sessionMap.size() > topOnlineAccountCount) {
 				topOnlineAccountCount = sessionMap.size();
 			}
@@ -74,10 +75,10 @@ public class AppExtSessionManager {
 		return !result;
 	}
 
-	public void putDevSessionToHashMap(NettySession session) {
+	public void putDevSessionToHashMap(AppSession session) {
 		String sessionID = session.getSessionID();
 		logger.info("add device session sessionId=" + sessionID);
-		NettySession t = devSessionMap.get(sessionID);
+		AppSession t = devSessionMap.get(sessionID);
 		if (t == null) {
 			devSessionMap.put(sessionID, session);
 			if (devSessionMap.size() > topOnlineAccountCount) {
@@ -96,16 +97,16 @@ public class AppExtSessionManager {
 		}
 	}
 
-	public void rmDevSession(NettySession NettySession) {
-		logger.error("remove device session sessionId=" + NettySession.getSessionID());
-		devSessionMap.remove(NettySession.getSessionID());
-		if (NettySession.isLogin()) {
-			SoDevices enti = NettySession.getEnti(SoDevices.class);
+	public void rmDevSession(AppSession session) {
+		logger.error("remove device session sessionId=" + session.getSessionID());
+		devSessionMap.remove(session.getSessionID());
+		if (session.isLogin()) {
+			SoDevices enti = session.getEnti(SoDevices.class);
 			if (enti != null) {
 				String devNo = enti.getDevNo();
 				synchronized (devNoSessionMap) {
-					NettySession devNoSession = devNoSessionMap.get(devNo);
-					if (devNoSession == NettySession) {
+					AppSession devNoSession = devNoSessionMap.get(devNo);
+					if (devNoSession == session) {
 						logger.error("remove device session devNo=" + devNo);
 						devNoSessionMap.remove(devNo);
 						SolarJedis.getInstance().del(devNo);
@@ -117,9 +118,9 @@ public class AppExtSessionManager {
 		}
 	}
 
-	public void rmNettySession(NettySession nettySession) {
-		sessionMap.remove(nettySession.getSessionID());
-		SolarCache.getInstance().removeSessionContext(nettySession.getSessionID());
+	public void rmNettySession(AppSession session) {
+		sessionMap.remove(session.getSessionID());
+		SolarCache.getInstance().removeSessionContext(session.getSessionID());
 	}
 
 	public int getVauleSize() {
@@ -131,16 +132,16 @@ public class AppExtSessionManager {
 	 * @param
 	 * @return
 	 */
-	public NettySession getAvatarByUuid(String uuid) {
+	public AppSession getAvatarByUuid(String uuid) {
 		return sessionMap.get(uuid);
 	}
 
-	public List<NettySession> getAllSession() {
-		List<NettySession> result = null;
+	public List<AppSession> getAllSession() {
+		List<AppSession> result = null;
 		if (getVauleSize() > 0) {
-			result = new ArrayList<NettySession>(getVauleSize());
-			Collection<NettySession> connection = sessionMap.values();
-			Iterator<NettySession> iterator = connection.iterator();
+			result = new ArrayList<AppSession>(getVauleSize());
+			Collection<AppSession> connection = sessionMap.values();
+			Iterator<AppSession> iterator = connection.iterator();
 			while (iterator.hasNext()) {
 				result.add(iterator.next());
 			}
@@ -148,7 +149,7 @@ public class AppExtSessionManager {
 		return result;
 	}
 
-	public NettySession getDevsSession(String devNo) throws ExecutionException {
+	public AppSession getDevsSession(String devNo) throws ExecutionException {
 		return devNoSessionMap.get(devNo);
 	}
 
@@ -160,7 +161,7 @@ public class AppExtSessionManager {
 	 */
 	private boolean checkSessionIsHava(String sessionId) {
 		// 可以用来判断是否在线****等功能
-		NettySession NettySession = sessionMap.get(sessionId);
+		AppSession NettySession = sessionMap.get(sessionId);
 		if (NettySession != null) {
 			return true;
 		}

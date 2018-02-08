@@ -1,14 +1,12 @@
 package com.solar.cli.common;
 
-import com.solar.cli.netty.command.LoginCmdProcessor;
-import com.solar.cli.netty.command.OpenAppMsgProcessor;
+import com.solar.cli.netty.command.app.LoginCmdProcessor;
+import com.solar.cli.netty.command.app.OpenAppMsgProcessor;
 import com.solar.cli.netty.controller.MsgProcessor;
 import com.solar.common.context.ConnectAPI;
 
 public enum MsgProcessorRegister {
 	LOGIN_COMMAND(ConnectAPI.LOGIN_COMMAND, new LoginCmdProcessor()),
-
-	 
 	// 内部使用，服务端通知客户端断开
 	EMPYTCOMMAND(ConnectAPI.ZERO_RESPONSE, new OpenAppMsgProcessor());
 

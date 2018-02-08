@@ -1,4 +1,4 @@
-package com.solar.cli.netty.command;
+package com.solar.cli.netty.command.app;
 
 import java.util.ArrayList;
 import java.util.List;

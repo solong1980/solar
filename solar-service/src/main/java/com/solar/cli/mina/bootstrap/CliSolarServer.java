@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.solar.cli.IPUtil;
 import com.solar.cli.ServerContext;
-import com.solar.cli.netty.session.AppExtSessionManager;
+import com.solar.cli.mina.AppExtSessionManager;
 import com.solar.cli.redis.SolarJedis;
 import com.solar.controller.MccMsgDispatcher;
 import com.solar.controller.MsgDispatcher;
