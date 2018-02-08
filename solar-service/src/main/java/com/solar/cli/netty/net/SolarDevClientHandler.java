@@ -47,6 +47,8 @@ public class SolarDevClientHandler extends ChannelInboundHandlerAdapter {
 		cause.printStackTrace();
 		Attribute<NettySession> attr = ctx.channel().attr(NettySession.NETTY_CHANNEL_SESSION_KEY);
 		NettySession session = attr.get();
+		if (session == null)
+			return;
 		session.sendMsg("");
 	}
 

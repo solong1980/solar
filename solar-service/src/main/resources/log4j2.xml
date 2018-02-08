@@ -62,14 +62,14 @@
 
 	<loggers>
 		<logger name="com.solar.db.dao.SoRunningDataMapper" additivity="false"
-			level="debug">
-			<appender-ref ref="Console" />
-		</logger>
-		<logger name="org.apache.mina.core.filterchain.IoFilterEvent"
-			additivity="false" level="info">
+			level="info">
 			<appender-ref ref="Console" />
 		</logger>
 		<logger name="org.apache.ibatis.transaction.jdbc.JdbcTransaction"
+			additivity="false" level="error">
+			<appender-ref ref="Console" />
+		</logger>
+		<logger name="org.apache.mina.core.filterchain.IoFilterEvent"
 			additivity="false" level="info">
 			<appender-ref ref="Console" />
 		</logger>

@@ -96,16 +96,16 @@ public class NettyExtSessionManager {
 		}
 	}
 
-	public void rmDevSession(NettySession NettySession) {
-		logger.error("remove device session sessionId=" + NettySession.getSessionID());
-		devSessionMap.remove(NettySession.getSessionID());
-		if (NettySession.isLogin()) {
-			SoDevices enti = NettySession.getEnti(SoDevices.class);
+	public void rmDevSession(NettySession session) {
+		logger.error("remove device session sessionId=" + session.getSessionID());
+		devSessionMap.remove(session.getSessionID());
+		if (session.isLogin()) {
+			SoDevices enti = session.getEnti(SoDevices.class);
 			if (enti != null) {
 				String devNo = enti.getDevNo();
 				synchronized (devNoSessionMap) {
 					NettySession devNoSession = devNoSessionMap.get(devNo);
-					if (devNoSession == NettySession) {
+					if (devNoSession == session) {
 						logger.error("remove device session devNo=" + devNo);
 						devNoSessionMap.remove(devNo);
 						SolarJedis.getInstance().del(devNo);
@@ -118,6 +118,8 @@ public class NettyExtSessionManager {
 	}
 
 	public void rmNettySession(NettySession nettySession) {
+		if (nettySession == null)
+			return;
 		sessionMap.remove(nettySession.getSessionID());
 		SolarCache.getInstance().removeSessionContext(nettySession.getSessionID());
 	}

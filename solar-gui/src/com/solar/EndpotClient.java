@@ -18,45 +18,54 @@ import com.solar.client.net.NetConf;
 
 @SuppressWarnings("serial")
 public class EndpotClient extends JFrame {
-
-	DeviceClient deviceClient;
+	
+	public static int tnum = 10;
+	
+	DeviceClient[] deviceClients = new DeviceClient[tnum];
+	String data = "01,17DD5E6E,12,321,109,210,50,159003,29535,36,0,0,0,11,0,0,0,9000,20180202080734,30.026136,114.128179\n";
 
 	boolean sendFlag = false;
 
 	public void send() {
-		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(10);
+		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(tnum);
 		while (true) {
-			if (sendFlag) {
+			for (DeviceClient deviceClient : deviceClients) {
 				newFixedThreadPool.submit(new Runnable() {
 					@Override
 					public void run() {
-						String data = "01,17DD5E6E,12,321,109,210,50,159003,29535,36,0,0,0,11,0,0,0,9000,20180202080734,30.026136,114.128179\n";
-						try {
-							deviceClient.send(data.getBytes());
-						} catch (IOException e1) {
-							e1.printStackTrace();
+						while (true) {
+							if (sendFlag) {
+								try {
+									deviceClient.send(data.getBytes());
+									synchronized (this) {
+										this.wait(10);
+									}
+								} catch (IOException | InterruptedException e1) {
+									e1.printStackTrace();
+								}
+							} else {
+								synchronized (this) {
+									try {
+										this.wait(1000);
+									} catch (InterruptedException e) {
+									}
+								}
+							}
 						}
 					}
 				});
-				synchronized (this) {
-					try {
-						this.wait(1000);
-					} catch (InterruptedException e) {
-					}
-				}
-			} else {
-				synchronized (this) {
-					try {
-						this.wait(1000);
-					} catch (InterruptedException e) {
-					}
-				}
 			}
 		}
+
 	}
 
 	public EndpotClient() {
 		super();
+
+		NetConf netConf = NetConf.buildHostConf();
+		netConf.setDataServerIP("127.0.0.1");
+		netConf.setDataServerPort(10122);
+
 		setPreferredSize(new Dimension(600, 80));
 		setTitle("EndpotClient");
 		pack();
@@ -87,12 +96,13 @@ public class EndpotClient extends JFrame {
 		connectButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				NetConf netConf = NetConf.buildHostConf();
-				netConf.setDataServerIP("127.0.0.1");
-				netConf.setDataServerPort(10122);
-				deviceClient = new DeviceClient(netConf);
-				connectButton.setEnabled(false);
 
+				for (int i = 0; i < tnum; i++) {
+					DeviceClient deviceClient = new DeviceClient(netConf);
+					deviceClients[i] = deviceClient;
+				}
+
+				connectButton.setEnabled(false);
 				startButton.setEnabled(true);
 				stopButton.setEnabled(true);
 				new Thread(new Runnable() {
@@ -123,11 +133,20 @@ public class EndpotClient extends JFrame {
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						while (deviceClient.isAvailable()) {
+						while (true) {
+							for (DeviceClient deviceClient : deviceClients) {
+								if (deviceClient.isAvailable()) {
+									try {
+										deviceClient.recive();
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
+								}
+							}
+
 							try {
-								deviceClient.recive();
-							} catch (IOException e) {
-								e.printStackTrace();
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
 							}
 						}
 					}
@@ -138,23 +157,25 @@ public class EndpotClient extends JFrame {
 		closeButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				deviceClient.close();
+				for (DeviceClient deviceClient : deviceClients) {
+					deviceClient.close();
+				}
 				System.exit(0);
 			}
 		});
 	}
 
 	public static void main(String[] args) {
-//		int maxValue = Integer.MAX_VALUE;
-//		System.out.println(Integer.toHexString(maxValue));
-//
-//		long parseLong = Long.parseLong("40bbd96d", 16);
-//
-//		String ver = "V01".replaceAll("V|v", "");
-//		System.out.println(ver);
-//		System.out.println(parseLong);
-//		long parseInt = Long.valueOf("FFFFFFFF", 16);
-//		System.out.println(parseInt);
+		// int maxValue = Integer.MAX_VALUE;
+		// System.out.println(Integer.toHexString(maxValue));
+		//
+		// long parseLong = Long.parseLong("40bbd96d", 16);
+		//
+		// String ver = "V01".replaceAll("V|v", "");
+		// System.out.println(ver);
+		// System.out.println(parseLong);
+		// long parseInt = Long.valueOf("FFFFFFFF", 16);
+		// System.out.println(parseInt);
 
 		EventQueue.invokeLater(new Runnable() {
 			@Override
