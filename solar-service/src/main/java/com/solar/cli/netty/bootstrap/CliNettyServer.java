@@ -12,9 +12,9 @@ import org.apache.commons.cli.ParseException;
 
 import com.solar.cli.IPUtil;
 import com.solar.cli.ServerContext;
-import com.solar.cli.mina.AppExtSessionManager;
 import com.solar.cli.netty.controller.MsgDispatcher;
 import com.solar.cli.netty.net.NetManager;
+import com.solar.cli.netty.session.NettyExtSessionManager;
 import com.solar.db.InitDBServers;
 
 public class CliNettyServer {
@@ -64,13 +64,6 @@ public class CliNettyServer {
 					appPort = Integer.parseInt(line.getOptionValue("app-port"));
 				}
 
-				if (appPort > 1024 && appPort < 65535) {
-					serverContext.setAppPort(appPort);
-					CliNettyServer.netManager.startAPPListner(appPort);
-				} else {
-					System.exit(-1);
-				}
-				
 				int devPort = -1;
 				if (line.hasOption("dev")) {
 					devPort = Integer.parseInt(line.getOptionValue("dev"));
@@ -78,14 +71,43 @@ public class CliNettyServer {
 					devPort = Integer.parseInt(line.getOptionValue("dev-port"));
 				}
 
+				NettyExtSessionManager.getInstance().setContext(serverContext);
+
+				if (appPort > 1024 && appPort < 65535) {
+					serverContext.setAppPort(appPort);
+					Thread thread = new Thread(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								CliNettyServer.netManager.startAPPListner(serverContext.getAppPort());
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					});
+					thread.setDaemon(false);
+					thread.start();
+				}
 				if (devPort > 1024 && devPort < 65535) {
 					serverContext.setDevPort(devPort);
-					CliNettyServer.netManager.startMCListner(devPort);
-				} else {
+					Thread thread = new Thread(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								CliNettyServer.netManager.startMCListner(serverContext.getDevPort());
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+						}
+					});
+					thread.setDaemon(false);
+					thread.start();
+				}
+
+				if ((devPort < 1024 || devPort > 65535) && (appPort < 1024 || devPort > appPort)) {
 					System.exit(-1);
 				}
 
-				AppExtSessionManager.getInstance().setContext(serverContext);
 			} catch (ParseException exp) {
 				System.out.println("Unexpected exception:" + exp.getMessage());
 				HelpFormatter formatter = new HelpFormatter();
