@@ -16,8 +16,8 @@ import com.solar.cli.ServerContext;
 import com.solar.cli.redis.SolarJedis;
 import com.solar.entity.SoDevices;
 
-public class AppExtSessionManager {
-	private static final Logger logger = LoggerFactory.getLogger(AppExtSessionManager.class);
+public class NettyExtSessionManager {
+	private static final Logger logger = LoggerFactory.getLogger(NettyExtSessionManager.class);
 
 	public Map<String, NettySession> sessionMap = new ConcurrentHashMap<String, NettySession>();
 	public Map<String, NettySession> devSessionMap = new ConcurrentHashMap<String, NettySession>();
@@ -27,10 +27,10 @@ public class AppExtSessionManager {
 	public static int topOnlineAccountCount = 0;
 
 	private static class Inner {
-		private static AppExtSessionManager NettySessionManager = new AppExtSessionManager();
+		private static NettyExtSessionManager nettySessionManager = new NettyExtSessionManager();
 
-		public static AppExtSessionManager getNettySessionManager() {
-			return NettySessionManager;
+		public static NettyExtSessionManager getNettySessionManager() {
+			return nettySessionManager;
 		}
 	}
 
@@ -44,7 +44,7 @@ public class AppExtSessionManager {
 	// return context;
 	// }
 
-	private AppExtSessionManager() {
+	private NettyExtSessionManager() {
 
 	}
 
@@ -52,7 +52,7 @@ public class AppExtSessionManager {
 	 *
 	 * @return
 	 */
-	public static AppExtSessionManager getInstance() {
+	public static NettyExtSessionManager getInstance() {
 		return Inner.getNettySessionManager();
 	}
 

@@ -89,7 +89,7 @@ public class EndpotClient extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				NetConf netConf = NetConf.buildHostConf();
 				netConf.setDataServerIP("127.0.0.1");
-				netConf.setDataServerPort(8080);
+				netConf.setDataServerPort(10122);
 				deviceClient = new DeviceClient(netConf);
 				connectButton.setEnabled(false);
 

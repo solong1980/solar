@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.solar.cache.SolarCache;
 import com.solar.cli.netty.controller.MccMsgProcessor;
-import com.solar.cli.netty.session.AppExtSessionManager;
+import com.solar.cli.netty.session.NettyExtSessionManager;
 import com.solar.cli.netty.session.ISession;
 import com.solar.cli.netty.session.NettySession;
 import com.solar.controller.common.INotAuthProcessor;
@@ -48,7 +48,7 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 				session.setLogin(true);
 				// add to session map
 				logger.info("add device UUID=" + devNo + " to device session");
-				AppExtSessionManager.getInstance().putDevSessionToHashMap((NettySession) session);
+				NettyExtSessionManager.getInstance().putDevSessionToHashMap((NettySession) session);
 				/**
 				 * devices.setSw0((short) 1); devices.setSw1((short) 1); devices.setSw2((short)
 				 * 1); devices.setSw3((short) 1); devices.setSw4((short) 1);

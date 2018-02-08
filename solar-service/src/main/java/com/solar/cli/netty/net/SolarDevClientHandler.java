@@ -1,7 +1,7 @@
 package com.solar.cli.netty.net;
 
 import com.solar.cli.netty.bootstrap.NettyServer;
-import com.solar.cli.netty.session.AppExtSessionManager;
+import com.solar.cli.netty.session.NettyExtSessionManager;
 import com.solar.cli.netty.session.NettySession;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -9,12 +9,6 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.Attribute;
 
 public class SolarDevClientHandler extends ChannelInboundHandlerAdapter {
-
-	@Override
-	public void channelActive(ChannelHandlerContext ctx) {
-		NettySession session = new NettySession(ctx);
-		AppExtSessionManager.getInstance().putDevSessionToHashMap(session);
-	}
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
@@ -27,7 +21,7 @@ public class SolarDevClientHandler extends ChannelInboundHandlerAdapter {
 			return;
 		} else {
 			if (session == null) {
-				synchronized (session) {
+				synchronized (ctx) {
 					session = NettySession.getInstance(ctx);
 					if (session == null)
 						session = new NettySession(ctx);
@@ -44,7 +38,7 @@ public class SolarDevClientHandler extends ChannelInboundHandlerAdapter {
 	public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
 		Attribute<NettySession> attr = ctx.channel().attr(NettySession.NETTY_CHANNEL_SESSION_KEY);
 		NettySession session = attr.getAndSet(null);
-		AppExtSessionManager.getInstance().rmNettySession(session);
+		NettyExtSessionManager.getInstance().rmNettySession(session);
 		super.handlerRemoved(ctx);
 	}
 
