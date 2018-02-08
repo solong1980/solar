@@ -62,7 +62,7 @@
 
 	<loggers>
 		<logger name="com.solar.db.dao.SoRunningDataMapper" additivity="false"
-			level="info">
+			level="debug">
 			<appender-ref ref="Console" />
 		</logger>
 		<logger name="org.apache.mina.core.filterchain.IoFilterEvent"
