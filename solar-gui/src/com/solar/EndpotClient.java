@@ -18,9 +18,9 @@ import com.solar.client.net.NetConf;
 
 @SuppressWarnings("serial")
 public class EndpotClient extends JFrame {
-	
-	public static int tnum = 10;
-	
+
+	public static int tnum = 1000;
+
 	DeviceClient[] deviceClients = new DeviceClient[tnum];
 	String data = "01,17DD5E6E,12,321,109,210,50,159003,29535,36,0,0,0,11,0,0,0,9000,20180202080734,30.026136,114.128179\n";
 
@@ -29,34 +29,34 @@ public class EndpotClient extends JFrame {
 	public void send() {
 		ExecutorService newFixedThreadPool = Executors.newFixedThreadPool(tnum);
 		while (true) {
-			for (DeviceClient deviceClient : deviceClients) {
-				newFixedThreadPool.submit(new Runnable() {
-					@Override
-					public void run() {
-						while (true) {
-							if (sendFlag) {
-								try {
-									deviceClient.send(data.getBytes());
-									synchronized (this) {
-										this.wait(10);
-									}
-								} catch (IOException | InterruptedException e1) {
-									e1.printStackTrace();
-								}
-							} else {
-								synchronized (this) {
-									try {
-										this.wait(1000);
-									} catch (InterruptedException e) {
-									}
-								}
+			if (sendFlag) {
+				for (DeviceClient deviceClient : deviceClients) {
+					newFixedThreadPool.submit(new Runnable() {
+						@Override
+						public void run() {
+							try {
+								deviceClient.send(data.getBytes());
+							} catch (IOException e1) {
+								e1.printStackTrace();
 							}
 						}
+					});
+				}
+				synchronized (this) {
+					try {
+						this.wait(1000);
+					} catch (InterruptedException e) {
 					}
-				});
+				}
+			}else {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
-		}
 
+		}
 	}
 
 	public EndpotClient() {
