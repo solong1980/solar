@@ -1,12 +1,11 @@
 package com.solar.entity;
 
-import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.BitSet;
 
 @SuppressWarnings("serial")
-public class SoProjectWorkingMode implements Serializable {
+public class SoProjectWorkingMode extends SoAbtAuth {
 	private Long id;
 	private Long projectId;
 
@@ -479,11 +478,11 @@ public class SoProjectWorkingMode implements Serializable {
 
 	public String buildMmcMsg() {
 		CharSequence[] hs = new CharSequence[48];
- 
+
 		BitSet bitSet = new BitSet(48);
 		bitSet.set(1);
 		byte[] byteArray = bitSet.toByteArray();
-		
+
 		for (int i = 0; i < 48; i++) {
 			Method method;
 			try {
