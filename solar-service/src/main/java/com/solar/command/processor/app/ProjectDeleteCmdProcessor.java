@@ -15,7 +15,7 @@ import com.solar.db.services.SoProjectService;
 import com.solar.entity.SoProject;
 import com.solar.server.commons.session.AppSession;
 
-@ProcessCMD(API_CODE = ConnectAPI.PROJECT_UPDATE_COMMAND)
+@ProcessCMD(API_CODE = ConnectAPI.PROJECT_DELETE_COMMAND)
 public class ProjectDeleteCmdProcessor extends MsgProcessor {
 	private static final Logger logger = LoggerFactory.getLogger(ProjectDeleteCmdProcessor.class);
 	private SoProjectService projectService;
