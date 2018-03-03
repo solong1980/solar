@@ -16,7 +16,11 @@ public class SoProject extends SoAbtAuth {
 	private String projectName;
 	private int type;
 	private int capability;
+	@SuppressWarnings("unused")
 	private List<SoDevConfig> devConfiures;
+
+	/** 项目下设备列表 */
+	private List<SoDevices> devices;
 	private int emissionStandards;
 	private String locationId;
 	private String street;
@@ -60,12 +64,12 @@ public class SoProject extends SoAbtAuth {
 		this.capability = capability;
 	}
 
-	public List<SoDevConfig> getDevConfiures() {
-		return devConfiures;
+	public List<SoDevices> getDevices() {
+		return devices;
 	}
 
-	public void setDevConfiures(List<SoDevConfig> devConfiures) {
-		this.devConfiures = devConfiures;
+	public void setDevices(List<SoDevices> devices) {
+		this.devices = devices;
 	}
 
 	public int getEmissionStandards() {

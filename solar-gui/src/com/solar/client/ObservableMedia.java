@@ -333,7 +333,10 @@ public class ObservableMedia extends Observable {
 		hostClient.updateDevice(device);
 		setChanged();
 	}
-
+	public void updateDevice(List<SoDevices> devices) {
+		hostClient.updateDevice(devices);
+		setChanged();
+	}
 	public void devUpFileBlockCacheClean() {
 		hostClient.devUpFileBlockCacheClean();
 		setChanged();

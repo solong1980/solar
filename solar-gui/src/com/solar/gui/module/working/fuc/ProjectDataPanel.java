@@ -54,7 +54,6 @@ import com.solar.common.context.Consts;
 import com.solar.common.context.Consts.AddrType;
 import com.solar.common.context.Consts.ProjectType;
 import com.solar.common.util.LocationLoader;
-import com.solar.entity.SoDevConfig;
 import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
 import com.solar.entity.SoProjectWorkingMode;
@@ -755,7 +754,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 					int capabilityIdx = capabilityField.getSelectedIndex();
 					int cap = Consts.CAPS[capabilityIdx - 1];
 
-					List<SoDevConfig> devConfigs = Collections.emptyList();
+					// List<SoDevConfig> devConfigs = Collections.emptyList();
 
 					String workerName = workerNameField.getText();
 					String workerPhone = workerContactField.getText();
@@ -770,7 +769,7 @@ public class ProjectDataPanel extends BasePanel implements Observer {
 					soProject.setStreet(street);
 					soProject.setEmissionStandards(emissionStandard);
 					soProject.setCapability(cap);
-					soProject.setDevConfiures(devConfigs);
+					// soProject.setDevConfiures(devConfigs);
 					soProject.setWorkerName(workerName);
 					soProject.setWorkerPhone(workerPhone);
 					SoProjectWorkingMode mode = soProject.getProjectWorkingMode();

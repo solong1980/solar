@@ -2,6 +2,7 @@ package com.solar.gui.module.working.fuc;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.FlowLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -81,10 +82,10 @@ public class IndexPanel extends BasePanel implements Observer {
 	RunningDataCron runningDataCron = new RunningDataCron();
 
 	public void createDeviceDialog() {
-		JLabel deviceNoLabel = new JLabel(getBoldHTML("设备号"));
 		JComponent devicePanel = new JPanel(new GridBagLayout());
 		GridBagConstraints gbc = new GridBagConstraints();
 
+		JLabel deviceNoLabel = new JLabel(getBoldHTML("设备号"));
 		gbc.gridx = 0;
 		gbc.gridy = 0;
 		gbc.anchor = GridBagConstraints.WEST;
@@ -624,62 +625,256 @@ public class IndexPanel extends BasePanel implements Observer {
 	JTextField solarEnergyPowerField = new JTextField("", 20);
 
 	public JPanel createGPSPanel() {
+		JPanel projectPanel = new JPanel();
+		projectPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		JPanel gpsPanel = new JPanel();
-		gpsPanel.setBorder(BorderFactory.createTitledBorder("项目信息"));
-		gpsPanel.setLayout(new GridBagLayout());
+		{
+			gpsPanel.setBorder(BorderFactory.createTitledBorder("项目信息"));
+			gpsPanel.setLayout(new GridBagLayout());
 
-		GridBagConstraints gbc = new GridBagConstraints();
-		gbc.gridx = 0;
-		gbc.gridy = 0;
-		gbc.anchor = GridBagConstraints.WEST;
-		gbc.fill = GridBagConstraints.NONE;
-		gbc.insets = new Insets(5, 5, 5, 5);
-		gpsPanel.add(new JLabel("项目名称:"), gbc);
-		gbc.gridy++;
-		gpsPanel.add(new JLabel("项目位置:"), gbc);
-		gbc.gridy++;
-		gpsPanel.add(new JLabel("设计处理量："), gbc);
-		gbc.gridy++;
-		gpsPanel.add(new JLabel("排放标准："), gbc);
-		gbc.gridy++;
-		gpsPanel.add(new JLabel("达标排放量："), gbc);
-		gbc.gridy++;
-		gpsPanel.add(new JLabel("太阳能发电电能："), gbc);
+			GridBagConstraints gbc = new GridBagConstraints();
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			gbc.anchor = GridBagConstraints.WEST;
+			gbc.fill = GridBagConstraints.NONE;
+			gbc.insets = new Insets(5, 5, 5, 5);
+			gpsPanel.add(new JLabel("项目名称:"), gbc);
+			gbc.gridy++;
+			gpsPanel.add(new JLabel("项目位置:"), gbc);
+			gbc.gridy++;
+			gpsPanel.add(new JLabel("设计处理量："), gbc);
+			gbc.gridy++;
+			gpsPanel.add(new JLabel("排放标准："), gbc);
+			gbc.gridy++;
+			gpsPanel.add(new JLabel("达标排放量："), gbc);
+			gbc.gridy++;
+			gpsPanel.add(new JLabel("太阳能发电电能："), gbc);
 
-		gbc.gridx++;
-		gbc.gridy = 0;
-		gbc.fill = GridBagConstraints.HORIZONTAL;
+			gbc.gridx++;
+			gbc.gridy = 0;
+			gbc.fill = GridBagConstraints.HORIZONTAL;
 
-		gpsPanel.add(projectNameField, gbc);
-		gbc.gridy++;
-		gpsPanel.add(locationField, gbc);
-		gbc.gridy++;
-		gpsPanel.add(cabField, gbc);
-		gbc.gridy++;
-		gpsPanel.add(standField, gbc);
-		gbc.gridy++;
-		gpsPanel.add(standDichageField, gbc);
-		gbc.gridy++;
-		gpsPanel.add(solarEnergyPowerField, gbc);
+			gpsPanel.add(projectNameField, gbc);
+			gbc.gridy++;
+			gpsPanel.add(locationField, gbc);
+			gbc.gridy++;
+			gpsPanel.add(cabField, gbc);
+			gbc.gridy++;
+			gpsPanel.add(standField, gbc);
+			gbc.gridy++;
+			gpsPanel.add(standDichageField, gbc);
+			gbc.gridy++;
+			gpsPanel.add(solarEnergyPowerField, gbc);
 
-		gbc.gridx = 0;
-		gbc.gridy++;
-		gbc.gridwidth = 2;
-		JButton addDeviceBtn = new JButton("添加设备");
-		addDeviceBtn.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				createDeviceDialog();
+			gbc.gridx = 0;
+			gbc.gridy++;
+			gbc.gridwidth = 2;
+			JButton addDeviceBtn = new JButton("添加设备");
+			addDeviceBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					createDeviceDialog();
+				}
+			});
+			gbc.fill = GridBagConstraints.HORIZONTAL;
+			gpsPanel.add(addDeviceBtn, gbc);
+			// gbc.gridx++;
+			// gbc.gridy = 0;
+			// gbc.fill = GridBagConstraints.HORIZONTAL;
+			// gpsPanel.add(new JButton("地图"), gbc);
+		}
+
+		JComponent devicePanel = new JPanel(new GridBagLayout());
+		{
+			GridBagConstraints gbc = new GridBagConstraints();
+			gbc.gridx = 0;
+			gbc.gridy = 0;
+			gbc.anchor = GridBagConstraints.WEST;
+			gbc.fill = GridBagConstraints.NONE;
+			gbc.insets = new Insets(5, 5, 5, 5);
+
+			gbc.gridx = 0;
+			gbc.gridwidth = 1;
+			gbc.gridy++;
+			devicePanel.add(new JLabel("模式 "), gbc);
+
+			gbc.gridx = 0;
+			gbc.gridwidth = 1;
+			gbc.gridy++;
+			devicePanel.add(new JLabel("分机1控制 "), gbc);
+			gbc.gridy++;
+			devicePanel.add(new JLabel("分机2控制 "), gbc);
+			gbc.gridy++;
+			devicePanel.add(new JLabel("水泵1控制 "), gbc);
+			gbc.gridy++;
+			devicePanel.add(new JLabel("水泵2控制"), gbc);
+			gbc.gridy++;
+			devicePanel.add(new JLabel("继电器1控制"), gbc);
+			gbc.gridy++;
+			devicePanel.add(new JLabel("继电器2控制"), gbc);
+			gbc.gridy++;
+			devicePanel.add(new JLabel("继电器3控制"), gbc);
+			gbc.gridy++;
+			devicePanel.add(new JLabel("继电器4控制"), gbc);
+
+			JRadioButton[] startBtns = new JRadioButton[8];
+			JRadioButton[] stopBtns = new JRadioButton[8];
+			JRadioButton[] autoBtns = new JRadioButton[8];
+
+			ButtonGroup tg = new ButtonGroup();
+			JRadioButton handModeBtn = ButtonUI.makeRadioBtn("手动模式", "");
+			JRadioButton autoModeBtn = ButtonUI.makeRadioBtn("自动模式", "");
+
+			gbc.gridy = 1;
+			gbc.gridx = 1;
+			gbc.gridwidth = 2;
+			tg.add(handModeBtn);
+			tg.add(autoModeBtn);
+			devicePanel.add(handModeBtn, gbc);
+			handModeBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (handModeBtn.isSelected()) {
+						for (JRadioButton bt : startBtns) {
+							bt.setSelected(true);
+							bt.setEnabled(true);
+						}
+						for (JRadioButton bt : stopBtns) {
+							bt.setEnabled(true);
+						}
+						for (JRadioButton bt : autoBtns) {
+							bt.setEnabled(false);
+							bt.setSelected(false);
+						}
+					} else {
+						for (JRadioButton bt : startBtns) {
+							bt.setSelected(false);
+							bt.setEnabled(false);
+						}
+						for (JRadioButton bt : stopBtns) {
+							bt.setEnabled(false);
+							bt.setSelected(false);
+						}
+						for (JRadioButton bt : autoBtns) {
+							bt.setEnabled(true);
+						}
+					}
+
+				}
+			});
+
+			gbc.gridx = 3;
+			gbc.gridwidth = 1;
+			devicePanel.add(autoModeBtn, gbc);
+			autoModeBtn.addActionListener(new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (autoModeBtn.isSelected()) {
+						for (JRadioButton bt : startBtns) {
+							bt.setSelected(false);
+							bt.setEnabled(false);
+						}
+						for (JRadioButton bt : stopBtns) {
+							bt.setEnabled(false);
+							bt.setSelected(false);
+						}
+						for (JRadioButton bt : autoBtns) {
+							bt.setEnabled(true);
+							bt.setSelected(true);
+						}
+					} else {
+						for (JRadioButton bt : startBtns) {
+							bt.setEnabled(true);
+						}
+						for (JRadioButton bt : stopBtns) {
+							bt.setEnabled(true);
+						}
+						for (JRadioButton bt : autoBtns) {
+							bt.setSelected(false);
+							bt.setEnabled(false);
+						}
+					}
+				}
+			});
+			autoModeBtn.setSelected(true);
+
+			gbc.gridwidth = 1;
+			gbc.gridy = 2;
+
+			ButtonGroup[] buttonGroups = new ButtonGroup[8];
+			for (int i = 0; i < 8; i++) {
+				buttonGroups[i] = new ButtonGroup();
+				startBtns[i] = ButtonUI.makeRadioBtn("持续运行", "");
+				stopBtns[i] = ButtonUI.makeRadioBtn("停止运行", "");
+				autoBtns[i] = ButtonUI.makeRadioBtn("自动控制", "");
+				autoBtns[i].setSelected(true);
+				startBtns[i].setEnabled(false);
+				stopBtns[i].setEnabled(false);
+				buttonGroups[i].add(startBtns[i]);
+				buttonGroups[i].add(stopBtns[i]);
+				buttonGroups[i].add(autoBtns[i]);
+				gbc.gridx = 1;
+				devicePanel.add(startBtns[i], gbc);
+				gbc.gridx = 2;
+				devicePanel.add(stopBtns[i], gbc);
+				gbc.gridx = 3;
+				devicePanel.add(autoBtns[i], gbc);
+				gbc.gridy++;
 			}
-		});
-		gbc.fill = GridBagConstraints.HORIZONTAL;
-		gpsPanel.add(addDeviceBtn, gbc);
-		// gbc.gridx++;
-		// gbc.gridy = 0;
-		// gbc.fill = GridBagConstraints.HORIZONTAL;
-		// gpsPanel.add(new JButton("地图"), gbc);
 
-		return gpsPanel;
+			gbc.gridx = 4;
+			gbc.gridy = 3;
+			gbc.weightx = 1;
+			gbc.gridwidth = 2;
+			JButton submitBtn = new JButton("提交启停设置 ");
+			submitBtn.addActionListener(new ActionListener() {
+				private void setV(SoDevices device, int j, short v) {
+					try {
+						Method method = SoDevices.class.getMethod("setSw" + j, Short.class);
+						method.invoke(device, v);
+					} catch (NoSuchMethodException | SecurityException | IllegalAccessException
+							| IllegalArgumentException | InvocationTargetException e) {
+						e.printStackTrace();
+					}
+				}
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					if (IndexPanel.this.projectId != null && IndexPanel.this.project != null) {
+						List<SoDevices> devices = IndexPanel.this.project.getDevices();
+						if (devices != null) {
+							for (SoDevices device : devices) {
+								for (int j = 0; j < buttonGroups.length; j++) {
+									JRadioButton start = startBtns[j];
+									JRadioButton stop = stopBtns[j];
+									JRadioButton auto = autoBtns[j];
+									if (start.isSelected()) {
+										setV(device, j, (short) 1);
+									}
+									if (stop.isSelected()) {
+										setV(device, j, (short) 0);
+									}
+									if (auto.isSelected()) {
+										setV(device, j, (short) 2);
+									}
+								}
+							}
+							// 批量更新设备启停状态
+							instance.updateDevice(devices);
+						}
+					} else {
+						System.out.println("project id empty");
+						return;
+					}
+				}
+			});
+			devicePanel.add(submitBtn, gbc);
+		}
+
+		projectPanel.add(gpsPanel);
+		projectPanel.add(devicePanel);
+
+		return projectPanel;
 	}
 
 	JPopupMenu devTreePopmenu = new JPopupMenu();
@@ -726,7 +921,9 @@ public class IndexPanel extends BasePanel implements Observer {
 								node.add(new DefaultMutableTreeNode(
 										new TreeAddr(AddrType.DEVICE, device.getId().toString(), device, true)));
 							}
+							project.setDevices(devices);
 						}
+
 						break;
 					case DEVICE:
 						// monitor device
@@ -892,6 +1089,23 @@ public class IndexPanel extends BasePanel implements Observer {
 					SoAbtAuth soAbt = JsonUtilTool.fromJson(ret.getRet(), SoAbtAuth.class);
 					JOptionPane.showMessageDialog(this, soAbt.getMsg());
 					break;
+				case ConnectAPI.PROJECT_DEVICES_CTRL_RESPONSE:
+					List<SoDevices> deviceList = JsonUtilTool.fromJson(ret.getRet(),
+							new TypeReference<List<SoDevices>>() {
+							});
+					StringBuilder sb = new StringBuilder("");
+					for (SoDevices soDevices : deviceList) {
+						int retCode = soDevices.getRetCode();
+						if (retCode == 1) {
+							sb.append(soDevices.getDevNo()).append(",");
+						}
+					}
+					if (sb.length() > 0) {
+						JOptionPane.showMessageDialog(this, "设备" + sb.substring(0, sb.length() - 1) + "未连接");
+					} else {
+						JOptionPane.showMessageDialog(this, "操做成功");
+					}
+					break;
 				case ConnectAPI.GET_WORKING_MODE_RESPONSE:
 					SoProjectWorkingMode workingMode = JsonUtilTool.fromJson(ret.getRet(), SoProjectWorkingMode.class);
 					IndexPanel.this.workingMode = workingMode;
@@ -924,7 +1138,6 @@ public class IndexPanel extends BasePanel implements Observer {
 				}
 			}
 		}
-
 	}
 
 }

@@ -361,6 +361,12 @@ public class HostClient extends MinaClient {
 		send(ConnectAPI.DEVICES_UPDATE_COMMAND, json);
 	}
 
+	public void updateDevice(List<SoDevices> devices) {
+		String json = JsonUtilTool.toJson(devices);
+		System.out.println(json);
+		send(ConnectAPI.PROJECT_DEVICES_CTRL_COMMAND, json);
+	}
+
 	public void addDevice(SoDevices device) {
 		String json = JsonUtilTool.toJson(device);
 		System.out.println(json);
@@ -370,4 +376,5 @@ public class HostClient extends MinaClient {
 	public void devUpFileBlockCacheClean() {
 		send(ConnectAPI.DEVICES_UPGRADECTR_COMMAND, "");
 	}
+
 }
