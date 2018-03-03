@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:background="@color/backgroud_color"
+  	android:layout_width="match_parent"
+  	android:layout_height="match_parent"
+	>
+	<ImageView
+		android:id="@+id/iv_company"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:src="@drawable/ic_companypic" />
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:textColor="@color/text_color_blue"
+		android:textSize="16sp"
+		android:layout_gravity="center"
+		android:text="用户注册" />
+
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/common_space"
+		>
+
+		<TextView
+			style="@style/normalBlackText"
+			android:layout_width="@dimen/register_text_width"
+			android:layout_height="wrap_content"
+			android:gravity="right"
+			android:text="手机号 :" />
+
+		<EditText
+			android:id="@+id/phone_edit"
+			android:layout_width="@dimen/register_edit_width"
+			android:layout_height="@dimen/editheight"
+			android:textSize="@dimen/needfont"
+			android:layout_marginLeft="20dp"
+			android:inputType="phone"
+			android:background="@null"/>
+	</LinearLayout>
+
+	<ImageView
+		android:layout_width="300dp"
+		android:layout_height="1dp"
+		android:layout_marginLeft="30dp"
+		android:layout_marginStart="30dp"
+		android:background="@color/inline_color"
+		/>
+
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/common_space">
+
+		<Button
+			android:id="@+id/get_vertify_num_text"
+			android:layout_width="@dimen/register_text_width"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_vertical"
+			android:clickable="true"
+			android:gravity="right"
+			android:text="获取验证码"
+			android:background="@color/backgroud_color"
+			android:textColor="@color/text_color_blue"
+			android:textSize="14sp" />
+		<TextView
+			style="@style/normalBlackText"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginLeft="10dp"
+			android:background="@color/backgroud_color"
+			android:text="验证码 :" />
+
+		<EditText
+			android:id="@+id/vertify_edit"
+			android:layout_width="160dp"
+			android:layout_height="wrap_content"
+			android:textSize="@dimen/needfont"
+			android:background="@color/backgroud_color"
+			android:layout_marginLeft="2dp" />
+	</LinearLayout>
+
+	<ImageView
+		android:layout_width="200dp"
+		android:layout_height="1dp"
+		android:layout_marginLeft="130dp"
+		android:layout_marginStart="130dp"
+		android:background="@color/inline_color"
+		/>
+  <LinearLayout android:layout_marginTop="@dimen/common_space"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content">
+	    <TextView
+	        android:text="帐 号 :"
+	        android:layout_width="@dimen/register_text_width"
+	        android:gravity="right"
+	        android:layout_height="wrap_content"
+	        style="@style/normalBlackText" 
+	    />
+	  <EditText
+		  android:id="@+id/accountname"
+		  android:layout_width="@dimen/register_edit_width"
+		  android:layout_height="wrap_content"
+		  android:textSize="@dimen/needfont"
+		  android:layout_marginLeft="20dp"
+		  android:background="@null"/>
+  </LinearLayout>
+	<ImageView
+		android:layout_width="300dp"
+		android:layout_height="1dp"
+		android:layout_marginLeft="30dp"
+		android:layout_marginStart="30dp"
+		android:background="@color/inline_color"
+		/>
+	<LinearLayout android:layout_marginTop="@dimen/common_space"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+		<TextView
+			android:text="邮箱地址 :"
+			android:layout_width="@dimen/register_text_width"
+			android:gravity="right"
+			android:layout_height="wrap_content"
+			style="@style/normalBlackText"
+			/>
+		<EditText
+			android:layout_marginLeft="20dp"
+			android:layout_width="@dimen/register_edit_width"
+			android:layout_height="@dimen/editheight"
+			android:textSize="@dimen/needfont"
+			android:id="@+id/mail_edit"
+			android:background="@null"
+			/>
+	</LinearLayout>
+	<ImageView
+		android:layout_width="300dp"
+		android:layout_height="1dp"
+		android:layout_marginLeft="30dp"
+		android:layout_marginStart="30dp"
+		android:background="@color/inline_color"
+		/>
+	<LinearLayout android:layout_marginTop="@dimen/common_space"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content">
+		<TextView
+			android:text="用户姓名 :"
+			android:layout_width="@dimen/register_text_width"
+			android:gravity="right"
+			android:layout_height="wrap_content"
+			style="@style/normalBlackText"
+			/>
+		<EditText
+			android:id="@+id/name_edit"
+			android:layout_width="@dimen/register_edit_width"
+			android:layout_height="@dimen/editheight"
+			android:textSize="@dimen/needfont"
+			android:layout_marginLeft="20dp"
+			android:background="@null"/>
+	</LinearLayout>
+	<ImageView
+		android:layout_width="300dp"
+		android:layout_height="1dp"
+		android:layout_marginLeft="30dp"
+		android:layout_marginStart="30dp"
+		android:background="@color/inline_color"
+		/>
+  <LinearLayout android:layout_marginTop="@dimen/common_space"
+	  android:layout_width="wrap_content"
+	  android:layout_height="wrap_content">
+	    <TextView
+	        android:text="密码 :"
+	        android:layout_width="@dimen/register_text_width"
+	        android:gravity="right"
+	        android:layout_height="wrap_content"
+	        style="@style/normalBlackText" 
+	    />
+	    <EditText
+	        android:layout_marginLeft="20dp"
+	        android:layout_width="@dimen/register_edit_width"
+	        android:layout_height="@dimen/editheight"
+	        android:id="@+id/passwd_edit"
+			android:textSize="@dimen/needfont"
+	        android:inputType="textPassword"
+			android:background="@null"
+	    />
+  </LinearLayout>
+	<ImageView
+		android:layout_width="300dp"
+		android:layout_height="1dp"
+		android:layout_marginLeft="30dp"
+		android:layout_marginStart="30dp"
+		android:background="@color/inline_color"
+		/>
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/common_space">
+
+		<TextView
+			style="@style/normalBlackText"
+			android:layout_width="@dimen/register_text_width"
+			android:layout_height="wrap_content"
+			android:gravity="right"
+			android:text="确认密码 :" />
+
+		<EditText
+			android:id="@+id/confirm_passwd_edit"
+			android:layout_width="@dimen/register_edit_width"
+			android:layout_height="@dimen/editheight"
+			android:layout_marginLeft="20dp"
+			android:textSize="@dimen/needfont"
+			android:inputType="textPassword"
+			android:background="@null"/>
+	</LinearLayout>
+	<ImageView
+		android:layout_width="300dp"
+		android:layout_height="1dp"
+		android:layout_marginLeft="30dp"
+		android:layout_marginStart="30dp"
+		android:background="@color/inline_color"
+		/>
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/common_space">
+
+		<TextView
+			style="@style/normalBlackText"
+			android:layout_width="@dimen/register_text_width"
+			android:layout_height="wrap_content"
+			android:gravity="right"
+			android:text="用户类型 :" />
+
+		<Spinner
+			android:id="@+id/usertype"
+			android:layout_width="@dimen/register_edit_width"
+			android:layout_height="@dimen/editheight"
+			android:layout_marginLeft="20dp"
+			android:background="@null"
+			/>
+
+	</LinearLayout>
+	<ImageView
+		android:layout_width="300dp"
+		android:layout_height="1dp"
+		android:layout_marginLeft="30dp"
+		android:layout_marginStart="30dp"
+		android:background="@color/inline_color"
+		/>
+
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/common_space"
+		android:visibility="invisible"
+		android:id="@+id/prolayout0">
+
+		<TextView
+			style="@style/normalBlackText"
+			android:layout_width="@dimen/register_text_width"
+			android:layout_height="wrap_content"
+			android:gravity="right"
+			android:text="环保局地址 :" />
+
+		<EditText
+			android:id="@+id/project_address0"
+			android:layout_width="@dimen/register_edit_width"
+			android:layout_height="@dimen/editheight"
+			android:textSize="@dimen/needfont"
+			android:layout_marginLeft="20dp"
+			android:singleLine="true"
+			android:background="@null"
+		 />
+	</LinearLayout>
+	<ImageView
+		android:layout_width="300dp"
+		android:layout_height="1dp"
+		android:layout_marginLeft="30dp"
+		android:layout_marginStart="30dp"
+		android:visibility="invisible"
+		android:id="@+id/line0"
+		android:background="@color/inline_color"
+		/>
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/common_space"
+		android:visibility="invisible"
+		android:id="@+id/prolayout1"
+		>
+
+		<TextView
+			style="@style/normalBlackText"
+			android:layout_width="@dimen/register_text_width"
+			android:layout_height="wrap_content"
+			android:gravity="right"
+			android:text="项目地址1 :" />
+
+		<EditText
+			android:id="@+id/project_address1"
+			android:layout_width="@dimen/register_edit_width"
+			android:layout_height="@dimen/editheight"
+			android:layout_marginLeft="20dp"
+			android:textSize="@dimen/needfont"
+			android:singleLine="true"
+			android:background="@null"
+			/>
+	</LinearLayout>
+	<ImageView
+		android:layout_width="300dp"
+		android:layout_height="1dp"
+		android:layout_marginLeft="30dp"
+		android:layout_marginStart="30dp"
+		android:visibility="invisible"
+		android:id="@+id/line1"
+		android:background="@color/inline_color"
+		/>
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/common_space"
+		android:visibility="invisible"
+		android:id="@+id/prolayout2">
+
+		<TextView
+			style="@style/normalBlackText"
+			android:layout_width="@dimen/register_text_width"
+			android:layout_height="wrap_content"
+			android:gravity="right"
+			android:text="项目地址2 :" />
+
+		<EditText
+			android:id="@+id/project_address2"
+			android:layout_width="@dimen/register_edit_width"
+			android:layout_height="@dimen/editheight"
+			android:textSize="@dimen/needfont"
+			android:layout_marginLeft="20dp"
+			android:singleLine="true"
+			android:background="@null"
+			 />
+	</LinearLayout>
+	<ImageView
+		android:layout_width="300dp"
+		android:layout_height="1dp"
+		android:layout_marginLeft="30dp"
+		android:layout_marginStart="30dp"
+		android:visibility="invisible"
+		android:id="@+id/line2"
+		android:background="@color/inline_color"
+		/>
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="@dimen/common_space"
+		android:visibility="invisible"
+		android:id="@+id/prolayout3">
+
+		<TextView
+			style="@style/normalBlackText"
+			android:layout_width="@dimen/register_text_width"
+			android:layout_height="wrap_content"
+			android:gravity="right"
+			android:text="项目地址3 :"
+		/>
+
+		<EditText
+			android:id="@+id/project_address3"
+			android:layout_width="@dimen/register_edit_width"
+			android:layout_height="@dimen/editheight"
+			android:textSize="@dimen/needfont"
+			android:layout_marginLeft="20dp"
+			android:singleLine="true"
+			android:background="@null"
+			 />
+	</LinearLayout>
+	<ImageView
+		android:layout_width="300dp"
+		android:layout_height="1dp"
+		android:layout_marginLeft="30dp"
+		android:layout_marginStart="30dp"
+		android:visibility="invisible"
+		android:id="@+id/line3"
+		android:background="@color/inline_color"
+		/>
+	<LinearLayout
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_marginTop="20dp"
+		android:orientation="horizontal">
+
+		<Button
+			android:id="@+id/btn_register"
+			android:layout_height="40dp"
+			android:layout_width="130dp"
+			android:layout_weight="1"
+			android:layout_marginTop="10dp"
+			android:layout_marginLeft="40dp"
+			android:background="@color/choosebackgroud_color"
+			android:text="提交审核"
+			android:textColor="@android:color/white"
+			android:textSize="20sp"
+			/>
+
+		<Button
+			android:id="@+id/back_login"
+			android:layout_height="40dp"
+			android:layout_width="130dp"
+			android:layout_weight="1"
+			android:layout_marginTop="10dp"
+			android:layout_marginLeft="40dp"
+			android:layout_marginRight="30dp"
+			android:background="@color/choosebackgroud_color"
+			android:text="返回登陆"
+			android:textColor="@android:color/white"
+			android:textSize="20sp"
+			/>
+	</LinearLayout>
+</LinearLayout>

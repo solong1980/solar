@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
+    <GridView
+        android:id="@+id/auditinggridview"
+        android:layout_width="fill_parent"
+        android:layout_height="400dp"
+        android:horizontalSpacing="0dp"
+        android:numColumns="1"
+        android:verticalSpacing="0dp">
+
+    </GridView>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/common_space8"
+      >
+        <TextView
+            android:id="@+id/textregisterviewid"
+            android:layout_width="@dimen/buttomwidth"
+            android:text="@string/registerinfo"
+            android:gravity="center"
+            android:layout_marginLeft="@dimen/runinfo1_width"
+            android:layout_height="@dimen/secondimage_height"
+            style="@style/normalBlackText"
+            android:textColor="@drawable/text_color_selector"
+            android:background="@drawable/text_background_selector"
+            android:clickable="true">
+
+        </TextView>
+        <TextView
+            android:id="@+id/textrejectviewid"
+            android:layout_width="@dimen/buttomwidth"
+            android:text="@string/findinfo"
+            android:gravity="center"
+            android:layout_marginLeft="@dimen/secondimage_height"
+            android:layout_height="@dimen/secondimage_height"
+            style="@style/normalBlackText"
+            android:textColor="@drawable/text_color_selector"
+            android:background="@drawable/text_background_selector"
+            android:clickable="true">
+
+        </TextView>
+
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="spingarr">
+            <item>环保部门工作人员</item>
+            <item>系统运维人员</item>
+    </string-array>
+</resources>

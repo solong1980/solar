@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/backgroud_color"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/idemadatalinearlayout"
+        android:layout_width="fill_parent"
+        android:layout_height="290dp"
+        android:orientation="vertical"
+        android:layout_marginLeft="@dimen/standard_padding"/>
+    <Button
+        android:id="@+id/gridbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/commit_shape_button_round"
+        android:layout_below="@id/idemadatalinearlayout"
+        android:layout_marginTop="@dimen/standard_padding"
+        android:layout_centerHorizontal="true"
+        style="@style/normalBlackText"
+        android:text="@string/commit"
+        android:clickable="true"
+        android:visibility="gone"
+
+        />
+    <TextView
+        android:id="@+id/notifyerrortext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/devicesinfo"
+        style="@style/normalWhiteText"
+        android:layout_marginLeft="@dimen/abount_dialog_padding"
+        android:layout_alignParentBottom = "true"
+        android:background="@drawable/text_background_selector"
+        android:clickable="true"/>
+    <TextView
+        android:id="@+id/timingruntext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/timingrunlist"
+        style="@style/normalWhiteText"
+        android:layout_marginLeft="@dimen/common_space23"
+        android:layout_toRightOf="@id/notifyerrortext"
+        android:layout_alignBaseline="@+id/notifyerrortext"
+        android:layout_alignParentBottom = "true"
+        android:background="@drawable/text_background_selector"
+        android:clickable="true"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/urgentopenorclosetext"
+        style="@style/normalWhiteText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/notifyerrortext"
+        android:layout_alignBottom="@+id/notifyerrortext"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="40dp"
+        android:layout_marginRight="40dp"
+        android:background="@drawable/text_background_selector"
+        android:clickable="true"
+        android:text="@string/urgentstopandstart" />
+</RelativeLayout>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/common_space8"
+        >
+        <TextView
+            android:text="设备名:"
+            android:layout_width="wrap_content"
+            android:gravity="left"
+            android:layout_height="wrap_content"
+            style="@style/normalBlackText"
+            />
+        <EditText
+            android:layout_marginLeft="20dp"
+            android:layout_width="190dp"
+            android:layout_height="@dimen/editheight"
+            android:textSize="@dimen/needfont"
+            android:singleLine="true"
+            android:id="@+id/manager_modifydeviceinfo_uuid"
+            android:background="@null"
+            />
+        <Button
+            android:id="@+id/manager_modifydeviceinfo_del"
+            android:layout_marginLeft="@dimen/common_space"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/commit_shape_button_round"
+            android:text="删除"
+            style="@style/normalWhiteText14"
+            />
+    </LinearLayout>
+    <ImageView
+        android:layout_width="270dp"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/common_space8"
+        android:layout_marginStart="@dimen/common_space8"
+        android:background="@color/inline_color"
+        />
+</LinearLayout>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/backgroud_color"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:text="项目名称 :"
+        android:layout_marginTop="@dimen/common_space1"
+        android:id="@+id/projectname"
+        android:layout_width="@dimen/register_text_width"
+        android:gravity="right"
+        android:layout_height="wrap_content"
+        style="@style/normalBlackText"
+        />
+    <TextView
+        android:id="@+id/project_name"
+        android:layout_marginTop="@dimen/common_space1"
+        android:layout_width="@dimen/register_edit_width"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/projectname"
+        android:layout_marginLeft="@dimen/dialog_padding"
+        style="@style/normalBlackText"/>
+
+    <TextView
+        android:id="@+id/projectaddress"
+        android:text="项目位置 :"
+        android:layout_width="@dimen/register_text_width"
+        android:gravity="right"
+        android:layout_height="wrap_content"
+        style="@style/normalBlackText"
+        android:layout_below="@id/projectname"
+        android:layout_marginTop="@dimen/common_space1"
+        />
+
+    <TextView
+        android:id="@+id/project_address"
+        android:layout_width="@dimen/register_edit_width"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/project_name"
+        android:layout_alignStart="@id/project_name"
+        android:layout_below="@id/project_name"
+        android:layout_marginTop="@dimen/common_space1"
+        style="@style/normalBlackText"/>
+
+    <TextView
+        android:id="@+id/designprocesstext"
+        android:layout_below="@id/projectaddress"
+        android:layout_marginTop="@dimen/common_space1"
+        android:text="设计处理量 :"
+        android:layout_width="@dimen/register_text_width"
+        android:gravity="right"
+        android:layout_height="wrap_content"
+        style="@style/normalBlackText" />
+
+    <TextView
+        android:id="@+id/design_process"
+        android:layout_alignLeft="@id/project_address"
+        android:layout_alignStart="@id/project_address"
+        android:layout_below="@id/project_address"
+        android:layout_marginTop="@dimen/common_space1"
+        android:layout_width="@dimen/register_edit_width"
+        android:layout_height="wrap_content"
+        style="@style/normalBlackText"/>
+
+    <TextView
+        android:id="@+id/emissionstandardtext"
+        android:layout_below="@id/designprocesstext"
+        android:layout_marginTop="@dimen/common_space1"
+        android:text="排放标准 :"
+        android:layout_width="@dimen/register_text_width"
+        android:gravity="right"
+        android:layout_height="wrap_content"
+        style="@style/normalBlackText" />
+    <TextView
+        android:id="@+id/emissionstandard"
+        android:layout_alignLeft="@id/design_process"
+        android:layout_alignStart="@id/design_process"
+        android:layout_below="@id/design_process"
+        android:layout_marginTop="@dimen/common_space1"
+        android:layout_width="@dimen/register_edit_width"
+        android:layout_height="wrap_content"
+        style="@style/normalBlackText"/>
+
+    <TextView
+        android:id="@+id/standarddischargetext"
+        android:layout_below="@id/emissionstandardtext"
+        android:layout_marginTop="@dimen/common_space1"
+        android:text="达标排放量 :"
+        android:layout_width="@dimen/register_text_width"
+        android:gravity="right"
+        android:layout_height="wrap_content"
+        style="@style/normalBlackText" />
+    <TextView
+        android:id="@+id/standarddischarge"
+        android:layout_alignLeft="@id/emissionstandard"
+        android:layout_alignStart="@id/emissionstandard"
+        android:layout_below="@id/emissionstandard"
+        android:layout_marginTop="@dimen/common_space1"
+        android:layout_width="@dimen/register_edit_width"
+        android:layout_height="wrap_content"
+        style="@style/normalBlackText"/>
+
+    <TextView
+        android:id="@+id/solargivetext"
+        android:layout_below="@id/standarddischargetext"
+        android:layout_marginTop="@dimen/common_space1"
+        android:text="太阳能发电电能 :"
+        android:layout_width="@dimen/register_text_width"
+        android:gravity="right"
+        android:layout_height="wrap_content"
+        style="@style/normalBlackText"
+        />
+    <TextView
+        android:id="@+id/solargive"
+        android:layout_alignLeft="@id/standarddischarge"
+        android:layout_alignStart="@id/standarddischarge"
+        android:layout_below="@id/standarddischarge"
+        android:layout_marginTop="@dimen/common_space1"
+        android:layout_width="@dimen/register_edit_width"
+        android:layout_height="wrap_content"
+        style="@style/normalBlackText"/>
+
+</RelativeLayout>
