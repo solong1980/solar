@@ -20,6 +20,7 @@ import com.solar.entity.SoAccountFind;
 import com.solar.entity.SoAppVersion;
 import com.solar.entity.SoDataServerInfo;
 import com.solar.entity.SoDevices;
+import com.solar.entity.SoDevicesBatch;
 import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
 import com.solar.entity.SoProjectWorkingMode;
@@ -380,6 +381,12 @@ public class HostClient extends MinaClient {
 
 	public void devUpFileBlockCacheClean() {
 		send(ConnectAPI.DEVICES_UPGRADECTR_COMMAND, "");
+	}
+
+	public void batchDevice(SoDevicesBatch devicesBatch) {
+		String json = JsonUtilTool.toJson(devicesBatch);
+		System.out.println(json);
+		send(ConnectAPI.DEVICES_BATCH_COMMAND, json);
 	}
 
 }

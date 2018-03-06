@@ -23,6 +23,8 @@ import com.solar.entity.SoAccountFind;
 import com.solar.entity.SoAccountLocation;
 import com.solar.entity.SoAreas;
 import com.solar.entity.SoCities;
+import com.solar.entity.SoDevices;
+import com.solar.entity.SoDevicesBatch;
 import com.solar.entity.SoPage;
 import com.solar.entity.SoProvinces;
 
@@ -48,6 +50,8 @@ public class AdminClient extends JFrame {
 		JButton cityBtn = new JButton("市");
 		JButton areaBtn = new JButton("区");
 
+		JButton devicesBatchBtn = new JButton("设备批量增删");
+
 		JButton closeButton = new JButton("关闭");
 
 		JButton regiestBtn = new JButton("注册");
@@ -57,6 +61,8 @@ public class AdminClient extends JFrame {
 		jPanel.add(loginButton);
 		jPanel.add(upConfigButton);
 		jPanel.add(appVersionButton);
+		
+		jPanel.add(devicesBatchBtn);
 
 		jPanel.add(provinceBtn);
 		jPanel.add(cityBtn);
@@ -67,6 +73,49 @@ public class AdminClient extends JFrame {
 		getContentPane().add(jPanel);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
+		
+		
+		devicesBatchBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SoDevicesBatch devicesBatch = new SoDevicesBatch();
+				List<SoDevices> batchAdds = new ArrayList<>();
+				SoDevices dev= new SoDevices();
+				dev.setDevNo("123456");
+				dev.setProjectId(5L);
+				dev.setSw0((short)0);
+				dev.setSw1((short)0);
+				dev.setSw2((short)0);
+				dev.setSw3((short)0);
+				dev.setSw4((short)0);
+				dev.setSw5((short)0);
+				dev.setSw6((short)0);
+				dev.setSw7((short)0);
+				dev.setLocationId("10000");
+				batchAdds.add(dev);
+				
+				List<SoDevices> batchDels = new ArrayList<>();
+				dev= new SoDevices();
+				dev.setDevNo("1234256");
+				dev.setProjectId(5L);
+				dev.setSw0((short)0);
+				dev.setSw1((short)0);
+				dev.setSw2((short)0);
+				dev.setSw3((short)0);
+				dev.setSw4((short)0);
+				dev.setSw5((short)0);
+				dev.setSw6((short)0);
+				dev.setSw7((short)0);
+				dev.setLocationId("10000");
+				batchDels.add(dev);
+				
+				devicesBatch.setBatchAdds(batchAdds);
+				//devicesBatch.setBatchDels(batchDels);
+				
+				media.batchDevice(devicesBatch);
+			}
+		});
+		
 		accountFindQueryBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

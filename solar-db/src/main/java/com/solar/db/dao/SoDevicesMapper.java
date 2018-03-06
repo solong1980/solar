@@ -3,6 +3,7 @@ package com.solar.db.dao;
 import java.util.List;
 
 import com.solar.entity.SoDevices;
+import com.solar.entity.SoDevicesBatch;
 import com.solar.entity.SoPage;
 
 public interface SoDevicesMapper {
@@ -22,4 +23,6 @@ public interface SoDevicesMapper {
 	List<SoDevices> queryDevices(SoPage<SoDevices, List<SoDevices>> page);
 
 	void delete(SoDevices devices);
+
+	void batch(SoDevicesBatch devicesBatch);
 }

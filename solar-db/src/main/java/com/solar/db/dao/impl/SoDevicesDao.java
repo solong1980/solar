@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.solar.db.dao.SoDevicesMapper;
 import com.solar.entity.SoDevices;
+import com.solar.entity.SoDevicesBatch;
 import com.solar.entity.SoPage;
 
 public class SoDevicesDao implements SoDevicesMapper {
@@ -128,6 +129,31 @@ public class SoDevicesDao implements SoDevicesMapper {
 			mapper.delete(devices);
 			sqlSession.commit();
 		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public void batch(SoDevicesBatch devicesBatch) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			List<SoDevices> batchAdds = devicesBatch.getBatchAdds();
+			if (batchAdds != null) {
+				for (SoDevices devices : batchAdds) {
+					insert(devices);
+				}
+			}
+			List<SoDevices> batchDels = devicesBatch.getBatchDels();
+			if (batchDels != null) {
+				for (SoDevices devices : batchDels) {
+					delete(devices);
+				}
+			}
+			sqlSession.commit();
+		} catch (Exception e) {
+			sqlSession.rollback();
 			throw new RuntimeException(e);
 		} finally {
 			sqlSession.close();

@@ -9,6 +9,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import com.solar.db.dao.SoDevicesMapper;
 import com.solar.db.dao.impl.SoDevicesDao;
 import com.solar.entity.SoDevices;
+import com.solar.entity.SoDevicesBatch;
 import com.solar.entity.SoPage;
 
 /**
@@ -72,5 +73,9 @@ public class SoDevicesService {
 
 	public void delete(SoDevices devices) {
 		deviceDao.delete(devices);
+	}
+
+	public void batch(SoDevicesBatch devicesBatch) {
+		deviceDao.batch(devicesBatch);
 	}
 }

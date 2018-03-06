@@ -17,6 +17,7 @@ import com.solar.entity.SoAccount;
 import com.solar.entity.SoAccountFind;
 import com.solar.entity.SoAppVersion;
 import com.solar.entity.SoDevices;
+import com.solar.entity.SoDevicesBatch;
 import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
 import com.solar.entity.SoProjectWorkingMode;
@@ -341,6 +342,10 @@ public class ObservableMedia extends Observable {
 	}
 	public void updateDevice(List<SoDevices> devices) {
 		hostClient.updateDevice(devices);
+		setChanged();
+	}
+	public void batchDevice(SoDevicesBatch devicesBatch) {
+		hostClient.batchDevice(devicesBatch);
 		setChanged();
 	}
 	public void devUpFileBlockCacheClean() {
