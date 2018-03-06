@@ -4,7 +4,7 @@ package com.lszyhb.basicclass;
  * Created by kkk8199 on 12/16/17.
  */
 
-public class ShowDevConfig {
+public class ShowDevConfig extends ShowAbt{
     // project_id
     // dev_type
     // config

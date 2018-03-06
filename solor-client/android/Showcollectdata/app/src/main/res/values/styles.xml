@@ -30,7 +30,12 @@
         <item name="android:layout_gravity">center_vertical</item>
     </style>
     <style name="normalBLueText" parent="@android:style/TextAppearance">
-        <item name="android:textColor">@color/common_blue_1</item>
+        <item name="android:textColor">@color/press_color</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+    <style name="normalBLueText_14" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/press_color</item>
         <item name="android:textSize">14sp</item>
         <item name="android:layout_gravity">center_vertical</item>
     </style>

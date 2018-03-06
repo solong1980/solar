@@ -61,7 +61,7 @@ public class ConnectAPI {
 
     public static final int ACCOUNT_SELECT_COMMAND = 0x000030;
 
-    public static final int DEVICES_IN_PROJECT_COMMAND = 0x000031;
+    public static final int DEVICES_IN_PROJECT_COMMAND = 0x000031;   //查询项目中的设备
 
     public static final int DEVICES_RUNNINGDATA_COMMAND = 0x000032;  //查询运行数据
 

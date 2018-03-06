@@ -3,6 +3,9 @@ package com.lszyhb.common;
 import android.util.Log;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
 
 /**
  * Created by kkk8199 on 11/21/17.
@@ -35,6 +38,17 @@ public class JsonUtilTool {
         Gson gson = new Gson();
      //   Log.i("kkk8199","into jsonString"+jsonString);
         return gson.fromJson(jsonString,type);
+    }
+
+    /**
+     * json 转 List<T>
+     */
+    public static <T> List<T> jsonToList(String jsonString, Class<T> clazz) {
+        Gson gson = new Gson();
+        List<T> ts = gson.fromJson(jsonString, new TypeToken<List<T>>(){}.getType());
+        Log.i("kkk8199","ts="+ts);
+     //   System.out.print(ts);
+        return ts;
     }
 
 }

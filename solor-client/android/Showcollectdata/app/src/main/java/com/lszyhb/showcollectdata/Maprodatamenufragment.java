@@ -15,7 +15,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import com.lszyhb.basicclass.Consts;
 import com.lszyhb.basicclass.ProjectWorkingMode;
+import com.lszyhb.basicclass.ShowDevConfig;
 import com.lszyhb.basicclass.ShowDevices;
+import com.lszyhb.basicclass.ShowPage;
 import com.lszyhb.basicclass.ShowProject;
 import com.lszyhb.common.TimeUtils;
 
@@ -34,12 +36,14 @@ public class Maprodatamenufragment extends Fragment implements View.OnClickListe
         private View convertView;
         private  ShowProject nowproject;
         private LinearLayout mlinearlayout;
+        private LinearLayout deviceslinearlayout;
         private Madatarunerrorfragment madatarunerrorfragment;
         private Context mcontext;
         private TextView notifyerrortext;//故障报警修改为设备信息,变量直接沿用
         private TextView urgentopenorclosetext;
         private TextView timingruntext;
         private Button gridbutton;
+        private static Button backbutton;
         private ImageView fanstart;
         private ImageView fanstop;
         private ImageView bakfanstart;
@@ -60,6 +64,9 @@ public class Maprodatamenufragment extends Fragment implements View.OnClickListe
         private boolean bakpumpstopstatus=false;
         ProjectWorkingMode mprojectworkmode;
         private GridView timinggridview;
+        private GridView mainenancerdata_devicesgridview;
+        private static View deviceslist;
+        private static View mainenancer_devicesinfo;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -79,6 +86,8 @@ public class Maprodatamenufragment extends Fragment implements View.OnClickListe
             notifyerrortext=convertView.findViewById(R.id.notifyerrortext);//直接沿用以前变量,不修改
             urgentopenorclosetext=convertView.findViewById(R.id.urgentopenorclosetext);
             gridbutton    = convertView.findViewById(R.id.gridbutton);
+            backbutton    = convertView.findViewById(R.id.backbutton);
+            backbutton.setOnClickListener(this);
             notifyerrortext.setOnClickListener(this);
             urgentopenorclosetext.setOnClickListener(this);
             if(timingruntextstatus){
@@ -107,6 +116,7 @@ public class Maprodatamenufragment extends Fragment implements View.OnClickListe
      * 取消故障报警信息界面,改成设备信息界面,函数保留不用****************/
     private void setdatarunerror()
     {
+        backbutton.setVisibility(View.GONE);
         gridbutton.setVisibility(View.GONE);
         notifyerrortext.setSelected(true);
         urgentopenorclosetext.setSelected(false);
@@ -123,30 +133,61 @@ public class Maprodatamenufragment extends Fragment implements View.OnClickListe
         /************需求更改,增加设备信息界面****************/
         private void setdeviceslistinfo()
         {
+            backbutton.setVisibility(View.GONE);
             gridbutton.setVisibility(View.GONE);
             notifyerrortext.setSelected(true);
             urgentopenorclosetext.setSelected(false);
             timingruntext.setSelected(false);
-            LayoutInflater inflater = LayoutInflater.from(mcontext);
-            View deviceslist = inflater.inflate(
-                    R.layout.mainenancerdata_deviceslist, null,false);
-            GridView mainenancerdata_devicesgridview = deviceslist.
-                                        findViewById(R.id.mainenancerdata_devicesgridview);
-            List<ShowDevices> listnoweviceinfo;
-            if(nowproject.getDevConfiures()!=null)
-                listnoweviceinfo=nowproject.getDevConfiures();
-            else
-                listnoweviceinfo=new ArrayList<ShowDevices>();
-            MaprodeviceslistAdapter  maprodeviceslistadapter=
-                    new MaprodeviceslistAdapter(mcontext, listnoweviceinfo);
-            mainenancerdata_devicesgridview.setAdapter(maprodeviceslistadapter);
-            mlinearlayout.removeAllViews();
-            mlinearlayout.addView(deviceslist);
 
+            LayoutInflater inflater = LayoutInflater.from(mcontext);
+            View mainenancerdata_devicesfragment = inflater.inflate(
+                    R.layout.mainenancerdata_devicesfragment, null,false);
+            deviceslinearlayout = mainenancerdata_devicesfragment.findViewById(R.id.deviceslinearlayout);
+            deviceslist = inflater.inflate(
+                    R.layout.mainenancerdata_deviceslist, null,false);
+             mainenancerdata_devicesgridview = deviceslist.
+                                        findViewById(R.id.mainenancerdata_devicesgridview);
+            deviceslinearlayout.addView(deviceslist); //增加第一个页面*/
+
+            mainenancer_devicesinfo = inflater.inflate(
+                    R.layout.mainenancer_devicesinfo, null,false);
+            deviceslinearlayout.addView(mainenancer_devicesinfo);//增加第二个页面
+            mainenancer_devicesinfo.setVisibility(View.GONE);
+
+            /******发送查询项目设备列表命令******/
+            ShowDevConfig mdevices = new ShowDevConfig();
+            mdevices.setProjectId(nowproject.getId());
+            mdevices.setMsg("Success");
+            SupplyConnectAPI.getInstance().queryrdeviceslist(UserMainActivity.musermainsocket,
+                    UserMainActivity.musermainhandler,mdevices);
+            mlinearlayout.removeAllViews();
+            mlinearlayout.addView(mainenancerdata_devicesfragment);
         }
+
+
+        /***************从服务器获取到设备列表后，更新Adapter*************/
+    public void updatedevicesadapter(List<ShowDevices> mlistdevices){
+        MaprodeviceslistAdapter deviveslistadapter = new MaprodeviceslistAdapter(mcontext,mlistdevices);
+        mainenancerdata_devicesgridview.setAdapter(deviveslistadapter);
+    }
+
+    /*******显示设备列表还是设备信息***********/
+    public static void setvisibledeviceorinfo(boolean islist){
+        if(islist){
+            deviceslist.setVisibility(View.VISIBLE);
+            mainenancer_devicesinfo.setVisibility(View.GONE);
+            backbutton.setVisibility(View.GONE);
+        }
+        else{
+            mainenancer_devicesinfo.setVisibility(View.VISIBLE);
+            deviceslist.setVisibility(View.GONE);
+            backbutton.setVisibility(View.VISIBLE);
+        }
+    }
 
     /*************设置紧急启停****/
     private void seturgentstopandstart(){
+        backbutton.setVisibility(View.GONE);
         gridbutton.setVisibility(View.GONE);
         notifyerrortext.setSelected(false);
         urgentopenorclosetext.setSelected(true);
@@ -190,6 +231,7 @@ public class Maprodatamenufragment extends Fragment implements View.OnClickListe
                  "21:00-21:30",  "21:30-22:00",  "22:00-22:30","22:30-23:00",  "23:00-23:30",
                  "23:30-24:00",
          };
+        backbutton.setVisibility(View.GONE);
         gridbutton.setVisibility(View.VISIBLE);
         gridbutton.setSelected(true);
         notifyerrortext.setSelected(false);
@@ -289,6 +331,9 @@ public class Maprodatamenufragment extends Fragment implements View.OnClickListe
                 return;
             case R.id.gridbutton:
                 settimingcommit();
+                break;
+            case R.id.backbutton:
+                setvisibledeviceorinfo(true);
                 break;
             case R.id.fanstart:
                 if(!fanstartstatus) {

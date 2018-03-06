@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.lszyhb.basicclass.Consts;
 import com.lszyhb.basicclass.ProjectWorkingMode;
 import com.lszyhb.basicclass.ShowAccount;
+import com.lszyhb.basicclass.ShowDevices;
 import com.lszyhb.basicclass.ShowPage;
 import com.lszyhb.basicclass.ShowProject;
 
@@ -71,6 +72,7 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
     public static final int MSG_QUERY_RUNTIMING=8;//查询定时运行信息
     public static final int MSG_QUERY_RUNNINGDATA=9;//查询运行数据
     public static final int MSG_MODIFY_PROJECT=10;//项目修改
+    public static final int MSG_QUERY_DEVICES=11;//查询项目中的设备
 
     private static Context usermaincontext;
 
@@ -477,6 +479,11 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
                     else if (msg.arg2 == MSG_MODIFY_PROJECT) {//项目修改
                         Log.i("kkk8199","into MSG_MODIFY_PROJECT");
                         Toast.makeText(usermaincontext, "修改成功", Toast.LENGTH_LONG).show();
+                    }
+                    else if (msg.arg2 == MSG_QUERY_DEVICES) {//项目中设备查询
+                        Log.i("kkk8199","into MSG_QUERY_DEVICES");
+                        List<ShowDevices> listdevices = ( List<ShowDevices>)msg.obj;
+                        mdatamenufragment.updatedevicesadapter(listdevices);
                     }
                 }
 

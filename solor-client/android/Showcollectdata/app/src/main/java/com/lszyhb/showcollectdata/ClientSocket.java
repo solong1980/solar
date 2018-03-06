@@ -8,11 +8,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.lszyhb.basicclass.ApkVersion;
 import com.lszyhb.basicclass.ConnectAPI;
 import com.lszyhb.basicclass.ProjectWorkingMode;
 import com.lszyhb.basicclass.ShowAbt;
 import com.lszyhb.basicclass.ShowAccount;
+import com.lszyhb.basicclass.ShowDevices;
 import com.lszyhb.basicclass.ShowPage;
 import com.lszyhb.basicclass.ShowProject;
 import com.lszyhb.basicclass.ShowVCode;
@@ -382,6 +385,13 @@ public class ClientSocket {
                         }*/
                         msg.obj= ProjectWorkingModereturn;
 
+                        break;
+                    case ConnectAPI.DEVICES_IN_PROJECT_RESPONSE://查询项目中的设备
+                        Gson gson = new Gson();
+                        List<ShowDevices> listdevices= gson.fromJson(ret, new TypeToken<List<ShowDevices>>(){}.getType());
+              //          Log.i("kkk8199","listdevices111="+listdevices);
+                        msg.arg2= UserMainActivity.MSG_QUERY_DEVICES;//
+                        msg.obj= listdevices;
                         break;
                     case ConnectAPI.DEVICES_RUNNINGDATA_RESPONSE://查询运行数据
                         Log.i("kkk8199","into DEVICES_RUNNINGDATA_RESPONSE");

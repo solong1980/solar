@@ -4,7 +4,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "com.lszyhb.showcollectdata"
-        minSdkVersion 13
+        minSdkVersion 15
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -28,4 +28,7 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:0.5'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
     implementation 'com.google.code.gson:gson:2.2.4'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
 }
+
+

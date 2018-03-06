@@ -7,7 +7,10 @@
         android:id="@+id/devicelist_textview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_space1"
         android:gravity="left"
+        android:layout_marginLeft="@dimen/common_space2"
+        android:layout_marginStart="@dimen/common_space2"
         style="@style/normalBLueText"
        />
     <ImageView

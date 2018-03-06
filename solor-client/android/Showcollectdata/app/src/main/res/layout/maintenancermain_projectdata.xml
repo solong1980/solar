@@ -23,7 +23,19 @@
         android:text="@string/commit"
         android:clickable="true"
         android:visibility="gone"
-
+        />
+    <Button
+        android:id="@+id/backbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/commit_shape_button_round"
+        android:layout_below="@id/idemadatalinearlayout"
+        android:layout_marginTop="@dimen/standard_padding"
+        android:layout_centerHorizontal="true"
+        style="@style/normalBlackText"
+        android:text="@string/infoback"
+        android:clickable="true"
+        android:visibility="gone"
         />
     <TextView
         android:id="@+id/notifyerrortext"

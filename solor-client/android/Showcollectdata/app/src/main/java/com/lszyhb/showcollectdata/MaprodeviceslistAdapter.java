@@ -57,8 +57,10 @@ public class MaprodeviceslistAdapter  extends BaseAdapter {
     @Override
     public View getView(final int position, View convertView, final ViewGroup parent) {
         final MaprodeviceslistHolder maprodeviceslistholder;
+        Log.i("kkk8199","position="+position+"(mImgIds.get(position).getDevNo())="+
+                (mImgIds.get(position).getDevNo()));
         if (convertView == null) {
-            convertView = mInflater.inflate(R.layout.manager_modifydeviceinfo_item,null);
+            convertView = mInflater.inflate(R.layout.mainancerdata_devicelist_item,null);
             maprodeviceslistholder = new MaprodeviceslistHolder();
             TextView devicelist_textview =convertView.findViewById(R.id.devicelist_textview);
             devicelist_textview.setText((mImgIds.get(position).getDevNo()));
@@ -72,7 +74,9 @@ public class MaprodeviceslistAdapter  extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Log.i("kkk8199","into onclick ");
-
+             /*   SupplyConnectAPI.getInstance().modityruntime(UserMainActivity.musermainsocket,
+                        UserMainActivity.musermainhandler,mprojectworkmode);*/
+                Maprodatamenufragment.setvisibledeviceorinfo(false);
             }
         });
 

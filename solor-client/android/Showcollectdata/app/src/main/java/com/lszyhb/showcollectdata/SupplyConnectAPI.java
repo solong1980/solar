@@ -11,6 +11,8 @@ import com.lszyhb.basicclass.GenVCodeType;
 import com.lszyhb.basicclass.ProjectWorkingMode;
 import com.lszyhb.basicclass.ShowAccount;
 import com.lszyhb.basicclass.ShowAccountLocation;
+import com.lszyhb.basicclass.ShowDevConfig;
+import com.lszyhb.basicclass.ShowDevices;
 import com.lszyhb.basicclass.ShowPage;
 import com.lszyhb.basicclass.ShowProject;
 import com.lszyhb.basicclass.ShowVCode;
@@ -181,4 +183,11 @@ public class SupplyConnectAPI {
         msocket.sendandrecv(ConnectAPI.DEVICES_RUNNINGDATA_COMMAND, mhandler,json);
     }
 
+    /************查询项目中设备列表*******************/
+    public void queryrdeviceslist(ClientSocket msocket, Handler mhandler, ShowDevConfig nowprojectdev){
+
+        String json = JsonUtilTool.toJson(nowprojectdev);
+        System.out.println(json);
+        msocket.sendandrecv(ConnectAPI.DEVICES_IN_PROJECT_COMMAND, mhandler,json);
+    }
 }
