@@ -92,10 +92,10 @@ public class SoDevicesDao implements SoDevicesMapper {
 		try {
 			SoDevicesMapper mapper = sqlSession.getMapper(SoDevicesMapper.class);
 			SoDevices existDevNo = mapper.selectByDevNo(devices.getDevNo());
-			if(existDevNo!=null) {
+			if (existDevNo != null) {
 				devices.setId(existDevNo.getId());
 				mapper.update(devices);
-			}else {
+			} else {
 				mapper.insert(devices);
 			}
 			sqlSession.commit();
@@ -113,6 +113,20 @@ public class SoDevicesDao implements SoDevicesMapper {
 			SoDevicesMapper mapper = sqlSession.getMapper(SoDevicesMapper.class);
 			List<SoDevices> devices = mapper.queryDevices(page);
 			return devices;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public void delete(SoDevices devices) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoDevicesMapper mapper = sqlSession.getMapper(SoDevicesMapper.class);
+			mapper.delete(devices);
+			sqlSession.commit();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {

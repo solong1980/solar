@@ -12,6 +12,7 @@ import com.solar.command.processor.app.AppUpgradeCmdProcessor;
 import com.solar.command.processor.app.AppVersionCmdProcessor;
 import com.solar.command.processor.app.DataServerInfoCmdProcessor;
 import com.solar.command.processor.app.DevicesAddCmdProcessor;
+import com.solar.command.processor.app.DevicesDelCmdProcessor;
 import com.solar.command.processor.app.DevicesInProjectCmdProcessor;
 import com.solar.command.processor.app.DevicesRunningDataCmdProcessor;
 import com.solar.command.processor.app.DevicesScheduleCmdProcessor;
@@ -76,6 +77,7 @@ public enum MsgProcessorRegister {
 	DEVICES_ADD_COMMAND(ConnectAPI.DEVICES_ADD_COMMAND, new DevicesAddCmdProcessor()),
 	DEVICES_SCHEDULE_COMMAND(ConnectAPI.DEVICES_SCHEDULE_COMMAND, new DevicesScheduleCmdProcessor()),
 	DEVICES_UPGRADECTR_COMMAND(ConnectAPI.DEVICES_UPGRADECTR_COMMAND, new DevicesUpgradeCtrCmdProcessor()),
+	DEVICES_DEL_COMMAND(ConnectAPI.DEVICES_DEL_COMMAND, new DevicesDelCmdProcessor()),
 	PROJECT_DEVICES_CTRL_COMMAND(ConnectAPI.PROJECT_DEVICES_CTRL_COMMAND, new ProjectDevicesCtrlCmdProcessor()),
 
 	// 内部使用，服务端通知客户端断开

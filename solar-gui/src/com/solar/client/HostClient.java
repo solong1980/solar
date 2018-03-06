@@ -367,6 +367,11 @@ public class HostClient extends MinaClient {
 		send(ConnectAPI.PROJECT_DEVICES_CTRL_COMMAND, json);
 	}
 
+	public void deleteDevices(SoDevices devices) {
+		String json = JsonUtilTool.toJson(devices);
+		send(ConnectAPI.DEVICES_DEL_COMMAND, json);
+	}
+
 	public void addDevice(SoDevices device) {
 		String json = JsonUtilTool.toJson(device);
 		System.out.println(json);

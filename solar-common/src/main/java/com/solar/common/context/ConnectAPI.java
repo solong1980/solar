@@ -66,6 +66,8 @@ public class ConnectAPI {
 	public static final int DEVICES_SCHEDULE_COMMAND = 0x000035;
 	public static final int DEVICES_UPGRADECTR_COMMAND = 0x000036;
 	public static final int PROJECT_DEVICES_CTRL_COMMAND = 0x000037;
+	public static final int DEVICES_DEL_COMMAND = 0x000038;
+	
 	// 控制终端指令
 	public static final int CTRL_COMMAND = 0x999999;
 
@@ -132,6 +134,7 @@ public class ConnectAPI {
 	public static final int DEVICES_SCHEDULE_RESPONSE = 0x100035;
 	public static final int DEVICES_UPGRADECTR_RESPONSE = 0x100036;
 	public static final int PROJECT_DEVICES_CTRL_RESPONSE = 0x100037;
+	public static final int DEVICES_DEL_RESPONSE = 0x100038;
 	
 	// 单片机
 	public static final String MC_ERROR_RESPONSE = "00";

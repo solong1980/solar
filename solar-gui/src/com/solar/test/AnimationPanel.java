@@ -33,6 +33,12 @@ public class AnimationPanel extends JPanel implements Runnable {
 
 	public final int NUMPTS = 6;
 
+	//定义连线点
+	
+	//定义比例
+	
+	//数据
+	
 	/**
 	 * 定义6个点 偶数x,奇数y
 	 */

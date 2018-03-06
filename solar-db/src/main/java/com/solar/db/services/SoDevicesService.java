@@ -69,4 +69,8 @@ public class SoDevicesService {
 		page.setT(devices);
 		return page;
 	}
+
+	public void delete(SoDevices devices) {
+		deviceDao.delete(devices);
+	}
 }

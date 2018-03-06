@@ -124,4 +124,8 @@
 		from so_devices
 		limit #{start},#{count}
 	</select>
+	
+	<delete id="delete">
+		delete from so_devices where dev_no=#{devNo}
+	</delete>
 </mapper>

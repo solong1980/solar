@@ -37,6 +37,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 
 import com.alibaba.fastjson.TypeReference;
@@ -879,18 +880,30 @@ public class IndexPanel extends BasePanel implements Observer {
 
 	JPopupMenu devTreePopmenu = new JPopupMenu();
 	JMenuItem rmDevFromProj = new JMenuItem("从项目移除");
-	JMenuItem addDevToProj = new JMenuItem("添加到项目");
+	// JMenuItem addDevToProj = new JMenuItem("添加到项目");
 
 	public void showmenu(int x, int y) {
-		// devTreePopmenu.show(deviceTree, x, y);
+		devTreePopmenu.show(deviceTree, x, y);
 	}
+
+	private TreePath popSelPath = null;
 
 	public IndexPanel() {
 		super(new BorderLayout(5, 5));
 
 		devTreePopmenu.add(rmDevFromProj);
-		devTreePopmenu.add(addDevToProj);
-
+		// devTreePopmenu.add(addDevToProj);
+		rmDevFromProj.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int ret = JOptionPane.showConfirmDialog(IndexPanel.this, "确认删除", "删除", JOptionPane.OK_CANCEL_OPTION);
+				if (ret == 0) {
+					String devNo = e.getActionCommand();
+					instance.deleteDevices(devNo);
+					rmDevFromProj.setActionCommand(null);
+				}
+			}
+		});
 		runningDataCron.startFetchRunningData();
 		JPanel projectTreePanel = createTree(new TreeSelectionListener() {
 			@Override
@@ -1033,13 +1046,16 @@ public class IndexPanel extends BasePanel implements Observer {
 								AddrType addrType = t.getAddrType();
 								switch (addrType) {
 								case PROJECT:
-									addDevToProj.setEnabled(true);
+									// addDevToProj.setEnabled(true);
 									rmDevFromProj.setEnabled(false);
 									showmenu(event.getX(), event.getY());
 									break;
 								case DEVICE:
-									addDevToProj.setEnabled(false);
+									// addDevToProj.setEnabled(false);
 									rmDevFromProj.setEnabled(true);
+									String key = ((SoDevices) t.getValue()).getDevNo();
+									rmDevFromProj.setActionCommand(key);
+									popSelPath = selPath;
 									showmenu(event.getX(), event.getY());
 									break;
 								default:
@@ -1086,8 +1102,16 @@ public class IndexPanel extends BasePanel implements Observer {
 					});
 				case ConnectAPI.WORKING_MODE_UPDATE_RESPONSE:
 				case ConnectAPI.DEVICES_UPDATE_RESPONSE:
+				case ConnectAPI.DEVICES_DEL_RESPONSE:
 					SoAbtAuth soAbt = JsonUtilTool.fromJson(ret.getRet(), SoAbtAuth.class);
 					JOptionPane.showMessageDialog(this, soAbt.getMsg());
+					if (popSelPath != null && code == ConnectAPI.DEVICES_DEL_RESPONSE) {
+						DefaultTreeModel dm = (DefaultTreeModel) IndexPanel.this.deviceTree.getModel();
+						DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) popSelPath
+								.getLastPathComponent();
+						dm.removeNodeFromParent(selectedNode);
+						popSelPath = null;
+					}
 					break;
 				case ConnectAPI.PROJECT_DEVICES_CTRL_RESPONSE:
 					List<SoDevices> deviceList = JsonUtilTool.fromJson(ret.getRet(),

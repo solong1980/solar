@@ -329,6 +329,12 @@ public class ObservableMedia extends Observable {
 		setChanged();
 	}
 
+	public void deleteDevices(String devNo) {
+		SoDevices devices = new SoDevices();
+		devices.setDevNo(devNo);
+		hostClient.deleteDevices(devices);
+		setChanged();
+	}
 	public void updateDevice(SoDevices device) {
 		hostClient.updateDevice(device);
 		setChanged();

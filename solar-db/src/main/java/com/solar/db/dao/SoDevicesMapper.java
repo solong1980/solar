@@ -20,4 +20,6 @@ public interface SoDevicesMapper {
 	void insert(SoDevices devices);
 	
 	List<SoDevices> queryDevices(SoPage<SoDevices, List<SoDevices>> page);
+
+	void delete(SoDevices devices);
 }
