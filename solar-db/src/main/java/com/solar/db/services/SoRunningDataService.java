@@ -46,5 +46,9 @@ public class SoRunningDataService {
 	public List<SoRunningData> getLastRunningData(String devNo, int count) {
 		return runningDataDao.selectLastRunntionData(devNo, count);
 	}
+	
+	public SoRunningData selectLastMonitorData(String devNo) {
+		return runningDataDao.selectLastMonitorData(devNo);
+	}
 
 }

@@ -15,4 +15,6 @@ public interface SoRunningDataMapper {
 	List<SoRunningData> selectLastRunntionData(@Param("uuid")String devNo, @Param("count")int limit);
 
 	Long selectMaxId();
+
+	SoRunningData selectLastMonitorData(@Param("uuid")String devNo);
 }

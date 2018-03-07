@@ -31,6 +31,8 @@ public class SoRunningData implements Serializable {
 	private String utcTime;// GPS时间
 	private String altitude;// GPS纬度
 	private String longitude;// GPS经度
+	private Date breakTime; //上次故障时间
+	private Long safeTime;  //连续安全运行时间
 	private Date createTime;
 
 	public Long getId() {
@@ -217,4 +219,21 @@ public class SoRunningData implements Serializable {
 		this.createTime = createTime;
 	}
 
+	public Date getBreakTime() {
+		return breakTime;
+	}
+
+	public void setBreakTime(Date breakTime) {
+		this.breakTime = breakTime;
+	}
+
+	public Long getSafeTime() {
+		return safeTime;
+	}
+
+	public void setSafeTime(Long safeTime) {
+		this.safeTime = safeTime;
+	}
+
+	
 }

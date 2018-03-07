@@ -73,4 +73,18 @@ public class SoRunningDataDao implements SoRunningDataMapper {
 		return runningDatas;
 	}
 
+	@Override
+	public SoRunningData selectLastMonitorData(String devNo) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoRunningDataMapper mapper = sqlSession.getMapper(SoRunningDataMapper.class);
+			SoRunningData monitorData = mapper.selectLastMonitorData(devNo);
+			return monitorData;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
 }

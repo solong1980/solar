@@ -1,5 +1,6 @@
 package com.solar.command.processor.app;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -31,7 +32,11 @@ public class DevicesRunningDataCmdProcessor extends MsgProcessor {
 			logger.debug("devices last running data:" + json);
 
 		SoRunningData runningData = JsonUtilTool.fromJson(json, SoRunningData.class);
-		List<SoRunningData> runningDatas = runningDataService.getLastRunningData(runningData.getUuid(), 1);
+		//List<SoRunningData> runningDatas = runningDataService.getLastRunningData(runningData.getUuid(), 1);
+		
+		List<SoRunningData> runningDatas = new ArrayList<>();
+		SoRunningData lastMonitorData = runningDataService.selectLastMonitorData(runningData.getUuid());
+		runningDatas.add(lastMonitorData);
 		appSession.sendMsg(new DevicesRunningDataResponse(JsonUtilTool.toJson(runningDatas)));
 	}
 

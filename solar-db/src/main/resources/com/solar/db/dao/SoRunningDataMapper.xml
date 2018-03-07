@@ -27,6 +27,34 @@
 		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
 	</resultMap>
 
+	<resultMap id="ExtResultMap" type="com.solar.entity.SoRunningData">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="req" jdbcType="VARCHAR" property="req" />
+		<result column="uuid" jdbcType="VARCHAR" property="uuid" />
+		<result column="fmid" jdbcType="VARCHAR" property="fmid" />
+		<result column="vssun" jdbcType="VARCHAR" property="vssun" />
+		<result column="ichg" jdbcType="VARCHAR" property="ichg" />
+		<result column="vbat" jdbcType="VARCHAR" property="vbat" />
+		<result column="level" jdbcType="VARCHAR" property="level" />
+		<result column="pchg" jdbcType="VARCHAR" property="pchg" />
+		<result column="pdis" jdbcType="VARCHAR" property="pdis" />
+		<result column="ild1" jdbcType="VARCHAR" property="ild1" />
+		<result column="ild2" jdbcType="VARCHAR" property="ild2" />
+		<result column="ild3" jdbcType="VARCHAR" property="ild3" />
+		<result column="ild4" jdbcType="VARCHAR" property="ild4" />
+		<result column="temp" jdbcType="VARCHAR" property="temp" />
+		<result column="ain1" jdbcType="VARCHAR" property="ain1" />
+		<result column="ain2" jdbcType="VARCHAR" property="ain2" />
+		<result column="ain3" jdbcType="VARCHAR" property="ain3" />
+		<result column="stat" jdbcType="VARCHAR" property="stat" />
+		<result column="utctime" jdbcType="VARCHAR" property="utcTime" />
+		<result column="altitude" jdbcType="VARCHAR" property="altitude" />
+		<result column="longitude" jdbcType="VARCHAR" property="longitude" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+		<result column="break_time" jdbcType="TIMESTAMP" property="breakTime" />
+		<result column="safe_time" jdbcType="TIMESTAMP" property="safeTime" />
+	</resultMap>
+
 	<sql id="Columns">
 		id,
 		req,
@@ -71,6 +99,16 @@
 		order by id
 		desc
 		limit #{count}
+	</select>
+	
+	<select id="selectLastMonitorData" parameterType="java.lang.String"
+		resultMap="ExtResultMap">
+		SELECT sd.*,sdb.break_time, IFNULL(NOW()-sdb.break_time,0) AS safe_time
+		FROM (SELECT * FROM so_running_data WHERE UUID = #{uuid,jdbcType=VARCHAR}
+		 ORDER BY id DESC LIMIT 1) sd
+		LEFT JOIN (SELECT dev_no,break_time FROM so_devices_breakdown
+		WHERE dev_no = #{uuid,jdbcType=VARCHAR}
+		 ORDER BY id DESC LIMIT 1) sdb ON sd.uuid = sdb.dev_no
 	</select>
 
 	<insert id="insert" parameterType="com.solar.entity.SoRunningData"
