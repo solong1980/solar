@@ -1,7 +1,9 @@
 package com.solar.command.processor.mcc;
 
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,9 +11,11 @@ import org.slf4j.LoggerFactory;
 import com.solar.cache.SolarCache;
 import com.solar.controller.common.INotAuthProcessor;
 import com.solar.controller.common.MccMsgProcessor;
+import com.solar.db.services.SoDevicesBreakdownService;
 import com.solar.db.services.SoDevicesService;
 import com.solar.db.services.SoRunningDataService;
 import com.solar.entity.SoDevices;
+import com.solar.entity.SoDevicesBreakdown;
 import com.solar.entity.SoRunningData;
 import com.solar.server.commons.session.AppSession;
 import com.solar.server.commons.session.AppSessionManager;
@@ -25,10 +29,12 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 	private static final Logger logger = LoggerFactory.getLogger(DataUploadCmdProcessor.class);
 	private SoDevicesService devicesService;
 	private SoRunningDataService runningDataService;
+	private SoDevicesBreakdownService devicesBreakdownService;
 
 	public DataUploadCmdProcessor() {
 		runningDataService = SoRunningDataService.getInstance();
 		devicesService = SoDevicesService.getInstance();
+		devicesBreakdownService = SoDevicesBreakdownService.getInstance();
 	}
 
 	public boolean access(AppSession appSession, String devNo) {
@@ -124,6 +130,26 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 			runningData.setAltitude(reqs[19]);// GPS纬度
 			runningData.setLongitude(reqs[20]);// GPS经度
 			runningDataService.insertRunningData(wf.get());
+			try {
+				int stat = Integer.parseInt(reqs[17]);
+				if ((stat & 8) == 8) {
+					// 短路.插入故障信息
+					Long id = wf.get().getId();
+					SoDevicesBreakdown devicesBreakdown = new SoDevicesBreakdown();
+					if (reqs[18] != null) {
+						Date breakTime = new SimpleDateFormat("yyyyMMddHHmmss").parse(reqs[18]);
+						devicesBreakdown.setBreakTime(breakTime);
+					} else {
+						devicesBreakdown.setBreakTime(new Date());
+					}
+					devicesBreakdown.setDevNo(uuid);
+					devicesBreakdown.setRunningDataId(id);
+					devicesBreakdownService.insert(devicesBreakdown);
+				}
+			} catch (Exception e) {
+				logger.error("add break time failure for uuid=" + uuid, e);
+			}
+
 			runningData = null;
 		} catch (Exception e) {
 			logger.error("add running data failure", e);

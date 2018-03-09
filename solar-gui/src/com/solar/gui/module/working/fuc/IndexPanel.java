@@ -15,6 +15,7 @@ import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -1086,6 +1087,14 @@ public class IndexPanel extends BasePanel implements Observer {
 		add(splitPane, BorderLayout.CENTER);
 	}
 
+
+	public void updateDeviceRunningPanelData(SoRunningData soRunningData) {
+		
+		Date breakTime = soRunningData.getBreakTime();//上次故障时间
+		Long safeTime = soRunningData.getSafeTime();//安全运行时间
+		
+	}
+
 	@Override
 	public void update(Observable o, Object arg) {
 		if (arg instanceof SoRet) {
@@ -1098,7 +1107,9 @@ public class IndexPanel extends BasePanel implements Observer {
 					List<SoRunningData> runningDatas = JsonUtilTool.fromJson(ret.getRet(),
 							new TypeReference<List<SoRunningData>>() {
 							});
-					// updateDeviceRunningPanelData(runningData);
+					if(runningDatas.size()>0) {
+						updateDeviceRunningPanelData(runningDatas.get(0));
+					}
 					break;
 				case ConnectAPI.DEVICES_ADD_RESPONSE:
 					SoDevices devices = JsonUtilTool.fromJson(ret.getRet(), SoDevices.class);
@@ -1177,5 +1188,4 @@ public class IndexPanel extends BasePanel implements Observer {
 			}
 		}
 	}
-
 }

@@ -14,6 +14,7 @@ import com.solar.db.services.SoAccountFindService;
 import com.solar.db.services.SoAccountService;
 import com.solar.db.services.SoAppVersionService;
 import com.solar.db.services.SoCustomerService;
+import com.solar.db.services.SoDevicesBreakdownService;
 import com.solar.db.services.SoDevicesService;
 import com.solar.db.services.SoLocationService;
 import com.solar.db.services.SoPrivilegeService;
@@ -47,6 +48,7 @@ public class InitDBServers {
 
 		SoPrivilegeService.getInstance().initSetSession(sqlSessionFactory);
 
+		SoDevicesBreakdownService.getInstance().initSetSession(sqlSessionFactory);
 		// 做个查询,使数据库连接池初始化
 		Long maxId = SoRunningDataService.getInstance().getMaxId();
 		logger.info("current max data id :" + maxId);

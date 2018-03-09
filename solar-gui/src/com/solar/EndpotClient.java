@@ -19,10 +19,10 @@ import com.solar.client.net.NetConf;
 @SuppressWarnings("serial")
 public class EndpotClient extends JFrame {
 
-	public static int tnum = 1000;
+	public static int tnum = 1;
 
 	DeviceClient[] deviceClients = new DeviceClient[tnum];
-	String data = "01,17DD5E6E,12,321,109,210,50,159003,29535,36,0,0,0,11,0,0,0,9000,20180202080734,30.026136,114.128179\n";
+	String data = "01,17DD5E6E,12,321,109,210,50,159003,29535,36,0,0,0,11,0,0,0,35976,20180202080734,30.026136,114.128179\n";
 
 	boolean sendFlag = false;
 
@@ -44,7 +44,7 @@ public class EndpotClient extends JFrame {
 				}
 				synchronized (this) {
 					try {
-						this.wait(1000);
+						this.wait(10000);
 					} catch (InterruptedException e) {
 					}
 				}
@@ -64,7 +64,7 @@ public class EndpotClient extends JFrame {
 
 		NetConf netConf = NetConf.buildHostConf();
 		netConf.setDataServerIP("127.0.0.1");
-		netConf.setDataServerPort(10122);
+		netConf.setDataServerPort(10124);
 
 		setPreferredSize(new Dimension(600, 80));
 		setTitle("EndpotClient");

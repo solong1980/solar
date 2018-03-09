@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.solar.db.dao.SoDevicesBreakdownMapper">
+	<resultMap id="BaseResultMap" type="com.solar.entity.SoDevicesBreakdown">
+		<id column="id" jdbcType="BIGINT" property="id" />
+		<result column="dev_no" jdbcType="VARCHAR" property="devNo" />
+		<result column="running_data_id" jdbcType="BIGINT" property="runningDataId" />
+		<result column="break_time" jdbcType="VARCHAR" property="breakTime" />
+		<result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+	</resultMap>
+
+	<sql id="Columns">
+		id,
+		dev_no,
+		running_data_id,
+		break_time,
+		create_time
+	</sql>
+
+	<insert id="insert" parameterType="com.solar.entity.SoDevicesBreakdown"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO so_devices_breakdown
+		(
+		dev_no,
+		running_data_id,
+		break_time,
+		create_time
+		)
+		VALUES
+		(
+		#{devNo},
+		#{runningDataId},
+		#{breakTime},
+		#{createTime}
+		)
+	</insert>
+</mapper>
