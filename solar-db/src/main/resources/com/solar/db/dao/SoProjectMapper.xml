@@ -162,5 +162,15 @@
 		from so_project
 		where 1 = 0
 	</select>
-
+	
+	<!-- 项目发电总量 -->
+	<select id="calcProjectIchg" resultType="java.lang.String">
+	    select sum(ichg) from (
+		<foreach collection="devs" item="dev" separator=" ">
+			select ichg from so_running_data where id=(select MAX( id ) from so_running_data rd 
+			where rd.uuid=#{dev.devNo,jdbcType=VARCHAR})
+			union
+		</foreach>
+		select 0 as ichg) a
+	</select>
 </mapper>

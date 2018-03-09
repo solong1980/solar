@@ -28,6 +28,8 @@ public class SoProject extends SoAbtAuth {
 	private String workerPhone;
 	private String createTime;
 
+	private String projectTotalIChg;// 电量
+
 	private SoProjectWorkingMode projectWorkingMode;
 
 	private int state;
@@ -126,6 +128,14 @@ public class SoProject extends SoAbtAuth {
 
 	public void setState(int state) {
 		this.state = state;
+	}
+
+	public String getProjectTotalIChg() {
+		return projectTotalIChg;
+	}
+
+	public void setProjectTotalIChg(String projectTotalIChg) {
+		this.projectTotalIChg = projectTotalIChg;
 	}
 
 	public SoProjectWorkingMode getProjectWorkingMode() {

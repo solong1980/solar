@@ -320,6 +320,12 @@ public class ObservableMedia extends Observable {
 		setChanged();
 	}
 
+	public void getProjectCalcIChg(Long id) {
+		SoProject project = new SoProject();
+		project.setId(id);
+		hostClient.getProjectCalcIChg(project);
+		setChanged();
+	}
 	public void updateProjectWorkingMode(SoProjectWorkingMode mode) {
 		hostClient.updateProjectWorkingMode(mode);
 		setChanged();
@@ -362,5 +368,6 @@ public class ObservableMedia extends Observable {
 		soRet.setRet(ErrorCode.Error_000000);
 		notifyObservers(soRet);
 	}
+
 
 }

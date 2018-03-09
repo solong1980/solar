@@ -10,6 +10,7 @@ import com.solar.db.dao.SoProjectMapper;
 import com.solar.db.dao.SoProjectWorkingModeMapper;
 import com.solar.db.dao.impl.SoProjectDao;
 import com.solar.db.dao.impl.SoProjectWorkingModeDao;
+import com.solar.entity.SoDevices;
 import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
 import com.solar.entity.SoProjectWorkingMode;
@@ -135,5 +136,10 @@ public class SoProjectService {
 		page.setT(projects);
 		page.setTotal(total);
 		return page;
+	}
+
+	public String calcProjectIchg(List<SoDevices> projectDevs) {
+		String ichg = projectDao.calcProjectIchg(projectDevs);
+		return ichg;
 	}
 }

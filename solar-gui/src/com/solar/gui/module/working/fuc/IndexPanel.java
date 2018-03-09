@@ -666,7 +666,8 @@ public class IndexPanel extends BasePanel implements Observer {
 			gpsPanel.add(standDichageField, gbc);
 			gbc.gridy++;
 			gpsPanel.add(solarEnergyPowerField, gbc);
-
+			solarEnergyPowerField.setEditable(false);
+			
 			gbc.gridx = 0;
 			gbc.gridy++;
 			gbc.gridwidth = 2;
@@ -1014,6 +1015,14 @@ public class IndexPanel extends BasePanel implements Observer {
 				IndexPanel.this.projectId = project.getId();
 				IndexPanel.this.project = project;
 				instance.getProjectWorkingMode(project.getId());
+				
+				//make a pause
+				try {
+					Thread.sleep(300);
+				} catch (InterruptedException e) {
+				}
+				instance.getProjectCalcIChg(project.getId());
+				
 				projectNameField.setText(project.getProjectName());
 				locationField.setText(LocationLoader.getInstance().getLocationFullName(project.getLocationId()));
 				cabField.setText(project.getCapability() + "/t");
@@ -1112,6 +1121,11 @@ public class IndexPanel extends BasePanel implements Observer {
 						dm.removeNodeFromParent(selectedNode);
 						popSelPath = null;
 					}
+					break;
+				case ConnectAPI.PROJECT_CALC_ICHG_RESPONSE:
+					SoProject project = JsonUtilTool.fromJson(ret.getRet(), SoProject.class);
+					String projectTotalIChg = project.getProjectTotalIChg();
+					solarEnergyPowerField.setText(projectTotalIChg);
 					break;
 				case ConnectAPI.PROJECT_DEVICES_CTRL_RESPONSE:
 					List<SoDevices> deviceList = JsonUtilTool.fromJson(ret.getRet(),

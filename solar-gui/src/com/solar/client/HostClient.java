@@ -389,4 +389,10 @@ public class HostClient extends MinaClient {
 		send(ConnectAPI.DEVICES_BATCH_COMMAND, json);
 	}
 
+	public void getProjectCalcIChg(SoProject project) {
+		String json = JsonUtilTool.toJson(project);
+		System.out.println(json);
+		send(ConnectAPI.PROJECT_CALC_ICHG_COMMAND, json);
+	}
+
 }

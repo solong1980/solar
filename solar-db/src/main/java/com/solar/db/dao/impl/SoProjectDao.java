@@ -7,6 +7,7 @@ import org.apache.ibatis.session.SqlSessionFactory;
 
 import com.solar.db.dao.SoProjectMapper;
 import com.solar.db.dao.SoProjectWorkingModeMapper;
+import com.solar.entity.SoDevices;
 import com.solar.entity.SoPage;
 import com.solar.entity.SoProject;
 import com.solar.entity.SoProjectWorkingMode;
@@ -137,6 +138,20 @@ public class SoProjectDao implements SoProjectMapper {
 			SoProjectMapper mapper = sqlSession.getMapper(SoProjectMapper.class);
 			Integer total = mapper.queryProjectCount(page);
 			return total;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			sqlSession.close();
+		}
+	}
+
+	@Override
+	public String calcProjectIchg(List<SoDevices> projectDevs) {
+		SqlSession sqlSession = sqlSessionFactory.openSession();
+		try {
+			SoProjectMapper mapper = sqlSession.getMapper(SoProjectMapper.class);
+			String ichg = mapper.calcProjectIchg(projectDevs);
+			return ichg;
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
