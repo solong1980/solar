@@ -59,7 +59,6 @@ import com.solar.gui.module.working.fuc.AccountAuditPanel;
 import com.solar.gui.module.working.fuc.DeviceUpgradeManagerPanel;
 import com.solar.gui.module.working.fuc.IndexPanel;
 import com.solar.gui.module.working.fuc.ProjectDataPanel;
-import com.solar.gui.module.working.fuc.RunningReportPanel;
 import com.solar.gui.module.working.fuc.WorkerInfoPanel;
 
 @SuppressWarnings("serial")
@@ -419,19 +418,19 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 
 		JTextField accountField = new JTextField("");
 		accountField.setDocument(new JTextFieldLimit(30));
-		
+
 		JPasswordField passwordField = new JPasswordField();
 		JPasswordField rePasswordField = new JPasswordField();
-		
+
 		JTextField nameField = new JTextField("");
 		nameField.setDocument(new JTextFieldLimit(50));
-		
+
 		JTextField phoneField = new JTextField("", 30);
 		JTextField vcodeField = new JTextField("");
-		
+
 		JTextField emailField = new JTextField("");
 		emailField.setDocument(new JTextFieldLimit(50));
-		
+
 		JComboBox<String> userTypeField = new JComboBox<>();
 		userTypeField.addItem("运维");
 		userTypeField.addItem("局方 ");
@@ -540,7 +539,6 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 								JFieldBuilder.noEmpty(msgLabel, "请输入校验码", vcodeField);
 
 								JFieldBuilder.isEmail(msgLabel, "请输入邮箱地址", emailField);
-
 
 								int typeIndex = userTypeField.getSelectedIndex();
 								if (typeIndex == 0) {
@@ -699,11 +697,11 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 		frame.getContentPane().setLayout(new BorderLayout());
 		frame.getContentPane().add(this, BorderLayout.CENTER);
 		this.setBackground(Color.DARK_GRAY);
-		//frame.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
+		// frame.setPreferredSize(Toolkit.getDefaultToolkit().getScreenSize());
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		frame.setMinimumSize(new Dimension((int) screenSize.getWidth()-200, (int) screenSize.getHeight()-200));
+		frame.setMinimumSize(new Dimension((int) screenSize.getWidth() - 200, (int) screenSize.getHeight() - 200));
 		frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
-		//frame.setResizable(false);
+		// frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 		frame.setVisible(true);
@@ -813,8 +811,8 @@ public class AdaWorkingPanel extends BasePanel implements ActionListener, Observ
 								tabbedpane.add("维护人员信息", workerInfoPanel);
 								observableMedia.addObserver(workerInfoPanel);
 
-//								RunningReportPanel reportPanel = new RunningReportPanel();
-//								tabbedpane.add("运行信息查询", reportPanel);
+								// RunningReportPanel reportPanel = new RunningReportPanel();
+								// tabbedpane.add("运行信息查询", reportPanel);
 
 								AccountAuditPanel accountAuditPanel = new AccountAuditPanel();
 								observableMedia.addObserver(accountAuditPanel);

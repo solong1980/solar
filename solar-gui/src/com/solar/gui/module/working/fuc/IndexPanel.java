@@ -55,7 +55,6 @@ import com.solar.entity.SoDevices;
 import com.solar.entity.SoProject;
 import com.solar.entity.SoProjectWorkingMode;
 import com.solar.entity.SoRunningData;
-import com.solar.gui.component.BezierAnimationPanel;
 import com.solar.gui.component.formate.ButtonUI;
 import com.solar.gui.component.formate.JTextFieldLimit;
 import com.solar.gui.component.model.TreeAddr;
@@ -517,8 +516,8 @@ public class IndexPanel extends BasePanel implements Observer {
 	}
 
 	CardLayout cardLayout = new CardLayout();
-	BezierAnimationPanel animationPanel;
-
+	//BezierAnimationPanel animationPanel;
+	DevRunningAnimationPanel animationPanel;
 	private void handBtnSet() {
 		if (handModeBtn.isSelected()) {
 			for (JRadioButton bt : startBtns) {
@@ -591,7 +590,8 @@ public class IndexPanel extends BasePanel implements Observer {
 		np.add(statePanel);
 		np.add(warnningPanel);
 
-		animationPanel = new BezierAnimationPanel();
+		//animationPanel = new BezierAnimationPanel();
+		animationPanel = new DevRunningAnimationPanel();
 		infoPanel.setLayout(new BorderLayout());
 		infoPanel.add(np, BorderLayout.NORTH);
 		infoPanel.add(animationPanel, BorderLayout.CENTER);
@@ -1121,6 +1121,9 @@ public class IndexPanel extends BasePanel implements Observer {
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setDividerSize(5);
 		add(splitPane, BorderLayout.CENTER);
+		
+		//将动画面板加入观察者队列中
+		instance.addObserver(animationPanel);
 	}
 
 	/**

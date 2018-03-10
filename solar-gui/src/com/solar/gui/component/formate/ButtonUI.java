@@ -1,8 +1,15 @@
 package com.solar.gui.component.formate;
 
 import java.awt.FlowLayout;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Insets;
+import java.awt.MediaTracker;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.Box;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -15,6 +22,60 @@ public class ButtonUI {
 	public static ImageIcon createImageIcon(String filename, String description) {
 		String path = "/resources/images/" + filename;
 		return new ImageIcon(ButtonUI.class.getClass().getResource(path), description);
+	}
+
+	public static BufferedImage createImageBuff(String filename) {
+		String path = "/resources/images/" + filename;
+		BufferedImage buf = null;
+		try {
+			buf = ImageIO.read(ButtonUI.class.getClass().getResource(path));
+		} catch (IOException e) {
+
+		}
+		return buf;
+	}
+
+	public static Image createGifImage(String filename) {
+		String path = "/resources/images/" + filename;
+		Image image = null;
+		try {
+			image = Toolkit.getDefaultToolkit().createImage(ButtonUI.class.getResource(path));
+			MediaTracker mt = new MediaTracker(new JPanel());// new JPanel可以替换成当前的视图类
+			mt.addImage(image, 0);
+			mt.waitForAll();
+			//image = image.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return image;
+	}
+
+	public static BufferedImage createGifImageBuff(String filename) {
+		String path = "/resources/images/" + filename;
+		BufferedImage buf = null;
+		try {
+			Image image = Toolkit.getDefaultToolkit().createImage(ButtonUI.class.getResource(path));
+
+			MediaTracker mt = new MediaTracker(new JPanel());// new JPanel可以替换成当前的视图类
+			mt.addImage(image, 0);
+			mt.waitForAll();
+
+			buf = createImageBuff(image);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return buf;
+	}
+
+	public static BufferedImage createImageBuff(Image img) {
+		BufferedImage buf = null;
+
+		buf = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
+		Graphics g = buf.createGraphics();
+		g.drawImage(img, 0, 0, null);
+		g.dispose();
+
+		return buf;
 	}
 
 	public static JRadioButton makeRadioBtn(String text, String description) {
