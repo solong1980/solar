@@ -103,7 +103,7 @@
 	
 	<select id="selectLastMonitorData" parameterType="java.lang.String"
 		resultMap="ExtResultMap">
-		SELECT sd.*,sdb.break_time, IFNULL(NOW()-sdb.break_time,0) AS safe_time
+		SELECT sd.*,sdb.break_time, IFNULL(TIMESTAMPDIFF(SECOND,sdb.break_time,str_to_date(utctime,'%Y%m%d%H%i%s')),0) AS safe_time
 		FROM (SELECT * FROM so_running_data WHERE UUID = #{uuid,jdbcType=VARCHAR}
 		 ORDER BY id DESC LIMIT 1) sd
 		LEFT JOIN (SELECT dev_no,break_time FROM so_devices_breakdown

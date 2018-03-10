@@ -14,6 +14,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -547,6 +548,11 @@ public class IndexPanel extends BasePanel implements Observer {
 		}
 	}
 
+	JButton solarBoardBtn = ButtonUI.makeImgBtn("buttons/rbp.gif");
+	JButton batteryBtn = ButtonUI.makeImgBtn("buttons/rbp.gif");
+	JButton fanOperationBtn = ButtonUI.makeImgBtn("buttons/rbp.gif");
+	JButton pumpOperationBtn = ButtonUI.makeImgBtn("buttons/rbp.gif");
+
 	public JPanel createInfoPanel() {
 		JPanel infoPanel = new JPanel();
 		infoPanel.setBorder(BorderFactory.createTitledBorder("运行信息"));
@@ -554,7 +560,7 @@ public class IndexPanel extends BasePanel implements Observer {
 		JPanel statePanel = createStatePanel();
 		JPanel warnningPanel = new JPanel();
 		warnningPanel.setLayout(new GridBagLayout());
-		warnningPanel.setBorder(BorderFactory.createTitledBorder("故障报警信息"));
+		warnningPanel.setBorder(BorderFactory.createTitledBorder("报警信息"));
 		GridBagConstraints gbc = new GridBagConstraints();
 		gbc.gridx = 0;
 		gbc.gridy = 0;
@@ -562,13 +568,24 @@ public class IndexPanel extends BasePanel implements Observer {
 		// gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.BOTH;
 		gbc.insets = new Insets(1, 1, 1, 1);
-		warnningPanel.add(new JLabel("太阳能板故障 "), gbc);
+		warnningPanel.add(new JLabel("太阳能板"), gbc);
 		gbc.gridy++;
-		warnningPanel.add(new JLabel("电池故障 "), gbc);
+		warnningPanel.add(new JLabel("电池 "), gbc);
 		gbc.gridy++;
-		warnningPanel.add(new JLabel("风机运行故障 "), gbc);
+		warnningPanel.add(new JLabel("风机运行 "), gbc);
 		gbc.gridy++;
-		warnningPanel.add(new JLabel("水泵运行故障 "), gbc);
+		warnningPanel.add(new JLabel("水泵运行 "), gbc);
+
+		gbc.gridy = 0;
+		gbc.gridx++;
+		warnningPanel.add(solarBoardBtn, gbc);
+		gbc.gridy++;
+		warnningPanel.add(batteryBtn, gbc);
+		gbc.gridy++;
+		warnningPanel.add(fanOperationBtn, gbc);
+		gbc.gridy++;
+		warnningPanel.add(pumpOperationBtn, gbc);
+		gbc.gridy++;
 
 		JPanel np = new JPanel(new GridLayout(1, 2));
 		np.add(statePanel);
@@ -582,6 +599,16 @@ public class IndexPanel extends BasePanel implements Observer {
 		return infoPanel;
 	}
 
+	/**
+	 * 运行状态
+	 * 
+	 * @return
+	 */
+	JButton correctBtn = ButtonUI.makeImgBtn("buttons/rbp.gif");
+	JButton breakBtn = ButtonUI.makeImgBtn("buttons/rbp.gif");
+	JTextField safeDaysField = new JTextField("天  小时   分", 20);
+	JTextField lastBreakTimeField = new JTextField("年  月   日   小时    分", 20);
+
 	public JPanel createStatePanel() {
 		JPanel statePanel = new JPanel();
 		statePanel.setLayout(new GridBagLayout());
@@ -592,24 +619,30 @@ public class IndexPanel extends BasePanel implements Observer {
 		gbc.anchor = GridBagConstraints.WEST;
 		gbc.fill = GridBagConstraints.NONE;
 		gbc.insets = new Insets(5, 5, 5, 5);
-		statePanel.add(new JLabel("运行正常:"), gbc);
+
+		statePanel.add(new JLabel("正常:"), gbc);
+		gbc.gridx++;
+		statePanel.add(new JLabel("故障:"), gbc);
+		gbc.gridx--;
+
 		gbc.gridy++;
-		statePanel.add(new JLabel("故障报警:"), gbc);
+
+		statePanel.add(correctBtn, gbc);
+		gbc.gridx++;
+		statePanel.add(breakBtn, gbc);
+
+		gbc.gridx--;
 		gbc.gridy++;
 		statePanel.add(new JLabel("连续无故障运行时长："), gbc);
 		gbc.gridy++;
 		statePanel.add(new JLabel("上次故障发生日期："), gbc);
 
 		gbc.gridx++;
-		gbc.gridy = 0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		statePanel.add(new JTextField("", 20), gbc);
+		gbc.gridy = 2;
+		statePanel.add(safeDaysField, gbc);
 		gbc.gridy++;
-		statePanel.add(new JTextField("", 20), gbc);
-		gbc.gridy++;
-		statePanel.add(new JTextField("天  小时   分", 20), gbc);
-		gbc.gridy++;
-		statePanel.add(new JTextField("年  月   日   小时    分", 20), gbc);
+		statePanel.add(lastBreakTimeField, gbc);
 		return statePanel;
 	}
 
@@ -668,7 +701,7 @@ public class IndexPanel extends BasePanel implements Observer {
 			gbc.gridy++;
 			gpsPanel.add(solarEnergyPowerField, gbc);
 			solarEnergyPowerField.setEditable(false);
-			
+
 			gbc.gridx = 0;
 			gbc.gridy++;
 			gbc.gridwidth = 2;
@@ -1016,14 +1049,14 @@ public class IndexPanel extends BasePanel implements Observer {
 				IndexPanel.this.projectId = project.getId();
 				IndexPanel.this.project = project;
 				instance.getProjectWorkingMode(project.getId());
-				
-				//make a pause
+
+				// make a pause
 				try {
 					Thread.sleep(300);
 				} catch (InterruptedException e) {
 				}
 				instance.getProjectCalcIChg(project.getId());
-				
+
 				projectNameField.setText(project.getProjectName());
 				locationField.setText(LocationLoader.getInstance().getLocationFullName(project.getLocationId()));
 				cabField.setText(project.getCapability() + "/t");
@@ -1087,12 +1120,53 @@ public class IndexPanel extends BasePanel implements Observer {
 		add(splitPane, BorderLayout.CENTER);
 	}
 
-
+	/**
+	 * 更新运行状态信息
+	 * 
+	 * @param soRunningData
+	 */
 	public void updateDeviceRunningPanelData(SoRunningData soRunningData) {
-		
-		Date breakTime = soRunningData.getBreakTime();//上次故障时间
-		Long safeTime = soRunningData.getSafeTime();//安全运行时间
-		
+
+		Date breakTime = soRunningData.getBreakTime();// 上次故障时间
+		Long safeTime = soRunningData.getSafeTime();// 安全运行时间
+		System.out.println();
+		String stat = soRunningData.getStat();
+		try {
+			if ((Integer.parseInt(stat) & 8) == 8) {
+				correctBtn.setIcon(ButtonUI.createImageIcon("buttons/rb.gif", ""));
+				breakBtn.setIcon(ButtonUI.createImageIcon("buttons/rbrs.gif", ""));
+			} else {
+				correctBtn.setIcon(ButtonUI.createImageIcon("buttons/rbs.gif", ""));
+				breakBtn.setIcon(ButtonUI.createImageIcon("buttons/rb.gif", ""));
+			}
+
+			if ((Integer.parseInt(stat) & 32768) == 32768) {
+				solarBoardBtn.setIcon(ButtonUI.createImageIcon("buttons/rbrs.gif", ""));
+			} else {
+				solarBoardBtn.setIcon(ButtonUI.createImageIcon("buttons/rbs.gif", ""));
+			}
+			if ((Integer.parseInt(stat) & 16384) == 16384) {
+				batteryBtn.setIcon(ButtonUI.createImageIcon("buttons/rbrs.gif", ""));
+			} else {
+				batteryBtn.setIcon(ButtonUI.createImageIcon("buttons/rbs.gif", ""));
+			}
+			if ((Integer.parseInt(stat) & 8192) == 8192) {
+				fanOperationBtn.setIcon(ButtonUI.createImageIcon("buttons/rbrs.gif", ""));
+			} else {
+				fanOperationBtn.setIcon(ButtonUI.createImageIcon("buttons/rbs.gif", ""));
+			}
+			if ((Integer.parseInt(stat) & 4096) == 4096) {
+				pumpOperationBtn.setIcon(ButtonUI.createImageIcon("buttons/rbrs.gif", ""));
+			} else {
+				pumpOperationBtn.setIcon(ButtonUI.createImageIcon("buttons/rbs.gif", ""));
+			}
+
+			lastBreakTimeField.setText(new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(breakTime));
+			String formatSecond = formatSecond(safeTime);
+			safeDaysField.setText(formatSecond);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -1107,7 +1181,7 @@ public class IndexPanel extends BasePanel implements Observer {
 					List<SoRunningData> runningDatas = JsonUtilTool.fromJson(ret.getRet(),
 							new TypeReference<List<SoRunningData>>() {
 							});
-					if(runningDatas.size()>0) {
+					if (runningDatas.size() > 0) {
 						updateDeviceRunningPanelData(runningDatas.get(0));
 					}
 					break;
@@ -1187,5 +1261,39 @@ public class IndexPanel extends BasePanel implements Observer {
 				}
 			}
 		}
+	}
+
+	/**
+	 * 将秒数转换成天具体的天时分秒 比如172800S转换成2天0时0分0秒
+	 * 
+	 * @param second
+	 * @return
+	 */
+	public String formatSecond(Object second) {
+		String timeStr = "0秒";
+		if (second != null) {
+			Long s = (Long) second;
+			String format;
+			Object[] array;
+			Integer days = (int) (s / (60 * 60 * 24));
+			Integer hours = (int) (s / (60 * 60) - days * 24);
+			Integer minutes = (int) (s / 60 - hours * 60 - days * 24 * 60);
+			Integer seconds = (int) (s - minutes * 60 - hours * 60 * 60 - days * 24 * 60 * 60);
+			if (days > 0) {
+				format = "%1$,d天%2$,d时%3$,d分%4$,d秒";
+				array = new Object[] { days, hours, minutes, seconds };
+			} else if (hours > 0) {
+				format = "%1$,d时%2$,d分%3$,d秒";
+				array = new Object[] { hours, minutes, seconds };
+			} else if (minutes > 0) {
+				format = "%1$,d分%2$,d秒";
+				array = new Object[] { minutes, seconds };
+			} else {
+				format = "%1$,d秒";
+				array = new Object[] { seconds };
+			}
+			timeStr = String.format(format, array);
+		}
+		return timeStr;
 	}
 }

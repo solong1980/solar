@@ -45,4 +45,9 @@ public class ButtonUI {
 		pagionationPanel.add(tiaoLabel);
 		return pagionationPanel;
 	}
+
+	public static JButton makeImgBtn(String filename) {
+		JButton button = new JButton(createImageIcon(filename, ""));
+		return button;
+	}
 }
