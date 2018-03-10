@@ -610,6 +610,9 @@ public class IndexPanel extends BasePanel implements Observer {
 	JTextField lastBreakTimeField = new JTextField("年  月   日   小时    分", 20);
 
 	public JPanel createStatePanel() {
+		safeDaysField.setEditable(false);
+		lastBreakTimeField.setEditable(false);
+		
 		JPanel statePanel = new JPanel();
 		statePanel.setLayout(new GridBagLayout());
 		statePanel.setBorder(BorderFactory.createTitledBorder("运行状态"));
@@ -1210,7 +1213,13 @@ public class IndexPanel extends BasePanel implements Observer {
 				case ConnectAPI.PROJECT_CALC_ICHG_RESPONSE:
 					SoProject project = JsonUtilTool.fromJson(ret.getRet(), SoProject.class);
 					String projectTotalIChg = project.getProjectTotalIChg();
-					solarEnergyPowerField.setText(projectTotalIChg);
+					
+					try {
+						float ichg = Long.parseLong(projectTotalIChg)/1000.0f;
+						solarEnergyPowerField.setText(String.format("%.3f ", ichg)+"度");
+					} catch (Exception e) {
+					}
+					
 					break;
 				case ConnectAPI.PROJECT_DEVICES_CTRL_RESPONSE:
 					List<SoDevices> deviceList = JsonUtilTool.fromJson(ret.getRet(),
