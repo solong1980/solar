@@ -146,11 +146,11 @@ public class SoProjectDao implements SoProjectMapper {
 	}
 
 	@Override
-	public String calcProjectIchg(List<SoDevices> projectDevs) {
+	public String calcProjectPchg(List<SoDevices> projectDevs) {
 		SqlSession sqlSession = sqlSessionFactory.openSession();
 		try {
 			SoProjectMapper mapper = sqlSession.getMapper(SoProjectMapper.class);
-			String ichg = mapper.calcProjectIchg(projectDevs);
+			String ichg = mapper.calcProjectPchg(projectDevs);
 			return ichg;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

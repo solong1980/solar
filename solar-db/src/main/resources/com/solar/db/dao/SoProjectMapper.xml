@@ -164,10 +164,10 @@
 	</select>
 	
 	<!-- 项目发电总量 -->
-	<select id="calcProjectIchg" resultType="java.lang.String">
-	    select sum(ichg) from (
+	<select id="calcProjectPchg" resultType="java.lang.String">
+	    select sum(pchg) from (
 		<foreach collection="devs" item="dev" separator=" ">
-			select ichg from so_running_data where id=(select MAX( id ) from so_running_data rd 
+			select pchg from so_running_data where id=(select MAX( id ) from so_running_data rd 
 			where rd.uuid=#{dev.devNo,jdbcType=VARCHAR})
 			union
 		</foreach>

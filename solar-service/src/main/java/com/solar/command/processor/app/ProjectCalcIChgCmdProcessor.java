@@ -35,11 +35,11 @@ public class ProjectCalcIChgCmdProcessor extends MsgProcessor {
 		SoProject project = JsonUtilTool.fromJson(json, SoProject.class);
 		Long projectId = project.getId();
 		List<SoDevices> projectDevs = devicesService.selectProjectDevs(projectId);
-		String ichg = "0";
+		String pchg = "0";
 		if (projectDevs != null && !projectDevs.isEmpty()) {
-			ichg = projectService.calcProjectIchg(projectDevs);
+			pchg = projectService.calcProjectPchg(projectDevs);
 		}
-		project.setProjectTotalIChg(ichg);
+		project.setProjectTotalPChg(pchg);
 
 		appSession.sendMsg(new ProjectCalcIChgResponse(JsonUtilTool.toJson(project)));
 	}

@@ -38,6 +38,6 @@ public interface SoProjectMapper {
 	
 	Integer queryProjectCount(@Param("page") SoPage<SoProject, List<SoProject>> page);
 
-	String calcProjectIchg(@Param("devs")List<SoDevices> projectDevs);
+	String calcProjectPchg(@Param("devs")List<SoDevices> projectDevs);
 
 }

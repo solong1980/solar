@@ -1215,10 +1215,10 @@ public class IndexPanel extends BasePanel implements Observer {
 					break;
 				case ConnectAPI.PROJECT_CALC_ICHG_RESPONSE:
 					SoProject project = JsonUtilTool.fromJson(ret.getRet(), SoProject.class);
-					String projectTotalIChg = project.getProjectTotalIChg();
+					String projectTotalPChg = project.getProjectTotalPChg();
 					
 					try {
-						float ichg = Long.parseLong(projectTotalIChg)/1000.0f;
+						float ichg = Long.parseLong(projectTotalPChg)/1000.0f;
 						solarEnergyPowerField.setText(String.format("%.3f ", ichg)+"度");
 					} catch (Exception e) {
 					}

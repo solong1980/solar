@@ -138,8 +138,8 @@ public class SoProjectService {
 		return page;
 	}
 
-	public String calcProjectIchg(List<SoDevices> projectDevs) {
-		String ichg = projectDao.calcProjectIchg(projectDevs);
+	public String calcProjectPchg(List<SoDevices> projectDevs) {
+		String ichg = projectDao.calcProjectPchg(projectDevs);
 		return ichg;
 	}
 }
