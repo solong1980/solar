@@ -94,11 +94,18 @@ public class DevRunningAnimationPanel extends JPanel implements Observer, Runnab
 		BufferedImage arrow2 = ButtonUI.createImageBuff("solar/arrowright.png");
 
 		BufferedImage fan = ButtonUI.createImageBuff("solar/fan_good.gif");
+		BufferedImage fanbad = ButtonUI.createImageBuff("solar/fan_bad.gif");
+
 		Image fans = ButtonUI.createGifImage("solar/fan_good.gif");
 
 		BufferedImage bakfan = ButtonUI.createImageBuff("solar/bakfan_good.gif");
+		BufferedImage bakfanbad = ButtonUI.createImageBuff("solar/bakfan_bad.gif");
+
 		BufferedImage waterpump = ButtonUI.createImageBuff("solar/waterpump_good.gif");
+		BufferedImage waterpumpbad = ButtonUI.createImageBuff("solar/waterpump_bad.gif");
+
 		BufferedImage bakwaterpump = ButtonUI.createImageBuff("solar/bakwaterpump_good.gif");
+		BufferedImage bakwaterpumpbad = ButtonUI.createImageBuff("solar/bakwaterpump_bad.gif");
 
 		Graphics2D g2d = null;
 		Graphics2D bufferG2D = null;// 缓冲
@@ -135,7 +142,27 @@ public class DevRunningAnimationPanel extends JPanel implements Observer, Runnab
 				bufferG2D.setClip(null);
 			}
 			g2d = bufferG2D;
+			// 太阳能板电压
+			String vssun = this.lastGetData.getVssun();
+			// 电池充电电流
+			String ichg = this.lastGetData.getIchg();
+			// 充电累积度数
+			String pchg = this.lastGetData.getPchg();
+			// 电池剩余容量
+			String level = this.lastGetData.getLevel();
 
+			String stat = this.lastGetData.getStat();
+
+			int st = Integer.parseInt(stat);
+
+			// boolean s0bad = ((st & 8) == 8) ? true : false;
+
+			boolean s1bad = ((st & 32768) == 32768) ? true : false;
+			boolean s2bad = ((st & 16384) == 16384) ? true : false;
+			boolean s3bad = ((st & 8192) == 8192) ? true : false;
+			boolean s4bad = ((st & 4096) == 4096) ? true : false;
+
+			this.lastGetData.getVssun();
 			synchronized (lock) {
 				g2d.setBackground(backgroundColor);
 				g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
@@ -147,39 +174,63 @@ public class DevRunningAnimationPanel extends JPanel implements Observer, Runnab
 						50 + 150, null);
 
 				Color backColor = g2d.getColor();
-				writeData(g2d, "电池板电压:", 15 + 100, 120 + 150, 120);
-				writeData(g2d, "充电电流:", 15 + 100, 150 + 150, 120);
-				writeData(g2d, "总发电量:", 15 + 100, 180 + 150, 120);
+				writeData(g2d, "电池板电压:" + vssun + "V", 15 + 100, 120 + 150, 120);
+				writeData(g2d, "充电电流:" + ichg + "A", 15 + 100, 150 + 150, 120);
+				try {
+					writeData(g2d, "总发电量:" + String.format("%.3f ", Long.parseLong(pchg) / 1000.0f) + "度", 15 + 100,
+							180 + 150);
+				} catch (Exception e) {
+				}
 				g2d.setColor(backColor);
-
-				g2d.drawImage(arrow1.getScaledInstance(IMG_WIDTH / 2, IMG_HEIGHT / 2, Image.SCALE_SMOOTH), 120 + 100,
+				
+				//第一个箭头 
+				g2d.drawImage(arrow1.getScaledInstance(IMG_WIDTH / 2, IMG_HEIGHT / 2, Image.SCALE_SMOOTH), 120 + 150,
 						65 + 150, null);
 
-				g2d.drawImage(sewage_controller.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH), 200 + 100,
+				g2d.drawImage(sewage_controller.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH), 200 + 200,
 						50 + 100, null);
-				writeData(g2d, "太阳能污水处理控制器", 160 + 100, 50 + 100 + 70);
+				writeData(g2d, "太阳能污水处理控制器", 160 + 200, 50 + 100 + 70);
 				g2d.setColor(backColor);
 
-				g2d.drawImage(battery_pack.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH), 200 + 100,
+				g2d.drawImage(battery_pack.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH), 200 + 200,
 						150 + 100, null);
-				writeData(g2d, "电池剩余容量:", 170 + 100, 150 + 100 + 70, 120);
+				writeData(g2d, "电池剩余容量:" + level + "%", 170 + 200, 150 + 100 + 70);
 				g2d.setColor(backColor);
 
-				g2d.drawImage(arrow2.getScaledInstance(IMG_WIDTH / 2, IMG_HEIGHT / 2, Image.SCALE_SMOOTH), 280 + 100,
+				//第二个箭头 
+				g2d.drawImage(arrow2.getScaledInstance(IMG_WIDTH / 2, IMG_HEIGHT / 2, Image.SCALE_SMOOTH), 280 + 250,
 						165, null);
 
-				g2d.drawRoundRect(340 + 100, 45, 80, 370, 20, 20);
+				g2d.drawRoundRect(340 + 300, 45, 80, 370, 20, 20);
 
-				// g2d.drawImage(fan.getScaledInstance(IMG_WIDTH, IMG_HEIGHT,
-				// Image.SCALE_SMOOTH), 350+100, 50, null);
-				g2d.drawImage(fans, 350 + 100, 50, null);
+				if (s1bad)
+					g2d.drawImage(fanbad.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH), 350 + 300, 50,
+							null);
+				else
+					// g2d.drawImage(fan.getScaledInstance(IMG_WIDTH, IMG_HEIGHT,
+					// Image.SCALE_SMOOTH), 350 + 100, 50,
+					// null);
+					g2d.drawImage(fans, 350 + 300, 50, null);
 
-				g2d.drawImage(bakfan.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH), 350 + 100, 150,
-						null);
-				g2d.drawImage(waterpump.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH), 350 + 100, 250,
-						null);
-				g2d.drawImage(bakwaterpump.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH), 350 + 100, 350,
-						null);
+				if (s2bad)
+					g2d.drawImage(bakfanbad.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH), 350 + 300,
+							150, null);
+				else
+					g2d.drawImage(bakfan.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH), 350 + 300, 150,
+							null);
+				if (s3bad)
+					g2d.drawImage(waterpumpbad.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH), 350 + 300,
+							250, null);
+				else
+					g2d.drawImage(waterpump.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH), 350 + 300,
+							250, null);
+
+				if (s4bad)
+					g2d.drawImage(bakwaterpumpbad.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH),
+							350 + 300, 350, null);
+				else
+					g2d.drawImage(bakwaterpump.getScaledInstance(IMG_WIDTH, IMG_HEIGHT, Image.SCALE_SMOOTH), 350 + 300,
+							350, null);
 			}
 			repaint();
 			Thread.yield();

@@ -1055,7 +1055,7 @@ public class IndexPanel extends BasePanel implements Observer {
 
 				// make a pause
 				try {
-					Thread.sleep(300);
+					Thread.sleep(10);
 				} catch (InterruptedException e) {
 				}
 				instance.getProjectCalcIChg(project.getId());
