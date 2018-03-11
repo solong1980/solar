@@ -71,7 +71,7 @@ public class ConnectAPI {
 	public static final int DEVICES_BATCH_COMMAND = 0x000039;
 	
 	//查询项目电量
-	public static final int PROJECT_CALC_ICHG_COMMAND = 0x000040;
+	public static final int PROJECT_CALC_PCHG_COMMAND = 0x000040;
 	
 	// 控制终端指令
 	public static final int CTRL_COMMAND = 0x999999;
@@ -141,7 +141,7 @@ public class ConnectAPI {
 	public static final int PROJECT_DEVICES_CTRL_RESPONSE = 0x100037;
 	public static final int DEVICES_DEL_RESPONSE = 0x100038;
 	public static final int DEVICES_BATCH_RESPONSE = 0x100039;
-	public static final int PROJECT_CALC_ICHG_RESPONSE = 0x100040;
+	public static final int PROJECT_CALC_PCHG_RESPONSE = 0x100040;
 	
 	// 单片机
 	public static final String MC_ERROR_RESPONSE = "00";

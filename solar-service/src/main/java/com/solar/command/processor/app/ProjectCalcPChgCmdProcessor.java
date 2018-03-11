@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.solar.command.message.request.ClientRequest;
-import com.solar.command.message.response.app.ProjectCalcIChgResponse;
+import com.solar.command.message.response.app.ProjectCalcPChgResponse;
 import com.solar.common.annotation.ProcessCMD;
 import com.solar.common.context.ConnectAPI;
 import com.solar.common.util.JsonUtilTool;
@@ -17,13 +17,13 @@ import com.solar.entity.SoDevices;
 import com.solar.entity.SoProject;
 import com.solar.server.commons.session.AppSession;
 
-@ProcessCMD(API_CODE = ConnectAPI.PROJECT_CALC_ICHG_COMMAND)
-public class ProjectCalcIChgCmdProcessor extends MsgProcessor {
-	private static final Logger logger = LoggerFactory.getLogger(ProjectCalcIChgCmdProcessor.class);
+@ProcessCMD(API_CODE = ConnectAPI.PROJECT_CALC_PCHG_COMMAND)
+public class ProjectCalcPChgCmdProcessor extends MsgProcessor {
+	private static final Logger logger = LoggerFactory.getLogger(ProjectCalcPChgCmdProcessor.class);
 	private SoProjectService projectService;
 	private SoDevicesService devicesService;
 
-	public ProjectCalcIChgCmdProcessor() {
+	public ProjectCalcPChgCmdProcessor() {
 		projectService = SoProjectService.getInstance();
 		devicesService = SoDevicesService.getInstance();
 	}
@@ -41,7 +41,7 @@ public class ProjectCalcIChgCmdProcessor extends MsgProcessor {
 		}
 		project.setProjectTotalPChg(pchg);
 
-		appSession.sendMsg(new ProjectCalcIChgResponse(JsonUtilTool.toJson(project)));
+		appSession.sendMsg(new ProjectCalcPChgResponse(JsonUtilTool.toJson(project)));
 	}
 
 }

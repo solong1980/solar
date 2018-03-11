@@ -1213,7 +1213,7 @@ public class IndexPanel extends BasePanel implements Observer {
 						popSelPath = null;
 					}
 					break;
-				case ConnectAPI.PROJECT_CALC_ICHG_RESPONSE:
+				case ConnectAPI.PROJECT_CALC_PCHG_RESPONSE:
 					SoProject project = JsonUtilTool.fromJson(ret.getRet(), SoProject.class);
 					String projectTotalPChg = project.getProjectTotalPChg();
 					

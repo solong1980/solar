@@ -26,7 +26,7 @@ import com.solar.command.processor.app.GetProvincesCmdProcessor;
 import com.solar.command.processor.app.LoginCmdProcessor;
 import com.solar.command.processor.app.OpenAppMsgProcessor;
 import com.solar.command.processor.app.ProjectAddCmdProcessor;
-import com.solar.command.processor.app.ProjectCalcIChgCmdProcessor;
+import com.solar.command.processor.app.ProjectCalcPChgCmdProcessor;
 import com.solar.command.processor.app.ProjectDeleteCmdProcessor;
 import com.solar.command.processor.app.ProjectDevicesCtrlCmdProcessor;
 import com.solar.command.processor.app.ProjectQueryCmdProcessor;
@@ -82,7 +82,7 @@ public enum MsgProcessorRegister {
 	DEVICES_DEL_COMMAND(ConnectAPI.DEVICES_DEL_COMMAND, new DevicesDelCmdProcessor()),
 	PROJECT_DEVICES_CTRL_COMMAND(ConnectAPI.PROJECT_DEVICES_CTRL_COMMAND, new ProjectDevicesCtrlCmdProcessor()),
 	DEVICES_BATCH_COMMAND(ConnectAPI.DEVICES_BATCH_COMMAND, new DevicesBatchCmdProcessor()),
-	PROJECT_CALC_ICHG_COMMAND(ConnectAPI.PROJECT_CALC_ICHG_COMMAND, new ProjectCalcIChgCmdProcessor()),
+	PROJECT_CALC_ICHG_COMMAND(ConnectAPI.PROJECT_CALC_PCHG_COMMAND, new ProjectCalcPChgCmdProcessor()),
 	// 内部使用，服务端通知客户端断开
 	EMPYTCOMMAND(ConnectAPI.ZERO_RESPONSE, new OpenAppMsgProcessor());
 
