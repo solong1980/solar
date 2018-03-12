@@ -1,5 +1,7 @@
 #pragma once
 #include <graphics.h>
+#include "Point.h"
+#include "Rect.h"
 
 enum Dir { UP, DOWN, LEFT, RIGHT };
 /*
@@ -33,7 +35,11 @@ class Tank {
 public:
 	virtual void Display() = 0;
 	virtual void Move() = 0;
+	Tank() {};
 protected:
+	virtual void CalculateSphere() = 0;
+	Point m_pos;
+	Rect m_rectSphere;//ÊÆÁ¦·¶Î§
 	int m_x;
 	int m_y;
 	COLORREF m_color;
@@ -41,24 +47,4 @@ protected:
 	Dir m_dir;
 	int m_step;
 
-};
-
-
-class MainTank :public Tank {
-public:
-	MainTank() {
-		m_x = 400;
-		m_y = 300;
-		m_color = WHITE;
-		m_dir = Dir::UP;
-		m_step = 2;
-	}
-	~MainTank() {
-
-	}
-	void SetDir(Dir dir);
-	void Display();
-	void Move();
-protected:
-	void DrawTankBody(int style);
 };

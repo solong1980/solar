@@ -112,12 +112,18 @@
   <ItemGroup>
     <ClCompile Include="Graphic.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainTank.cpp" />
+    <ClCompile Include="Point.cpp" />
+    <ClCompile Include="Rect.cpp" />
     <ClCompile Include="star.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Tank.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphic.h" />
+    <ClInclude Include="MainTank.h" />
+    <ClInclude Include="Point.h" />
+    <ClInclude Include="Rect.h" />
     <ClInclude Include="star.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tank.h" />

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "star.h"
 // 初始化星星
-void STAR::InitStar()
+void Star::InitStar()
 {
 	x = 0;
 	y = rand() % Graphic::GetScreenHeight();
@@ -10,7 +10,7 @@ void STAR::InitStar()
 	color = RGB(color, color, color);
 }
 // 移动星星
-void STAR::MoveStar()
+void Star::MoveStar()
 {
 	// 擦掉原来的星星
 	putpixel((int)x, y, 0);

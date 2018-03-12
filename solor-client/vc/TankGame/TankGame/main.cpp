@@ -2,12 +2,12 @@
 #include <graphics.h>
 #include <time.h>
 #include <conio.h>
-#include "Tank.h"
+#include "MainTank.h"
 #include "Graphic.h"
 #include "star.h"
 
 
-STAR stars[MAXSTAR];
+Star stars[MAXSTAR];
 
 // 初始化所有星星
 void InitStar()
@@ -82,6 +82,7 @@ int main(int argc, char** argv) {
 		}
 		if (!skip) {
 			cleardevice();
+			Graphic::DrawBattleGround();
 			mainTank.Move();
 			mainTank.Display();
 			// 绘制星空

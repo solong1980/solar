@@ -6,7 +6,7 @@
 
 #define MAXSTAR 200 // ÐÇÐÇ×ÜÊý
 
-class STAR
+class Star
 {
 public:
 	double  x;
