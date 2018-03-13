@@ -131,7 +131,7 @@ public class DataUploadCmdProcessor extends MccMsgProcessor implements INotAuthP
 			runningData.setLongitude(reqs[20]);// GPS经度
 			runningDataService.insertRunningData(wf.get());
 			try {
-				int stat = Integer.parseInt(reqs[17]);
+				int stat = Integer.parseInt(reqs[17],16);
 				if ((stat & 8) == 8) {
 					// 短路.插入故障信息
 					Long id = wf.get().getId();

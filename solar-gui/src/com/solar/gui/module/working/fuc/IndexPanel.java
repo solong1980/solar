@@ -1135,10 +1135,10 @@ public class IndexPanel extends BasePanel implements Observer {
 
 		Date breakTime = soRunningData.getBreakTime();// 上次故障时间
 		Long safeTime = soRunningData.getSafeTime();// 安全运行时间
-		System.out.println();
 		String stat = soRunningData.getStat();
 		try {
-			if ((Integer.parseInt(stat) & 8) == 8) {
+			int status = Integer.parseInt(stat,16);
+			if ((status & 8) == 8) {
 				correctBtn.setIcon(ButtonUI.createImageIcon("buttons/rb.gif", ""));
 				breakBtn.setIcon(ButtonUI.createImageIcon("buttons/rbrs.gif", ""));
 			} else {
@@ -1146,22 +1146,22 @@ public class IndexPanel extends BasePanel implements Observer {
 				breakBtn.setIcon(ButtonUI.createImageIcon("buttons/rb.gif", ""));
 			}
 
-			if ((Integer.parseInt(stat) & 32768) == 32768) {
+			if ((status & 32768) == 32768) {
 				solarBoardBtn.setIcon(ButtonUI.createImageIcon("buttons/rbrs.gif", ""));
 			} else {
 				solarBoardBtn.setIcon(ButtonUI.createImageIcon("buttons/rbs.gif", ""));
 			}
-			if ((Integer.parseInt(stat) & 16384) == 16384) {
+			if ((status & 16384) == 16384) {
 				batteryBtn.setIcon(ButtonUI.createImageIcon("buttons/rbrs.gif", ""));
 			} else {
 				batteryBtn.setIcon(ButtonUI.createImageIcon("buttons/rbs.gif", ""));
 			}
-			if ((Integer.parseInt(stat) & 8192) == 8192) {
+			if ((status & 8192) == 8192) {
 				fanOperationBtn.setIcon(ButtonUI.createImageIcon("buttons/rbrs.gif", ""));
 			} else {
 				fanOperationBtn.setIcon(ButtonUI.createImageIcon("buttons/rbs.gif", ""));
 			}
-			if ((Integer.parseInt(stat) & 4096) == 4096) {
+			if ((status & 4096) == 4096) {
 				pumpOperationBtn.setIcon(ButtonUI.createImageIcon("buttons/rbrs.gif", ""));
 			} else {
 				pumpOperationBtn.setIcon(ButtonUI.createImageIcon("buttons/rbs.gif", ""));
