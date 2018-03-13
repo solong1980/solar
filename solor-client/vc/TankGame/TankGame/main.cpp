@@ -3,9 +3,12 @@
 #include <time.h>
 #include <conio.h>
 #include "MainTank.h"
+#include "EnemyTank.h"
 #include "Graphic.h"
 #include "star.h"
 
+#define MAXSTAR 200 // ÐÇÐÇ×ÜÊý
+#define MAX_TANKS 10  
 
 Star stars[MAXSTAR];
 
@@ -27,7 +30,22 @@ void MoveStar()
 
 }
 
+EnemyTank enemyTanks[MAX_TANKS];
+void InitEnemy()
+{
+	for (int i = 0; i < MAX_TANKS; i++)
+	{
+		enemyTanks[i].Display();
+	}
+}
 
+void MoveEnemy() {
+	for (int i = 0; i < MAX_TANKS; i++)
+	{
+		enemyTanks[i].Move();
+		enemyTanks[i].Display();
+	}
+}
 
 int main(int argc, char** argv) {
 
@@ -35,8 +53,14 @@ int main(int argc, char** argv) {
 
 	Graphic::Create();
 
+	Tank* pTank[MAX_TANKS];
+	for (int i = 0; i < MAX_TANKS; i++) {
+		pTank[i] = new EnemyTank();
+	}
+
 	MainTank mainTank;
 	InitStar();
+	InitEnemy();
 	bool loop = true;
 	bool skip = false;
 	while (loop) {
@@ -86,10 +110,11 @@ int main(int argc, char** argv) {
 			mainTank.Move();
 			mainTank.Display();
 			// »æÖÆÐÇ¿Õ
+			MoveEnemy();
 			MoveStar();
+			
 			Sleep(20);
 		}
-		
 
 	}
 
@@ -98,5 +123,11 @@ int main(int argc, char** argv) {
 	{
 		
 	}*/
+
+	for (size_t i = 0; i < MAX_TANKS; i++)
+	{
+		delete pTank[i];
+	}
+
 	Graphic::Destroy();
 }

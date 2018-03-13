@@ -75,25 +75,25 @@ void MainTank::Move() {
 	case UP:
 		m_pos.SetY(	m_pos.GetY() -  m_step);
 		if (m_pos.GetY() < Graphic::GetBattleGround().GetStartPoint().GetY()) {
-			m_pos.SetY(Graphic::GetBattleGround().GetEndPoint().GetY());
+			m_pos.SetY(Graphic::GetBattleGround().GetEndPoint().GetY()-1);
 		}
 		break;
 	case DOWN:
 		m_pos.SetY(m_pos.GetY() + m_step);
 		if (m_pos.GetY()  > Graphic::GetBattleGround().GetEndPoint().GetY()) {
-			m_pos.SetY(Graphic::GetBattleGround().GetStartPoint().GetY());
+			m_pos.SetY(Graphic::GetBattleGround().GetStartPoint().GetY()+1);
 		}
 		break;
 	case LEFT:
 		m_pos.SetX(m_pos.GetX()- m_step);
 		if (m_pos.GetX() < Graphic::GetBattleGround().GetStartPoint().GetX()) {
-			m_pos.SetX(Graphic::GetBattleGround().GetEndPoint().GetX());
+			m_pos.SetX(Graphic::GetBattleGround().GetEndPoint().GetX()-1);
 		}
 		break;
 	case RIGHT:
 		m_pos.SetX(m_pos.GetX() + m_step);
 		if (m_pos.GetX() > Graphic::GetBattleGround().GetEndPoint().GetX()) {
-			m_pos.SetX(Graphic::GetBattleGround().GetStartPoint().GetX());
+			m_pos.SetX(Graphic::GetBattleGround().GetStartPoint().GetX()+1);
 		}
 		break;
 	default:

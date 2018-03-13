@@ -2,7 +2,7 @@
 #ifndef _GRAPHIC_H_
 #define _GRAPHIC_H_
 
-#define SCREEN_WIDHT 512
+#define SCREEN_WIDHT 612
 #define SCREEN_HEIGHT 485
 
 #define BATTLE_GROUND_X1 5  

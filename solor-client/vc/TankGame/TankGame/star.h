@@ -4,8 +4,6 @@
 #include <conio.h>
 #include "Graphic.h"
 
-#define MAXSTAR 200 // ÐÇÐÇ×ÜÊý
-
 class Star
 {
 public:
