@@ -1166,8 +1166,8 @@ public class IndexPanel extends BasePanel implements Observer {
 			} else {
 				pumpOperationBtn.setIcon(ButtonUI.createImageIcon("buttons/rbs.gif", ""));
 			}
-
-			lastBreakTimeField.setText(new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(breakTime));
+			if(breakTime!=null)
+				lastBreakTimeField.setText(new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(breakTime));
 			String formatSecond = formatSecond(safeTime);
 			safeDaysField.setText(formatSecond);
 		} catch (Exception e) {
