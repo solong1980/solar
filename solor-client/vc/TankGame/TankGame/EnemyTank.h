@@ -23,6 +23,7 @@ public:
 	};
 	void Display();
 	void Move();
+	void DisplayBoom();
 protected:
 	void RandomTank();
 	// 随机产生坦克方向 type： 1, 新方向必须与之前方向不同 2, 任意一个新方向  

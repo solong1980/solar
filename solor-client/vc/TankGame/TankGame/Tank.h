@@ -10,12 +10,16 @@ class Tank :public Object{
 public:
 	//virtual void Display() = 0;
 	//virtual void Move() = 0;
+ 
 	Rect GetSphere() {
 		return m_rectSphere;
 	};
 
 	void Boom(list<Object*>& lstBombs) {
+		if (m_step == 0)
+			return;
 		lstBombs.push_back(this);
+		m_step = 0;
 	};
 	
 	virtual void Shoot(list<Object*>& lstBullets){
@@ -32,6 +36,8 @@ public:
 		m_dir = Dir::UP;
 		m_color = YELLOW;
 		m_step = 4;
+		m_timer = 3;
+		m_bombSize = 26;
 		m_bDisappear = false;
 		this->CalculateSphere();
 	};
@@ -55,5 +61,6 @@ protected:
 	bool IsDisappear() {
 		return m_bDisappear;
 	};
-	
+	int m_timer;
+	int m_bombSize;
 };

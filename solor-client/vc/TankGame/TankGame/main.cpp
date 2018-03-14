@@ -1,13 +1,15 @@
 #include "stdafx.h"
+#include <iostream>
 #include <graphics.h>
 #include <time.h>
 #include <conio.h>
+#include "Shape.h"
 #include "Graphic.h"
 #include "MainTank.h"
 #include "EnemyTank.h"
 #include "Bomb.h"
 #include "star.h"
-
+#include <typeinfo>
 #define MAXSTAR 200 // 星星总数
 
 
@@ -32,21 +34,23 @@ void MoveStar()
 }
 
 #define MAX_TANKS 10  
-EnemyTank enemyTanks[MAX_TANKS];
-void InitEnemy()
+//EnemyTank enemyTanks[MAX_TANKS];
+void InitEnemy(list<Object*>& lstEnemys)
 {
 	for (int i = 0; i < MAX_TANKS; i++)
 	{
-		enemyTanks[i].Display();
+		EnemyTank* pTank = new EnemyTank();
+		pTank->Display();
+		lstEnemys.push_back(pTank);
 	}
 }
 
-void MoveEnemy() {
-	for (int i = 0; i < MAX_TANKS; i++)
-	{
-		enemyTanks[i].Move();
-		enemyTanks[i].Display();
-	}
+void MoveEnemy(list<Object*>& lstEnemys) {
+	for (list<Object*>::iterator it = lstEnemys.begin(); it != lstEnemys.end();) {
+		(*it)->Move();
+		(*it)->Display();
+		it++;
+	} 
 }
 
 
@@ -56,26 +60,18 @@ int main(int argc, char** argv) {
 	srand((unsigned)time(NULL));    // 随机种子
 
 	Graphic::Create();
-	/*
-	Tank* pTank[MAX_TANKS];
-	for (int i = 0; i < MAX_TANKS; i++) {
-		pTank[i] = new EnemyTank();
-	}*/
-	list<Tank*> lstEnemys;
-	lstEnemys.clear();
-	for (int i = 0; i < MAX_TANKS; i++) {
-		lstEnemys.push_back(new EnemyTank());
-	}
-
+ 
+	list<Object*> lstEnemys;
 	list<Object*> lstBullets;
 	list<Object*> lstBombs;
 	lstBullets.clear();
 	lstBombs.clear();
+	lstEnemys.clear();
 
 	InitStar();
-
+	InitEnemy(lstEnemys);
 	MainTank mainTank;
-	InitEnemy();
+	
 	bool loop = true;
 	bool skip = false;
 	while (loop) {
@@ -124,6 +120,15 @@ int main(int argc, char** argv) {
 
 			for (list<Object*>::iterator it = lstBombs.begin(); it != lstBombs.end();) {
 				(*it)->Move();
+				/*
+				string oType = typeid((**it)).name();
+				
+				std::cout << oType.c_str() << std::endl;
+
+				if (strcmp(oType.c_str(), "Tank")) {
+					EnemyTank* tank = dynamic_cast<EnemyTank*>(*it);
+				}
+				*/
 				if ((*it)->IsDisappear()) {
 					delete (*it);
 					it = lstBombs.erase(it);
@@ -146,12 +151,33 @@ int main(int argc, char** argv) {
 				(*it)->Display();
 				it++;
 			}
-			//检查碰撞,遍历主战坦克子弹
-			for (list<Object*>::iterator it = lstBullets.begin(); it != lstBullets.end();it++) {
+			//检查碰撞,遍历子弹
+			for (list<Object*>::iterator it = lstBullets.begin(); it != lstBullets.end();) {
 				Rect rectA = (*it)->GetSphere();
 				//遍历敌人
+				for (list<Object*>::iterator it = lstEnemys.begin(); it != lstEnemys.end(); ) {
+					Rect rectB = (*it)->GetSphere();
+					bool intersect = Shape::CheckIntersect(rectA, rectB);
+					if (intersect) {
+						//敌人被击中,放入bomb list
+						(*it)->Boom(lstBombs);
+						//从敌人队列移出
+						it = lstEnemys.erase(it);
+						continue;
+					}
+					it++;
+				}
+				Rect rectB = mainTank.GetSphere();
+				bool intersect = Shape::CheckIntersect(rectA, rectB);
+				if (intersect) {
+					//敌人被击中,放入bomb list
+					mainTank.Boom(lstBombs);
+					continue;
+				}
+
 				//如果碰撞
 				//添加子弹Bomb对象,坦克Bomb对象
+				it++;
 			}
 
 
@@ -161,7 +187,7 @@ int main(int argc, char** argv) {
 			mainTank.Display();
 
 			//移动敌人
-			MoveEnemy();
+			MoveEnemy(lstEnemys);
 			// 绘制星空
 			MoveStar();
 
@@ -181,7 +207,7 @@ int main(int argc, char** argv) {
 		delete pTank[i];
 	}
 	*/
-	for (list<Tank*>::iterator it = lstEnemys.begin(); it != lstEnemys.end();) {
+	for (list<Object*>::iterator it = lstEnemys.begin(); it != lstEnemys.end();) {
 		delete (*it);
 		it++;
 	}
