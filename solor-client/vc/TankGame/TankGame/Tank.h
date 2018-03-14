@@ -1,50 +1,46 @@
 #pragma once
-#include <graphics.h>
-#include "Point.h"
-#include "Rect.h"
 
-enum Dir { UP, DOWN, LEFT, RIGHT };
-/*
-class Bullet
-{
-public:
-	Bullet();
-	~Bullet();
-private:
-	int x;
-	int y;
-	int shape;
-};
+#include <list>
+#include "Object.h"
+#include "Bullet.h"
 
-class Tank
-{
-public:
-	Tank();
-	~Tank();
-public:
-	void drawTank();
-	void move(int direct, int step);
-	void calcMaskArea();
-	int x;
-	int y;
-	const static int TANK_SIZE = 80;
-};
-*/
+using namespace std;
 
-class Tank {
+class Tank :public Object{
 public:
-	virtual void Display() = 0;
-	virtual void Move() = 0;
-	Tank() {};
+	//virtual void Display() = 0;
+	//virtual void Move() = 0;
+	virtual void Shoot(list<Object*>& lstBullets){
+		Bullet* pBullet = new Bullet(m_pos, m_dir, m_color);
+		lstBullets.push_back(pBullet);
+	};
+
+	Tank() {
+		m_pos.Set(300, 400);
+		m_dir = Dir::UP;
+		m_color = YELLOW;
+		m_step = 4;
+		m_bDisappear = false;
+		this->CalculateSphere();
+	};
+	~Tank() {};
 protected:
-	virtual void CalculateSphere() = 0;
-	Point m_pos;
-	Rect m_rectSphere;//ÊÆÁ¦·¶Î§
-	int m_x;
-	int m_y;
-	COLORREF m_color;
-
-	Dir m_dir;
-	int m_step;
-
+	void CalculateSphere() {
+		switch (m_dir)
+		{
+		case UP:
+		case DOWN:
+			m_rectSphere.Set(m_pos.GetX() - 13, m_pos.GetY() - 10, m_pos.GetX() + 13, m_pos.GetY() + 10);
+			break;
+		case LEFT:
+		case RIGHT:
+			m_rectSphere.Set(m_pos.GetX() - 10, m_pos.GetY() - 13, m_pos.GetX() + 10, m_pos.GetY() + 13);
+			break;
+		default:
+			break;
+		}
+	}
+	bool IsDisappear() {
+		return m_bDisappear;
+	}
 };

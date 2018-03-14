@@ -52,11 +52,17 @@ int main(int argc, char** argv) {
 	srand((unsigned)time(NULL));    // 随机种子
 
 	Graphic::Create();
-
+	/*
 	Tank* pTank[MAX_TANKS];
 	for (int i = 0; i < MAX_TANKS; i++) {
 		pTank[i] = new EnemyTank();
+	}*/
+	list<Tank*> lstEnemys;
+
+	for (int i = 0; i < MAX_TANKS; i++) {
+		lstEnemys.push_back(new EnemyTank());
 	}
+	list<Object*> lstBullets;
 
 	MainTank mainTank;
 	InitStar();
@@ -91,6 +97,7 @@ int main(int argc, char** argv) {
 				break;
 				// Space  
 			case 32:
+				mainTank.Shoot(lstBullets);
 				break;
 				// Enter  
 			case 13:
@@ -107,13 +114,27 @@ int main(int argc, char** argv) {
 		if (!skip) {
 			cleardevice();
 			Graphic::DrawBattleGround();
+			for (list<Object*>::iterator bullet = lstBullets.begin(); bullet != lstBullets.end();) {
+				(*bullet)->Move();
+				 
+				if ((*bullet)->IsDisappear()) {
+					delete (*bullet);
+					bullet = lstBullets.erase(bullet);
+					continue;
+				}
+
+				(*bullet)->Display();
+				bullet++;
+			}
 			mainTank.Move();
 			mainTank.Display();
-			// 绘制星空
+
+			//移动敌人
 			MoveEnemy();
+			// 绘制星空
 			MoveStar();
-			
-			Sleep(20);
+
+			Sleep(40);
 		}
 
 	}
@@ -121,13 +142,21 @@ int main(int argc, char** argv) {
 	/*
 	while (!_kbhit())
 	{
-		
-	}*/
+
+	}
 
 	for (size_t i = 0; i < MAX_TANKS; i++)
 	{
 		delete pTank[i];
 	}
-
+	*/
+	for (list<Tank*>::iterator tank = lstEnemys.begin(); tank != lstEnemys.end();) {
+		delete (*tank);
+		tank++;
+	}
+	for (list<Object*>::iterator bullet = lstBullets.begin(); bullet != lstBullets.end();) {
+		delete (*bullet);
+		bullet++;
+	}
 	Graphic::Destroy();
 }

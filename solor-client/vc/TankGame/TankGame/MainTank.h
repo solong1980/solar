@@ -4,8 +4,8 @@
 class MainTank :public Tank {
 public:
 	MainTank() {
-		m_x = 400;
-		m_y = 300;
+		int m_x = 400;
+		int m_y = 300;
 		m_pos.Set(m_x, m_y);
 		this->CalculateSphere();
 		m_color = YELLOW;
@@ -22,8 +22,6 @@ public:
 	void Display();
 	void Move();
 protected:
-	//计算势力范围
-	void CalculateSphere();
 	// 绘制坦克主体 
 	void DrawTankBody();
 };

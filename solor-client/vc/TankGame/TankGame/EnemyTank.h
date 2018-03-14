@@ -8,8 +8,8 @@ class EnemyTank :public Tank {
 public:
 	EnemyTank() {
 		int rd = rand();
-		m_x = rd % Graphic::GetBattleGround().getWidth();
-		m_y = rd % Graphic::GetBattleGround().getHeight();
+		int m_x = rd % Graphic::GetBattleGround().getWidth();
+		int m_y = rd % Graphic::GetBattleGround().getHeight();
 		m_pos.Set(m_x, m_y);
 		m_color = WHITE;
 		//随机一个方向
@@ -24,7 +24,6 @@ public:
 	void Display();
 	void Move();
 protected:
-	void CalculateSphere();
 	void RandomTank();
 	// 随机产生坦克方向 type： 1, 新方向必须与之前方向不同 2, 任意一个新方向  
 	void RandomDir(int type);

@@ -106,6 +106,7 @@ void MainTank::Move() {
 	CalculateSphere();
 }
 
+/*
 void MainTank::CalculateSphere() {
 	switch (m_dir)
 	{
@@ -120,4 +121,4 @@ void MainTank::CalculateSphere() {
 	default:
 		break;
 	}
-}
+}*/

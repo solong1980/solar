@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="头文件\mode">
+      <UniqueIdentifier>{7108640c-9afe-42d3-9ecd-84f9eee9e546}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\mode">
+      <UniqueIdentifier>{7ce87fb6-e6e3-40a4-835e-370af3417ae7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphic.cpp">
@@ -30,16 +36,19 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Point.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Rect.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="MainTank.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="EnemyTank.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Point.cpp">
+      <Filter>源文件\mode</Filter>
+    </ClCompile>
+    <ClCompile Include="Rect.cpp">
+      <Filter>源文件\mode</Filter>
+    </ClCompile>
+    <ClCompile Include="Bullet.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -59,16 +68,22 @@
     <ClInclude Include="targetver.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Point.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Rect.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="MainTank.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="EnemyTank.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Object.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Point.h">
+      <Filter>头文件\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="Rect.h">
+      <Filter>头文件\mode</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

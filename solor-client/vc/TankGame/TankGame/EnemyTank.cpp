@@ -79,6 +79,7 @@ void EnemyTank::Move() {
 	CalculateSphere();
 }
 
+/*
 //计算势力范围
 void EnemyTank::CalculateSphere() {
 	switch (m_dir)
@@ -94,7 +95,8 @@ void EnemyTank::CalculateSphere() {
 	default:
 		break;
 	}
-}
+}*/
+
 //绘制坦克
 void EnemyTank::RandomTank() {
 	fillrectangle(m_pos.GetX() - 6, m_pos.GetY() - 6, m_pos.GetX() + 6, m_pos.GetY() + 6);
