@@ -32,6 +32,7 @@ void Bullet::Move() {
 		m_pos.SetY(m_pos.GetY() - m_step);
 		CalculateSphere();
 		if (m_rectSphere.GetStartPoint().GetY() < Graphic::GetBattleGround().GetStartPoint().GetY()) {
+			m_pos.SetY(Graphic::GetBattleGround().GetStartPoint().GetY());
 			m_bDisappear = true;
 		}
 		break;
@@ -40,6 +41,7 @@ void Bullet::Move() {
 		CalculateSphere();
 		if (m_rectSphere.GetEndPoint().GetY() > Graphic::GetBattleGround().GetEndPoint().GetY())
 		{
+			m_pos.SetY(Graphic::GetBattleGround().GetEndPoint().GetY());
 			m_bDisappear = true;
 		}
 		break;
@@ -48,6 +50,7 @@ void Bullet::Move() {
 		CalculateSphere();
 		if (m_rectSphere.GetStartPoint().GetX() < Graphic::GetBattleGround().GetStartPoint().GetX())
 		{
+			m_pos.SetX(Graphic::GetBattleGround().GetStartPoint().GetX());
 			m_bDisappear = true;
 		}
 		break;
@@ -56,6 +59,7 @@ void Bullet::Move() {
 		CalculateSphere();
 		if (m_rectSphere.GetEndPoint().GetX() > Graphic::GetBattleGround().GetEndPoint().GetX())
 		{
+			m_pos.SetX(Graphic::GetBattleGround().GetEndPoint().GetX());
 			m_bDisappear = true;
 		}
 		break;

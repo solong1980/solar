@@ -8,6 +8,10 @@ public:
 		~Bullet(){}
 		void Display();
 		void Move();
+		Rect GetSphere() {
+			return m_rectSphere;
+		}
+		void Boom(list<Object*>& lstBombs) {};
 		bool IsDisappear() {
 			return m_bDisappear;
 		}

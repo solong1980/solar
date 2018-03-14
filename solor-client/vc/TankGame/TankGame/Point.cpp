@@ -15,10 +15,10 @@ void Point::SetY(int y) {
 	this->m_y = y;
 }
 
-int Point::GetX() {
+int Point::GetX() const{
 	return this->m_x;
 }
 
-int Point::GetY() {
+int Point::GetY() const{
 	return this->m_y;
 }

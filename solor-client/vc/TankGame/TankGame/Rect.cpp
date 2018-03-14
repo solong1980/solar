@@ -28,6 +28,18 @@ int Rect::getHeight() {
 	return m_endPoint.GetY() - m_startPoint.GetY();
 }
 
+Point Rect::GetTRPoint() const{
+	Point p = m_startPoint;
+	p.SetX(m_endPoint.GetX());
+	return p;
+}
+
+Point Rect::GetBLPoint() const {
+	Point p = m_startPoint;
+	p.SetY((m_endPoint.GetY()));
+	return p;
+}
+
 void Rect::check() {
 	//这里有问题
 	if (m_startPoint.GetX() > m_endPoint.GetX() || m_startPoint.GetY() > m_endPoint.GetY())

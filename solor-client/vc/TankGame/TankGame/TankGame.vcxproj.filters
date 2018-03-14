@@ -19,6 +19,15 @@
     <Filter Include="源文件\mode">
       <UniqueIdentifier>{7ce87fb6-e6e3-40a4-835e-370af3417ae7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="头文件\element">
+      <UniqueIdentifier>{0c1d6063-b958-4d18-9fbe-21c37b18ccbd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="源文件\element">
+      <UniqueIdentifier>{328114bd-3638-4fac-b61e-34911a47906b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="头文件\util">
+      <UniqueIdentifier>{27cb19ff-f218-439c-8f2e-6fb6f1a5e57c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Graphic.cpp">
@@ -27,19 +36,7 @@
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="star.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Tank.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="MainTank.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="EnemyTank.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Point.cpp">
@@ -49,29 +46,32 @@
       <Filter>源文件\mode</Filter>
     </ClCompile>
     <ClCompile Include="Bullet.cpp">
-      <Filter>源文件</Filter>
+      <Filter>源文件\element</Filter>
+    </ClCompile>
+    <ClCompile Include="EnemyTank.cpp">
+      <Filter>源文件\element</Filter>
+    </ClCompile>
+    <ClCompile Include="MainTank.cpp">
+      <Filter>源文件\element</Filter>
+    </ClCompile>
+    <ClCompile Include="star.cpp">
+      <Filter>源文件\element</Filter>
+    </ClCompile>
+    <ClCompile Include="Bomb.cpp">
+      <Filter>源文件\element</Filter>
+    </ClCompile>
+    <ClCompile Include="Tank.cpp">
+      <Filter>源文件\element</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphic.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="star.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="Tank.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="targetver.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="MainTank.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="EnemyTank.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Object.h">
@@ -84,7 +84,25 @@
       <Filter>头文件\mode</Filter>
     </ClInclude>
     <ClInclude Include="Bullet.h">
-      <Filter>头文件</Filter>
+      <Filter>头文件\element</Filter>
+    </ClInclude>
+    <ClInclude Include="EnemyTank.h">
+      <Filter>头文件\element</Filter>
+    </ClInclude>
+    <ClInclude Include="MainTank.h">
+      <Filter>头文件\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Tank.h">
+      <Filter>头文件\element</Filter>
+    </ClInclude>
+    <ClInclude Include="star.h">
+      <Filter>头文件\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Bomb.h">
+      <Filter>头文件\element</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape.h">
+      <Filter>头文件\util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

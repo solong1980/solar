@@ -1,8 +1,9 @@
 #pragma once
 #include <graphics.h>
+#include <list>
 #include "Point.h"
 #include "Rect.h"
-
+using namespace std;
 enum Dir { UP, DOWN, LEFT, RIGHT };
 
 class Object {
@@ -13,6 +14,14 @@ public:
 	virtual void Move() = 0;
 	//判断是否消失
 	virtual bool IsDisappear() = 0;
+	// 爆炸  
+	virtual void Boom(list<Object*>& lstBombs) = 0;
+	//获得势力范围
+	virtual Rect GetSphere() = 0;
+
+	Point getPos() {
+		return m_pos;
+	}
 	Object() {};
 	~Object() {};
 protected:

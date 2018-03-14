@@ -15,6 +15,8 @@ public:
 	void SetEndPoint(const Point endPoint);
 	Point GetStartPoint() const;
 	Point GetEndPoint() const;
+	Point GetTRPoint() const;// Get Top Right Point  
+	Point GetBLPoint() const; // Get Bottom Left Point  
 	int getWidth();
 	int getHeight();
 private:

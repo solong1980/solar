@@ -10,9 +10,21 @@ class Tank :public Object{
 public:
 	//virtual void Display() = 0;
 	//virtual void Move() = 0;
+	Rect GetSphere() {
+		return m_rectSphere;
+	};
+
+	void Boom(list<Object*>& lstBombs) {
+		lstBombs.push_back(this);
+	};
+	
 	virtual void Shoot(list<Object*>& lstBullets){
 		Bullet* pBullet = new Bullet(m_pos, m_dir, m_color);
 		lstBullets.push_back(pBullet);
+	};
+
+	void SetDisappear() {
+		m_bDisappear = true;
 	};
 
 	Tank() {
@@ -39,8 +51,9 @@ protected:
 		default:
 			break;
 		}
-	}
+	};
 	bool IsDisappear() {
 		return m_bDisappear;
-	}
+	};
+	
 };
