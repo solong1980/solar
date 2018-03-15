@@ -31,6 +31,9 @@ public:
 	void Display();
 	void Move();
 	bool IsDisappear();
+	void SetDisappear() {
+		m_bDisappear = true;
+	};
 	Rect GetSphere() {
 		return m_rectSphere;
 	};

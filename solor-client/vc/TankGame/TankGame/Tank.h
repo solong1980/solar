@@ -3,6 +3,7 @@
 #include <list>
 #include "Object.h"
 #include "Bullet.h"
+#include "Bomb.h"
 
 using namespace std;
 
@@ -15,18 +16,21 @@ public:
 		return m_rectSphere;
 	};
 
-	void Boom(list<Object*>& lstBombs) {
-		if (m_step == 0)
-			return;
-		lstBombs.push_back(this);
-		m_step = 0;
+	virtual void Boom(list<Object*>& lstBombs) {
+		Bomb* pBomb = new Bomb(m_pos, BombType::LARGE);
+		lstBombs.push_back(pBomb);
 	};
 	
 	virtual void Shoot(list<Object*>& lstBullets){
 		Bullet* pBullet = new Bullet(m_pos, m_dir, m_color);
 		lstBullets.push_back(pBullet);
 	};
-
+	bool NeedShoot() {
+		return m_bNeedShoot;
+	};
+	bool IsDisappear() {
+		return m_bDisappear;
+	};
 	void SetDisappear() {
 		m_bDisappear = true;
 	};
@@ -36,9 +40,8 @@ public:
 		m_dir = Dir::UP;
 		m_color = YELLOW;
 		m_step = 4;
-		m_timer = 3;
-		m_bombSize = 26;
 		m_bDisappear = false;
+		m_bNeedShoot = false;
 		this->CalculateSphere();
 	};
 	~Tank() {};
@@ -58,9 +61,5 @@ protected:
 			break;
 		}
 	};
-	bool IsDisappear() {
-		return m_bDisappear;
-	};
-	int m_timer;
-	int m_bombSize;
+	bool m_bNeedShoot;
 };

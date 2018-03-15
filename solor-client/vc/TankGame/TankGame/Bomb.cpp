@@ -12,7 +12,7 @@ void Bomb::Display() {
 	setfillcolor(m_color);
 	setcolor(RED);
 
-	fillcircle(m_pos.GetX(), m_pos.GetY(),  (m_type==BombType::LARGE) ? 15 : 10);
+	fillcircle(m_pos.GetX(), m_pos.GetY(),  (m_type==BombType::LARGE) ? 20 : 10);
 
 	setcolor(color_save);
 	setfillcolor(fill_color_save);
@@ -25,7 +25,8 @@ void Bomb::Move() {
 }
 
 void Bomb::Boom(list<Object*>& lstBombs) {
-	lstBombs.push_back(this);
+	//Bug,Bomb对象不该再次调用Bomb方法
+	//lstBombs.push_back(this);
 }
 
 void Bomb::CalculateSphere() {

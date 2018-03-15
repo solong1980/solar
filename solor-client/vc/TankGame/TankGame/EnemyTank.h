@@ -2,11 +2,12 @@
 #include "Tank.h"
 #include "Graphic.h"
 
-#define MAX_STEP 40
+#define MAX_STEP 150
+#define MAX_STEP_SHOOT 10
 
 class EnemyTank :public Tank {
 public:
-	EnemyTank() {
+	EnemyTank():Tank() {
 		int rd = rand();
 		int m_x = rd % Graphic::GetBattleGround().getWidth();
 		int m_y = rd % Graphic::GetBattleGround().getHeight();
@@ -23,7 +24,10 @@ public:
 	};
 	void Display();
 	void Move();
-	void DisplayBoom();
+	void Shoot(list<Object*>& lstBombs) {
+		Tank::Shoot(lstBombs);
+		m_bNeedShoot = false;
+	}
 protected:
 	void RandomTank();
 	// 随机产生坦克方向 type： 1, 新方向必须与之前方向不同 2, 任意一个新方向  

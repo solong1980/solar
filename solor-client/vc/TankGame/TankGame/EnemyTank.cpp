@@ -4,45 +4,33 @@
 void EnemyTank::Display() {
 	COLORREF fill_color_save = getfillcolor();
 	COLORREF color_save = getcolor();
-	if (m_step == 0) {
-		setfillcolor(m_color);
-		setcolor(RED);
-		fillcircle(m_pos.GetX(), m_pos.GetY(), m_bombSize);
-	}else {
-		setfillcolor(m_color);
-		setcolor(m_color);
-		//绘制线条
-		switch (m_dir) {
-		case UP:
-			line(m_pos.GetX(), m_pos.GetY(), m_pos.GetX(), m_pos.GetY() - 15);
-			break;
-		case DOWN:
-			line(m_pos.GetX(), m_pos.GetY(), m_pos.GetX(), m_pos.GetY() + 15);
-			break;
-		case LEFT:
-			line(m_pos.GetX(), m_pos.GetY(), m_pos.GetX() - 15, m_pos.GetY());
-			break;
-		case RIGHT:
-			line(m_pos.GetX(), m_pos.GetY(), m_pos.GetX() + 15, m_pos.GetY());
-			break;
-		default:
-			break;
-		}
-		//绘制坦克
-		RandomTank();
+
+	setfillcolor(m_color);
+	setcolor(m_color);
+	//绘制线条
+	switch (m_dir) {
+	case UP:
+		line(m_pos.GetX(), m_pos.GetY(), m_pos.GetX(), m_pos.GetY() - 15);
+		break;
+	case DOWN:
+		line(m_pos.GetX(), m_pos.GetY(), m_pos.GetX(), m_pos.GetY() + 15);
+		break;
+	case LEFT:
+		line(m_pos.GetX(), m_pos.GetY(), m_pos.GetX() - 15, m_pos.GetY());
+		break;
+	case RIGHT:
+		line(m_pos.GetX(), m_pos.GetY(), m_pos.GetX() + 15, m_pos.GetY());
+		break;
+	default:
+		break;
 	}
+	//绘制坦克
+	RandomTank();
+
 	setfillcolor(fill_color_save);
 	setcolor(color_save);
 }
 void EnemyTank::Move() {
-	if (m_step == 0) {
-		m_timer--;
-		if (m_timer == 0) {
-			SetDisappear();
-		}
-		m_bombSize -= 3;
-		return;
-	}
 	//计算位置
 	switch (m_dir) {
 	case UP:
@@ -82,11 +70,17 @@ void EnemyTank::Move() {
 	}
 
 	m_stepCnt++;
+	
+	if (m_stepCnt % MAX_STEP_SHOOT == 0) {
+		m_bNeedShoot = true;
+	}
 
 	if (m_stepCnt > MAX_STEP) {
 		m_stepCnt = 0;
 		this->RandomDir(0);
 	}
+
+
 
 	//计算势力范围
 	CalculateSphere();

@@ -14,6 +14,8 @@ public:
 	virtual void Move() = 0;
 	//判断是否消失
 	virtual bool IsDisappear() = 0;
+	//设置消失
+	virtual void SetDisappear() = 0;
 	// 爆炸  
 	virtual void Boom(list<Object*>& lstBombs) = 0;
 	//获得势力范围

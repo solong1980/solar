@@ -14,6 +14,11 @@
 
 
 Star stars[MAXSTAR];
+MainTank mainTank;
+list<Tank*> lstEnemys;
+list<Object*> lstMainBullets;
+list<Object*> lstEnemyBullets;
+list<Object*> lstBombs;
 
 // 初始化所有星星
 void InitStar()
@@ -35,25 +40,73 @@ void MoveStar()
 
 #define MAX_TANKS 10  
 //EnemyTank enemyTanks[MAX_TANKS];
-void InitEnemy(list<Object*>& lstEnemys)
+void InitEnemy(list<Tank*>& lstEnemys)
 {
 	for (int i = 0; i < MAX_TANKS; i++)
 	{
-		EnemyTank* pTank = new EnemyTank();
+		Tank* pTank = new EnemyTank();
 		pTank->Display();
 		lstEnemys.push_back(pTank);
 	}
 }
 
-void MoveEnemy(list<Object*>& lstEnemys) {
-	for (list<Object*>::iterator it = lstEnemys.begin(); it != lstEnemys.end();) {
+void MoveEnemy(list<Tank*>& lstEnemys) {
+	for (list<Tank*>::iterator it = lstEnemys.begin(); it != lstEnemys.end();) {
+		if ((*it)->IsDisappear()) {
+			//添加一个爆炸对象
+			(*it)->Boom(lstBombs);
+			delete (*it);
+			//从敌人队列移出
+			it = lstEnemys.erase(it);
+			continue;
+		}
 		(*it)->Move();
+		if ((*it)->NeedShoot()) {
+			((EnemyTank*)(*it))->Shoot(lstEnemyBullets);
+		}
 		(*it)->Display();
 		it++;
 	} 
 }
 
+bool CheckCrash(Object* bullet, Tank* tank) {
+	if (Shape::CheckIntersect(bullet->GetSphere(), tank->GetSphere())) {
+		return true;
+	}
+	return false;
+}
 
+void CheckCrash() {
+	//检查碰撞,遍历主战坦克子弹
+	for (list<Object*>::iterator itt = lstMainBullets.begin(); itt != lstMainBullets.end();) {
+		//遍历敌人
+		for (list<Tank*>::iterator it = lstEnemys.begin(); it != lstEnemys.end(); ) {
+			//Rect rectB = (*it)->GetSphere();
+			//bool intersect = Shape::CheckIntersect(rectA, rectB);
+			if (CheckCrash((*itt), (*it))) {
+				//设置敌人坦克消失
+				(*it)->SetDisappear();
+			}
+			it++;
+		}
+		itt++;
+	}
+}
+
+void CheckMainCrash() {
+	//检查碰撞,遍历敌人坦克子弹
+	for (list<Object*>::iterator itt = lstEnemyBullets.begin(); itt != lstEnemyBullets.end();) {
+		//检查主战坦克
+		Rect rectA = (*itt)->GetSphere();
+		Rect rectB = mainTank.GetSphere();
+		bool intersect = Shape::CheckIntersect(rectA, rectB);
+		if (intersect) {
+			//主战坦克被击中,设置状态为消失态
+			mainTank.SetDisappear();
+		}
+		itt++;
+	}
+}
 
 int main(int argc, char** argv) {
 
@@ -61,16 +114,15 @@ int main(int argc, char** argv) {
 
 	Graphic::Create();
  
-	list<Object*> lstEnemys;
-	list<Object*> lstBullets;
-	list<Object*> lstBombs;
-	lstBullets.clear();
+
+	lstMainBullets.clear();
+	lstEnemyBullets.clear();
 	lstBombs.clear();
 	lstEnemys.clear();
 
 	InitStar();
 	InitEnemy(lstEnemys);
-	MainTank mainTank;
+
 	
 	bool loop = true;
 	bool skip = false;
@@ -102,7 +154,7 @@ int main(int argc, char** argv) {
 				break;
 				// Space  
 			case 32:
-				mainTank.Shoot(lstBullets);
+				mainTank.Shoot(lstMainBullets);
 				break;
 				// Enter  
 			case 13:
@@ -117,7 +169,14 @@ int main(int argc, char** argv) {
 			}
 		}
 		if (!skip) {
+			cleardevice();
 
+			Graphic::DrawBattleGround();
+			
+			CheckCrash();
+			CheckMainCrash();
+
+			//遍历爆炸对列对象
 			for (list<Object*>::iterator it = lstBombs.begin(); it != lstBombs.end();) {
 				(*it)->Move();
 				/*
@@ -130,6 +189,7 @@ int main(int argc, char** argv) {
 				}
 				*/
 				if ((*it)->IsDisappear()) {
+					(*it)->Boom(lstBombs);
 					delete (*it);
 					it = lstBombs.erase(it);
 					continue;
@@ -137,55 +197,39 @@ int main(int argc, char** argv) {
 				(*it)->Display();
 				it++;
 			}
-			for (list<Object*>::iterator it = lstBullets.begin(); it != lstBullets.end();) {
+			//遍历主战子弹对象
+			for (list<Object*>::iterator it = lstMainBullets.begin(); it != lstMainBullets.end();) {
 				(*it)->Move();
 				if ((*it)->IsDisappear()) {
-					Bomb* bomb = new Bomb((*it)->getPos(), BombType::SMALL);
-					//创建爆炸对象
-					bomb->Boom(lstBombs);
+					(*it)->Boom(lstBombs);
 					delete (*it);
-					it = lstBullets.erase(it);
+					it = lstMainBullets.erase(it);
 					continue;
 				}
-
 				(*it)->Display();
 				it++;
 			}
-			//检查碰撞,遍历子弹
-			for (list<Object*>::iterator it = lstBullets.begin(); it != lstBullets.end();) {
-				Rect rectA = (*it)->GetSphere();
-				//遍历敌人
-				for (list<Object*>::iterator it = lstEnemys.begin(); it != lstEnemys.end(); ) {
-					Rect rectB = (*it)->GetSphere();
-					bool intersect = Shape::CheckIntersect(rectA, rectB);
-					if (intersect) {
-						//敌人被击中,放入bomb list
-						(*it)->Boom(lstBombs);
-						//从敌人队列移出
-						it = lstEnemys.erase(it);
-						continue;
-					}
-					it++;
-				}
-				Rect rectB = mainTank.GetSphere();
-				bool intersect = Shape::CheckIntersect(rectA, rectB);
-				if (intersect) {
-					//敌人被击中,放入bomb list
-					mainTank.Boom(lstBombs);
+
+			for (list<Object*>::iterator it = lstEnemyBullets.begin(); it != lstEnemyBullets.end();) {
+				(*it)->Move();
+				if ((*it)->IsDisappear()) {
+					(*it)->Boom(lstBombs);
+					delete (*it);
+					it = lstEnemyBullets.erase(it);
 					continue;
 				}
-
-				//如果碰撞
-				//添加子弹Bomb对象,坦克Bomb对象
+				(*it)->Display();
 				it++;
 			}
 
-
-			cleardevice();
-			Graphic::DrawBattleGround();
-			mainTank.Move();
-			mainTank.Display();
-
+			if (mainTank.IsDisappear()) {
+				//主战坦克Bomb对象
+				mainTank.Boom(lstBombs);
+				//continue;
+			}else{
+				mainTank.Move();
+				mainTank.Display();
+			}
 			//移动敌人
 			MoveEnemy(lstEnemys);
 			// 绘制星空
@@ -207,16 +251,16 @@ int main(int argc, char** argv) {
 		delete pTank[i];
 	}
 	*/
-	for (list<Object*>::iterator it = lstEnemys.begin(); it != lstEnemys.end();) {
+	for (list<Tank*>::iterator it = lstEnemys.begin(); it != lstEnemys.end();) {
 		delete (*it);
 		it++;
 	}
 	lstEnemys.clear();
-	for (list<Object*>::iterator it = lstBullets.begin(); it != lstBullets.end();) {
+	for (list<Object*>::iterator it = lstMainBullets.begin(); it != lstMainBullets.end();) {
 		delete (*it);
 		it++;
 	}
-	lstBullets.clear();
+	lstMainBullets.clear();
 
 	for (list<Object*>::iterator it = lstBombs.begin(); it != lstBombs.end();) {
 		delete (*it);
