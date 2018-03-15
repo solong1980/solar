@@ -6,7 +6,8 @@ class Setting {
 public:
 	static void NewGameLevel();
 	static void TankDamaged();
-
+	static void MainTankDie();
+	
 	static int GetLife()
 	{
 		return m_nLife;

@@ -20,6 +20,8 @@ class Graphic {
 public:
 	static void Create();
 	static void ShowScore();
+	static void ShowGameLevel(int nLevel);
+	static void ShowGameOver();
 	static void Destroy();
 	static int GetScreenWidth();
 	static int GetScreenHeight();
@@ -30,6 +32,7 @@ private:
 	static int m_screen_height;
 	static Rect m_rectScreen;
 	static Rect m_rectBattleGround;
+	static TCHAR m_pArray[1024];
 };
 
 #endif

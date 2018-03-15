@@ -9,7 +9,10 @@
 #include "EnemyTank.h"
 #include "Bomb.h"
 #include "star.h"
+#include "Setting.h"
+#include <Windows.h>
 #include <typeinfo>
+
 #define MAXSTAR 200 // 星星总数
 
 
@@ -40,12 +43,22 @@ void MoveStar()
 
 #define MAX_TANKS 10  
 //EnemyTank enemyTanks[MAX_TANKS];
-void InitEnemy(list<Tank*>& lstEnemys)
+void InitEnemyMax(list<Tank*>& lstEnemys)
 {
 	for (int i = 0; i < MAX_TANKS; i++)
 	{
 		Tank* pTank = new EnemyTank();
 		pTank->Display();
+		lstEnemys.push_back(pTank);
+	}
+}
+
+void InitEnemy(list<Tank*>& lstEnemys)
+{
+	for (int i = 0; i < Setting::GetTankNum(); i++)
+	{
+		Tank* pTank = new EnemyTank();
+		//pTank->Display();
 		lstEnemys.push_back(pTank);
 	}
 }
@@ -66,7 +79,7 @@ void MoveEnemy(list<Tank*>& lstEnemys) {
 		}
 		(*it)->Display();
 		it++;
-	} 
+	}
 }
 
 bool CheckCrash(Object* bullet, Tank* tank) {
@@ -85,7 +98,10 @@ void CheckCrash() {
 			//bool intersect = Shape::CheckIntersect(rectA, rectB);
 			if (CheckCrash((*itt), (*it))) {
 				//设置敌人坦克消失
-				(*it)->SetDisappear();
+				if(!((*it)->IsDisappear())){
+					(*it)->SetDisappear();
+					Setting::TankDamaged();
+				}
 			}
 			it++;
 		}
@@ -102,7 +118,12 @@ void CheckMainCrash() {
 		bool intersect = Shape::CheckIntersect(rectA, rectB);
 		if (intersect) {
 			//主战坦克被击中,设置状态为消失态
-			mainTank.SetDisappear();
+			Setting::MainTankDie();
+			if (Setting::GetLife() > 0) {
+				(*itt)->SetDisappear();
+			}else {
+				mainTank.SetDisappear();
+			}
 		}
 		itt++;
 	}
@@ -113,7 +134,7 @@ int main(int argc, char** argv) {
 	srand((unsigned)time(NULL));    // 随机种子
 
 	Graphic::Create();
- 
+
 
 	lstMainBullets.clear();
 	lstEnemyBullets.clear();
@@ -121,14 +142,21 @@ int main(int argc, char** argv) {
 	lstEnemys.clear();
 
 	InitStar();
-	InitEnemy(lstEnemys);
 
-	
 	bool loop = true;
 	bool skip = false;
+	bool bGameOver = false;
 	while (loop) {
+
 		if (_kbhit()) {
 			int key = _getch();
+			//如果是skip并且按键不是enter
+			if (skip && key != 13)
+			{
+				continue;
+			}
+			if (mainTank.IsDisappear())
+				break;
 			switch (key) {
 				// Up  
 			case 72:
@@ -146,6 +174,21 @@ int main(int argc, char** argv) {
 			case 77:
 				mainTank.SetDir(Dir::RIGHT);
 				break;
+				// Q  
+			case 113:
+			{
+				Dir dirBak = mainTank.GetDir();
+				mainTank.SetDir(Dir::UP);
+				mainTank.Shoot(lstMainBullets);
+				mainTank.SetDir(Dir::DOWN);
+				mainTank.Shoot(lstMainBullets);
+				mainTank.SetDir(Dir::LEFT);
+				mainTank.Shoot(lstMainBullets);
+				mainTank.SetDir(Dir::RIGHT);
+				mainTank.Shoot(lstMainBullets);
+				mainTank.SetDir(dirBak);
+			}
+			break;
 			case 224: // 方向键高8位  
 				break;
 				// Esc  
@@ -168,20 +211,42 @@ int main(int argc, char** argv) {
 
 			}
 		}
+
 		if (!skip) {
+			if (bGameOver)
+			{
+				break;
+			}
 			cleardevice();
 
+
+			//显示关卡
+			if (Setting::m_bNewLevel) {
+				Setting::m_bNewLevel = false;
+				Setting::NewGameLevel();
+				Graphic::ShowGameLevel(Setting::GetGameLevel());
+				InitEnemy(lstEnemys);
+				/*
+				for (int i = 0; i < Setting::GetTankNum(); i++)
+				{
+					EnemyTank* p = new EnemyTank();
+					lstEnemys.push_back(p);
+				}*/
+				//设置暂停
+				skip = true;
+				continue;
+			}
 			Graphic::DrawBattleGround();
-			Graphic::ShowScore();
 			CheckCrash();
 			CheckMainCrash();
+			Graphic::ShowScore();
 
 			//遍历爆炸对列对象
 			for (list<Object*>::iterator it = lstBombs.begin(); it != lstBombs.end();) {
 				(*it)->Move();
 				/*
 				string oType = typeid((**it)).name();
-				
+
 				std::cout << oType.c_str() << std::endl;
 
 				if (strcmp(oType.c_str(), "Tank")) {
@@ -209,7 +274,7 @@ int main(int argc, char** argv) {
 				(*it)->Display();
 				it++;
 			}
-
+			//遍历敌人子弹
 			for (list<Object*>::iterator it = lstEnemyBullets.begin(); it != lstEnemyBullets.end();) {
 				(*it)->Move();
 				if ((*it)->IsDisappear()) {
@@ -225,16 +290,20 @@ int main(int argc, char** argv) {
 			if (mainTank.IsDisappear()) {
 				//主战坦克Bomb对象
 				mainTank.Boom(lstBombs);
+				//cleardevice();
+				Graphic::ShowGameOver();
+				skip = true;
+				bGameOver = true;
 				//break;
-			}else{
+			}
+			else {
 				mainTank.Move();
 				mainTank.Display();
+				//移动敌人
+				MoveEnemy(lstEnemys);
+				// 绘制星空
+				MoveStar();
 			}
-			//移动敌人
-			MoveEnemy(lstEnemys);
-			// 绘制星空
-			MoveStar();
-
 			Sleep(40);
 		}
 

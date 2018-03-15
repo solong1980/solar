@@ -19,6 +19,9 @@ public:
 		return *this;
 	};
 	void SetDir(Dir dir);
+	Dir GetDir() {
+		return m_dir;
+	}
 	void Display();
 	void Move();
 protected:

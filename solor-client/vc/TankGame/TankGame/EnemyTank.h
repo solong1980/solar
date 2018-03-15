@@ -3,7 +3,7 @@
 #include "Graphic.h"
 
 #define MAX_STEP 150
-#define MAX_STEP_SHOOT 10
+#define MAX_STEP_SHOOT 30
 
 class EnemyTank :public Tank {
 public:
