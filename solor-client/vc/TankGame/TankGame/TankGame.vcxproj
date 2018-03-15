@@ -118,6 +118,7 @@
     <ClCompile Include="MainTank.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Rect.cpp" />
+    <ClCompile Include="Setting.cpp" />
     <ClCompile Include="star.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Tank.cpp" />
@@ -131,6 +132,7 @@
     <ClInclude Include="Object.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Rect.h" />
+    <ClInclude Include="Setting.h" />
     <ClInclude Include="Shape.h" />
     <ClInclude Include="star.h" />
     <ClInclude Include="stdafx.h" />

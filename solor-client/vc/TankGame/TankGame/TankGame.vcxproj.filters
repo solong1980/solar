@@ -63,6 +63,9 @@
     <ClCompile Include="Tank.cpp">
       <Filter>源文件\element</Filter>
     </ClCompile>
+    <ClCompile Include="Setting.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphic.h">
@@ -103,6 +106,9 @@
     </ClInclude>
     <ClInclude Include="Shape.h">
       <Filter>头文件\util</Filter>
+    </ClInclude>
+    <ClInclude Include="Setting.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

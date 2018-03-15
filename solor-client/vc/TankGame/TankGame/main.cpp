@@ -172,7 +172,7 @@ int main(int argc, char** argv) {
 			cleardevice();
 
 			Graphic::DrawBattleGround();
-			
+			Graphic::ShowScore();
 			CheckCrash();
 			CheckMainCrash();
 
@@ -225,7 +225,7 @@ int main(int argc, char** argv) {
 			if (mainTank.IsDisappear()) {
 				//主战坦克Bomb对象
 				mainTank.Boom(lstBombs);
-				//continue;
+				//break;
 			}else{
 				mainTank.Move();
 				mainTank.Display();
