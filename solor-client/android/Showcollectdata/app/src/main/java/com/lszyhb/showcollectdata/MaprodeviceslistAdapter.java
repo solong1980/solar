@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.lszyhb.basicclass.DevicesCollectData;
 import com.lszyhb.basicclass.ShowAccount;
 import com.lszyhb.basicclass.ShowDevices;
 
@@ -22,11 +23,13 @@ public class MaprodeviceslistAdapter  extends BaseAdapter {
     private Context mContext;
     private List<ShowDevices> mImgIds;
     private LayoutInflater mInflater;
+    private int type;
 
-    public MaprodeviceslistAdapter(Context ctx, List<ShowDevices> ImgIds) {
+    public MaprodeviceslistAdapter(Context ctx, List<ShowDevices> ImgIds,int type) {
         mContext = ctx;
         this.mImgIds = ImgIds;
         mInflater = LayoutInflater.from(mContext);
+        this.type = type;
         Log.i("kkk8199","mImgIds="+mImgIds);
 
     }
@@ -73,10 +76,15 @@ public class MaprodeviceslistAdapter  extends BaseAdapter {
         maprodeviceslistholder.devicelist_textview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.i("kkk8199","into onclick ");
-             /*   SupplyConnectAPI.getInstance().modityruntime(UserMainActivity.musermainsocket,
-                        UserMainActivity.musermainhandler,mprojectworkmode);*/
-                Maprodatamenufragment.setvisibledeviceorinfo(false);
+             //   Log.i("kkk8199","into onclick ");
+                DevicesCollectData mcollectdata= new DevicesCollectData();
+                mcollectdata.setUuid(mImgIds.get(position).getDevNo());
+                SupplyConnectAPI.getInstance().queryrundata(UserMainActivity.musermainsocket,
+                        UserMainActivity.musermainhandler,mcollectdata);
+                if(type==1)
+                    Maprodatamenufragment.setvisibledeviceorinfo(false);
+                else
+                    Enprostatusmenufragment.setvisibledeviceorinfo(false);
             }
         });
 

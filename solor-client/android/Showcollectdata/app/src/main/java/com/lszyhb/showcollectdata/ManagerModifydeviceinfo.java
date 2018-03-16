@@ -15,6 +15,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.lszyhb.basicclass.Consts;
+import com.lszyhb.basicclass.ShowCommitBatch;
+import com.lszyhb.basicclass.ShowDevConfig;
 import com.lszyhb.basicclass.ShowDevices;
 import com.lszyhb.basicclass.ShowProject;
 
@@ -36,7 +38,9 @@ public class ManagerModifydeviceinfo  extends Fragment implements View.OnClickLi
     private TextView manager_modifydevicesinfoaddress;
     private ManagermodifydevicesinfoAdapter modifydevicesinfoadapter;
     private GridView modifydevicesgridview;
-    private List listadddeviceinfo;
+    private List<ShowDevices> listadddeviceinfo;
+    private List<ShowDevices> savelistadddeviceinfo;
+    private ShowProject nowproject;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,7 +82,7 @@ public class ManagerModifydeviceinfo  extends Fragment implements View.OnClickLi
         manager_modifydevicesinfoname.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             // parent： 为控件Spinner view：显示文字的TextView position：下拉选项的位置从0开始
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                ShowProject nowproject = mlsproject.get(position);
+                nowproject = mlsproject.get(position);
                 Log.i("kkk8199","position="+position);
                 String nowprojecttype;
                 if(nowproject.getType()==ShowProject.PROJ_TYPE_SUNPOWER)
@@ -89,28 +93,83 @@ public class ManagerModifydeviceinfo  extends Fragment implements View.OnClickLi
                 ParseAddress parseaddress=ParseAddress.getInstance();
                 String address = parseaddress.queryid(nowproject.getLocationId());
                 manager_modifydevicesinfoaddress.setText(address);
-                if(mlsproject.get(position).getDevConfiures()!=null)
-                    listadddeviceinfo=mlsproject.get(position).getDevConfiures();
-                else
-                    listadddeviceinfo=new ArrayList<String>();
-                modifydevicesinfoadapter=new ManagermodifydevicesinfoAdapter(mcontext, listadddeviceinfo);
-                modifydevicesgridview.setAdapter(modifydevicesinfoadapter);
 
+                /******发送查询项目设备列表命令******/
+                ShowDevConfig mdevices = new ShowDevConfig();
+                mdevices.setProjectId(nowproject.getId());
+                mdevices.setMsg("Success");
+                SupplyConnectAPI.getInstance().queryrdeviceslist(UserMainActivity.musermainsocket,
+                        UserMainActivity.musermainhandler,mdevices);
             }
             //没有选中时的处理
             public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
+        /****默认配置项目********/
+        for(int i=0 ; i<mlsproject.size();i++){
+            if(mlsproject.get(i)== nowproject){
+                manager_modifydevicesinfoname.setSelection(i);
+                break;
+            }
+        }
 
     }
 
-    public void setManagerModifydeviceinfo(Context context, List<ShowProject> lsproject) {
-        Log.i("kkk8199", "into setManagerModifyproject"+"lsproject="+lsproject);
+    /***************从服务器获取到设备列表后，更新Adapter*************/
+    public void updatedevicesadapter(List<ShowDevices> mlistdevices){
+
+        if(mlistdevices!=null) {
+            listadddeviceinfo=mlistdevices;
+            savelistadddeviceinfo = new ArrayList<ShowDevices>();
+
+
+            for(int i =0;i<mlistdevices.size();i++) {
+                savelistadddeviceinfo.add(listadddeviceinfo.get(i));
+            }
+        }
+        else
+            listadddeviceinfo = new ArrayList<ShowDevices>();
+    /*    ShowDevices mshowdevice=new ShowDevices();
+        mshowdevice.setDevNo("11111111");
+        listadddeviceinfo.add(mshowdevice);测试使用*/
+        modifydevicesinfoadapter=new ManagermodifydevicesinfoAdapter(mcontext, listadddeviceinfo);
+        modifydevicesgridview.setAdapter(modifydevicesinfoadapter);
+    }
+
+    public void setManagerModifydeviceinfo(Context context, List<ShowProject> lsproject,ShowProject showProject) {
+     //   Log.i("kkk8199", "into setManagerModifyproject"+"lsproject="+lsproject);
         mcontext = context;
         mlsproject = lsproject;
-        Log.i("kkk8199","mcontext="+mcontext);
-        // projectnamelist=new String[lsproject.size()];
+        nowproject = showProject;
+  //      Log.i("kkk8199","mcontext="+mcontext);
+    }
+
+    public void comparegetcommit(){
+        ShowCommitBatch mshowcommitbatch =new ShowCommitBatch();
+        List<ShowDevices> batchAdds ;
+        List<ShowDevices> batchDels ;
+        modifydevicesinfoadapter.GetnowItem(nowproject);
+      /*  Log.i("kkk8199","savelistadddeviceinfo="+savelistadddeviceinfo);
+        Log.i("kkk8199","listadddeviceinfo="+listadddeviceinfo);*/
+        List<ShowDevices> needdeviceinfo = new ArrayList<ShowDevices>();//临时保存处理
+        for(int i =0;i<listadddeviceinfo.size();i++) {
+            needdeviceinfo.add(listadddeviceinfo.get(i));
+        }
+        batchAdds=listadddeviceinfo;
+        if(listadddeviceinfo!=null)
+            batchAdds.removeAll(savelistadddeviceinfo);
+        batchDels=savelistadddeviceinfo;
+        if(batchDels!=null)
+            batchDels.removeAll(needdeviceinfo);
+        Log.i("kkk8199","batchAdds="+batchAdds);
+        Log.i("kkk8199","batchDels="+batchDels);
+        if(batchAdds!=null && batchAdds.size()!=0)
+            mshowcommitbatch.setBatchAdds(batchAdds);
+        if(batchDels!=null && batchDels.size()!=0)
+        mshowcommitbatch.setBatchDels(batchDels);
+        SupplyConnectAPI.getInstance().modifydevices(UserMainActivity.musermainsocket,
+                UserMainActivity.musermainhandler,mshowcommitbatch);
 
     }
 
@@ -124,6 +183,7 @@ public class ManagerModifydeviceinfo  extends Fragment implements View.OnClickLi
                 modifydevicesinfoadapter.notifyDataSetChanged();
                 break;
             case R.id.manager_modifydeviceinfo_commit:
+                 comparegetcommit();
                 break;
         }
     }

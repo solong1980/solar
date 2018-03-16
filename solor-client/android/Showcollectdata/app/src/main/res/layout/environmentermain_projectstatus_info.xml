@@ -1,0 +1,182 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/environmentermainrun_firsttext"
+        android:layout_marginTop="@dimen/fontimage_height"
+        android:layout_marginLeft="@dimen/common_space1"
+        android:text="运行正常 :"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/normalBlackText"
+        />
+    <ImageView
+        android:id="@+id/environmentermainrun_goodimage"
+        android:layout_marginTop="@dimen/height_63"
+        android:layout_toRightOf="@id/environmentermainrun_firsttext"
+        android:layout_marginLeft="@dimen/common_space8"
+        android:layout_width="@dimen/common_space1"
+        android:layout_height="@dimen/common_space1"
+       />
+
+    <TextView
+        android:id="@+id/environmentermainrun_secondtext"
+        android:layout_marginTop="@dimen/fontimage_height"
+        android:layout_toRightOf="@id/environmentermainrun_goodimage"
+        android:layout_marginLeft="@dimen/common_space36"
+        style="@style/normalBlackText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="故障报警 :" />
+    <ImageView
+        android:id="@+id/environmentermainrun_errorimage"
+        android:layout_marginTop="@dimen/height_63"
+        android:layout_toRightOf="@id/environmentermainrun_secondtext"
+        android:layout_marginLeft="@dimen/common_space8"
+        android:layout_width="@dimen/common_space1"
+        android:layout_height="@dimen/common_space1"
+       />
+    <TextView
+        android:id="@+id/environmentermainrun_timetext"
+        android:layout_below="@id/environmentermainrun_errorimage"
+        android:layout_marginLeft="@dimen/common_space1"
+        android:layout_marginTop="@dimen/common_space2"
+        android:text="连续无故障运行时长 :"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/normalBlackText" />
+
+    <LinearLayout
+        android:id="@+id/environmentermainrun_goodlinearlayout"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_space2"
+        android:layout_below="@id/environmentermainrun_timetext"
+        android:layout_marginLeft="@dimen/common_space1"
+        >
+
+        <TextView
+            android:id="@+id/environmentermainrun_timeday"
+            android:layout_width="@dimen/runinfo_width"
+            android:layout_height="match_parent"
+            style="@style/normalBlackTextRight"/>
+        <TextView
+            android:text="天"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/runinfo_height"
+            style="@style/normalBlackText"
+            />
+
+        <TextView
+            android:id="@+id/environmentermainrun_timehour"
+            android:layout_width="@dimen/runinfo_width"
+            android:layout_height="match_parent"
+            style="@style/normalBlackTextRight"/>
+
+        <TextView
+            android:id="@+id/environmentermainrun_timehourtext"
+            android:text="小时"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/normalBlackText" />
+
+        <TextView
+            android:id="@+id/environmentermainrun_timeminutue"
+            android:layout_width="@dimen/runinfo_width"
+            android:layout_height="match_parent"
+            style="@style/normalBlackTextRight"/>
+        <TextView
+            android:id="@+id/environmentermainrun_timeminutuetext"
+            android:text="分"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/normalBlackTextRight" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/environmentermainrun_errortime"
+        android:layout_below="@id/environmentermainrun_goodlinearlayout"
+        android:text="上次故障发生日期 :"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_space2"
+        android:layout_marginLeft="@dimen/common_space1"
+        style="@style/normalBlackText"
+        />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/secondimage_height"
+        android:layout_below="@id/environmentermainrun_errortime"
+        android:layout_marginTop="@dimen/common_space2"
+        android:layout_marginLeft="@dimen/common_space1"
+        >
+        <TextView
+            android:id="@+id/environmentermainrun_erroryear"
+            android:layout_width="@dimen/runinfo_width"
+            android:layout_height="wrap_content"
+            style="@style/normalBlackTextRight"/>
+        <TextView
+            android:text="年"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/normalBlackText" />
+        <TextView
+            android:id="@+id/environmentermainrun_errormonth"
+            android:layout_width="@dimen/runinfo1_width"
+            android:layout_height="wrap_content"
+            style="@style/normalBlackTextRight"/>
+        <TextView
+            android:text="月"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/normalBlackText" />
+        <TextView
+            android:id="@+id/environmentermainrun_errorday"
+            android:layout_width="@dimen/runinfo1_width"
+            android:layout_height="wrap_content"
+            style="@style/normalBlackTextRight"/>
+        <TextView
+            android:text="日"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/normalBlackText" />
+
+        <TextView
+            android:id="@+id/environmentermainrun_errorhour"
+            android:layout_width="@dimen/runinfo_width"
+            android:layout_height="wrap_content"
+            style="@style/normalBlackTextRight"/>
+        <TextView
+            android:text="小时"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/normalBlackText" />
+        <TextView
+            android:id="@+id/environmentermainrun_errorminute"
+            android:layout_width="@dimen/runinfo_width"
+            android:layout_height="wrap_content"
+            style="@style/normalBlackTextRight"/>
+        <TextView
+            android:text="分"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/normalBlackText" />
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/status_backbutton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/commit_shape_button_round"
+        android:layout_centerHorizontal="true"
+        style="@style/normalBlackText"
+        android:text="@string/infoback"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="@dimen/common_space"
+        android:clickable="true"
+        />
+</RelativeLayout>

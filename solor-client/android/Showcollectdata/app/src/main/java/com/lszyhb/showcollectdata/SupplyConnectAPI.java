@@ -7,14 +7,17 @@ import com.lszyhb.basicclass.ApkVersion;
 import com.lszyhb.basicclass.AppType;
 import com.lszyhb.basicclass.ConnectAPI;
 import com.lszyhb.basicclass.Consts;
+import com.lszyhb.basicclass.DevicesCollectData;
 import com.lszyhb.basicclass.GenVCodeType;
 import com.lszyhb.basicclass.ProjectWorkingMode;
 import com.lszyhb.basicclass.ShowAccount;
 import com.lszyhb.basicclass.ShowAccountLocation;
+import com.lszyhb.basicclass.ShowCommitBatch;
 import com.lszyhb.basicclass.ShowDevConfig;
 import com.lszyhb.basicclass.ShowDevices;
 import com.lszyhb.basicclass.ShowPage;
 import com.lszyhb.basicclass.ShowProject;
+import com.lszyhb.basicclass.ShowProjectinfo;
 import com.lszyhb.basicclass.ShowVCode;
 import com.lszyhb.basicclass.UserInfo;
 import com.lszyhb.common.JsonUtilTool;
@@ -176,9 +179,9 @@ public class SupplyConnectAPI {
     }
 
     /************查询运行数据*******************/
-    public void queryrundata(ClientSocket msocket, Handler mhandler, ProjectWorkingMode projectworkingmode){
+    public void queryrundata(ClientSocket msocket, Handler mhandler, DevicesCollectData collectdata){
 
-        String json = JsonUtilTool.toJson(projectworkingmode);
+        String json = JsonUtilTool.toJson(collectdata);
         System.out.println(json);
         msocket.sendandrecv(ConnectAPI.DEVICES_RUNNINGDATA_COMMAND, mhandler,json);
     }
@@ -189,5 +192,31 @@ public class SupplyConnectAPI {
         String json = JsonUtilTool.toJson(nowprojectdev);
         System.out.println(json);
         msocket.sendandrecv(ConnectAPI.DEVICES_IN_PROJECT_COMMAND, mhandler,json);
+    }
+
+    /************设备信息修改*******************/
+    public void modifydevices(ClientSocket msocket, Handler mhandler, ShowCommitBatch mshowcommitbatch){
+
+        String json = JsonUtilTool.toJson(mshowcommitbatch);
+        System.out.println(json);
+        msocket.sendandrecv(ConnectAPI.DEVICES_BATCH_COMMAND, mhandler,json);
+    }
+
+    /************项目启停*******************/
+    public void controlprojectstartorstop(ClientSocket msocket, Handler mhandler,
+                                          List<ShowDevices> listshowdevices){
+
+       String json = JsonUtilTool.toJson(listshowdevices);
+        System.out.println(json);
+        msocket.sendandrecv(ConnectAPI.PROJECT_DEVICES_CTRL_COMMAND, mhandler,json);
+    }
+
+    /************得到项目总发电量*******************/
+    public void getgeneratingcapacity(ClientSocket msocket, Handler mhandler,
+                                      ShowProjectinfo mshowproject){
+
+        String json = JsonUtilTool.toJson(mshowproject);
+        System.out.println(json);
+        msocket.sendandrecv(ConnectAPI.PROJECT_CALC_PCHG_COMMAND, mhandler,json);
     }
 }

@@ -29,6 +29,11 @@
         <item name="android:textSize">14sp</item>
         <item name="android:layout_gravity">center_vertical</item>
     </style>
+    <style name="normalBlackTextRight" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
     <style name="normalBLueText" parent="@android:style/TextAppearance">
         <item name="android:textColor">@color/press_color</item>
         <item name="android:textSize">18sp</item>
@@ -54,6 +59,12 @@
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">14sp</item>
         <item name="android:padding">4dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+    </style>
+    <style name="normalWhiteText12" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:padding">2dp</item>
         <item name="android:layout_gravity">center_vertical</item>
     </style>
     <style name="new_circle_progress" parent="@android:style/Theme.Dialog">

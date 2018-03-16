@@ -3,12 +3,16 @@ package com.lszyhb.showcollectdata;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.Activity;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -19,11 +23,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.lszyhb.basicclass.Consts;
+import com.lszyhb.basicclass.DevicesCollectData;
 import com.lszyhb.basicclass.ProjectWorkingMode;
 import com.lszyhb.basicclass.ShowAccount;
 import com.lszyhb.basicclass.ShowDevices;
 import com.lszyhb.basicclass.ShowPage;
 import com.lszyhb.basicclass.ShowProject;
+import com.lszyhb.basicclass.ShowProjectinfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,14 +45,14 @@ import static android.content.ContentValues.TAG;
 public class UserMainActivity extends Activity implements View.OnClickListener {
     private MyTreewidget mytree;
 
-    private Enproinfomenufragment einfomenufragment;
-    private Enprostatusmenufragment erunmenufragment;
+    private static Enproinfomenufragment einfomenufragment;
+    private static Enprostatusmenufragment erunmenufragment;
     private Enprodatamenufragment edatamenufragment;
     private static Maprodatamenufragment mdatamenufragment;
     private static ManagerModifymainercerinfo managermodifymainercerinfo;
     private ManagerAddproject manageraddproject;
     private ManagerModifyproject managermodifyproject;
-    private ManagerModifydeviceinfo managermodifydeviceinfo;
+    private static ManagerModifydeviceinfo managermodifydeviceinfo;
     private static ManagerAuditing mmanagerauditing;
     private TextView envirmentsecondtitle;
     private TextView project_firsttextview;
@@ -73,6 +79,9 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
     public static final int MSG_QUERY_RUNNINGDATA=9;//查询运行数据
     public static final int MSG_MODIFY_PROJECT=10;//项目修改
     public static final int MSG_QUERY_DEVICES=11;//查询项目中的设备
+    public static final int MSG_DEVICES_BATCH=12;//批量修改设备信息
+    public static final int MSG_DEVICES_CTRL=13;//项目启停控制
+    public static final int MSG_QUERY_GENERATINGCAPACITY=14;//发电量返回
 
     private static Context usermaincontext;
 
@@ -345,6 +354,7 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
                     einfomenufragment.SetEnproinfoproject(nowproject);
                     break;
                 case 1:
+                    erunmenufragment.setEnprodataproject(this,nowproject);
                     break;
                 case 2:
                     Log.i("kkk8199","into ok!");
@@ -361,7 +371,7 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
                     envirmentsecondtitle.setText(R.string.projectinfomodify);
                     break;
                 case 5:
-                    managermodifydeviceinfo.setManagerModifydeviceinfo(this,lstproject);
+                    managermodifydeviceinfo.setManagerModifydeviceinfo(this,lstproject,nowproject);
                     envirmentsecondtitle.setText(R.string.engineerinfomodify);
                     break;
                 case 6:
@@ -379,15 +389,41 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
      private void createView(){
          mytree = new MyTreewidget(this);
          mytree.treewidgetinit(lstproject,handler);
-         Showfloatwindow();
+
+         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+             if(!Settings.canDrawOverlays(getApplicationContext())) {
+                 //启动Activity让用户授权
+                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION);
+                 intent.setData(Uri.parse("package:" + getPackageName()));
+                 startActivityForResult(intent,100);
+             }else {
+                 Showfloatwindow();
+             }
+         }else {
+             Showfloatwindow();
+         }
      }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (Settings.canDrawOverlays(this)) {
+                    Showfloatwindow();
+                } else {
+                    Toast.makeText(this, "权限已被拒绝", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
     /******************显示悬浮窗口*********
      *
      */
     private void Showfloatwindow() {
             //获取WindowManager
             WindowManager wm=(WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
+
             //设置LayoutParams(全局变量）相关参数
             WindowManager.LayoutParams wmParams=new WindowManager.LayoutParams();
             wmParams.type=WindowManager.LayoutParams.TYPE_PHONE; //设置window type
@@ -411,7 +447,6 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
             //显示myFloatView图像
             wm.addView(mytree, wmParams);
             firsttime=false;
-
     }
     /******************隐藏悬浮窗口*********
      *
@@ -419,10 +454,24 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
     private void NotShowfloatwindow(){
             if(!firsttime) {
                 WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-                wm.removeView(mytree);
+                if(mytree != null) {
+                    if(mytree.isShown()) { //check if dialog is showing.
+                        wm.removeView(mytree);
+                    }
+                }
                 firsttime = true;
             }
     }
+
+    private  Handler mquerydataHandler = new Handler();
+          Runnable querydata = new Runnable() {
+              @Override
+              public void run() {
+                                     //do something
+                                     //每隔10s循环执行run方法
+                  mquerydataHandler.postDelayed(this, 10000);
+               }
+          };
 
 
     public static Handler musermainhandler = new Handler(){
@@ -438,6 +487,7 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
                 }
 
             }else{//网络正常
+                Log.i("kkk8199","into ");
                 if( msg.arg2 == 0 ) {//业务应答失败原因
                         if (msg.obj != null && msg.obj instanceof String) {
                             Toast.makeText(usermaincontext, msg.obj.toString(), Toast.LENGTH_LONG).show();
@@ -483,11 +533,50 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
                     else if (msg.arg2 == MSG_QUERY_DEVICES) {//项目中设备查询
                         Log.i("kkk8199","into MSG_QUERY_DEVICES");
                         List<ShowDevices> listdevices = ( List<ShowDevices>)msg.obj;
-                        mdatamenufragment.updatedevicesadapter(listdevices);
+                        if(mdatamenufragment!=null)
+                             mdatamenufragment.updatedevicesadapter(listdevices);
+                        if(managermodifydeviceinfo!=null)
+                            managermodifydeviceinfo.updatedevicesadapter(listdevices);
+                        if(erunmenufragment!=null)
+                            erunmenufragment.updatedevicesadapter(listdevices);
+                    }
+                    else if (msg.arg2 == MSG_QUERY_RUNNINGDATA) {//设备信息数据
+                        Log.i("kkk8199","into MSG_QUERY_RUNNINGDATA");
+                        DevicesCollectData collectdata = (DevicesCollectData)msg.obj;
+                        if(mdatamenufragment!=null)
+                            mdatamenufragment.setcollectdata(collectdata);
+                        if(erunmenufragment!=null)
+                            erunmenufragment.updateinfostatus(collectdata);
+
+                    }
+                    else if (msg.arg2 == MSG_DEVICES_BATCH) {//修改设备信息
+                        Log.i("kkk8199","into MSG_DEVICES_BATCH");
+                        Toast.makeText(usermaincontext, "修改成功", Toast.LENGTH_LONG).show();
+                    }
+                    else if (msg.arg2 == MSG_DEVICES_CTRL) {//修改设备信息
+                        Log.i("kkk8199","into MSG_DEVICES_CTRL");
+                        List<ShowDevices> mdeviceslist =(List<ShowDevices>)msg.obj;
+                        String showtext="";
+                        for(int i =0 ;i< mdeviceslist.size();i++) {
+                            if(mdeviceslist.get(i).getMsg().equals("此设备未连接"))
+                                showtext=showtext+mdeviceslist.get(i).getDevNo()+",";
+                        }
+                        if(showtext=="") {
+                            Toast.makeText(usermaincontext, "成功", Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            showtext = showtext + "设备未连接";
+                            Toast.makeText(usermaincontext, showtext, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                    else if (msg.arg2 == MSG_QUERY_GENERATINGCAPACITY) {//查询发电量
+                        Log.i("kkk8199","into MSG_QUERY_GENERATINGCAPACITY");
+                        ShowProjectinfo showProjectinfo =(ShowProjectinfo)msg.obj;
+                        einfomenufragment.setgeneratingcapacity(showProjectinfo);
                     }
                 }
-
             }
+
             }
     };
 

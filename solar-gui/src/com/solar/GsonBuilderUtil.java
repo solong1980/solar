@@ -28,5 +28,11 @@ public class GsonBuilderUtil {
 		System.out.println(fromJson[0].getBreakTime());
 		System.out.println(fromJson[0].getCreateTime());
 		
+		String ab = "11111.6";
+		Double valueOf = Double.valueOf(ab);
+		
+		//String.format("%d", valueOf);
+		System.out.println(valueOf.intValue());
+		
 	}
 }

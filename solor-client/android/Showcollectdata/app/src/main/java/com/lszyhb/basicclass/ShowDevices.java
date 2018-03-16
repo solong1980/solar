@@ -163,11 +163,11 @@ public class ShowDevices extends ShowAbtAuth {
         public void setCreateTime(String createTime) {
             this.createTime = createTime;
         }
-
+/*
         @Override
         public String toString() {
             return "[" + devNo + "]";
-        }
+        }*/
 
         public String buildMmcMsg() {
             return this.sw0 + "," + this.sw1 + "," + this.sw2 + "," + this.sw3 + "," + this.sw4 + "," + this.sw5 + ","

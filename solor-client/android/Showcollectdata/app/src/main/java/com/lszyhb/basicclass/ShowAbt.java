@@ -7,7 +7,7 @@ import java.io.Serializable;
  * Created by kkk8199 on 11/20/17.
  */
 
-public abstract class ShowAbt implements Serializable {
+public  class ShowAbt implements Serializable {
 
     // 业务响应码
     private int retCode;

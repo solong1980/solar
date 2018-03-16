@@ -21,7 +21,8 @@ public class JsonUtilTool {
          * @return 对象的string字符
          */
         public static String toJson(Object obj) {
-            Gson gson = new Gson();
+            Gson gson = GsonBuilderUtil.create();
+           // Gson gson = new Gson();
             return gson.toJson(obj);
         }
 
@@ -35,8 +36,7 @@ public class JsonUtilTool {
      * @return 对象
      */
     public static <T> T fromJson(String jsonString, Class<T> type) {
-        Gson gson = new Gson();
-     //   Log.i("kkk8199","into jsonString"+jsonString);
+        Gson gson = GsonBuilderUtil.create();
         return gson.fromJson(jsonString,type);
     }
 
@@ -44,11 +44,23 @@ public class JsonUtilTool {
      * json 转 List<T>
      */
     public static <T> List<T> jsonToList(String jsonString, Class<T> clazz) {
-        Gson gson = new Gson();
+        Gson gson = GsonBuilderUtil.create();
         List<T> ts = gson.fromJson(jsonString, new TypeToken<List<T>>(){}.getType());
         Log.i("kkk8199","ts="+ts);
      //   System.out.print(ts);
         return ts;
     }
 
+    /**
+     * List<T>转json
+     */
+    public static String Listtojson(List<?> list) {
+        Gson gson = GsonBuilderUtil.create();
+        String ts = gson.toJson(list);
+        Log.i("kkk8199","ts="+ts);
+        return ts;
+    }
+
 }
+
+

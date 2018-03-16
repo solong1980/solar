@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/devicelist_textview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/common_space1"
+        android:gravity="left"
+        android:layout_marginLeft="@dimen/common_space2"
+        android:layout_marginStart="@dimen/common_space2"
+        style="@style/normalBLueText"
+        />
+    <ImageView
+        android:layout_width="300dp"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/common_space2"
+        android:layout_marginStart="@dimen/common_space2"
+        android:background="@color/inline_color"
+        />
+</LinearLayout>

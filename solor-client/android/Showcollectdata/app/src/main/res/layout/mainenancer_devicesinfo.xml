@@ -18,34 +18,38 @@
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/common_space">
         <TextView
-            android:layout_width="@dimen/width_90"
+            android:id="@+id/solar_voltage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/common_space"
+            style="@style/normalWhiteText12"
+            android:background="@color/press_color"
+            android:text="电池板电压:"
+            >
+        </TextView>
+        <TextView
+            android:id="@+id/charging_current"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/common_space2"
-            style="@style/normalWhiteText14"
+            style="@style/normalWhiteText12"
             android:background="@color/press_color"
-            android:text="电压数据"
+            android:text="充电电流:"
             >
         </TextView>
         <TextView
-            android:layout_width="@dimen/width_90"
+            android:id="@+id/totalpower"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/common_space1"
-            style="@style/normalWhiteText14"
+            android:layout_marginLeft="@dimen/common_space2"
+            style="@style/normalWhiteText12"
             android:background="@color/press_color"
-            android:text="电流数据"
-            >
-        </TextView>
-        <TextView
-            android:layout_width="@dimen/width_90"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/common_space1"
-            style="@style/normalWhiteText14"
-            android:background="@color/press_color"
-            android:text="电量数据"
+            android:text="总发电量:"
             >
         </TextView>
     </LinearLayout>
     <ImageView
+        android:layout_marginTop="@dimen/common_space"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
@@ -72,11 +76,12 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/normalWhiteText14"
+                style="@style/normalWhiteText12"
                 android:background="@color/press_color"
                 android:text="污水处理控制器">
             </TextView>
             <ImageView
+                android:layout_marginTop="@dimen/common_space"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
@@ -96,11 +101,12 @@
                 android:src="@drawable/battery_pack">
             </ImageView>
             <TextView
+                android:id="@+id/battery_capacity"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                style="@style/normalWhiteText14"
+                style="@style/normalWhiteText12"
                 android:background="@color/press_color"
-                android:text="电池剩余容量">
+                android:text="电池剩余容量:">
             </TextView>
         </LinearLayout>
     </LinearLayout>
@@ -110,6 +116,7 @@
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/common_space">
         <ImageView
+            android:id="@+id/fan_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -119,7 +126,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/devices_solar_panel4"
+            android:id="@+id/bakfan_status"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/bakfan_good"
             android:layout_weight="1">
@@ -127,7 +134,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/devices_solar_panel5"
+            android:id="@+id/waterpump_status"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/waterpump_good"
             android:layout_weight="1">
@@ -135,7 +142,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/devices_solar_panel6"
+            android:id="@+id/bakwaterpump_status"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/bakwaterpump_good"
             android:layout_weight="1">

@@ -66,9 +66,17 @@ public class ConnectAPI {
     public static final int DEVICES_RUNNINGDATA_COMMAND = 0x000032;  //查询运行数据
 
     public static final int DEVICES_UPDATE_COMMAND = 0x000033;
-    public static final int DEVICES_ADD_COMMAND = 0x000034;
+    public static final int DEVICES_ADD_COMMAND = 0x000034;          //单个增加设备
     public static final int DEVICES_SCHEDULE_COMMAND = 0x000035;
     public static final int DEVICES_UPGRADECTR_COMMAND = 0x000036;
+
+    public static final int PROJECT_DEVICES_CTRL_COMMAND = 0x000037; //控制项目中的设备
+
+    public static final int DEVICES_DEL_COMMAND = 0x000038;    //单个删除设备
+
+    public static final int DEVICES_BATCH_COMMAND = 0x000039;  //批量项目增加和减少设备
+
+    public static final int PROJECT_CALC_PCHG_COMMAND = 0x000040; //项目总电量
 
     // 控制终端指令
     public static final int CTRL_COMMAND = 0x999999;
@@ -135,6 +143,13 @@ public class ConnectAPI {
     public static final int DEVICES_ADD_RESPONSE = 0x100034;
     public static final int DEVICES_SCHEDULE_RESPONSE = 0x100035;
     public static final int DEVICES_UPGRADECTR_RESPONSE = 0x100036;
+    public static final int PROJECT_DEVICES_CTRL_RESPONSE = 0x100037;
+
+    public static final int DEVICES_DEL_RESPONSE = 0x100038;
+
+    public static final int DEVICES_BATCH_RESPONSE = 0x100039;
+
+    public static final int PROJECT_CALC_PCHG_RESPONSE = 0x100040;
     // 单片机
     public static final String MC_ERROR_RESPONSE = "00";
     public static final String MC_SUCCESS_RESPONSE = "99";

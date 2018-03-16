@@ -12,13 +12,16 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lszyhb.basicclass.ApkVersion;
 import com.lszyhb.basicclass.ConnectAPI;
+import com.lszyhb.basicclass.DevicesCollectData;
 import com.lszyhb.basicclass.ProjectWorkingMode;
 import com.lszyhb.basicclass.ShowAbt;
 import com.lszyhb.basicclass.ShowAccount;
 import com.lszyhb.basicclass.ShowDevices;
 import com.lszyhb.basicclass.ShowPage;
 import com.lszyhb.basicclass.ShowProject;
+import com.lszyhb.basicclass.ShowProjectinfo;
 import com.lszyhb.basicclass.ShowVCode;
+import com.lszyhb.common.GsonBuilderUtil;
 import com.lszyhb.common.JsonUtilTool;
 import com.lszyhb.update.UpdateManager;
 
@@ -201,13 +204,13 @@ public class ClientSocket {
           //  Log.i("kkk8199","input="+input);
         //     System.out.println("服务器端返回过来的是: ");
             byte flag = input.readByte();
-            System.out.println(flag);//开始标志
+       //     System.out.println(flag);//开始标志
             int len = input.readInt();//长度
-             System.out.println(len);
+     //        System.out.println(len);
             int code = input.readInt();//返回码
-             System.out.println(code);
+     //        System.out.println(code);
              int status = input.readInt();//状态
-             System.out.println(status);
+      //       System.out.println(status);
             String ret = input.readUTF();
             System.out.println("服务器端返回过来的信息是: " + ret);
             Message msg = mhandler.obtainMessage();
@@ -258,6 +261,19 @@ public class ClientSocket {
                         int retcode2 = showaccount1.getRetCode();
                         if(retcode2!=0) {//找回异常
                             msg.obj=showaccount1.getMsg();
+                        }
+                        break;
+                    case ConnectAPI.PROJECT_CALC_PCHG_RESPONSE://查询总发电量
+                        ShowProjectinfo showprojectpchg = JsonUtilTool.fromJson(ret,ShowProjectinfo.class);
+                        Log.i("kkk8199","showprojectpchg="+showprojectpchg.toString());
+                        msg.arg2= UserMainActivity.MSG_QUERY_GENERATINGCAPACITY;
+                        int showprojectpchgretcode = showprojectpchg.getRetCode();
+                        if(showprojectpchgretcode!=0) {//新增项目返回异常
+                            msg.arg2=0;//异常
+                            msg.obj=showprojectpchg.getMsg();
+                        }
+                        else{
+                            msg.obj=showprojectpchg;
                         }
                         break;
                     case ConnectAPI.PROJECT_ADD_RESPONSE://新增项目返回
@@ -387,7 +403,7 @@ public class ClientSocket {
 
                         break;
                     case ConnectAPI.DEVICES_IN_PROJECT_RESPONSE://查询项目中的设备
-                        Gson gson = new Gson();
+                        Gson gson = GsonBuilderUtil.create();
                         List<ShowDevices> listdevices= gson.fromJson(ret, new TypeToken<List<ShowDevices>>(){}.getType());
               //          Log.i("kkk8199","listdevices111="+listdevices);
                         msg.arg2= UserMainActivity.MSG_QUERY_DEVICES;//
@@ -395,17 +411,33 @@ public class ClientSocket {
                         break;
                     case ConnectAPI.DEVICES_RUNNINGDATA_RESPONSE://查询运行数据
                         Log.i("kkk8199","into DEVICES_RUNNINGDATA_RESPONSE");
-                    //    ProjectWorkingMode ProjectWorkingModereturn = JsonUtilTool.fromJson(ret,ProjectWorkingMode.class);
-                  //      Log.i("kkk8199","ShowAbtreturn="+ProjectWorkingModereturn.toString());
+                        Gson gson1 = GsonBuilderUtil.create();
+                        List<DevicesCollectData> collectdata= gson1.fromJson(ret, new TypeToken<List<DevicesCollectData>>(){}.getType());
+                        //DevicesCollectData collectdata = JsonUtilTool.fromJson(ret,DevicesCollectData.class);
+                        Log.i("kkk8199","ShowAbtreturn="+collectdata.toString());
                         msg.arg2= UserMainActivity.MSG_QUERY_RUNNINGDATA;//
-                      /*  int ProjectWorkingModereturncode = ProjectWorkingModereturn.getRetCode();
-                        if(ProjectWorkingModereturncode!=0) {
+                        msg.obj= collectdata.get(0);//只需要取第1个数据
+                        break;
+                    case ConnectAPI.DEVICES_BATCH_RESPONSE://修改设备信息
+                        Log.i("kkk8199","into DEVICES_BATCH_RESPONSE");
+
+                        ShowAbt devicesbatchres = JsonUtilTool.fromJson(ret,ShowAbt.class);
+                        Log.i("kkk8199","devicesbatchres="+devicesbatchres);
+                        msg.arg2= UserMainActivity.MSG_DEVICES_BATCH;//
+                        Log.i("kkk8199","devicesbatchres.getRetCode()="+devicesbatchres.getRetCode());
+                        if(devicesbatchres.getRetCode()!=0) {
                             msg.arg2=0;
-                            msg.obj=ProjectWorkingModereturn.getMsg();
+                            msg.obj=devicesbatchres.getMsg();
                         }
-                        else{//成功
-                            msg.obj= ProjectWorkingModereturn;
-                        }*/
+                        break;
+                    case ConnectAPI.PROJECT_DEVICES_CTRL_RESPONSE:
+                        Log.i("kkk8199","into PROJECT_DEVICES_CTRL_RESPONSE");
+                       // List<ShowDevices> deviceslist = JsonUtilTool.jsonToList(ret,ShowDevices.class);
+                        Gson gson2 = GsonBuilderUtil.create();
+                        List<ShowDevices> deviceslist= gson2.fromJson(ret, new TypeToken<List<ShowDevices>>(){}.getType());
+                        Log.i("kkk8199","devicesbatchres="+deviceslist.toString());
+                        msg.arg2= UserMainActivity.MSG_DEVICES_CTRL;//
+                        msg.obj=deviceslist;
                         break;
                     default:
                         break;

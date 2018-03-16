@@ -25,6 +25,7 @@
 	<dimen name="common_space2">12dp</dimen>
 	<dimen name="common_space1">20dp</dimen>
 	<dimen name="common_space23">23dp</dimen>
+	<dimen name="common_space36">36dp</dimen>
 	<dimen name="editheight">28dp</dimen>
 	<dimen name="edith_64">64dp</dimen>
 	<dimen name="secondtitleheight">40dp</dimen>
@@ -42,6 +43,7 @@
 	<dimen name="commonfont">16sp</dimen>
 	<dimen name="bigfont">20sp</dimen>
 	<dimen name="fontimage_height">60dp</dimen>
+	<dimen name="height_63">63dp</dimen>
 	<dimen name="secondimage_height">40dp</dimen>
 	<dimen name="thirdimage_height">32dp</dimen>
 	<dimen name="bottomimage_height">50dp</dimen>
