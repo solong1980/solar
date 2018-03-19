@@ -75,7 +75,7 @@ void MoveEnemy(list<Tank*>& lstEnemys) {
 		}
 		(*it)->Move();
 		if ((*it)->NeedShoot()) {
-			((EnemyTank*)(*it))->Shoot(lstEnemyBullets);
+			(*it)->Shoot(lstEnemyBullets);
 		}
 		(*it)->Display();
 		it++;

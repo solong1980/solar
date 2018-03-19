@@ -24,7 +24,7 @@ public:
 	};
 	void Display();
 	void Move();
-	void Shoot(list<Object*>& lstBombs) {
+	virtual void Shoot(list<Object*>& lstBombs) {
 		Tank::Shoot(lstBombs);
 		m_bNeedShoot = false;
 	}
