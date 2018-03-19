@@ -516,8 +516,9 @@ public class IndexPanel extends BasePanel implements Observer {
 	}
 
 	CardLayout cardLayout = new CardLayout();
-	//BezierAnimationPanel animationPanel;
+	// BezierAnimationPanel animationPanel;
 	DevRunningAnimationPanel animationPanel;
+
 	private void handBtnSet() {
 		if (handModeBtn.isSelected()) {
 			for (JRadioButton bt : startBtns) {
@@ -590,7 +591,7 @@ public class IndexPanel extends BasePanel implements Observer {
 		np.add(statePanel);
 		np.add(warnningPanel);
 
-		//animationPanel = new BezierAnimationPanel();
+		// animationPanel = new BezierAnimationPanel();
 		animationPanel = new DevRunningAnimationPanel();
 		infoPanel.setLayout(new BorderLayout());
 		infoPanel.add(np, BorderLayout.NORTH);
@@ -612,7 +613,7 @@ public class IndexPanel extends BasePanel implements Observer {
 	public JPanel createStatePanel() {
 		safeDaysField.setEditable(false);
 		lastBreakTimeField.setEditable(false);
-		
+
 		JPanel statePanel = new JPanel();
 		statePanel.setLayout(new GridBagLayout());
 		statePanel.setBorder(BorderFactory.createTitledBorder("运行状态"));
@@ -1121,8 +1122,8 @@ public class IndexPanel extends BasePanel implements Observer {
 		splitPane.setOneTouchExpandable(true);
 		splitPane.setDividerSize(5);
 		add(splitPane, BorderLayout.CENTER);
-		
-		//将动画面板加入观察者队列中
+
+		// 将动画面板加入观察者队列中
 		instance.addObserver(animationPanel);
 	}
 
@@ -1137,7 +1138,7 @@ public class IndexPanel extends BasePanel implements Observer {
 		Long safeTime = soRunningData.getSafeTime();// 安全运行时间
 		String stat = soRunningData.getStat();
 		try {
-			int status = Integer.parseInt(stat,16);
+			int status = Integer.parseInt(stat, 16);
 			if ((status & 8) == 8) {
 				correctBtn.setIcon(ButtonUI.createImageIcon("buttons/rb.gif", ""));
 				breakBtn.setIcon(ButtonUI.createImageIcon("buttons/rbrs.gif", ""));
@@ -1166,10 +1167,15 @@ public class IndexPanel extends BasePanel implements Observer {
 			} else {
 				pumpOperationBtn.setIcon(ButtonUI.createImageIcon("buttons/rbs.gif", ""));
 			}
-			if(breakTime!=null)
+			if (breakTime != null)
 				lastBreakTimeField.setText(new SimpleDateFormat("yyyy年MM月dd日 HH时mm分ss秒").format(breakTime));
+			else
+				lastBreakTimeField.setText("");
 			String formatSecond = formatSecond(safeTime);
-			safeDaysField.setText(formatSecond);
+			if(formatSecond.equals("0秒")) {
+				safeDaysField.setText("迄今无故障");
+			}else
+				safeDaysField.setText(formatSecond);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -1188,7 +1194,14 @@ public class IndexPanel extends BasePanel implements Observer {
 							new TypeReference<List<SoRunningData>>() {
 							});
 					if (runningDatas.size() > 0) {
-						updateDeviceRunningPanelData(runningDatas.get(0));
+						SoRunningData rn = runningDatas.get(0);
+						if(rn!=null)
+							updateDeviceRunningPanelData(runningDatas.get(0));
+						else {
+							cleanDeviceRunningPanelData();
+						}
+					} else {
+						cleanDeviceRunningPanelData();
 					}
 					break;
 				case ConnectAPI.DEVICES_ADD_RESPONSE:
@@ -1216,13 +1229,13 @@ public class IndexPanel extends BasePanel implements Observer {
 				case ConnectAPI.PROJECT_CALC_PCHG_RESPONSE:
 					SoProject project = JsonUtilTool.fromJson(ret.getRet(), SoProject.class);
 					String projectTotalPChg = project.getProjectTotalPChg();
-					
+
 					try {
-						float ichg = Long.parseLong(projectTotalPChg)/1000.0f;
-						solarEnergyPowerField.setText(String.format("%.3f ", ichg)+"度");
+						float ichg = Long.parseLong(projectTotalPChg) / 1000.0f;
+						solarEnergyPowerField.setText(String.format("%.3f ", ichg) + "度");
 					} catch (Exception e) {
 					}
-					
+
 					break;
 				case ConnectAPI.PROJECT_DEVICES_CTRL_RESPONSE:
 					List<SoDevices> deviceList = JsonUtilTool.fromJson(ret.getRet(),
@@ -1275,6 +1288,17 @@ public class IndexPanel extends BasePanel implements Observer {
 		}
 	}
 
+	private void cleanDeviceRunningPanelData() {
+		correctBtn.setIcon(ButtonUI.createImageIcon("buttons/rbp.gif", ""));
+		breakBtn.setIcon(ButtonUI.createImageIcon("buttons/rbp.gif", ""));
+		solarBoardBtn.setIcon(ButtonUI.createImageIcon("buttons/rbp.gif", ""));
+		batteryBtn.setIcon(ButtonUI.createImageIcon("buttons/rbp.gif", ""));
+		fanOperationBtn.setIcon(ButtonUI.createImageIcon("buttons/rbp.gif", ""));
+		pumpOperationBtn.setIcon(ButtonUI.createImageIcon("buttons/rbp.gif", ""));
+		lastBreakTimeField.setText("");
+		safeDaysField.setText("");
+	}
+
 	/**
 	 * 将秒数转换成天具体的天时分秒 比如172800S转换成2天0时0分0秒
 	 * 
@@ -1282,7 +1306,7 @@ public class IndexPanel extends BasePanel implements Observer {
 	 * @return
 	 */
 	public String formatSecond(Object second) {
-		String timeStr = "0秒";
+		String timeStr = "";
 		if (second != null) {
 			Long s = (Long) second;
 			String format;

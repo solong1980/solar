@@ -109,17 +109,28 @@ public class DevRunningAnimationPanel extends JPanel implements Observer, Runnab
 		Thread me = Thread.currentThread();
 		Dimension oldSize = getSize();
 		while (anim == me) {
+			// 获得组件大小
+			Dimension size = getSize();
 			if (this.lastGetData == null) {
 				synchronized (lock) {
 					try {
+						// clean animation panel
+						img = null;
+						// 清除重画
+						if (bufferG2D != null)
+							bufferG2D.dispose();
+						bufferG2D = null;
+						img = (BufferedImage) createImage(size.width, size.height);
+						bufferG2D = img.createGraphics();
+						bufferG2D.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_DEFAULT);
+						bufferG2D.setClip(null);
+						repaint();
 						lock.wait(1000);
 					} catch (InterruptedException e) {
 					}
 				}
 				continue;
 			}
-			// 获得组件大小
-			Dimension size = getSize();
 
 			// 窗口大小变化，释放现有的gd,重新创建图像对象
 			if (size.width != oldSize.width || size.height != oldSize.height) {
@@ -150,7 +161,7 @@ public class DevRunningAnimationPanel extends JPanel implements Observer, Runnab
 
 			String stat = this.lastGetData.getStat();
 
-			int st = Integer.parseInt(stat,16);
+			int st = Integer.parseInt(stat, 16);
 
 			// boolean s0bad = ((st & 8) == 8) ? true : false;
 

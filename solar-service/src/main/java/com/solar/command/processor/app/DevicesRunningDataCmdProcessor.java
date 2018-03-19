@@ -36,7 +36,8 @@ public class DevicesRunningDataCmdProcessor extends MsgProcessor {
 		
 		List<SoRunningData> runningDatas = new ArrayList<>();
 		SoRunningData lastMonitorData = runningDataService.selectLastMonitorData(runningData.getUuid());
-		runningDatas.add(lastMonitorData);
+		if(lastMonitorData!=null)
+			runningDatas.add(lastMonitorData);
 		appSession.sendMsg(new DevicesRunningDataResponse(JsonUtilTool.toJson(runningDatas)));
 	}
 
