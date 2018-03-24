@@ -83,7 +83,7 @@ public class NodeTreeAdapter extends BaseAdapter{
             String label=node.get_label();
             long  project_id = node.get_projectid();
             String project_location = node.get_location();
-            Log.i("kkk8199","label="+label +"project_id="+project_id+"location="+project_location);
+          //  Log.i("kkk8199","label="+label +"project_id="+project_id+"location="+project_location);
             Message msg = mhandler.obtainMessage();
             msg.arg1 = 0;
             msg.arg2 = (int)project_id;//id int型够用

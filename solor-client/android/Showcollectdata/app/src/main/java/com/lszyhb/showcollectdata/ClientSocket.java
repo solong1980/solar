@@ -18,6 +18,7 @@ import com.lszyhb.basicclass.ShowAbt;
 import com.lszyhb.basicclass.ShowAccount;
 import com.lszyhb.basicclass.ShowDevices;
 import com.lszyhb.basicclass.ShowPage;
+import com.lszyhb.basicclass.ShowPageProject;
 import com.lszyhb.basicclass.ShowProject;
 import com.lszyhb.basicclass.ShowProjectinfo;
 import com.lszyhb.basicclass.ShowVCode;
@@ -40,7 +41,8 @@ import java.util.concurrent.Executors;
 
 public class ClientSocket {
     private static final int SOCKET_TIMEOUT = 100000;//超时时间
-    public static final String SERVER_IP_ADDR = "39.107.24.81";// 服务器地址123.56.76.77
+     public static final String SERVER_IP_ADDR = "39.107.24.81";// 服务器地址123.56.76.77
+    //public static final String SERVER_IP_ADDR = "123.56.76.77";// 正式平台
     public static final int PORT = 10122;// 服务器端口号
     private ExecutorService executorService = Executors.newFixedThreadPool(5);
     public Socket socket = null;
@@ -268,7 +270,7 @@ public class ClientSocket {
                         Log.i("kkk8199","showprojectpchg="+showprojectpchg.toString());
                         msg.arg2= UserMainActivity.MSG_QUERY_GENERATINGCAPACITY;
                         int showprojectpchgretcode = showprojectpchg.getRetCode();
-                        if(showprojectpchgretcode!=0) {//新增项目返回异常
+                        if(showprojectpchgretcode!=0) {
                             msg.arg2=0;//异常
                             msg.obj=showprojectpchg.getMsg();
                         }
@@ -438,6 +440,19 @@ public class ClientSocket {
                         Log.i("kkk8199","devicesbatchres="+deviceslist.toString());
                         msg.arg2= UserMainActivity.MSG_DEVICES_CTRL;//
                         msg.obj=deviceslist;
+                        break;
+                    case ConnectAPI.PROJECT_QUERY_RESPONSE://查询项目列表
+                        Log.i("kkk8199","into PROJECT_QUERY_RESPONSE");
+                        ShowPageProject ShowPageProjectreturn = JsonUtilTool.fromJson(ret,ShowPageProject.class);
+                        msg.arg2= UserMainActivity.MSG_QUERY_PROJECT;//
+                        int ShowPageProjectreturnRetCode = ShowPageProjectreturn.getRetCode();
+                        if(ShowPageProjectreturnRetCode!=0) {
+                            msg.arg2=0;
+                            msg.obj=ShowPageProjectreturn.getMsg();
+                        }
+                        else{//成功
+                            msg.obj=ShowPageProjectreturn.getT();
+                        }
                         break;
                     default:
                         break;

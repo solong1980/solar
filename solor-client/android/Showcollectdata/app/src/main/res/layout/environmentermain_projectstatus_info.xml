@@ -109,7 +109,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/secondimage_height"
+        android:layout_height="wrap_content"
         android:layout_below="@id/environmentermainrun_errortime"
         android:layout_marginTop="@dimen/common_space2"
         android:layout_marginLeft="@dimen/common_space1"

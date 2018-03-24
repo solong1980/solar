@@ -3,6 +3,7 @@ package com.lszyhb.showcollectdata;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+
+import pl.droidsonroids.gif.GifImageView;
 
 /**
  * Created by kkk8199 on 1/9/18.
@@ -66,22 +69,23 @@ public class Maprodatamenufragment extends Fragment implements View.OnClickListe
         private boolean bakpumpstopstatus=false;
         ProjectWorkingMode mprojectworkmode;
         private GridView timinggridview;
-        private GridView mainenancerdata_devicesgridview;
+        private static GridView mainenancerdata_devicesgridview;
+        private static MaprodeviceslistAdapter deviveslistadapter;
         private static View deviceslist;
         private static View mainenancer_devicesinfo;
-        private ImageView devices_solar_panel;//太阳能板
+        private GifImageView devices_solar_panel;//太阳能板
         private TextView solar_voltage;//太阳板电压
         private TextView charging_current;//充电电流
         private TextView totalpower;// 总发电量
-        private ImageView solar_sewage_controller;//污水控制器
-        private ImageView battery_pack;
+        private GifImageView solar_sewage_controller;//污水控制器
+        private GifImageView battery_pack;
         private TextView battery_capacity;
-        private ImageView fan_status;
-        private ImageView bakfan_status;
-        private ImageView waterpump_status;
-        private ImageView bakwaterpump_status;
+        private GifImageView fan_status;
+        private GifImageView bakfan_status;
+        private GifImageView waterpump_status;
+        private GifImageView bakwaterpump_status;
 
-        private List<ShowDevices> nowlistshowdevices;
+        private static List<ShowDevices> nowlistshowdevices;
 
 
         @Override
@@ -200,7 +204,7 @@ public class Maprodatamenufragment extends Fragment implements View.OnClickListe
     public void updatedevicesadapter(List<ShowDevices> mlistdevices){
         nowlistshowdevices = mlistdevices;
         if(mainenancerdata_devicesgridview!=null) {
-            MaprodeviceslistAdapter deviveslistadapter=new MaprodeviceslistAdapter(mcontext, mlistdevices,1);
+            deviveslistadapter=new MaprodeviceslistAdapter(mcontext, mlistdevices,1);
             mainenancerdata_devicesgridview.setAdapter(deviveslistadapter);
         }
         if(fanstart!=null){
@@ -214,11 +218,13 @@ public class Maprodatamenufragment extends Fragment implements View.OnClickListe
             deviceslist.setVisibility(View.VISIBLE);
             mainenancer_devicesinfo.setVisibility(View.GONE);
             backbutton.setVisibility(View.GONE);
+            mquerydataHandler.removeCallbacks(querydatarun);
         }
         else{
             mainenancer_devicesinfo.setVisibility(View.VISIBLE);
             deviceslist.setVisibility(View.GONE);
             backbutton.setVisibility(View.VISIBLE);
+            mquerydataHandler.postDelayed(querydatarun,10000);
         }
     }
 
@@ -226,9 +232,9 @@ public class Maprodatamenufragment extends Fragment implements View.OnClickListe
     public void setcollectdata(DevicesCollectData mcollectdata){
             //mainenancer_devicesinfo.findViewById();
         Log.i("kkk8199","vssum="+mcollectdata.getVssun());
-        solar_voltage.setText("电池板电压:"+mcollectdata.getVssun()+"V");
+        solar_voltage.setText("电压:"+mcollectdata.getVssun()+"V");
         charging_current.setText("充电电流:" + mcollectdata.getIchg()+"A");
-        totalpower.setText("总发电量:" + mcollectdata.getPchg()+"度");
+        totalpower.setText("发电量:" + mcollectdata.getPchg()+"度");
         battery_capacity.setText("电池剩余容量:" + mcollectdata.getLevel()+"%");
        // Integer state = Integer.parseInt(mcollectdata.getStat());
        //String statestring = Stringbuild.toHex(mcollectdata.getStat());
@@ -274,6 +280,30 @@ public class Maprodatamenufragment extends Fragment implements View.OnClickListe
 
     }
 
+        /********自动刷新数据*****/
+        private static Handler mquerydataHandler = new Handler();
+        static Runnable querydatarun = new Runnable() {
+        @Override
+        public void run() {
+            //do something
+            //每隔10s循环执行run方法
+            /******发送查询项目设备列表命令******/
+            DevicesCollectData mcollectdata= new DevicesCollectData();
+            //environmentermain_devicesgridview.getSelectedItem().getDevNo();
+            mcollectdata.setUuid(deviveslistadapter.getnowuuid());
+            SupplyConnectAPI.getInstance().queryrundata(UserMainActivity.musermainsocket,
+                    UserMainActivity.musermainhandler,mcollectdata);
+            mquerydataHandler.postDelayed(this, 10000);
+        }
+    };
+
+        @Override
+        public void  onPause() {
+            mquerydataHandler.removeCallbacks(querydatarun);
+        // Log.i("kkk8199", "into onpause");
+            super.onPause();
+        }
+
     /*************设置紧急启停****/
     private void seturgentstopandstart(){
         backbutton.setVisibility(View.GONE);
@@ -315,65 +345,67 @@ public class Maprodatamenufragment extends Fragment implements View.OnClickListe
 
 /*****************初始化当前的项目的状态,由于项目的一致性,只取一个读取就可以了*************/
     public void initdevicescontrol(){
-       int device0 = nowlistshowdevices.get(0).getSw0();
-       int device1 = nowlistshowdevices.get(0).getSw1();
-       int device2 = nowlistshowdevices.get(0).getSw2();
-       int device3 = nowlistshowdevices.get(0).getSw3();
-       switch (device0){
-           case 0:
-               fanstart.setImageResource(R.drawable.but_on);
-               fanstop.setImageResource(R.drawable.but_off);
-               break;
-           case 1:
-               fanstart.setImageResource(R.drawable.but_off);
-               fanstop.setImageResource(R.drawable.but_on);
-               break;
-           case 2:
-               fanstart.setImageResource(R.drawable.but_off);
-               fanstop.setImageResource(R.drawable.but_off);
-               break;
-       }
-        switch (device1){
-            case 0:
-                bakfanstart.setImageResource(R.drawable.but_on);
-                bakfanstop.setImageResource(R.drawable.but_off);
-                break;
-            case 1:
-                bakfanstart.setImageResource(R.drawable.but_off);
-                bakfanstop.setImageResource(R.drawable.but_on);
-                break;
-            case 2:
-                bakfanstart.setImageResource(R.drawable.but_off);
-                bakfanstop.setImageResource(R.drawable.but_off);
-                break;
-        }
-        switch (device2){
-            case 0:
-                pumpstart.setImageResource(R.drawable.but_on);
-                pumpstop.setImageResource(R.drawable.but_off);
-                break;
-            case 1:
-                pumpstart.setImageResource(R.drawable.but_off);
-                pumpstop.setImageResource(R.drawable.but_on);
-                break;
-            case 2:
-                pumpstart.setImageResource(R.drawable.but_off);
-                pumpstop.setImageResource(R.drawable.but_off);
-                break;
-        }
-        switch (device3){
-            case 0:
-                bakpumpstart.setImageResource(R.drawable.but_on);
-                bakpumpstop.setImageResource(R.drawable.but_off);
-                break;
-            case 1:
-                bakpumpstart.setImageResource(R.drawable.but_off);
-                bakpumpstop.setImageResource(R.drawable.but_on);
-                break;
-            case 2:
-                bakpumpstart.setImageResource(R.drawable.but_off);
-                bakpumpstop.setImageResource(R.drawable.but_off);
-                break;
+        if(nowlistshowdevices.size()>0) {
+            int device0=nowlistshowdevices.get(0).getSw0();
+            int device1=nowlistshowdevices.get(0).getSw1();
+            int device2=nowlistshowdevices.get(0).getSw2();
+            int device3=nowlistshowdevices.get(0).getSw3();
+            switch (device0) {
+                case 0:
+                    fanstart.setImageResource(R.drawable.but_on);
+                    fanstop.setImageResource(R.drawable.but_off);
+                    break;
+                case 1:
+                    fanstart.setImageResource(R.drawable.but_off);
+                    fanstop.setImageResource(R.drawable.but_on);
+                    break;
+                case 2:
+                    fanstart.setImageResource(R.drawable.but_off);
+                    fanstop.setImageResource(R.drawable.but_off);
+                    break;
+            }
+            switch (device1) {
+                case 0:
+                    bakfanstart.setImageResource(R.drawable.but_on);
+                    bakfanstop.setImageResource(R.drawable.but_off);
+                    break;
+                case 1:
+                    bakfanstart.setImageResource(R.drawable.but_off);
+                    bakfanstop.setImageResource(R.drawable.but_on);
+                    break;
+                case 2:
+                    bakfanstart.setImageResource(R.drawable.but_off);
+                    bakfanstop.setImageResource(R.drawable.but_off);
+                    break;
+            }
+            switch (device2) {
+                case 0:
+                    pumpstart.setImageResource(R.drawable.but_on);
+                    pumpstop.setImageResource(R.drawable.but_off);
+                    break;
+                case 1:
+                    pumpstart.setImageResource(R.drawable.but_off);
+                    pumpstop.setImageResource(R.drawable.but_on);
+                    break;
+                case 2:
+                    pumpstart.setImageResource(R.drawable.but_off);
+                    pumpstop.setImageResource(R.drawable.but_off);
+                    break;
+            }
+            switch (device3) {
+                case 0:
+                    bakpumpstart.setImageResource(R.drawable.but_on);
+                    bakpumpstop.setImageResource(R.drawable.but_off);
+                    break;
+                case 1:
+                    bakpumpstart.setImageResource(R.drawable.but_off);
+                    bakpumpstop.setImageResource(R.drawable.but_on);
+                    break;
+                case 2:
+                    bakpumpstart.setImageResource(R.drawable.but_off);
+                    bakpumpstop.setImageResource(R.drawable.but_off);
+                    break;
+            }
         }
     }
 
@@ -512,9 +544,11 @@ public class Maprodatamenufragment extends Fragment implements View.OnClickListe
                 setdeviceslistinfo();
                 return ;
             case R.id.urgentopenorclosetext:
+                mquerydataHandler.removeCallbacks(querydatarun);
                 seturgentstopandstart();
                 return;
             case R.id.timingruntext:
+                mquerydataHandler.removeCallbacks(querydatarun);
                 settimeingrun();
                 return;
             case R.id.gridbutton:

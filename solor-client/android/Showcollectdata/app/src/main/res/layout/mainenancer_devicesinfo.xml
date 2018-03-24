@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <ImageView
+    <pl.droidsonroids.gif.GifImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/devices_solar_panel"
@@ -11,7 +11,7 @@
         android:src="@drawable/solar_panel_good"
         android:layout_marginTop="@dimen/common_space"
         >
-    </ImageView>
+    </pl.droidsonroids.gif.GifImageView>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,7 +44,7 @@
             android:layout_marginLeft="@dimen/common_space2"
             style="@style/normalWhiteText12"
             android:background="@color/press_color"
-            android:text="总发电量:"
+            android:text="发电量:"
             >
         </TextView>
     </LinearLayout>
@@ -66,13 +66,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginLeft="@dimen/common_space2">
-            <ImageView
+            <pl.droidsonroids.gif.GifImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/solar_sewage_controller"
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/solar_sewage_controller">
-            </ImageView>
+            </pl.droidsonroids.gif.GifImageView>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -93,13 +93,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginLeft="@dimen/secondimage_height">
-            <ImageView
+            <pl.droidsonroids.gif.GifImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/battery_pack"
                 android:layout_gravity="center_horizontal"
                 android:src="@drawable/battery_pack">
-            </ImageView>
+            </pl.droidsonroids.gif.GifImageView>
             <TextView
                 android:id="@+id/battery_capacity"
                 android:layout_width="wrap_content"
@@ -115,38 +115,38 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="@dimen/common_space">
-        <ImageView
+        <pl.droidsonroids.gif.GifImageView
             android:id="@+id/fan_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/fan_good"
             android:layout_weight="1">
-        </ImageView>
-        <ImageView
+        </pl.droidsonroids.gif.GifImageView>
+        <pl.droidsonroids.gif.GifImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/bakfan_status"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/bakfan_good"
             android:layout_weight="1">
-        </ImageView>
-        <ImageView
+        </pl.droidsonroids.gif.GifImageView>
+        <pl.droidsonroids.gif.GifImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/waterpump_status"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/waterpump_good"
             android:layout_weight="1">
-        </ImageView>
-        <ImageView
+        </pl.droidsonroids.gif.GifImageView>
+        <pl.droidsonroids.gif.GifImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/bakwaterpump_status"
             android:layout_gravity="center_horizontal"
             android:src="@drawable/bakwaterpump_good"
             android:layout_weight="1">
-        </ImageView>
+        </pl.droidsonroids.gif.GifImageView>
     </LinearLayout>
 
 </LinearLayout>

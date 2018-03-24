@@ -20,6 +20,7 @@
     
 	<dimen name="title_bar_h">56dp</dimen>
 	<dimen name="title_bar_btn_w">60dp</dimen>
+	<dimen name="common_space０">1dp</dimen>
 	<dimen name="common_space">4dp</dimen>
 	<dimen name="common_space8">8dp</dimen>
 	<dimen name="common_space2">12dp</dimen>

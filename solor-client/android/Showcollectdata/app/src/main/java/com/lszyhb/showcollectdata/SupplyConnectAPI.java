@@ -16,6 +16,7 @@ import com.lszyhb.basicclass.ShowCommitBatch;
 import com.lszyhb.basicclass.ShowDevConfig;
 import com.lszyhb.basicclass.ShowDevices;
 import com.lszyhb.basicclass.ShowPage;
+import com.lszyhb.basicclass.ShowPageProject;
 import com.lszyhb.basicclass.ShowProject;
 import com.lszyhb.basicclass.ShowProjectinfo;
 import com.lszyhb.basicclass.ShowVCode;
@@ -94,8 +95,8 @@ public class SupplyConnectAPI {
         msocket.sendandrecv(ConnectAPI.ACCOUNT_FINDBACK_COMMAND, mhandler,json);
     }
 
-    /************查询指定项目信息*******************/
-    public void queryproject(ClientSocket msocket, Handler mhandler, ShowProject showproject){
+    /************查询项目列表*******************/
+    public void queryproject(ClientSocket msocket, Handler mhandler, ShowPageProject showproject){
 
         String json = JsonUtilTool.toJson(showproject);
         System.out.println(json);

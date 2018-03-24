@@ -20,6 +20,7 @@ import java.util.Map;
 
 public class BottomHorizontalScrollView extends HorizontalScrollView implements View.OnClickListener {
     private int  recordscrollX;
+    private View firstview;
     /**
      * 条目点击时的回调
      */
@@ -90,12 +91,14 @@ public class BottomHorizontalScrollView extends HorizontalScrollView implements 
     public void initScreenChildren()
     {
         mContainer.removeAllViews();
-
         for (int i = 0; i < mAdapter.getCount(); i++)
         {
             View view = mAdapter.getView(i, null, mContainer);
+            if(i==0)
+                firstview = view;
             view.setOnClickListener(this);
             view.setTag(R.id.item_position,i);
+            Log.i("kkk8199","view="+view);
             mContainer.addView(view);
         }
     }
@@ -129,6 +132,7 @@ public class BottomHorizontalScrollView extends HorizontalScrollView implements 
        // Log.i("kkk8199","v.tag="+v.getTag(R.id.item_position));
         if (mOnClickListener != null)
         {
+            Log.i("kkk8199","v="+v);
             int postion=(int)v.getTag(R.id.item_position);
             for (int i = 0; i < mContainer.getChildCount(); i++)
             {
@@ -150,5 +154,9 @@ public class BottomHorizontalScrollView extends HorizontalScrollView implements 
     public void setOnItemClickListener(OnItemClickListener mOnClickListener)
     {
         this.mOnClickListener = mOnClickListener;
+    }
+
+    public View getfirstview(){
+        return firstview;
     }
 }

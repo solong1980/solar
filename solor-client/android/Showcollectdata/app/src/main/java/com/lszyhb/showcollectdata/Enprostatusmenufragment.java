@@ -3,6 +3,7 @@ package com.lszyhb.showcollectdata;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,16 +27,17 @@ import java.util.List;
  * Created by kkk8199 on 1/9/18.
  */
 
-public class Enprostatusmenufragment extends Fragment {
+public class Enprostatusmenufragment extends Fragment implements View.OnClickListener{
 
     private Context mcontext;
     private View convertView;
-    private ShowProject nowproject;
+    private static ShowProject nowproject;
     private LinearLayout deviceslinearlayout;
     private static View environmentermain_projectstatus_info;
     private static View deviceslist;
-    private GridView environmentermain_devicesgridview;
-    private List<ShowDevices> nowlistshowdevices;
+    private static GridView environmentermain_devicesgridview;
+    private static MaprodeviceslistAdapter deviveslistadapter;
+    private static List<ShowDevices> nowlistshowdevices;
     private static View environmentermain_devicesfragment;
     private ImageView environmentermainrun_goodimage;
     private ImageView environmentermainrun_errorimage;
@@ -97,7 +99,7 @@ public class Enprostatusmenufragment extends Fragment {
         environmentermainrun_errorhour = environmentermain_projectstatus_info.findViewById(R.id.environmentermainrun_errorhour);
         environmentermainrun_errorminute = environmentermain_projectstatus_info.findViewById(R.id.environmentermainrun_errorminute);
         status_backbutton =  environmentermain_projectstatus_info.findViewById(R.id.status_backbutton);
-        //status_backbutton.setOnClickListener(this);
+        status_backbutton.setOnClickListener(this);
     }
 
     /*************更新信息状态页面显示＊＊＊＊＊＊＊＊＊＊＊＊＊／
@@ -125,7 +127,7 @@ public class Enprostatusmenufragment extends Fragment {
             environmentermainrun_timeminutue.setText(String.valueOf(minutes));
             Date breaktime = mcollectdata.getBreakTime();
             if(breaktime!=null) {
-                long breakyear=breaktime.getYear();
+                long breakyear=breaktime.getYear()+1900;
                 long breakmonth=breaktime.getMonth();
                 long breakhour=breaktime.getHours();
                 long breakday=breaktime.getDay();
@@ -137,13 +139,24 @@ public class Enprostatusmenufragment extends Fragment {
               //  environmentermainrun_errorminute.setText(String.valueOf(breakminutes));
             }
         }
+        else {
+            environmentermainrun_goodimage.setImageDrawable(null);
+            environmentermainrun_errorimage.setImageDrawable(null);
+            environmentermainrun_timeday.setText("");
+            environmentermainrun_timehour.setText("");
+            environmentermainrun_timeminutue.setText("");
+            environmentermainrun_erroryear.setText("");
+            environmentermainrun_errormonth.setText("");
+            environmentermainrun_errorday.setText("");
+            environmentermainrun_errorhour.setText("");
+        }
     }
 
     /***************从服务器获取到设备列表后，更新设备列表Adapter和list及其更新项目的状态*************/
     public void updatedevicesadapter(List<ShowDevices> mlistdevices){
         nowlistshowdevices = mlistdevices;
         if(environmentermain_devicesgridview!=null) {
-            MaprodeviceslistAdapter deviveslistadapter=new MaprodeviceslistAdapter(mcontext, mlistdevices,0);
+            deviveslistadapter=new MaprodeviceslistAdapter(mcontext, mlistdevices,0);
             environmentermain_devicesgridview.setAdapter(deviveslistadapter);
         }
     }
@@ -153,10 +166,12 @@ public class Enprostatusmenufragment extends Fragment {
         if(islist){
             environmentermain_devicesfragment.setVisibility(View.VISIBLE);
             environmentermain_projectstatus_info.setVisibility(View.GONE);
+            mquerystatusHandler.removeCallbacks(querydata);
         }
         else{
             environmentermain_projectstatus_info.setVisibility(View.VISIBLE);
             environmentermain_devicesfragment.setVisibility(View.GONE);
+            mquerystatusHandler.postDelayed(querydata,10000);
         }
     }
 
@@ -166,5 +181,39 @@ public class Enprostatusmenufragment extends Fragment {
         mcontext=context;
         nowproject=lsproject;
         //    Log.i("kkk8199","lsproject.id="+nowproject.getId());
+    }
+
+    /********自动刷新数据*****/
+    private static Handler mquerystatusHandler = new Handler();
+    static Runnable querydata = new Runnable() {
+        @Override
+        public void run() {
+            //do something
+            //每隔10s循环执行run方法
+            DevicesCollectData mcollectdata= new DevicesCollectData();
+            //environmentermain_devicesgridview.getSelectedItem().getDevNo();
+            Log.i("kkk8199","uuid="+deviveslistadapter.getnowuuid());
+            mcollectdata.setUuid(deviveslistadapter.getnowuuid());
+            SupplyConnectAPI.getInstance().queryrundata(UserMainActivity.musermainsocket,
+                    UserMainActivity.musermainhandler,mcollectdata);
+            mquerystatusHandler.postDelayed(this, 10000);
+        }
+    };
+
+
+    @Override
+    public void  onPause() {
+        mquerystatusHandler.removeCallbacks(querydata);
+       // Log.i("kkk8199", "into onpause");
+        super.onPause();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.status_backbutton:
+                setvisibledeviceorinfo(true);
+                break;
+        }
     }
 }

@@ -24,6 +24,7 @@ public class MaprodeviceslistAdapter  extends BaseAdapter {
     private List<ShowDevices> mImgIds;
     private LayoutInflater mInflater;
     private int type;
+    private String uuid;
 
     public MaprodeviceslistAdapter(Context ctx, List<ShowDevices> ImgIds,int type) {
         mContext = ctx;
@@ -78,7 +79,8 @@ public class MaprodeviceslistAdapter  extends BaseAdapter {
             public void onClick(View v) {
              //   Log.i("kkk8199","into onclick ");
                 DevicesCollectData mcollectdata= new DevicesCollectData();
-                mcollectdata.setUuid(mImgIds.get(position).getDevNo());
+                uuid = mImgIds.get(position).getDevNo();
+                mcollectdata.setUuid(uuid);
                 SupplyConnectAPI.getInstance().queryrundata(UserMainActivity.musermainsocket,
                         UserMainActivity.musermainhandler,mcollectdata);
                 if(type==1)
@@ -89,6 +91,10 @@ public class MaprodeviceslistAdapter  extends BaseAdapter {
         });
 
         return convertView;
+    }
+
+    public String getnowuuid(){
+        return uuid;
     }
 
 }

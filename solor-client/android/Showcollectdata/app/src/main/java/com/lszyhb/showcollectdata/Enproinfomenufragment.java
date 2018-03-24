@@ -2,6 +2,7 @@ package com.lszyhb.showcollectdata;
 
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,43 +16,51 @@ import com.lszyhb.basicclass.ShowProjectinfo;
  */
 
 public class Enproinfomenufragment extends Fragment{
-    private   View convertView;
+    private View convertView;
+    private TextView project_name;
     private TextView solargive;
+    private TextView designprocess;
+    private TextView projectaddress;
+    private TextView emissionstandard;
+    private TextView standarddischarge;
+    private ShowProject nowlsproject;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
 
         convertView= inflater.inflate(R.layout.environmentermain_projectinfo, container, false);
+        initview();
         return convertView;
     }
 
 
-
+    public void initview(){
+        project_name= (TextView)convertView.findViewById(R.id.project_name);
+        projectaddress= (TextView)convertView.findViewById(R.id.project_address);
+        designprocess= (TextView)convertView.findViewById(R.id.design_process);
+        emissionstandard= (TextView)convertView.findViewById(R.id.emissionstandard);
+        standarddischarge= (TextView)convertView.findViewById(R.id.standarddischarge);
+        solargive= (TextView)convertView.findViewById(R.id.solargive);
+    }
 
     public void SetEnproinfoproject(ShowProject lsproject){
-        TextView project_name= (TextView)convertView.findViewById(R.id.project_name);
-        TextView projectaddress= (TextView)convertView.findViewById(R.id.project_address);
-        TextView designprocess= (TextView)convertView.findViewById(R.id.design_process);
-        TextView emissionstandard= (TextView)convertView.findViewById(R.id.emissionstandard);
-        TextView standarddischarge= (TextView)convertView.findViewById(R.id.standarddischarge);
-        solargive= (TextView)convertView.findViewById(R.id.solargive);
-        project_name.setText(lsproject.getProjectName());
-        ParseAddress parseaddress=ParseAddress.getInstance();
-        String address = parseaddress.queryid(lsproject.getLocationId());
-        projectaddress.setText(address);
-        // Log.i("kkk8199","designprocess="+designprocess+"lsproject.getCapability()="+lsproject.getCapability());
-        designprocess.setText(Integer.toString(lsproject.getCapability())+"D/T");
-        emissionstandard.setText(Integer.toString(lsproject.getEmissionStandards())+"D/T");
-        standarddischarge.setText(Integer.toString(lsproject.getState()));
+        nowlsproject = lsproject;
         ShowProjectinfo ShowProjectinfo = new ShowProjectinfo();
         ShowProjectinfo.setId(lsproject.getId());
         SupplyConnectAPI.getInstance().getgeneratingcapacity(UserMainActivity.musermainsocket,
                 UserMainActivity.musermainhandler,ShowProjectinfo);
-//        solargive.setText(lsproject.getStreet());
     }
 
     public void setgeneratingcapacity(ShowProjectinfo mshowproject){
+        project_name.setText(nowlsproject.getProjectName());
+        ParseAddress parseaddress=ParseAddress.getInstance();
+        String address = parseaddress.queryid(nowlsproject.getLocationId());
+        projectaddress.setText(address);
+        standarddischarge.setText(Integer.toString(nowlsproject.getState())+"D/T");
+    //    Log.i("kkk8199","designprocess="+designprocess+"lsproject.getCapability()="+mshowproject.getCapability());
+        designprocess.setText(Integer.toString(nowlsproject.getCapability())+"D/T");
+        emissionstandard.setText(Integer.toString(nowlsproject.getEmissionStandards())+"D/T");
         Long totalpchg = mshowproject.getprojectTotalPChg();
         String value = String.valueOf((float)(totalpchg/1000))+"°";
         solargive.setText(value);

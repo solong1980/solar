@@ -31,7 +31,7 @@
         android:gravity="right"
         android:layout_height="wrap_content"
         style="@style/normalBlackText"
-        android:layout_below="@id/projectname"
+        android:layout_below="@id/project_name"
         android:layout_marginTop="@dimen/common_space1"
         />
 
@@ -47,7 +47,7 @@
 
     <TextView
         android:id="@+id/designprocesstext"
-        android:layout_below="@id/projectaddress"
+        android:layout_below="@id/project_address"
         android:layout_marginTop="@dimen/common_space1"
         android:text="设计处理量 :"
         android:layout_width="@dimen/register_text_width"

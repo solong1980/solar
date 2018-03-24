@@ -2,8 +2,8 @@ package com.lszyhb.showcollectdata;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.ComponentName;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.net.Uri;
@@ -28,9 +28,11 @@ import com.lszyhb.basicclass.ProjectWorkingMode;
 import com.lszyhb.basicclass.ShowAccount;
 import com.lszyhb.basicclass.ShowDevices;
 import com.lszyhb.basicclass.ShowPage;
+import com.lszyhb.basicclass.ShowPageProject;
 import com.lszyhb.basicclass.ShowProject;
 import com.lszyhb.basicclass.ShowProjectinfo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,10 +61,10 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
     private TextView project_secondtextview;
     private ImageView imageButton;
     private ImageView envirmentmenubutton;
-    private List<ShowProject> lstproject;
+    private static List<ShowProject> lstproject;
     private boolean firsttime=false;
     private ShowProject nowproject=null;
-    private int status=0;
+    private static int status=0;
     private TextView project_name;
     static public int usertype;
     private BottomHorizontalScrollView mHorizontalScrollView;
@@ -82,6 +84,7 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
     public static final int MSG_DEVICES_BATCH=12;//批量修改设备信息
     public static final int MSG_DEVICES_CTRL=13;//项目启停控制
     public static final int MSG_QUERY_GENERATINGCAPACITY=14;//发电量返回
+    public static final int MSG_QUERY_PROJECT=15;//查询项目列表，用于更新项目
 
     private static Context usermaincontext;
 
@@ -94,7 +97,7 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
         musermainsocket =  ClientSocket.getInstance();
         ParseAddress parseaddress=ParseAddress.getInstance();
         parseaddress.initneedData(usermaincontext);
-        Log.i("kkk8199","musermainsocket1111111="+musermainsocket);
+       // Log.i("kkk8199","musermainsocket1111111="+musermainsocket);
         Intent intentGet = getIntent();
         lstproject = (List<ShowProject>) intentGet.getSerializableExtra(LoginActivity.RETURN_INFO);
         usertype = intentGet.getIntExtra(LoginActivity.RETURN_USERTYPE,10);
@@ -302,16 +305,28 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
 
     }
 
-
-/************默认显示*****************/
+    /************默认显示*****************/
     private void setDefaultFragment()
     {
-        Log.i("kkk8199","into setdefaultfragment");
+      //  Log.i("kkk8199","into setdefaultfragment"+"status="+status+"einfomenufragment="+einfomenufragment);
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-        einfomenufragment = new Enproinfomenufragment();
+        settitlesvisibile(true);
+        project_secondtextview.setText(R.string.projecttetail);
+        einfomenufragment=new Enproinfomenufragment();
+        // 使用当前Fragment的布局替代id_content的控件
         transaction.replace(R.id.idfragment, einfomenufragment);
         transaction.commit();
+        status = 20;//触发第一次切换用
+        nowproject = lstproject.get(0);//给个默认的项目
+    }
+
+
+/************点击重新选择项目后切换显示*****************/
+    private void updateFragment()
+    {
+        status = 20;//强制加载
+        mHorizontalScrollView.onClick(mHorizontalScrollView.getfirstview());
     }
 
     private ShowProject findProject(long projectid){
@@ -330,11 +345,12 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
         public void handleMessage(Message msg) {
             if (msg.arg1 == 0) {
                 if (msg.obj != null && msg.obj instanceof String) {
-                    Log.i("kkk8199", "msg.obj=" + msg.obj);
+                  //  Log.i("kkk8199", "msg.obj=" + msg.obj);
                     NotShowfloatwindow();
                     nowproject=findProject((long)msg.arg2);
                     project_firsttextview.setText(msg.obj.toString()+"-"+nowproject.getProjectName());
-                    syncdata();
+                    updateFragment();
+           //         syncdata();
                     return;
                 }
             }
@@ -342,6 +358,7 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
     };
 
     private void syncdata(){
+
         if(nowproject!=null) {
 
             if(nowproject.getType()==ShowProject.PROJ_TYPE_SUNPOWER)//太阳能
@@ -385,11 +402,24 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
     }
 
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (Settings.canDrawOverlays(this)) {
+                    Showfloatwindow();
+                } else {
+                    Toast.makeText(this, "权限已被拒绝", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
     /************创建悬浮式窗口**********/
      private void createView(){
          mytree = new MyTreewidget(this);
          mytree.treewidgetinit(lstproject,handler);
-
          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
              if(!Settings.canDrawOverlays(getApplicationContext())) {
                  //启动Activity让用户授权
@@ -404,26 +434,12 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
          }
      }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (Settings.canDrawOverlays(this)) {
-                    Showfloatwindow();
-                } else {
-                    Toast.makeText(this, "权限已被拒绝", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }
-    }
     /******************显示悬浮窗口*********
      *
      */
     private void Showfloatwindow() {
             //获取WindowManager
             WindowManager wm=(WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-
             //设置LayoutParams(全局变量）相关参数
             WindowManager.LayoutParams wmParams=new WindowManager.LayoutParams();
             wmParams.type=WindowManager.LayoutParams.TYPE_PHONE; //设置window type
@@ -447,6 +463,7 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
             //显示myFloatView图像
             wm.addView(mytree, wmParams);
             firsttime=false;
+
     }
     /******************隐藏悬浮窗口*********
      *
@@ -454,8 +471,9 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
     private void NotShowfloatwindow(){
             if(!firsttime) {
                 WindowManager wm = (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
-                if(mytree != null) {
-                    if(mytree.isShown()) { //check if dialog is showing.
+                if(mytree!=null) {
+                    if(mytree.isShown()){
+                        //check if dialog is showing.
                         wm.removeView(mytree);
                     }
                 }
@@ -463,16 +481,20 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
             }
     }
 
-    private  Handler mquerydataHandler = new Handler();
-          Runnable querydata = new Runnable() {
-              @Override
-              public void run() {
-                                     //do something
-                                     //每隔10s循环执行run方法
-                  mquerydataHandler.postDelayed(this, 10000);
-               }
-          };
 
+    /********更新项目信息************/
+    private static void updateprojectlist(){
+        ShowProject mshowproject = new ShowProject();
+        mshowproject.setCapability(0);
+        mshowproject.setEmissionStandards(0);
+        mshowproject.setMsg("success");
+        mshowproject.setRetCode(0);
+        mshowproject.setState(0);
+        mshowproject.setType(0);
+        ShowPageProject<ShowProject> mShowPageProject= new ShowPageProject<>(mshowproject);
+        SupplyConnectAPI.getInstance().queryproject(UserMainActivity.musermainsocket,
+                musermainhandler,mShowPageProject);
+    }
 
     public static Handler musermainhandler = new Handler(){
         @Override
@@ -496,7 +518,8 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
                 else {//业务应答成功
                     if (msg.arg2 == MSG_ADD_PROJECT) {//新增项目
                         if (msg.obj != null && msg.obj instanceof String) {
-                            Toast.makeText(usermaincontext, msg.obj.toString(), Toast.LENGTH_LONG).show();
+                            updateprojectlist();
+                            Toast.makeText(usermaincontext, "新增成功，等待同步", Toast.LENGTH_LONG).show();
                         }
                     } else if (msg.arg2 == MSG_REGISTER) {//注册审核列表显示
                         Log.i("kkk8199","into MSG_REGISTER");
@@ -528,7 +551,8 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
                     }
                     else if (msg.arg2 == MSG_MODIFY_PROJECT) {//项目修改
                         Log.i("kkk8199","into MSG_MODIFY_PROJECT");
-                        Toast.makeText(usermaincontext, "修改成功", Toast.LENGTH_LONG).show();
+                        updateprojectlist();
+                        Toast.makeText(usermaincontext, "修改成功,等待同步", Toast.LENGTH_LONG).show();
                     }
                     else if (msg.arg2 == MSG_QUERY_DEVICES) {//项目中设备查询
                         Log.i("kkk8199","into MSG_QUERY_DEVICES");
@@ -541,13 +565,15 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
                             erunmenufragment.updatedevicesadapter(listdevices);
                     }
                     else if (msg.arg2 == MSG_QUERY_RUNNINGDATA) {//设备信息数据
-                        Log.i("kkk8199","into MSG_QUERY_RUNNINGDATA");
-                        DevicesCollectData collectdata = (DevicesCollectData)msg.obj;
-                        if(mdatamenufragment!=null)
-                            mdatamenufragment.setcollectdata(collectdata);
-                        if(erunmenufragment!=null)
-                            erunmenufragment.updateinfostatus(collectdata);
-
+                        Log.i("kkk8199", "into MSG_QUERY_RUNNINGDATA");
+                        DevicesCollectData collectdata=(DevicesCollectData) msg.obj;
+                        if (collectdata != null){
+                            if (status == 2) {
+                                mdatamenufragment.setcollectdata(collectdata);
+                            } else if (status == 1) {
+                                erunmenufragment.updateinfostatus(collectdata);
+                            }
+                        }
                     }
                     else if (msg.arg2 == MSG_DEVICES_BATCH) {//修改设备信息
                         Log.i("kkk8199","into MSG_DEVICES_BATCH");
@@ -574,19 +600,33 @@ public class UserMainActivity extends Activity implements View.OnClickListener {
                         ShowProjectinfo showProjectinfo =(ShowProjectinfo)msg.obj;
                         einfomenufragment.setgeneratingcapacity(showProjectinfo);
                     }
+                    else if (msg.arg2 == MSG_QUERY_PROJECT) {//查询项目列表
+                        Log.i("kkk8199","into MSG_QUERY_PROJECT");
+                        lstproject =(List<ShowProject>)msg.obj;
+                        Toast.makeText(usermaincontext, "同步更新数据成功", Toast.LENGTH_LONG).show();
+                    }
                 }
             }
 
             }
     };
 
-
+    /****************返回到登陆界面****************/
+    private void baklogin() {
+        NotShowfloatwindow();
+        Intent intent=new Intent();
+        ComponentName cn = new ComponentName("com.lszyhb.showcollectdata",
+                                            "com.lszyhb.showcollectdata.LoginActivity");
+        intent.setComponent(cn);
+        startActivity(intent);
+    }
 
     @Override
     public void onClick(View v) {
        Log.i("kkk8199","v11111.getId()="+v.getId());
         switch (v.getId()) {
             case R.id.imageButton:
+                baklogin();
                 this.finish();
                 return ;
             case R.id.envirmentmenubutton:
