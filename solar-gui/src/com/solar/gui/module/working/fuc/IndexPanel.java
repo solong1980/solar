@@ -1052,21 +1052,12 @@ public class IndexPanel extends BasePanel implements Observer {
 			private void updateProjectPanelInfo(SoProject project) {
 				IndexPanel.this.projectId = project.getId();
 				IndexPanel.this.project = project;
-				instance.getProjectWorkingMode(project.getId());
-
-				// make a pause
-				try {
-					Thread.sleep(10);
-				} catch (InterruptedException e) {
-				}
 				instance.getProjectCalcIChg(project.getId());
-
 				projectNameField.setText(project.getProjectName());
 				locationField.setText(LocationLoader.getInstance().getLocationFullName(project.getLocationId()));
 				cabField.setText(project.getCapability() + "/t");
 				standField.setText(Consts.EMISES.type(project.getEmissionStandards()).typeName());
-
-				standDichageField.setText("");
+				standDichageField.setText(project.getCapability() + "/t");
 				solarEnergyPowerField.setText("");
 
 				cardLayout.show(dashPanel, PROJECT);
@@ -1233,9 +1224,10 @@ public class IndexPanel extends BasePanel implements Observer {
 					try {
 						float ichg = Long.parseLong(projectTotalPChg) / 1000.0f;
 						solarEnergyPowerField.setText(String.format("%.3f ", ichg) + "度");
+						instance.getProjectWorkingMode(project.getId());
 					} catch (Exception e) {
+						e.printStackTrace();
 					}
-
 					break;
 				case ConnectAPI.PROJECT_DEVICES_CTRL_RESPONSE:
 					List<SoDevices> deviceList = JsonUtilTool.fromJson(ret.getRet(),
