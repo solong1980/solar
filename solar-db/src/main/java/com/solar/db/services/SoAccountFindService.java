@@ -96,7 +96,7 @@ public class SoAccountFindService {
 			// send email with account,password
 			try {
 				MailServer.getInstance().send(email, "率找回信息", "你的新手机号" + phone + "," + "新密码" + password);
-			} catch (MessagingException e) {
+			} catch (Exception e) {
 				logger.error("send mail fail", e);
 				throw new RuntimeException("帐号更新成功,发送邮件失败!");
 			}
