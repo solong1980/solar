@@ -9,6 +9,7 @@ public class SoDevices extends SoAbtAuth {
 
 	private Long id;
 	private String devNo;
+	private Integer boxNo;
 	private String locationId;
 	private Long projectId;
 
@@ -41,6 +42,14 @@ public class SoDevices extends SoAbtAuth {
 
 	public void setDevNo(String devNo) {
 		this.devNo = devNo;
+	}
+
+	public Integer getBoxNo() {
+		return boxNo;
+	}
+
+	public void setBoxNo(Integer boxNo) {
+		this.boxNo = boxNo;
 	}
 
 	public String getLocationId() {
