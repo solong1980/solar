@@ -22,7 +22,7 @@ public class EndpotClient extends JFrame {
 	public static int tnum = 1;
 
 	DeviceClient[] deviceClients = new DeviceClient[tnum];
-	String data = "01,17DD5E6E,12,321,109,210,50,159003,29535,36,0,0,0,11,0,0,0,35976,20180202080734,30.026136,114.128179\n";
+	String data = "01,17DD5E6E,13,308,45,301,100,148273,55494,28,0,0,0,29,0,0,0,9002,20180425075606,30.026143,114.128077\n";
 
 	boolean sendFlag = false;
 
