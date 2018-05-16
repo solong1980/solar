@@ -24,8 +24,8 @@ public class PressClient {
 
 	public static void main(String[] args) {
 		NetConf netConf = NetConf.buildHostConf();
-		//netConf.setDataServerIP("39.107.24.81");
-		 netConf.setDataServerIP("127.0.0.1");
+		netConf.setDataServerIP("39.107.24.81");
+		//netConf.setDataServerIP("127.0.0.1");
 		netConf.setDataServerPort(10124);
 
 		List<String> loadDevNo = Collections.emptyList();
@@ -34,7 +34,7 @@ public class PressClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		int pressNum = 30;
+		int pressNum = 3000;
 		for (int i = 0; i < pressNum; i++) {
 			String dev = loadDevNo.get(i);
 			String msg = "01," + dev
@@ -51,7 +51,11 @@ public class PressClient {
 								deviceClients.wait(10000);
 							}
 						} catch (Exception e) {
-							logger.error("error:", e);
+							logger.error("error:" + dev + " connect lost");
+							try {
+								Thread.sleep(10000);
+							} catch (InterruptedException e1) {
+							}
 						}
 					}
 				}
