@@ -51,7 +51,7 @@ public class NetConf {
 
 	public static Properties loadConf() {
 		try {
-			URL resource = Thread.currentThread().getContextClassLoader().getResource("resources/config.properties");
+			URL resource = Thread.currentThread().getContextClassLoader().getResource("config.properties");
 			Properties conf = new Properties();
 			conf.load(resource.openStream());
 			return conf;
