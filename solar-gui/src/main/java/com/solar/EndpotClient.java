@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 import com.solar.client.DeviceClient;
 import com.solar.client.net.NetConf;
@@ -22,8 +23,9 @@ public class EndpotClient extends JFrame {
 	public static int tnum = 1;
 
 	DeviceClient[] deviceClients = new DeviceClient[tnum];
-	String data = "01,17DD5E6E,13,308,45,301,100,148273,55494,28,0,0,0,29,0,0,0,9002,20180425075606,30.026143,114.128077\n";
-
+	String dataInField = "01,17DD5E6E,13,308,45,301,100,148273,55494,28,0,0,0,29,0,0,0,9002,20180425075606,30.026143,114.128077\n";
+	byte[] data = "01,17DD5E6E,13,308,45,301,100,0,0,28,0,0,0,29,0,0,0,9002,20180425075606,30.026143,114.128077\n"
+			.getBytes();
 	boolean sendFlag = false;
 
 	public void send() {
@@ -35,7 +37,7 @@ public class EndpotClient extends JFrame {
 						@Override
 						public void run() {
 							try {
-								deviceClient.send(data.getBytes());
+								deviceClient.send(data);
 							} catch (IOException e1) {
 								e1.printStackTrace();
 							}
@@ -48,7 +50,7 @@ public class EndpotClient extends JFrame {
 					} catch (InterruptedException e) {
 					}
 				}
-			}else {
+			} else {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
@@ -66,6 +68,7 @@ public class EndpotClient extends JFrame {
 		netConf.setDataServerIP("127.0.0.1");
 		netConf.setDataServerPort(10124);
 
+		setMinimumSize(new Dimension(400, 200));
 		setPreferredSize(new Dimension(600, 80));
 		setTitle("EndpotClient");
 		pack();
@@ -74,6 +77,8 @@ public class EndpotClient extends JFrame {
 		JButton connectButton = new JButton("连接服务器");
 
 		JButton startButton = new JButton("发送");
+		JButton sendOneButton = new JButton("发送一条");
+
 		JButton stopButton = new JButton("停止");
 		startButton.setEnabled(false);
 		stopButton.setEnabled(false);
@@ -81,13 +86,18 @@ public class EndpotClient extends JFrame {
 		JButton receiveButton = new JButton("接受数据");
 		JButton closeButton = new JButton("断开");
 
+		JTextField dataField = new JTextField(dataInField);
 		jPanel.add(connectButton);
 
 		jPanel.add(startButton);
+		jPanel.add(sendOneButton);
+
 		jPanel.add(stopButton);
 
 		jPanel.add(receiveButton);
 		jPanel.add(closeButton);
+
+		jPanel.add(dataField);
 
 		getContentPane().add(jPanel);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -120,6 +130,18 @@ public class EndpotClient extends JFrame {
 				EndpotClient.this.sendFlag = true;
 			}
 		});
+
+		sendOneButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				try {
+					deviceClients[0].send(data);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+
 		stopButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
